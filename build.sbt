@@ -29,9 +29,21 @@ lazy val root = project.in(file(".")).
 
 lazy val localegen = crossProject.in(file(".")).
   settings(
-    name := "cldr",
+    name := "scalajs-locale-generator",
     organization := "com.github.cquiroz.locale-gen",
     version := "0.1-SNAPSHOT"
+  )
+  .jvmSettings(
+    libraryDependencies := {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        // if scala 2.11+ is used, add dependency on scala-xml module
+        case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+          libraryDependencies.value ++ Seq(
+            "org.scala-lang.modules" %% "scala-xml" % "1.0.5")
+        case _ =>
+          libraryDependencies.value
+      }
+    }
   )
 
 lazy val localegenJVM = localegen.jvm
