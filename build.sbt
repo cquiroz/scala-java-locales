@@ -1,6 +1,10 @@
 enablePlugins(ScalaJSPlugin)
 
-scalaVersion := "2.11.8"
+name := "scalajs-locale-generator"
+
+organization := "com.github.cquiroz.locale-gen"
+
+version := "0.1-SNAPSHOT"
 
 persistLauncher in Compile := true
 
@@ -29,9 +33,7 @@ lazy val root = project.in(file(".")).
 
 lazy val localegen = crossProject.in(file(".")).
   settings(
-    name := "scalajs-locale-generator",
-    organization := "com.github.cquiroz.locale-gen",
-    version := "0.1-SNAPSHOT"
+    scalaVersion := "2.11.8"
   )
   .jvmSettings(
     libraryDependencies := {
@@ -43,7 +45,14 @@ lazy val localegen = crossProject.in(file(".")).
         case _ =>
           libraryDependencies.value
       }
-    }
+    },
+    libraryDependencies ++= Seq(
+      "com.lihaoyi" %% "pprint" % "0.4.0",
+      "com.eed3si9n" %% "treehugger" % "0.4.1"
+    )
+  )
+  .jsSettings(
+    // Never add dependencies
   )
 
 lazy val localegenJVM = localegen.jvm

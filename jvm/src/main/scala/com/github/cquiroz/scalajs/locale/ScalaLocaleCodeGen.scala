@@ -1,19 +1,20 @@
 package com.github.cquiroz.scalajs.locale
 
 import java.io.File
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.{Files, Paths}
 import javax.xml.parsers.SAXParserFactory
 
 import scala.collection.JavaConverters._
+import scala.scalajs.locale.{LDML, LDMLLocale}
 import scala.xml._
 
 object ScalaLocaleCodeGen extends App {
 
-  def constructClass(f: File, xml: Elem): String = {
+  def constructClass(f: File, xml: Elem): (File, LDML) = {
     val language = (xml \ "identity" \ "language" \ "@type").text
     val territory = Option((xml \ "identity" \ "territory" \ "@type").text).filter(_.nonEmpty)
     val variant = Option((xml \ "identity" \ "variant" \ "@type").text).filter(_.nonEmpty)
-    f.getName + ":" + language + territory.map(t => s"_$t").getOrElse("") + variant.map(t => s"_$t").getOrElse("")
+    (f, LDML(LDMLLocale(language, territory, variant)))
   }
 
   val parser: SAXParser = {
@@ -31,5 +32,10 @@ object ScalaLocaleCodeGen extends App {
     f <- files.map(_.toFile)
   } yield constructClass(f, XML.withSAXParser(parser).loadFile(f))
 
-  clazzes.foreach(println)
+  clazzes.foreach {
+    case (f, l) =>
+      print(f.getName + " -> ")
+      pprint.pprintln(l)
+  }
 }
+
