@@ -1,11 +1,12 @@
 package com.github.cquiroz.scalajs.locale
 
 import java.io.File
+import java.nio.charset.Charset
 import java.nio.file.{Files, Paths}
 import javax.xml.parsers.SAXParserFactory
 
 import scala.collection.JavaConverters._
-import scala.scalajs.locale.{LDML, LDMLLocale}
+import scala.scalajs.locale.ldml.{LDML, LDMLLocale}
 import scala.xml._
 
 object ScalaLocaleCodeGen extends App {
@@ -14,7 +15,8 @@ object ScalaLocaleCodeGen extends App {
     val language = (xml \ "identity" \ "language" \ "@type").text
     val territory = Option((xml \ "identity" \ "territory" \ "@type").text).filter(_.nonEmpty)
     val variant = Option((xml \ "identity" \ "variant" \ "@type").text).filter(_.nonEmpty)
-    (f, LDML(LDMLLocale(language, territory, variant)))
+    val script = Option((xml \ "identity" \ "script" \ "@type").text).filter(_.nonEmpty)
+    (f, LDML(LDMLLocale(language, territory, variant, script)))
   }
 
   def treeHugIt(ldmls: List[LDML]):treehugger.forest.Tree = {
@@ -22,9 +24,13 @@ object ScalaLocaleCodeGen extends App {
     import definitions._
     import treehuggerDSL._
 
-    PACKAGEOBJECTDEF("locales") := BLOCK(
-      ldmls.map(treeHugIt)
-    )
+    BLOCK (
+      IMPORT("scala.scalajs.locale.ldml.LDML"),
+      IMPORT("scala.scalajs.locale.ldml.LDMLLocale"),
+      PACKAGEOBJECTDEF("locales") := BLOCK(
+        ldmls.map(treeHugIt)
+      )
+    ) inPackage "scala.scalajs.locale.ldml"
   }
 
   def treeHugIt(ldml: LDML):treehugger.forest.Tree = {
@@ -33,11 +39,11 @@ object ScalaLocaleCodeGen extends App {
     import treehuggerDSL._
 
     val ldmlSym = getModule("LDML")
-    val ldmlLocaleSym = getModule("LDMLocale")
+    val ldmlLocaleSym = getModule("LDMLLocale")
 
-    val ldmlLocaleTree = Apply(ldmlLocaleSym, LIT(ldml.locale.language), ldml.locale.territory.fold(NONE)(t => SOME(LIT(t))), ldml.locale.variant.fold(NONE)(v => SOME(LIT(v))))
+    val ldmlLocaleTree = Apply(ldmlLocaleSym, LIT(ldml.locale.language), ldml.locale.territory.fold(NONE)(t => SOME(LIT(t))), ldml.locale.variant.fold(NONE)(v => SOME(LIT(v))), ldml.locale.script.fold(NONE)(s => SOME(LIT(s))))
 
-    VAL(ldml.asLocale, "LDML") := Apply(ldmlSym, ldmlLocaleTree)
+    VAL(ldml.scalaSafeName, "LDML") := Apply(ldmlSym, ldmlLocaleTree)
   }
 
   val parser: SAXParser = {
@@ -56,14 +62,10 @@ object ScalaLocaleCodeGen extends App {
   } yield constructClass(f, XML.withSAXParser(parser).loadFile(f))
 
   val tree = treeHugIt(clazzes.map(_._2).toList)
-  println(treehugger.forest.treeToString(tree))
 
-  /*clazzes.foreach {
-    case (f, l) =>
-      print(f.getName + " -> ")
-      pprint.pprintln(l)
-      pprint.pprintln(treeHugIt(l))
-  }*/
+  val path = Paths.get("js/src/main/scala/scala/scalajs/locale/ldml/locales.scala")
+  path.getParent.toFile.mkdirs()
+  Files.write(path, treehugger.forest.treeToString(tree).getBytes(Charset.forName("UTF8")))
 
 }
 
