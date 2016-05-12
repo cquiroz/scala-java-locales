@@ -17,7 +17,17 @@ object ScalaLocaleCodeGen extends App {
     (f, LDML(LDMLLocale(language, territory, variant)))
   }
 
-  def treeHugIt(ldml: LDML) = {
+  def treeHugIt(ldmls: List[LDML]):treehugger.forest.Tree = {
+    import treehugger.forest._
+    import definitions._
+    import treehuggerDSL._
+
+    PACKAGEOBJECTDEF("locales") := BLOCK(
+      ldmls.map(treeHugIt)
+    )
+  }
+
+  def treeHugIt(ldml: LDML):treehugger.forest.Tree = {
     import treehugger.forest._
     import definitions._
     import treehuggerDSL._
@@ -27,8 +37,7 @@ object ScalaLocaleCodeGen extends App {
 
     val ldmlLocaleTree = Apply(ldmlLocaleSym, LIT(ldml.locale.language), ldml.locale.territory.fold(NONE)(t => SOME(LIT(t))), ldml.locale.variant.fold(NONE)(v => SOME(LIT(v))))
 
-    val tree = VAL("foo", "LDML") := Apply(ldmlSym, ldmlLocaleTree)
-    treeToString(tree)
+    VAL(ldml.asLocale, "LDML") := Apply(ldmlSym, ldmlLocaleTree)
   }
 
   val parser: SAXParser = {
@@ -46,12 +55,15 @@ object ScalaLocaleCodeGen extends App {
     f <- files.map(_.toFile)
   } yield constructClass(f, XML.withSAXParser(parser).loadFile(f))
 
-  clazzes.foreach {
+  val tree = treeHugIt(clazzes.map(_._2).toList)
+  println(treehugger.forest.treeToString(tree))
+
+  /*clazzes.foreach {
     case (f, l) =>
       print(f.getName + " -> ")
       pprint.pprintln(l)
       pprint.pprintln(treeHugIt(l))
-  }
+  }*/
 
 }
 
