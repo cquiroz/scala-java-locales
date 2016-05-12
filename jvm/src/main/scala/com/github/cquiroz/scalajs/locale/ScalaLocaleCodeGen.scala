@@ -17,6 +17,20 @@ object ScalaLocaleCodeGen extends App {
     (f, LDML(LDMLLocale(language, territory, variant)))
   }
 
+  def treeHugIt(ldml: LDML) = {
+    import treehugger.forest._
+    import definitions._
+    import treehuggerDSL._
+
+    val ldmlSym = getModule("LDML")
+    val ldmlLocaleSym = getModule("LDMLocale")
+
+    val ldmlLocaleTree = Apply(ldmlLocaleSym, LIT(ldml.locale.language), ldml.locale.territory.fold(NONE)(t => SOME(LIT(t))), ldml.locale.variant.fold(NONE)(v => SOME(LIT(v))))
+
+    val tree = VAL("foo", "LDML") := Apply(ldmlSym, ldmlLocaleTree)
+    treeToString(tree)
+  }
+
   val parser: SAXParser = {
     // Use a non validating parser for speed
     val f = SAXParserFactory.newInstance()
@@ -36,6 +50,8 @@ object ScalaLocaleCodeGen extends App {
     case (f, l) =>
       print(f.getName + " -> ")
       pprint.pprintln(l)
+      pprint.pprintln(treeHugIt(l))
   }
+
 }
 
