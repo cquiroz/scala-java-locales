@@ -1,6 +1,6 @@
 enablePlugins(ScalaJSPlugin)
 
-name := "scalajs-locale-generator"
+name := "scala-js-java-locale"
 
 organization := "com.github.cquiroz.locale-gen"
 
@@ -47,8 +47,8 @@ lazy val localegen = crossProject.in(file(".")).
       }
     },
     libraryDependencies ++= Seq(
-      "com.lihaoyi" %% "pprint" % "0.4.0",
-      "com.eed3si9n" %% "treehugger" % "0.4.1"
+      "com.eed3si9n" %% "treehugger" % "0.4.1",
+      "com.geirsson" %% "scalafmt" % "0.2.5"
     )
   )
   .jsSettings(
