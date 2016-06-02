@@ -1,4 +1,3 @@
-src/main/resources
+core/src/main/resources
 target/
 .idea
-jvm/src/main/resources/
