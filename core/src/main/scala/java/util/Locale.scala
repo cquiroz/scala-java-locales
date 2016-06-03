@@ -4,8 +4,9 @@ import scala.collection.{Map => SMap, Set => SSet}
 import scala.collection.JavaConverters._
 import scala.util.matching.Regex
 
-import scala.scalajs.locale.LocaleRegistry
-import scala.scalajs.locale.ldml.isocodes
+import scala.scalajs.LocaleRegistry
+import scala.scalajs.locale.ldml.data.isocodes
+import scala.scalajs.locale.ldml.data.locales._
 
 object Locale {
 

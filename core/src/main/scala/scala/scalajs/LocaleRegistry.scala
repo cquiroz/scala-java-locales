@@ -1,13 +1,12 @@
-package scala.scalajs.locale
+package scala.scalajs
 
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 import scala.collection.Map
-import scala.scalajs.locale.ldml.ldml._
+import locale.ldml.{LDML, LDMLLocale}
 
 object LocaleRegistry {
-  import ldml._
 
   private var defaultLocale: Option[Locale] = None
   private var defaultPerCategory: Map[Locale.Category, Option[Locale]] =
