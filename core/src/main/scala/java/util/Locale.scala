@@ -263,7 +263,6 @@ object Locale {
       case x :: xs => x
       case Nil => ""
     }
-    println(lang)
     Some(new Locale(lang))
   }
 

@@ -42,15 +42,12 @@ lazy val root: Project = project.in(file("."))
       publish := {},
       publishLocal := {}
   )
-  .aggregate(coreJS, testSuiteJS, testSuiteJVM)
+  .aggregate(coreJS, coreJVM, testSuiteJS, testSuiteJVM)
 
 lazy val core = crossProject.crossType(CrossType.Pure).
   settings(commonSettings: _*).
   settings(
-    name := "Scala.js java locale"
-  ).
-  jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin)).
-  jsSettings(
+    name := "scalajs-java-locale",
     cldrVersion := "29",
     downloadFromZip := {
       val xmlFiles = ((resourceDirectory in Compile) / "core").value
@@ -65,9 +62,11 @@ lazy val core = crossProject.crossType(CrossType.Pure).
     sourceGenerators in Compile += Def.task {
       generateLocaleData((sourceManaged in Compile).value, ((resourceDirectory in Compile) / "core").value)
     }.taskValue
-  )
+  ).
+  jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
 
 lazy val coreJS = core.js
+lazy val coreJVM = core.jvm
 
 lazy val testSuite = CrossProject(
   jvmId = "testSuiteJVM",
@@ -88,7 +87,8 @@ lazy val testSuite = CrossProject(
     name := "java locale testSuite on JVM",
     libraryDependencies +=
       "com.novocode" % "junit-interface" % "0.9" % "test"
-  )
+  ).
+  jvmConfigure(_.dependsOn(coreJVM))
 
 lazy val testSuiteJS = testSuite.js
 

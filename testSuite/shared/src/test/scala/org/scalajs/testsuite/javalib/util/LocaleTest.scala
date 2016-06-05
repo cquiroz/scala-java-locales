@@ -9,7 +9,9 @@ import org.scalajs.testsuite.utils.AssertThrows._
 import org.scalajs.testsuite.utils.Platform
 
 class LocaleTest extends LocaleTestSetup {
-  @Before def cleanup = super.cleanDatabase
+  // Clean up the locale database, there are different implementations for
+  // the JVM and JS
+  @Before def cleanup: Unit = super.cleanDatabase
 
   /*@Test def test_null_constructor(): Unit = {
     expectThrows(classOf[NullPointerException], new Locale(null))
@@ -230,14 +232,14 @@ class LocaleTest extends LocaleTestSetup {
   }
 
   @Test def test_extension_flags(): Unit = {
-    assertTrue('u' == Locale.UNICODE_LOCALE_EXTENSION)
-    assertTrue('x' == Locale.PRIVATE_USE_EXTENSION)
+    assertEquals('u', Locale.UNICODE_LOCALE_EXTENSION)
+    assertEquals('x', Locale.PRIVATE_USE_EXTENSION)
   }
 
   @Test def test_chinese_equivalences(): Unit = {
     assertEquals(Locale.SIMPLIFIED_CHINESE, Locale.CHINA)
     assertEquals(Locale.TRADITIONAL_CHINESE, Locale.TAIWAN)
-  }*/
+  }
 
   // Unlike the JVM, the Js backend cannot give a default locale
   @Test def test_no_default_locale(): Unit = {
@@ -247,7 +249,7 @@ class LocaleTest extends LocaleTestSetup {
   }
 
   // Unlike the JVM, the Js backend cannot give a default locale
-  /*@Test def test_no_default_locale_per_category(): Unit = {
+  @Test def test_no_default_locale_per_category(): Unit = {
     if (!Platform.executingInJVM) {
       expectThrows(classOf[IllegalStateException],
           Locale.getDefault(Locale.Category.DISPLAY))
@@ -282,8 +284,8 @@ class LocaleTest extends LocaleTestSetup {
     // languages than the JVM
     val countriesCount = if (Platform.executingInJVM) 250 else 245
     val languagesCount = if (Platform.executingInJVM) 188 else 122
-    assertTrue(countriesCount == Locale.getISOCountries.length)
-    assertTrue(languagesCount == Locale.getISOLanguages.length)
+    assertEquals(countriesCount, Locale.getISOCountries.length)
+    assertEquals(languagesCount, Locale.getISOLanguages.length)
   }
 
   @Test def test_special_cases_language(): Unit = {
@@ -386,7 +388,7 @@ class LocaleTest extends LocaleTestSetup {
     assertEquals("id-IN", l12.toLanguageTag)
     val l13 = new Locale("no", "NO", "NY")
     assertEquals("nn-NO", l13.toLanguageTag)
-  }
+  }*/
 
   @Test def test_for_language_tag(): Unit = {
     val l1 = Locale.forLanguageTag("")
@@ -407,11 +409,23 @@ class LocaleTest extends LocaleTestSetup {
     assertEquals("", l3.getScript)
     assertEquals("", l3.getVariant)
 
-    val l4 = Locale.forLanguageTag("und-GB")
+    /*val l4 = Locale.forLanguageTag("und-GB")
     assertEquals("", l4.getLanguage)
     assertEquals("GB", l4.getCountry)
     assertEquals("", l4.getScript)
     assertEquals("", l4.getVariant)
+
+    val l5 = Locale.forLanguageTag("en-US-x-lvariant-WIN")
+    assertEquals("en", l5.getLanguage)
+    assertEquals("US", l5.getCountry)
+    assertEquals("", l5.getScript)
+    assertEquals("WIN", l5.getVariant)
+
+    val l6 = Locale.forLanguageTag("zh-Hans-CN")
+    assertEquals("zh", l6.getLanguage)
+    assertEquals("CN", l6.getCountry)
+    assertEquals("Hans", l6.getScript)
+    assertEquals("", l6.getVariant)*/
 
     /*val l2 = new Locale.Builder().setLanguage("de").setRegion("DE").build
     assertEquals("de-DE", l2.toLanguageTag)
@@ -442,5 +456,5 @@ class LocaleTest extends LocaleTestSetup {
     assertEquals("id-IN", l12.toLanguageTag)
     val l13 = new Locale("no", "NO", "NY")
     assertEquals("nn-NO", l13.toLanguageTag)*/
-  }*/
+  }
 }
