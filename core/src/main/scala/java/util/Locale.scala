@@ -5,7 +5,7 @@ import scala.collection.JavaConverters._
 import scala.util.matching.Regex
 
 import scala.scalajs.LocaleRegistry
-import scala.scalajs.locale.ldml.data.isocodes
+import scala.scalajs.locale.ldml.data.metadata
 import scala.scalajs.locale.ldml.data.locales._
 
 object Locale {
@@ -42,9 +42,9 @@ object Locale {
 
   object Category {
     val DISPLAY = new Category("DISPLAY", 0)
-    val FORMAT  = new Category("FORMAT", 1)
+    val FORMAT = new Category("FORMAT", 1)
 
-    private val categories = Array(DISPLAY, FORMAT)
+    private lazy val categories = Array(DISPLAY, FORMAT)
 
     def values(): Array[Category] = categories
 
@@ -102,12 +102,12 @@ object Locale {
   class Builder () {
 
     private case class BuilderParams(language: Option[String] = None,
-       region: Option[String]                  = None,
-       variant: Option[String]                 = None,
-       script: Option[String]                  = None,
-       extensions: SMap[Char, String]          = SMap.empty,
+       region: Option[String] = None,
+       variant: Option[String] = None,
+       script: Option[String] = None,
+       extensions: SMap[Char, String] = SMap.empty,
        unicodeExtensions: SMap[String, String] = SMap.empty,
-       unicodeAttributes: SSet[String]         = SSet.empty)
+       unicodeAttributes: SSet[String] = SSet.empty)
 
     private[this] var params = BuilderParams()
 
@@ -251,9 +251,9 @@ object Locale {
   def getAvailableLocales(): Array[Locale] =
     LocaleRegistry.availableLocales.toArray
 
-  def getISOCountries(): Array[String] = isocodes.isoCountries.toArray
+  def getISOCountries(): Array[String] = metadata.isoCountries
 
-  def getISOLanguages(): Array[String] = isocodes.isoLanguages.toArray
+  def getISOLanguages(): Array[String] = metadata.isoLanguages
 
   private def parseLanguageTag(tag: String): Option[Locale] = {
     val parts = tag.split("-").toList
@@ -324,7 +324,7 @@ class Locale private[util] (private[this] val language: String,
     case _    => l
   }
 
-  // first constructor
+  // public constructors
   def this(language: String, country: String, variant: String) =
     this(language, country, variant, None, SMap.empty, SMap.empty, SSet.empty)
 
@@ -425,7 +425,8 @@ class Locale private[util] (private[this] val language: String,
         val pre =
           if (wellFormed.nonEmpty) wellFormed.take(1).mkString("-", "-", "-")
           else "-"
-        pre + "x-lvariant" + (acceptable ++ wellFormed.drop(1)).mkString("-", "-", "")
+        pre + "x-lvariant" +
+          (acceptable ++ wellFormed.drop(1)).mkString("-", "-", "")
       } else {
         ""
       }

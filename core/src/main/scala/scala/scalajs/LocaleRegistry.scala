@@ -6,6 +6,9 @@ import java.util.Locale
 import scala.collection.Map
 import locale.ldml.{LDML, LDMLLocale}
 
+/**
+  * Implements a database of locales
+  */
 object LocaleRegistry {
 
   private var defaultLocale: Option[Locale] = None
@@ -34,7 +37,8 @@ object LocaleRegistry {
   val en_CA: LDML      = LDML(LDMLLocale("en", Some("CA"), None, None))
   val fr_CA: LDML      = LDML(LDMLLocale("fr", Some("CA"), None, None))
 
-  case class LocaleCldr(locale: Locale, decimalFormatSymbol: Option[DecimalFormatSymbols])
+  case class LocaleCldr(locale: Locale,
+      decimalFormatSymbol: Option[DecimalFormatSymbols])
 
   private val defaultLocales: Map[String, LDML] = Map(
     en.languageTag -> en,
@@ -86,7 +90,8 @@ object LocaleRegistry {
     (defaultLocales ++ locales).get(languageTag).map(_.toLocale)
   }
 
-  def availableLocales:Iterable[Locale] = (defaultLocales ++ locales).map(_._2.toLocale)
+  def availableLocales:Iterable[Locale] =
+    (defaultLocales ++ locales).map(_._2.toLocale)
 
   /**
     * Attempts to give a Locale for the given tag if avaibale
