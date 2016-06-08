@@ -13,7 +13,7 @@ class LocaleTest extends LocaleTestSetup {
   // the JVM and JS
   @Before def cleanup: Unit = super.cleanDatabase
 
-  /*@Test def test_null_constructor(): Unit = {
+  @Test def test_null_constructor(): Unit = {
     expectThrows(classOf[NullPointerException], new Locale(null))
     expectThrows(classOf[NullPointerException], new Locale("", null))
     expectThrows(classOf[NullPointerException], new Locale("", "", null))
@@ -388,73 +388,273 @@ class LocaleTest extends LocaleTestSetup {
     assertEquals("id-IN", l12.toLanguageTag)
     val l13 = new Locale("no", "NO", "NY")
     assertEquals("nn-NO", l13.toLanguageTag)
-  }*/
+  }
+
+  def assertLocaleFromTag(l: Locale, ln: String, c: String, s: String,
+      v: String, ext: Map[Char, String] = Map.empty): Unit = {
+    assertEquals(ln, l.getLanguage)
+    assertEquals(c, l.getCountry)
+    assertEquals(s, l.getScript)
+    assertEquals(v, l.getVariant)
+    assertTrue(ext.forall {
+      case (x, v) => l.getExtensionKeys().contains(x) && l.getExtension(x) == v
+    })
+
+  }
 
   @Test def test_for_language_tag(): Unit = {
     val l1 = Locale.forLanguageTag("")
-    assertEquals("", l1.getLanguage)
-    assertEquals("", l1.getCountry)
-    assertEquals("", l1.getScript)
-    assertEquals("", l1.getVariant)
+    assertLocaleFromTag(l1, "", "", "", "")
 
     val l2 = Locale.forLanguageTag("en")
-    assertEquals("en", l2.getLanguage)
-    assertEquals("", l2.getCountry)
-    assertEquals("", l2.getScript)
-    assertEquals("", l2.getVariant)
+    assertLocaleFromTag(l2, "en", "", "", "")
 
     val l3 = Locale.forLanguageTag("de-DE")
-    assertEquals("de", l3.getLanguage)
-    assertEquals("DE", l3.getCountry)
-    assertEquals("", l3.getScript)
-    assertEquals("", l3.getVariant)
+    assertLocaleFromTag(l3, "de", "DE", "", "")
 
-    /*val l4 = Locale.forLanguageTag("und-GB")
-    assertEquals("", l4.getLanguage)
-    assertEquals("GB", l4.getCountry)
-    assertEquals("", l4.getScript)
-    assertEquals("", l4.getVariant)
+    val l4 = Locale.forLanguageTag("und-GB")
+    assertLocaleFromTag(l4, "", "GB", "", "")
 
     val l5 = Locale.forLanguageTag("en-US-x-lvariant-WIN")
-    assertEquals("en", l5.getLanguage)
-    assertEquals("US", l5.getCountry)
-    assertEquals("", l5.getScript)
-    assertEquals("WIN", l5.getVariant)
+    assertLocaleFromTag(l5, "en", "US", "", "WIN")
 
     val l6 = Locale.forLanguageTag("zh-Hans-CN")
-    assertEquals("zh", l6.getLanguage)
-    assertEquals("CN", l6.getCountry)
-    assertEquals("Hans", l6.getScript)
-    assertEquals("", l6.getVariant)*/
+    assertLocaleFromTag(l6, "zh", "CN", "Hans", "")
 
-    /*val l2 = new Locale.Builder().setLanguage("de").setRegion("DE").build
-    assertEquals("de-DE", l2.toLanguageTag)
-    val l3 = new Locale.Builder().setRegion("GB").build
-    assertEquals("und-GB", l3.toLanguageTag)
-    val l4 = new Locale("en", "US", "WIN")
-    assertEquals("en-US-x-lvariant-WIN", l4.toLanguageTag)
-    val l5 = new Locale.Builder().setLanguage("de").setVariant("POSIX").build
-    assertEquals("de-POSIX", l5.toLanguageTag)
-    val l6 = new Locale.Builder().setLanguage("zh").setRegion("CN")
-        .setScript("Hans").build
-    assertEquals("zh-Hans-CN", l6.toLanguageTag)
-    val l7 = new Locale.Builder().setLanguage("zh").setRegion("TW")
-        .setScript("Hant").setExtension('x', "java").build
-    assertEquals("zh-Hant-TW-x-java", l7.toLanguageTag)
-    val l8 = new Locale("th", "TH", "TH")
-    assertEquals("th-TH-u-nu-thai-x-lvariant-TH", l8.toLanguageTag)
-    val l9 = new Locale("en", "US", "Oracle_JDK_Standard_Edition")
-    assertEquals("en-US-Oracle-x-lvariant-JDK-Standard-Edition",
-        l9.toLanguageTag)
+    val l7 = Locale.forLanguageTag("zh-Hant-TW-x-java")
+    assertLocaleFromTag(l7, "zh", "TW", "Hant", "", Map('x' -> "java"))
+
+    val l8 = Locale.forLanguageTag("th-TH-u-nu-thai-x-lvariant-TH")
+    assertLocaleFromTag(l8, "th", "TH", "", "TH", Map('u' -> "nu-thai"))
+
+    val l9 = Locale.forLanguageTag("en-US-Oracle-x-lvariant-JDK-Standard-Edition")
+    assertLocaleFromTag(l9, "en", "US", "", "Oracle_JDK_Standard_Edition")
+
+    val l10 = Locale.forLanguageTag("en-US-x-lvariant-POSIX")
+    assertLocaleFromTag(l10, "en", "US", "", "POSIX")
+
+    val l11 = Locale.forLanguageTag("de-POSIX-x-URP-lvariant-Abc-Def")
+    assertLocaleFromTag(l11, "de", "", "", "POSIX_Abc_Def", Map('x' -> "urp"))
+
+    val l12 = Locale.forLanguageTag("ar-aao")
+    assertLocaleFromTag(l12, "aao", "", "", "")
+
+    val l13 = Locale.forLanguageTag("en-abc-def-us")
+    assertLocaleFromTag(l13, "abc", "US", "", "")
+  }
+
+  @Test def test_for_language_tag_special_cases(): Unit = {
+    assertEquals("ja-JP-u-ca-japanese-x-lvariant-JP",
+      Locale.forLanguageTag("ja-JP-x-lvariant-JP").toLanguageTag)
+
+    assertEquals("th-TH-u-nu-thai-x-lvariant-TH",
+      Locale.forLanguageTag("th-TH-x-lvariant-TH").toLanguageTag)
 
     // Special cases
-    val l10 = new Locale("iw")
-    assertEquals("he", l10.toLanguageTag)
-    val l11 = new Locale("ji", "", "POSIX")
-    assertEquals("yi-POSIX", l11.toLanguageTag)
-    val l12 = new Locale("in", "IN")
-    assertEquals("id-IN", l12.toLanguageTag)
-    val l13 = new Locale("no", "NO", "NY")
-    assertEquals("nn-NO", l13.toLanguageTag)*/
+    val l1 = Locale.forLanguageTag("iw")
+    assertLocaleFromTag(l1, "iw", "", "", "")
+    val l2 = Locale.forLanguageTag("he")
+    assertLocaleFromTag(l2, "iw", "", "", "")
+    val l3 = Locale.forLanguageTag("ji")
+    assertLocaleFromTag(l3, "ji", "", "", "")
+    val l4 = Locale.forLanguageTag("yi")
+    assertLocaleFromTag(l4, "ji", "", "", "")
+    val l5 = Locale.forLanguageTag("in")
+    assertLocaleFromTag(l5, "in", "", "", "")
+    val l6 = Locale.forLanguageTag("id")
+    assertLocaleFromTag(l6, "in", "", "", "")
   }
+
+  @Test def test_for_language_tag_grandfathereded(): Unit = {
+    // grandfathered mapping
+    val mapping = List("art-lojban" -> "jbo", "i-ami" -> "ami",
+      "i-bnn" -> "bnn", "i-hak" -> "hak", "i-klingon" -> "tlh", "i-lux" -> "lb",
+      "i-hak" -> "hak", "i-navajo" -> "nv", "i-pwn" -> "pwn", "i-tao" -> "tao",
+      "i-tay" -> "tay", "i-tsu" -> "tsu", "no-bok" -> "nb", "no-nyn" -> "nn",
+      "sgn-BE-FR" -> "sfb", "sgn-BE-NL" -> "vgt", "sgn-CH-DE" -> "sgg",
+      "zh-guoyu" -> "cmn", "zh-hakka" -> "hak", "zh-min-nan" -> "nan",
+      "zh-xiang" -> "hsn",
+      "cel-gaulish" -> "xtg") /* In javadocs cel-gaulish is xtg-x-cel-gaulish */
+
+    mapping.foreach { case (g, e) =>
+      val l = Locale.forLanguageTag(g)
+      assertLocaleFromTag(l, e, "", "", "")
+    }
+
+    val l1 = Locale.forLanguageTag("en-GB-oed")
+    assertLocaleFromTag(l1, "en", "GB", "", "", Map('x' -> "oed"))
+    val l2 = Locale.forLanguageTag("i-default")
+    assertLocaleFromTag(l2, "en", "", "", "", Map('x' -> "i-default"))
+    val l3 = Locale.forLanguageTag("i-enochian")
+    assertLocaleFromTag(l3, "", "", "", "", Map('x' -> "i-enochian"))
+    val l4 = Locale.forLanguageTag("i-mingo")
+    assertLocaleFromTag(l4, "see", "", "", "", Map('x' -> "i-mingo"))
+    val l5 = Locale.forLanguageTag("zh-min")
+    assertLocaleFromTag(l5, "nan", "", "", "", Map('x' -> "zh-min"))
+  }
+
+  // samples taken from Appendix A of the BCP 47 specification
+  // https://tools.ietf.org/html/bcp47#appendix-A
+  @Test def test_simple_languages_subtag_samples(): Unit = {
+    // Simple language subtag:
+    // de (German)
+    val l1 = Locale.forLanguageTag("de")
+    assertLocaleFromTag(l1, "de", "", "", "")
+
+    // fr (French)
+    val l2 = Locale.forLanguageTag("fr")
+    assertLocaleFromTag(l2, "fr", "", "", "")
+
+    // ja (Japanese)
+    val l3 = Locale.forLanguageTag("ja")
+    assertLocaleFromTag(l3, "ja", "", "", "")
+
+    // i-enochian (example of a grandfathered tag)
+    val l4 = Locale.forLanguageTag("i-enochian")
+    assertLocaleFromTag(l4, "", "", "", "", Map('x' -> "i-enochian"))
+  }
+
+  @Test def test_languages_script_samples(): Unit = {
+    // Language subtag plus Script subtag:
+    // zh-Hant (Chinese written using the Traditional Chinese script)
+    val l1 = Locale.forLanguageTag("zh-Hant")
+    assertLocaleFromTag(l1, "zh", "", "Hant", "")
+
+    // zh-Hans (Chinese written using the Simplified Chinese script)
+    val l2 = Locale.forLanguageTag("zh-Hans")
+    assertLocaleFromTag(l2, "zh", "", "Hans", "")
+
+    // sr-Cyrl (Serbian written using the Cyrillic script)
+    val l3 = Locale.forLanguageTag("sr-Cyrl")
+    assertLocaleFromTag(l3, "sr", "", "Cyrl", "")
+
+    // sr-Latn (Serbian written using the Latin script)
+    val l4 = Locale.forLanguageTag("sr-Latn")
+    assertLocaleFromTag(l4, "sr", "", "Latn", "")
+  }
+
+  @Test def test_languages_extended_samples(): Unit = {
+    // Extended language subtags:
+    // zh-cmn-Hans-CN (Chinese, Mandarin, Simplified script, as used in China)
+    val l1 = Locale.forLanguageTag("zh-cmn-Hans-CN")
+    assertLocaleFromTag(l1, "cmn", "CN", "Hans", "")
+
+    // cmn-Hans-CN (Mandarin Chinese, Simplified script, as used in China)
+    val l2 = Locale.forLanguageTag("cmn-Hans-CN")
+    assertLocaleFromTag(l2, "cmn", "CN", "Hans", "")
+
+    // zh-yue-HK (Chinese, Cantonese, as used in Hong Kong SAR)
+    val l3 = Locale.forLanguageTag("zh-yue-HK")
+    assertLocaleFromTag(l3, "yue", "HK", "", "")
+
+    // yue-HK (Cantonese Chinese, as used in Hong Kong SAR)
+    val l4 = Locale.forLanguageTag("yue-HK")
+    assertLocaleFromTag(l4, "yue", "HK", "", "")
+  }
+
+  @Test def test_language_script_region_samples(): Unit = {
+    // Language-Script-Region:
+    // zh-Hans-CN (Chinese written using the Simplified script as used in mainland China)
+    val l1 = Locale.forLanguageTag("zh-Hans-CN")
+    assertLocaleFromTag(l1, "zh", "CN", "Hans", "")
+
+    // sr-Latn-RS (Serbian written using the Latin script as used in Serbia)
+    val l2 = Locale.forLanguageTag("sr-Latn-RS")
+    assertLocaleFromTag(l2, "sr", "RS", "Latn", "")
+  }
+
+  @Test def test_language_variant_samples(): Unit = {
+    // Language-Variant:
+    // sl-rozaj (Resian dialect of Slovenian)
+    val l1 = Locale.forLanguageTag("sl-rozaj")
+    assertLocaleFromTag(l1, "sl", "", "", "rozaj")
+
+    // sl-rozaj-biske (San Giorgio dialect of Resian dialect of Slovenian)
+    val l2 = Locale.forLanguageTag("sl-rozaj-biske")
+    assertLocaleFromTag(l2, "sl", "", "", "rozaj_biske")
+
+    // sl-nedis (Nadiza dialect of Slovenian)
+    val l3 = Locale.forLanguageTag("sl-nedis")
+    assertLocaleFromTag(l3, "sl", "", "", "nedis")
+  }
+
+  @Test def test_language_region_variant_samples(): Unit = {
+    // Language-Region-Variant:
+    // de-CH-1901 (German as used in Switzerland using the 1901 variant [orthography])
+    val l1 = Locale.forLanguageTag("de-CH-1901")
+    assertLocaleFromTag(l1, "de", "CH", "", "1901")
+    // sl-IT-nedis (Slovenian as used in Italy, Nadiza dialect)
+    val l2 = Locale.forLanguageTag("sl-IT-nedis")
+    assertLocaleFromTag(l2, "sl", "IT", "", "nedis")
+  }
+
+  @Test def test_language_script_region_variant_samples(): Unit = {
+    // Language-Script-Region-Variant:
+    // hy-Latn-IT-arevela (Eastern Armenian written in Latin script, as used in Italy)
+    val l1 = Locale.forLanguageTag("hy-Latn-IT-arevela")
+    assertLocaleFromTag(l1, "hy", "IT", "Latn", "arevela")
+  }
+
+  @Test def test_language_region_samples(): Unit = {
+    // Language-Region:
+    // de-DE (German for Germany)
+    val l1 = Locale.forLanguageTag("de-DE")
+    assertLocaleFromTag(l1, "de", "DE", "", "")
+
+    // en-US (English as used in the United States)
+    val l2 = Locale.forLanguageTag("en-US")
+    assertLocaleFromTag(l2, "en", "US", "", "")
+
+    // es-419 (Spanish appropriate for the Latin America and Caribbean
+    // region using the UN region code)
+    val l3 = Locale.forLanguageTag("es-419")
+    assertLocaleFromTag(l3, "es", "419", "", "")
+  }
+
+  @Test def test_private_use_samples(): Unit = {
+    // Private use subtags:
+    // de-CH-x-phonebk
+    val l1 = Locale.forLanguageTag("de-CH-x-phonebk")
+    assertLocaleFromTag(l1, "de", "CH", "", "", Map('x' -> "phonebk"))
+
+    // az-Arab-x-AZE-derbend
+    val l2 = Locale.forLanguageTag("az-Arab-x-AZE-derbend")
+    assertLocaleFromTag(l2, "az", "", "Arab", "", Map('x' -> "aze-derbend"))
+  }
+
+  @Test def test_private_use_tag(): Unit = {
+    // Private use registry values:
+    // x-whatever (private use using the singleton 'x')
+    val l1 = Locale.forLanguageTag("x-whatever")
+    assertLocaleFromTag(l1, "", "", "", "", Map('x' -> "whatever"))
+  }
+
+  @Test def test_extensions_samples(): Unit = {
+    // Tags that use extensions:
+    // en-US-u-islamcal
+    val l1 = Locale.forLanguageTag("en-US-u-islamcal")
+    assertLocaleFromTag(l1, "en", "US", "", "", Map('u' -> "islamcal"))
+
+    // zh-CN-a-myext-x-private
+    val l2 = Locale.forLanguageTag("zh-CN-a-myext-x-private")
+    assertLocaleFromTag(l2, "zh", "CN", "", "", Map('x' -> "private", 'a' -> "myext"))
+
+    // en-a-myext-b-another
+    val l3 = Locale.forLanguageTag("en-a-myext-b-another")
+    assertLocaleFromTag(l3, "en", "", "", "", Map('b' -> "another", 'a' -> "myext"))
+  }
+
+  @Test def test_invalid_samples(): Unit = {
+    // Tags that use extensions:
+    // de-419-DE (two region tags)
+    val l1 = Locale.forLanguageTag("de-419-DE")
+    assertLocaleFromTag(l1, "de", "419", "", "")
+
+    // a-DE (use of a single-character subtag in primary position; note
+    // that there are a few grandfathered tags that start with "i-" that
+    // are valid)
+    val l2 = Locale.forLanguageTag("a-DE")
+    assertLocaleFromTag(l2, "", "", "", "")
+  }
+
 }

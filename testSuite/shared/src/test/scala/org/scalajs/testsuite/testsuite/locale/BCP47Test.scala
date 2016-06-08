@@ -124,8 +124,8 @@ class BCP47Test {
   @Test def test_language_script_region_samples(): Unit = {
     // Language-Script-Region:
     // zh-Hans-CN (Chinese written using the Simplified script as used in mainland China)
-    assertEquals(Some(LanguageTag("zh", Some("cmn"), Some("Hans"), Some("CN"), Nil, Nil, None)),
-      BCP47.parseTag("zh-cmn-Hans-CN"))
+    assertEquals(Some(LanguageTag("zh", None, Some("Hans"), Some("CN"), Nil, Nil, None)),
+      BCP47.parseTag("zh-Hans-CN"))
     // sr-Latn-RS (Serbian written using the Latin script as used in Serbia)
     assertEquals(Some(LanguageTag("sr", None, Some("Latn"), Some("RS"), Nil, Nil, None)),
       BCP47.parseTag("sr-Latn-RS"))

@@ -1,10 +1,12 @@
 package java.util
 
 import scala.collection.{Map => SMap, Set => SSet}
+import scala.{List => SList}
 import scala.collection.JavaConverters._
 import scala.util.matching.Regex
-
 import scala.scalajs.LocaleRegistry
+import scala.scalajs.locale.BCP47
+import scala.scalajs.locale.BCP47.{GrandfatheredTag, LanguageTag, PrivateUseTag}
 import scala.scalajs.locale.ldml.data.metadata
 import scala.scalajs.locale.ldml.data.locales._
 
@@ -100,143 +102,178 @@ object Locale {
     checkRegex("[0-9a-zA-Z]{3,8}".r, l)
 
   class Builder () {
-
-    private case class BuilderParams(language: Option[String] = None,
-       region: Option[String] = None,
-       variant: Option[String] = None,
-       script: Option[String] = None,
-       extensions: SMap[Char, String] = SMap.empty,
-       unicodeExtensions: SMap[String, String] = SMap.empty,
-       unicodeAttributes: SSet[String] = SSet.empty)
-
-    private[this] var params = BuilderParams()
+    private[this] var builder = LocaleBuilder()
 
     def setLocale(locale: Locale): Builder = ???
 
     def setLanguageTag(languageTag: String): Builder = ???
 
-    def setLanguage(language: String): Builder =
-      if (language == null || language.isEmpty) {
-        params = params.copy(language = None)
-        this
-      } else if (checkLanguage(language)) {
-        params = params.copy(language = Some(language.toLowerCase))
-        this
-      } else {
-        throw new IllformedLocaleException(s"Invalid language $language")
-      }
+    def setLanguage(language: String): Builder = {
+      builder = builder.language(language)
+        .fold(throw new IllformedLocaleException(s"Invalid language $language"))(identity)
+      this
+    }
 
-    def setScript(script: String): Builder =
-      if (script == null || script.isEmpty) {
-        params = params.copy(script = None)
-        this
-      } else if (checkScript(script)) {
-        // Script must be canonicalized
-        params = params.copy(script =
-          Some(script.charAt(0).toUpper + script.substring(1)))
-        this
-      } else {
-        throw new IllformedLocaleException(s"Invalid script $script")
-      }
+    def setScript(script: String): Builder = {
+      builder = builder.script(script)
+        .fold(throw new IllformedLocaleException(s"Invalid script $script"))(identity)
+      this
+    }
 
-    def setRegion(region: String): Builder =
-      if (region == null || region.isEmpty) {
-        params = params.copy(region = None)
-        this
-      } else if (checkRegion(region)) {
-        params = params.copy(region = Some(region.toUpperCase))
-        this
-      } else {
-        throw new IllformedLocaleException(s"Invalid region $region")
-      }
+    def setRegion(region: String): Builder = {
+      builder = builder.region(region)
+        .fold(throw new IllformedLocaleException(s"Invalid region $region"))(identity)
+      this
+    }
 
-    def setVariant(variant: String): Builder =
-      if (variant == null || variant.isEmpty) {
-        params = params.copy(variant = None)
-        this
-      } else if (checkVariant(variant)) {
-        params = params.copy(variant = Some(variant.replace("-", "_")))
-        this
-      } else {
-        throw new IllformedLocaleException(s"Invalid variant $variant")
-      }
+    def setVariant(variant: String): Builder = {
+      builder = builder.variant(variant)
+        .fold(throw new IllformedLocaleException(s"Invalid variant $variant"))(identity)
+      this
+    }
 
-    def setExtension(key: Char, value: String): Builder =
-      if (params.extensions.contains(key) || (value == null || value.isEmpty)) {
-        // remove
-        params = params.copy(extensions = params.extensions - key)
-        this
-      } else if (key == UNICODE_LOCALE_EXTENSION) {
-        // replace all unicode extensions
-        params = params.copy(extensions =
-          params.extensions + (key -> value.toLowerCase),
-            unicodeExtensions = SMap.empty)
-        this
-      } else if (checkExtKey(key) && checkExtValue(value)) {
-        params = params.copy(extensions =
-          params.extensions + (key -> value.toLowerCase))
-        this
-      } else {
-        throw new IllformedLocaleException(s"Invalid extension $key: $value")
-      }
+    def setExtension(key: Char, value: String): Builder = {
+      builder = builder.extension(key, value)
+        .fold(throw new IllformedLocaleException(s"Invalid extension $key: $value"))(identity)
+      this
+    }
 
     def setUnicodeLocaleKeyword(key: String, _type: String): Builder = {
       if (key == null) {
         throw new NullPointerException("Null unicode extension key")
-      } else if (checkUnicodeKey(key) && checkUnicodeType(_type)) {
-        params = params.copy(unicodeExtensions =
-          params.unicodeExtensions + (key -> _type))
-        this
-      } else {
-        throw new IllformedLocaleException(
-          s"Invalid unicode keyword $key: ${_type}")
       }
+      builder = builder.unicodeLocaleKeyword(key, _type)
+        .fold(throw new IllformedLocaleException(s"Invalid unicode keyword $key: ${_type}"))(identity)
+      this
     }
 
     def addUnicodeLocaleAttribute(attribute: String): Builder = {
       if (attribute == null) {
         throw new NullPointerException("Null unicode attribute")
-      } else if (checkAttribute(attribute)) {
-        params = params.copy(unicodeAttributes =
-          params.unicodeAttributes + attribute)
-        this
-      } else {
-        throw new IllformedLocaleException(
-          s"Invalid unicode attribute $attribute")
       }
+      builder = builder.addUnicodeLocaleAttribute(attribute)
+        .fold(throw new IllformedLocaleException(s"Invalid unicode attribute $attribute"))(identity)
+      this
     }
 
     def removeUnicodeLocaleAttribute(attribute: String): Builder = {
       if (attribute == null) {
         throw new NullPointerException("Null unicode attribute")
-      } else if (checkAttribute(attribute)) {
-        params = params.copy(unicodeAttributes =
-          params.unicodeAttributes.filterNot(_.equalsIgnoreCase(attribute)))
-        this
-      } else {
-        throw new IllformedLocaleException(
-          s"Invalid unicode attribute $attribute")
       }
+      builder = builder.removeUnicodeLocaleAttribute(attribute)
+        .fold(throw new IllformedLocaleException(s"Invalid unicode attribute $attribute"))(identity)
+      this
     }
 
     def clear(): Builder = {
-      params = BuilderParams()
+      builder = LocaleBuilder()
       this
     }
 
     def clearExtensions(): Builder = {
-      params = params.copy(extensions = SMap.empty)
+      builder = builder.clearExtensions
       this
     }
 
-    def build(): Locale = new Locale(
-      params.language.getOrElse("") ,
-      params.region.getOrElse(""),
-      params.variant.getOrElse(""),
-      params.script,
-      params.extensions,
-      params.unicodeExtensions,
-      params.unicodeAttributes)
+    def build(): Locale = builder.build
+  }
+
+  private case class LocaleBuilder (strict:Boolean = true,
+      language: Option[String] = None,
+      region: Option[String] = None,
+      variant: Option[String] = None,
+      script: Option[String] = None,
+      extensions: SMap[Char, String] = SMap.empty,
+      unicodeExtensions: SMap[String, String] = SMap.empty,
+      unicodeAttributes: SSet[String] = SSet.empty) {
+
+    def language(language: String): Option[LocaleBuilder] =
+      if (language == null || language.isEmpty) {
+        Some(copy(language = None))
+      } else if (!strict || checkLanguage(language)) {
+        Some(copy(language = Some(language.toLowerCase)))
+      } else {
+        None
+      }
+
+    def script(script: String): Option[LocaleBuilder] =
+      if (script == null || script.isEmpty) {
+        Some(copy(script = None))
+      } else if (!strict || checkScript(script)) {
+        // Script must be canonicalized
+        Some(copy(script = Some(script.charAt(0).toUpper + script.substring(1))))
+      } else {
+        None
+      }
+
+    def region(region: String): Option[LocaleBuilder] =
+      if (region == null || region.isEmpty) {
+        Some(copy(region = None))
+      } else if (!strict || checkRegion(region)) {
+        Some(copy(region = Some(region.toUpperCase)))
+      } else {
+        None
+      }
+
+    def addVariant(v: String): Option[LocaleBuilder] =
+      Some(copy(variant = this.variant.map(_ + "_" + v).orElse(Some(v))))
+
+    def variant(variant: String): Option[LocaleBuilder] =
+      if (variant == null || variant.isEmpty) {
+        Some(copy(variant = None))
+      } else if (!strict || checkVariant(variant)) {
+        Some(copy(variant = Some(variant.replace("-", "_"))))
+      } else {
+        None
+      }
+
+    def extension(key: Char, value: String): Option[LocaleBuilder] =
+      if (extensions.contains(key) || (value == null || value.isEmpty)) {
+        // remove
+        Some(copy(extensions = extensions - key))
+      } else if (key == UNICODE_LOCALE_EXTENSION) {
+        // replace all unicode extensions
+        Some(copy(extensions = extensions + (key -> value.toLowerCase),
+            unicodeExtensions = SMap.empty))
+      } else if (!strict || checkExtKey(key) && checkExtValue(value)) {
+        Some(copy(extensions = extensions + (key -> value.toLowerCase)))
+      } else {
+        None
+      }
+
+    def unicodeLocaleKeyword(key: String, _type: String): Option[LocaleBuilder] = {
+      if (!strict || checkUnicodeKey(key) && checkUnicodeType(_type)) {
+        Some(copy(unicodeExtensions = unicodeExtensions + (key -> _type)))
+      } else {
+        None
+      }
+    }
+
+    def addUnicodeLocaleAttribute(attribute: String): Option[LocaleBuilder] = {
+      if (!strict || checkAttribute(attribute)) {
+        Some(copy(unicodeAttributes = unicodeAttributes + attribute))
+      } else {
+        None
+      }
+    }
+
+    def removeUnicodeLocaleAttribute(attribute: String): Option[LocaleBuilder] = {
+      if (!strict || checkAttribute(attribute)) {
+        Some(copy(unicodeAttributes =
+          unicodeAttributes.filterNot(_.equalsIgnoreCase(attribute))))
+      } else {
+        None
+      }
+    }
+
+    def clearExtensions: LocaleBuilder =
+      copy(extensions = SMap.empty)
+
+    def build: Locale = {
+      new Locale(language.getOrElse(""), region.getOrElse(""),
+        variant.getOrElse(""), script, extensions, unicodeExtensions,
+        unicodeAttributes)
+    }
   }
 
   def getDefault(): Locale = LocaleRegistry.default
@@ -256,14 +293,72 @@ object Locale {
   def getISOLanguages(): Array[String] = metadata.isoLanguages
 
   private def parseLanguageTag(tag: String): Option[Locale] = {
-    val parts = tag.split("-").toList
-    val lang = parts match {
-      case "" :: Nil => ""
-      case "" :: xs => "und"
-      case x :: xs => x
-      case Nil => ""
+    // grandfathered mapping
+    val grandfathered = SMap("art-lojban" -> "jbo", "i-ami" -> "ami",
+      "i-bnn" -> "bnn", "i-hak" -> "hak", "i-klingon" -> "tlh", "i-lux" -> "lb",
+      "i-hak" -> "hak", "i-navajo" -> "nv", "i-pwn" -> "pwn", "i-tao" -> "tao",
+      "i-tay" -> "tay", "i-tsu" -> "tsu", "no-bok" -> "nb", "no-nyn" -> "nn",
+      "sgn-BE-FR" -> "sfb", "sgn-BE-NL" -> "vgt", "sgn-CH-DE" -> "sgg",
+      "zh-guoyu" -> "cmn", "zh-hakka" -> "hak", "zh-min-nan" -> "nan",
+      "zh-xiang" -> "hsn",
+      "cel-gaulish" -> "xtg",
+      "en-GB-oed" -> "en-GB-x-oed",
+      "i-default" -> "en-x-i-default",
+      "i-enochian" -> "und-x-i-enochian",
+      "i-mingo" -> "see-x-i-mingo",
+      "zh-min" -> "nan-x-zh-min")
+
+    def sanitizePrivateExtension(b: LocaleBuilder, p: Option[String]): LocaleBuilder = {
+      val lvariantRegex = "lvariant-(.*)".r
+      val longVariantRegex = "(.*)-lvariant-(.*)".r
+      p.collect {
+        case longVariantRegex(x, y) =>
+          for {
+            b1 <- b.addVariant(y.replace("-", "_"))
+            b2 <- b1.extension('x', x)
+          } yield b2
+
+        case lvariantRegex(x) => b.addVariant(x.replace("-", "_"))
+        case x => b.extension('x', x)
+      }.flatten.getOrElse(b)
     }
-    Some(new Locale(lang))
+
+    BCP47.parseTag(tag) match {
+      case Some(LanguageTag(l, e, s, r, v, x, p)) =>
+        // By the javadocs the builder is lenient
+        val builder = LocaleBuilder(strict = false)
+        val la = if (l == "und") "" else l
+        val extRegex = "([0-9A-WY-Za-wy-z])-([A-Za-z0-9]{2,8})+".r
+        val exts = x.collect {
+          case extRegex(c, xv) => c.charAt(0) -> xv
+        }
+        val b = for {
+          b1 <- builder.language(e.flatMap(_.split("-").headOption).getOrElse(la))
+          b2 <- b1.script(s.getOrElse(""))
+          b3 <- b2.region(r.getOrElse(""))
+          b4 <- b3.variant(v.mkString("_"))
+          b5 <- exts.foldLeft(Option(b4)){ case (bu, (c, xv)) => bu.flatMap(_.extension(c, xv)) }
+        } yield sanitizePrivateExtension(b5, p)
+        b.map(_.build)
+
+      case Some(GrandfatheredTag(g)) =>
+        val default = new Locale(g)
+        grandfathered.get(g).fold(Option(default))(parseLanguageTag)
+
+      case Some(PrivateUseTag(p)) =>
+        val default = LocaleBuilder(strict = false).extension('x', p)
+            .fold(ROOT)(_.build)
+        grandfathered.get(p).fold(Option(default))(parseLanguageTag)
+
+      case None =>
+        // Last ditch attempt to parse, Javadocs don't define this case well
+        val split = tag.split("-").toList
+        split match {
+          case l :: Nil if checkLanguage(l) => Some(new Locale(l))
+          case l :: c :: _ if checkLanguage(l) => Some(new Locale(l, c))
+          case _ => None
+        }
+    }
   }
 
   def forLanguageTag(languageTag: String): Locale = LocaleRegistry
@@ -299,10 +394,10 @@ class Locale private[util] (private[this] val language: String,
 
   // Handle 2 special cases jp_JP_JP and th_TH_TH
   private[this] val extensions = {
-    if ((language, country, variant) ==("ja", "JP", "JP") &&
+    if ((language, country, variant) == ("ja", "JP", "JP") &&
         supportSpecialCases) {
       _extensions + (Locale.UNICODE_LOCALE_EXTENSION -> "ca-japanese")
-    } else if ((language, country, variant) ==("th", "TH", "TH") &&
+    } else if ((language, country, variant) == ("th", "TH", "TH") &&
         supportSpecialCases) {
       _extensions + (Locale.UNICODE_LOCALE_EXTENSION -> "nu-thai")
     } else {
