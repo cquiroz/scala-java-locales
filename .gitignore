@@ -1,4 +1,5 @@
 core/src/main/resources
 core/.js
+core/.jvm
 target/
 .idea

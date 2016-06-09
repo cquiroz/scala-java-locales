@@ -10,12 +10,12 @@ class LocaleCategoryTest {
   import Locale.Category
 
   @Test def test_getOrdinal(): Unit = {
-    assertTrue(0 == Category.DISPLAY.ordinal)
-    assertTrue(1 == Category.FORMAT.ordinal)
+    assertEquals(0, Category.DISPLAY.ordinal)
+    assertEquals(1, Category.FORMAT.ordinal)
   }
 
   @Test def test_getValues(): Unit = {
-    assertTrue(2 == Category.values().length)
+    assertEquals(2, Category.values().length)
     assertEquals(Category.DISPLAY, Category.values()(0))
     assertEquals(Category.FORMAT, Category.values()(1))
   }
