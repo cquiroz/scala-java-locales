@@ -11,7 +11,7 @@ case class LDMLLocale(language: String, territory: Option[String],
 /**
   * Wrapper to LDML
   */
-case class LDML(locale: LDMLLocale) {
+case class LDML(parent: Option[LDML], locale: LDMLLocale) {
   // TODO support script and extensions
   def languageTag: String = {
     locale.language +
