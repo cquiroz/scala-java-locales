@@ -3,7 +3,8 @@ import sbt.Keys._
 import LDMLTasks._
 
 val cldrVersion = settingKey[String]("The version of CLDR used.")
-lazy val downloadFromZip = taskKey[Unit]("Download the sbt zip and extract it to ./temp")
+lazy val downloadFromZip: TaskKey[Unit] =
+  taskKey[Unit]("Download the sbt zip and extract it to ./temp")
 
 val commonSettings: Seq[Setting[_]] = Seq(
   version := "0.1.0-SNAPSHOT",
@@ -44,7 +45,7 @@ lazy val root: Project = project.in(file("."))
   )
   .aggregate(coreJS, coreJVM, testSuiteJS, testSuiteJVM)
 
-lazy val core = crossProject.crossType(CrossType.Pure).
+lazy val core: CrossProject = crossProject.crossType(CrossType.Pure).
   settings(commonSettings: _*).
   settings(
     name := "scalajs-java-locale",
@@ -53,22 +54,25 @@ lazy val core = crossProject.crossType(CrossType.Pure).
       val xmlFiles = ((resourceDirectory in Compile) / "core").value
       if (java.nio.file.Files.notExists(xmlFiles.toPath)) {
         println("CLDR files missing, downloading...")
-        IO.unzipURL(new URL(s"http://unicode.org/Public/cldr/${cldrVersion.value}/core.zip"), xmlFiles)
+        IO.unzipURL(
+          new URL(s"http://unicode.org/Public/cldr/${cldrVersion.value}/core.zip"),
+          xmlFiles)
       } else {
         println("CLDR files already available")
       }
     },
     compile in Compile <<= (compile in Compile).dependsOn(downloadFromZip),
     sourceGenerators in Compile += Def.task {
-      generateLocaleData((sourceManaged in Compile).value, ((resourceDirectory in Compile) / "core").value)
+      generateLocaleData((sourceManaged in Compile).value,
+        ((resourceDirectory in Compile) / "core").value)
     }.taskValue
   ).
   jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
 
-lazy val coreJS = core.js
-lazy val coreJVM = core.jvm
+lazy val coreJS: Project = core.js
+lazy val coreJVM: Project = core.jvm
 
-lazy val testSuite = CrossProject(
+lazy val testSuite: CrossProject = CrossProject(
   jvmId = "testSuiteJVM",
   jsId = "testSuite",
   base = file("testSuite"),
@@ -77,10 +81,12 @@ lazy val testSuite = CrossProject(
   settings(commonSettings: _*).
   settings(
     testOptions +=
-      Tests.Argument(TestFramework("com.novocode.junit.JUnitFramework"), "-v", "-a")
+      Tests.Argument(TestFramework("com.novocode.junit.JUnitFramework"),
+        "-v", "-a")
   ).
   jsSettings(
-    name := "java locale testSuite on JS"
+    name := "java locale testSuite on JS",
+    scalaJSUseRhino := false
   ).
   jsConfigure(_.dependsOn(coreJS)).
   jvmSettings(
@@ -90,7 +96,5 @@ lazy val testSuite = CrossProject(
   ).
   jvmConfigure(_.dependsOn(coreJVM))
 
-lazy val testSuiteJS = testSuite.js
-
-lazy val testSuiteJVM = testSuite.jvm
-
+lazy val testSuiteJS: Project = testSuite.js
+lazy val testSuiteJVM: Project = testSuite.jvm

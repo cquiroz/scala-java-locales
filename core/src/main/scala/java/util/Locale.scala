@@ -43,8 +43,8 @@ object Locale {
     extends Enum[Category](name, ordinal)
 
   object Category {
-    val DISPLAY = new Category("DISPLAY", 0)
-    val FORMAT = new Category("FORMAT", 1)
+    val DISPLAY: Category = new Category("DISPLAY", 0)
+    val FORMAT: Category = new Category("FORMAT", 1)
 
     private lazy val categories = Array(DISPLAY, FORMAT)
 
@@ -104,9 +104,10 @@ object Locale {
   class Builder () {
     private[this] var builder = LocaleBuilder()
 
-    def setLocale(locale: Locale): Builder = ???
+    // TODO Implement
+    //def setLocale(locale: Locale): Builder = ???
 
-    def setLanguageTag(languageTag: String): Builder = ???
+    //def setLanguageTag(languageTag: String): Builder = ???
 
     def setLanguage(language: String): Builder = {
       builder = builder.language(language)
@@ -327,7 +328,11 @@ object Locale {
       case Some(LanguageTag(l, e, s, r, v, x, p)) =>
         // By the javadocs the builder is lenient
         val builder = LocaleBuilder(strict = false)
+
+        // "und" defaults to the empty string
         val la = if (l == "und") "" else l
+
+        // Spilt the extensions
         val extRegex = "([0-9A-WY-Za-wy-z])-([A-Za-z0-9]{2,8})+".r
         val exts = x.collect {
           case extRegex(c, xv) => c.charAt(0) -> xv
@@ -337,7 +342,9 @@ object Locale {
           b2 <- b1.script(s.getOrElse(""))
           b3 <- b2.region(r.getOrElse(""))
           b4 <- b3.variant(v.mkString("_"))
-          b5 <- exts.foldLeft(Option(b4)){ case (bu, (c, xv)) => bu.flatMap(_.extension(c, xv)) }
+          b5 <- exts.foldLeft(Option(b4)){
+              case (bu, (c, xv)) => bu.flatMap(_.extension(c, xv))
+            }
         } yield sanitizePrivateExtension(b5, p)
         b.map(_.build)
 

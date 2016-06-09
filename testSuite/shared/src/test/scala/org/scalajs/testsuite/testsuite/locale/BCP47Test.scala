@@ -134,11 +134,11 @@ class BCP47Test {
   @Test def test_language_variant_samples(): Unit = {
     // Language-Variant:
     // sl-rozaj (Resian dialect of Slovenian)
-    assertEquals(Some(LanguageTag("sl", None, None, None, List("rozaj"), Nil, None)),
-      BCP47.parseTag("sl-rozaj"))
+    assertEquals(Some(LanguageTag("sl", None, None, None, List("rozaj"), Nil,
+      None)), BCP47.parseTag("sl-rozaj"))
     // sl-rozaj-biske (San Giorgio dialect of Resian dialect of Slovenian)
-    assertEquals(Some(LanguageTag("sl", None, None, None, List("rozaj", "biske"), Nil, None)),
-      BCP47.parseTag("sl-rozaj-biske"))
+    assertEquals(Some(LanguageTag("sl", None, None, None, List("rozaj", "biske"),
+      Nil, None)), BCP47.parseTag("sl-rozaj-biske"))
     // sl-nedis (Nadiza dialect of Slovenian)
     assertEquals(Some(LanguageTag("sl", None, None, None, List("nedis"), Nil, None)),
       BCP47.parseTag("sl-nedis"))
@@ -147,18 +147,18 @@ class BCP47Test {
   @Test def test_language_region_variant_samples(): Unit = {
     // Language-Region-Variant:
     // de-CH-1901 (German as used in Switzerland using the 1901 variant [orthography])
-    assertEquals(Some(LanguageTag("de", None, None, Some("CH"), List("1901"), Nil, None)),
-      BCP47.parseTag("de-CH-1901"))
+    assertEquals(Some(LanguageTag("de", None, None, Some("CH"), List("1901"),
+      Nil, None)), BCP47.parseTag("de-CH-1901"))
     // sl-IT-nedis (Slovenian as used in Italy, Nadiza dialect)
-    assertEquals(Some(LanguageTag("sl", None, None, Some("IT"), List("nedis"), Nil, None)),
-      BCP47.parseTag("sl-IT-nedis"))
+    assertEquals(Some(LanguageTag("sl", None, None, Some("IT"), List("nedis"),
+      Nil, None)), BCP47.parseTag("sl-IT-nedis"))
   }
 
   @Test def test_language_script_region_variant_samples(): Unit = {
     // Language-Script-Region-Variant:
     // hy-Latn-IT-arevela (Eastern Armenian written in Latin script, as used in Italy)
-    assertEquals(Some(LanguageTag("hy", None, Some("Latn"), Some("IT"), List("arevela"), Nil, None)),
-      BCP47.parseTag("hy-Latn-IT-arevela"))
+    assertEquals(Some(LanguageTag("hy", None, Some("Latn"), Some("IT"),
+      List("arevela"), Nil, None)), BCP47.parseTag("hy-Latn-IT-arevela"))
   }
 
   @Test def test_language_region_samples(): Unit = {
@@ -178,11 +178,11 @@ class BCP47Test {
   @Test def test_private_use_samples(): Unit = {
     // Private use subtags:
     // de-CH-x-phonebk
-    assertEquals(Some(LanguageTag("de", None, None, Some("CH"), Nil, Nil, Some("phonebk"))),
-      BCP47.parseTag("de-CH-x-phonebk"))
+    assertEquals(Some(LanguageTag("de", None, None, Some("CH"), Nil, Nil,
+      Some("phonebk"))), BCP47.parseTag("de-CH-x-phonebk"))
     // az-Arab-x-AZE-derbend
-    assertEquals(Some(LanguageTag("az", None, Some("Arab"), None, Nil, Nil, Some("AZE-derbend"))),
-      BCP47.parseTag("az-Arab-x-AZE-derbend"))
+    assertEquals(Some(LanguageTag("az", None, Some("Arab"), None, Nil, Nil,
+      Some("AZE-derbend"))), BCP47.parseTag("az-Arab-x-AZE-derbend"))
   }
 
   @Test def test_private_use_tag(): Unit = {
@@ -194,13 +194,15 @@ class BCP47Test {
   @Test def test_extensions_samples(): Unit = {
     // Tags that use extensions:
     // en-US-u-islamcal
-    assertEquals(Some(LanguageTag("en", None, None, Some("US"), Nil, List("u-islamcal"), None)),
-      BCP47.parseTag("en-US-u-islamcal"))
+    assertEquals(Some(LanguageTag("en", None, None, Some("US"), Nil,
+      List("u-islamcal"), None)), BCP47.parseTag("en-US-u-islamcal"))
     // zh-CN-a-myext-x-private
-    assertEquals(Some(LanguageTag("zh", None, None, Some("CN"), Nil, List("a-myext"), Some("private"))),
+    assertEquals(Some(LanguageTag("zh", None, None, Some("CN"), Nil,
+      List("a-myext"), Some("private"))),
       BCP47.parseTag("zh-CN-a-myext-x-private"))
     // en-a-myext-b-another
-    assertEquals(Some(LanguageTag("en", None, None, None, Nil, List("a-myext", "b-another"), None)),
+    assertEquals(Some(LanguageTag("en", None, None, None, Nil,
+      List("a-myext", "b-another"), None)),
       BCP47.parseTag("en-a-myext-b-another"))
   }
 
