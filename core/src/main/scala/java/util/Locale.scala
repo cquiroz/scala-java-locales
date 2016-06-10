@@ -1,14 +1,12 @@
 package java.util
 
 import scala.collection.{Map => SMap, Set => SSet}
-import scala.{List => SList}
 import scala.collection.JavaConverters._
 import scala.util.matching.Regex
 import scala.scalajs.LocaleRegistry
 import scala.scalajs.locale.BCP47
 import scala.scalajs.locale.BCP47.{GrandfatheredTag, LanguageTag, PrivateUseTag}
 import scala.scalajs.locale.ldml.data.metadata
-import scala.scalajs.locale.ldml.data.locales._
 
 object Locale {
 
@@ -20,16 +18,16 @@ object Locale {
   val JAPANESE: Locale = LocaleRegistry.ja.toLocale
   val KOREAN: Locale = LocaleRegistry.ko.toLocale
   val CHINESE: Locale = LocaleRegistry.zh.toLocale
-  val SIMPLIFIED_CHINESE: Locale = LocaleRegistry.zh_CN_Hans.toLocale
-  val TRADITIONAL_CHINESE: Locale = LocaleRegistry.zh_TW_Hant.toLocale
+  val SIMPLIFIED_CHINESE: Locale = LocaleRegistry.zh_Hans_CN.toLocale
+  val TRADITIONAL_CHINESE: Locale = LocaleRegistry.zh_Hant_TW.toLocale
   val FRANCE: Locale = LocaleRegistry.fr_FR.toLocale
   val GERMANY: Locale = LocaleRegistry.de_DE.toLocale
   val ITALY: Locale = LocaleRegistry.it_IT.toLocale
   val JAPAN: Locale = LocaleRegistry.ja_JP.toLocale
   val KOREA: Locale = LocaleRegistry.ko_KR.toLocale
-  val CHINA: Locale = LocaleRegistry.zh_CN_Hans.toLocale
-  val PRC: Locale = LocaleRegistry.zh_CN_Hans.toLocale
-  val TAIWAN: Locale = LocaleRegistry.zh_TW_Hant.toLocale
+  val CHINA: Locale = LocaleRegistry.zh_Hans_CN.toLocale
+  val PRC: Locale = LocaleRegistry.zh_Hans_CN.toLocale
+  val TAIWAN: Locale = LocaleRegistry.zh_Hant_TW.toLocale
   val UK: Locale = LocaleRegistry.en_GB.toLocale
   val US: Locale = LocaleRegistry.en_US.toLocale
   val CANADA: Locale = LocaleRegistry.en_CA.toLocale

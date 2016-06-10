@@ -5,6 +5,7 @@ import java.util.Locale
 
 import scala.collection.Map
 import locale.ldml.{LDML, LDMLLocale}
+import locale.ldml.data.minimal
 
 /**
   * Implements a database of locales
@@ -18,24 +19,24 @@ object LocaleRegistry {
   // The spec requires some locales by default
 
   // Auto generated code, don't change
-  val en: LDML         = LDML(None, LDMLLocale("en", None, None, None))
-  val fr: LDML         = LDML(None, LDMLLocale("fr", None, None, None))
-  val de: LDML         = LDML(None, LDMLLocale("de", None, None, None))
-  val it: LDML         = LDML(None, LDMLLocale("it", None, None, None))
-  val ja: LDML         = LDML(None, LDMLLocale("ja", None, None, None))
-  val ko: LDML         = LDML(None, LDMLLocale("ko", None, None, None))
-  val zh: LDML         = LDML(None, LDMLLocale("zh", None, None, None))
-  val zh_CN_Hans: LDML = LDML(Some(zh), LDMLLocale("zh", Some("CN"), None, Some("Hans")))
-  val zh_TW_Hant: LDML = LDML(Some(zh), LDMLLocale("zh", Some("TW"), None, Some("Hant")))
-  val fr_FR: LDML      = LDML(Some(fr), LDMLLocale("fr", Some("FR"), None, None))
-  val de_DE: LDML      = LDML(Some(de), LDMLLocale("de", Some("DE"), None, None))
-  val it_IT: LDML      = LDML(Some(it), LDMLLocale("it", Some("IT"), None, None))
-  val ja_JP: LDML      = LDML(Some(ja), LDMLLocale("ja", Some("JP"), None, None))
-  val ko_KR: LDML      = LDML(Some(ko), LDMLLocale("ko", Some("KR"), None, None))
-  val en_GB: LDML      = LDML(Some(en), LDMLLocale("en", Some("GB"), None, None))
-  val en_US: LDML      = LDML(Some(en), LDMLLocale("en", Some("US"), None, None))
-  val en_CA: LDML      = LDML(Some(en), LDMLLocale("en", Some("CA"), None, None))
-  val fr_CA: LDML      = LDML(Some(fr), LDMLLocale("fr", Some("CA"), None, None))
+  lazy val en: LDML         = minimal.en
+  lazy val fr: LDML         = minimal.fr
+  lazy val de: LDML         = minimal.de
+  lazy val it: LDML         = minimal.it
+  lazy val ja: LDML         = minimal.ja
+  lazy val ko: LDML         = minimal.ko
+  lazy val zh: LDML         = minimal.zh
+  lazy val zh_Hans_CN: LDML = minimal.zh_Hans_CN
+  lazy val zh_Hant_TW: LDML = minimal.zh_Hant_TW
+  lazy val fr_FR: LDML      = minimal.fr_FR
+  lazy val de_DE: LDML      = minimal.de_DE
+  lazy val it_IT: LDML      = minimal.it_IT
+  lazy val ja_JP: LDML      = minimal.ja_JP
+  lazy val ko_KR: LDML      = minimal.ko_KR
+  lazy val en_GB: LDML      = minimal.en_GB
+  lazy val en_US: LDML      = minimal.en_US
+  lazy val en_CA: LDML      = minimal.en_CA
+  lazy val fr_CA: LDML      = minimal.fr_CA
 
   case class LocaleCldr(locale: Locale,
       decimalFormatSymbol: Option[DecimalFormatSymbols])
@@ -48,8 +49,8 @@ object LocaleRegistry {
     ja.languageTag -> ja,
     ko.languageTag -> ko,
     zh.languageTag -> zh,
-    zh_CN_Hans.languageTag -> zh_CN_Hans,
-    zh_TW_Hant.languageTag -> zh_TW_Hant,
+    zh_Hans_CN.languageTag -> zh_Hans_CN,
+    zh_Hant_TW.languageTag -> zh_Hant_TW,
     fr_FR.languageTag -> fr_FR,
     de_DE.languageTag -> de_DE,
     it_IT.languageTag -> it_IT,
