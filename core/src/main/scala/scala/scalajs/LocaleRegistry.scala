@@ -26,8 +26,9 @@ object LocaleRegistry {
   lazy val ja: LDML         = minimal.ja
   lazy val ko: LDML         = minimal.ko
   lazy val zh: LDML         = minimal.zh
-  lazy val zh_Hans_CN: LDML = minimal.zh_Hans_CN
-  lazy val zh_Hant_TW: LDML = minimal.zh_Hant_TW
+  // The JVM uses Chinese without script unlike CLDR
+  lazy val zh_Hans_CN: LDML = minimal.zh_Hans_CN.copy(locale = minimal.zh_Hans_CN.locale.copy(script = None))
+  lazy val zh_Hant_TW: LDML = minimal.zh_Hant_TW.copy(locale = minimal.zh_Hant_TW.locale.copy(script = None))
   lazy val fr_FR: LDML      = minimal.fr_FR
   lazy val de_DE: LDML      = minimal.de_DE
   lazy val it_IT: LDML      = minimal.it_IT
