@@ -12,14 +12,12 @@ case class LDMLLocale(language: String, territory: Option[String],
   * Wrapper to LDML
   */
 case class LDML(parent: Option[LDML], locale: LDMLLocale) {
-  // TODO support script and extensions
-  def languageTag: String = {
-    locale.language +
-    locale.territory.fold("")(t => s"-$t") +
-    locale.variant.fold("")(v => s"-$v")
-  }
+  def languageTag: String = toLocale.toLanguageTag()
 
-  def toLocale: Locale =
-    new Locale(locale.language, locale.territory.getOrElse(""),
-      locale.variant.getOrElse(""))
+  def toLocale: Locale = {
+    new Locale.Builder().setLanguage(locale.language)
+      .setRegion(locale.territory.getOrElse(""))
+      .setScript(locale.script.getOrElse(""))
+      .setVariant(locale.variant.getOrElse("")).build
+  }
 }
