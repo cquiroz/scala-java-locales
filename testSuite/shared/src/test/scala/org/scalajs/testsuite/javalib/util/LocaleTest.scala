@@ -7,6 +7,7 @@ import org.junit.Assert._
 
 import org.scalajs.testsuite.utils.AssertThrows._
 import org.scalajs.testsuite.utils.Platform
+import org.scalajs.testsuite.utils.LocaleTestSetup
 
 class LocaleTest extends LocaleTestSetup {
   // Clean up the locale database, there are different implementations for

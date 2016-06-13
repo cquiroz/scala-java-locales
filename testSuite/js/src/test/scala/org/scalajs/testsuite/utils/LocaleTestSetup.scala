@@ -1,7 +1,6 @@
-package org.scalajs.testsuite.javalib.util
+package org.scalajs.testsuite.utils
 
 import scala.scalajs.LocaleRegistry
-import scala.scalajs.js.debugger
 
 class LocaleTestSetup {
   def cleanDatabase: Unit = {
