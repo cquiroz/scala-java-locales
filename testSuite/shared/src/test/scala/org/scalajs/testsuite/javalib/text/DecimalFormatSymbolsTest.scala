@@ -12,12 +12,33 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
   // the JVM and JS
   @Before def cleanup: Unit = super.cleanDatabase
 
+  @Test def test_root(): Unit = {
+    val dfs = DecimalFormatSymbols.getInstance(Locale.forLanguageTag(""))
+
+    assertEquals('0', dfs.getZeroDigit)
+    assertEquals(',', dfs.getGroupingSeparator)
+    // 8240 is the per/mile character: ‰
+    assertEquals('‰', dfs.getPerMill)
+    assertEquals('%', dfs.getPercent)
+    assertEquals('#', dfs.getDigit)
+    assertEquals(';', dfs.getPatternSeparator)
+    assertEquals("∞", dfs.getInfinity)
+    assertEquals("NaN", dfs.getNaN)
+    assertEquals('-', dfs.getMinusSign)
+  }
+
   @Test def test_decimal_format_symbol_en(): Unit = {
     val dfs = DecimalFormatSymbols.getInstance(Locale.ENGLISH)
 
-    assertEquals('.', dfs.getDecimalSeparator)
-    assertEquals('-', dfs.getMinusSign)
     assertEquals('0', dfs.getZeroDigit)
+    assertEquals(',', dfs.getGroupingSeparator)
+    assertEquals('‰', dfs.getPerMill)
+    assertEquals('%', dfs.getPercent)
+    assertEquals('#', dfs.getDigit)
+    assertEquals(';', dfs.getPatternSeparator)
+    assertEquals("∞", dfs.getInfinity)
+    assertEquals("NaN", dfs.getNaN)
+    assertEquals('-', dfs.getMinusSign)
   }
 
 }
