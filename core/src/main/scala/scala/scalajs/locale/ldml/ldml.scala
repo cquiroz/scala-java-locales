@@ -3,6 +3,11 @@ package scala.scalajs.locale.ldml
 import java.util.Locale
 
 /**
+  * Interfaces describing the digit symbols
+  */
+case class LDMLDigitSymbols()
+
+/**
   * Interfaces describing an LDML Locale
   */
 case class LDMLLocale(language: String, territory: Option[String],

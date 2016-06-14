@@ -4,7 +4,8 @@ import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 import scala.collection.Map
-import locale.ldml.{LDML, LDMLLocale}
+import scala.collection.mutable
+import locale.ldml.{LDML, LDMLDigitSymbols}
 import locale.ldml.data.minimal
 
 /**
@@ -42,7 +43,7 @@ object LocaleRegistry {
   case class LocaleCldr(locale: Locale,
       decimalFormatSymbol: Option[DecimalFormatSymbols])
 
-  private val defaultLocales: Map[String, LDML] = Map(
+  private lazy val defaultLocales: Map[String, LDML] = Map(
     en.languageTag -> en,
     fr.languageTag -> fr,
     de.languageTag -> de,
@@ -63,7 +64,17 @@ object LocaleRegistry {
     fr_CA.languageTag -> fr_CA
   )
 
-  private var locales: Map[String, LDML] = Map.empty
+  private lazy val locales: mutable.Map[String, Locale] = mutable.Map.empty
+  private lazy val decimalFormatSymbols: mutable.Map[Locale, DecimalFormatSymbols] = mutable.Map.empty
+
+  initDefaultLocales()
+
+  def initDefaultLocales(): Unit = {
+    // Initialize
+    defaultLocales.foreach {
+      case (_, l) => installLDML(l)
+    }
+  }
 
   def default: Locale = defaultLocale
     .getOrElse(throw new IllegalStateException("No default locale set"))
@@ -89,16 +100,17 @@ object LocaleRegistry {
     */
   def localeForLanguageTag(languageTag: String): Option[Locale] = {
     // TODO Support alternative tags for the same locale
-    (defaultLocales ++ locales).get(languageTag).map(_.toLocale)
+    locales.get(languageTag)
   }
 
   def availableLocales:Iterable[Locale] =
-    (defaultLocales ++ locales).map(_._2.toLocale)
+    locales.values
 
   /**
     * Attempts to give a Locale for the given tag if avaibale
     */
-  def decimalFormatSymbol(locale: Locale): Option[DecimalFormatSymbols] = ???
+  def decimalFormatSymbol(locale: Locale): Option[DecimalFormatSymbols] =
+    decimalFormatSymbols.get(locale)
 
   /**
     * Cleans the registry, useful for testing
@@ -107,9 +119,22 @@ object LocaleRegistry {
     defaultLocale = None
     defaultPerCategory =
         Locale.Category.values().map(_ -> None).toMap
-    //locales = Map.empty
+    locales.empty
+    decimalFormatSymbols.empty
+    initDefaultLocales()
   }
 
+  private def toDFS(locale: Locale, ldml: LDML): DecimalFormatSymbols = {
+    new DecimalFormatSymbols(locale)
+  }
+
+  def installLDML(ldml: LDML): Unit = {
+    val locale = ldml.toLocale
+    locales += ldml.languageTag -> locale
+    decimalFormatSymbols += locale -> toDFS(locale, ldml)
+    println(decimalFormatSymbols)
+
+  }
   def installLocale(json: String): Unit = {
     // TODO Support all the options for unicode, including variants, numeric regions, etc
     val simpleLocaleRegex = "([a-zA-Z]{2,3})[-_]([a-zA-Z]{2})?.*".r
