@@ -16,7 +16,6 @@ val commonSettings: Seq[Setting[_]] = Seq(
     _.filter(!_._2.endsWith(".class"))
   },*/
   exportJars := true,
-
   publishMavenStyle := true,
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
@@ -90,6 +89,11 @@ lazy val testSuite: CrossProject = CrossProject(
   ).
   jsConfigure(_.dependsOn(coreJS)).
   jvmSettings(
+    // Fork the JVM test to ensure that the custom flags are set
+    fork in Test := true,
+    // Use CLDR provider for locales
+    // https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr
+    javaOptions in Test += "-Djava.locale.providers=CLDR",
     name := "java locale testSuite on JVM",
     libraryDependencies +=
       "com.novocode" % "junit-interface" % "0.9" % "test"
