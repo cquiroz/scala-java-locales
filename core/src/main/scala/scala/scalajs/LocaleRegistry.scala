@@ -4,7 +4,8 @@ import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 import scala.collection.Map
-import locale.ldml.{LDML, LDMLLocale}
+import scala.collection.mutable
+import locale.ldml.{LDML, LDMLDigitSymbols, LDMLNumberingSystem}
 import locale.ldml.data.minimal
 
 /**
@@ -27,8 +28,10 @@ object LocaleRegistry {
   lazy val ko: LDML         = minimal.ko
   lazy val zh: LDML         = minimal.zh
   // The JVM uses Chinese without script unlike CLDR
-  lazy val zh_Hans_CN: LDML = minimal.zh_Hans_CN.copy(locale = minimal.zh_Hans_CN.locale.copy(script = None))
-  lazy val zh_Hant_TW: LDML = minimal.zh_Hant_TW.copy(locale = minimal.zh_Hant_TW.locale.copy(script = None))
+  lazy val zh_Hans_CN: LDML = minimal.zh_Hans_CN
+    .copy(locale = minimal.zh_Hans_CN.locale.copy(script = None))
+  lazy val zh_Hant_TW: LDML = minimal.zh_Hant_TW
+    .copy(locale = minimal.zh_Hant_TW.locale.copy(script = None))
   lazy val fr_FR: LDML      = minimal.fr_FR
   lazy val de_DE: LDML      = minimal.de_DE
   lazy val it_IT: LDML      = minimal.it_IT
@@ -38,11 +41,13 @@ object LocaleRegistry {
   lazy val en_US: LDML      = minimal.en_US
   lazy val en_CA: LDML      = minimal.en_CA
   lazy val fr_CA: LDML      = minimal.fr_CA
+  lazy val root: LDML       = minimal.root
 
   case class LocaleCldr(locale: Locale,
       decimalFormatSymbol: Option[DecimalFormatSymbols])
 
-  private val defaultLocales: Map[String, LDML] = Map(
+  private lazy val defaultLocales: Map[String, LDML] = Map(
+    root.languageTag -> root,
     en.languageTag -> en,
     fr.languageTag -> fr,
     de.languageTag -> de,
@@ -63,7 +68,17 @@ object LocaleRegistry {
     fr_CA.languageTag -> fr_CA
   )
 
-  private var locales: Map[String, LDML] = Map.empty
+  private lazy val locales: mutable.Map[String, Locale] = mutable.Map.empty
+  private lazy val decimalFormatSymbols: mutable.Map[Locale, DecimalFormatSymbols] = mutable.Map.empty
+
+  initDefaultLocales()
+
+  def initDefaultLocales(): Unit = {
+    // Initialize
+    defaultLocales.foreach {
+      case (_, l) => installLDML(l)
+    }
+  }
 
   def default: Locale = defaultLocale
     .getOrElse(throw new IllegalStateException("No default locale set"))
@@ -80,8 +95,11 @@ object LocaleRegistry {
   }
 
   def setDefault(category: Locale.Category, newLocale: Locale): Unit = {
-    if (category == null || newLocale == null) throw new NullPointerException("Argument cannot be null")
-    else defaultPerCategory = defaultPerCategory + (category -> Some(newLocale))
+    if (category == null || newLocale == null) {
+      throw new NullPointerException("Argument cannot be null")
+    } else {
+      defaultPerCategory = defaultPerCategory + (category -> Some(newLocale))
+    }
   }
 
   /**
@@ -89,16 +107,17 @@ object LocaleRegistry {
     */
   def localeForLanguageTag(languageTag: String): Option[Locale] = {
     // TODO Support alternative tags for the same locale
-    (defaultLocales ++ locales).get(languageTag).map(_.toLocale)
+    locales.get(languageTag)
   }
 
   def availableLocales:Iterable[Locale] =
-    (defaultLocales ++ locales).map(_._2.toLocale)
+    locales.values
 
   /**
     * Attempts to give a Locale for the given tag if avaibale
     */
-  def decimalFormatSymbol(locale: Locale): Option[DecimalFormatSymbols] = ???
+  def decimalFormatSymbol(locale: Locale): Option[DecimalFormatSymbols] =
+    decimalFormatSymbols.get(locale)
 
   /**
     * Cleans the registry, useful for testing
@@ -107,7 +126,50 @@ object LocaleRegistry {
     defaultLocale = None
     defaultPerCategory =
         Locale.Category.values().map(_ -> None).toMap
-    //locales = Map.empty
+    locales.empty
+    decimalFormatSymbols.empty
+    initDefaultLocales()
+  }
+
+  private def toDFS(locale: Locale, ldml: LDML): DecimalFormatSymbols = {
+
+    def parentNumberingSystem(ldml: LDML): Option[LDMLNumberingSystem] =
+      ldml.defaultNS.orElse(ldml.parent.flatMap(parentNumberingSystem))
+
+    def parentSymbol(ldml: LDML, contains: LDMLDigitSymbols => Option[String]): Option[String] =
+      ldml.digitSymbols.flatMap(d => contains(d))
+        .orElse(ldml.parent.flatMap(parentSymbol(_, contains)))
+
+    def setSymbolChar(ldml: LDML, contains: LDMLDigitSymbols => Option[String], set: Char => Unit): Unit =
+      parentSymbol(ldml, contains).foreach(v =>
+        if (v.isEmpty) set(0) else set(v.charAt(0)))
+
+    def setSymbolStr(ldml: LDML, contains: LDMLDigitSymbols => Option[String], set: String => Unit): Unit =
+      parentSymbol(ldml, contains).foreach(set)
+
+    val dfs = new DecimalFormatSymbols(locale)
+    // Read the zero from the default numeric system
+    parentNumberingSystem(ldml).flatMap(_.digits.headOption)
+      .foreach(dfs.setZeroDigit)
+    // Set the components of the decimal format symbol
+    setSymbolChar(ldml, _.decimal, dfs.setDecimalSeparator)
+    setSymbolChar(ldml, _.group, dfs.setGroupingSeparator)
+    setSymbolChar(ldml, _.list, dfs.setPatternSeparator)
+    setSymbolChar(ldml, _.percent, dfs.setPercent)
+    setSymbolChar(ldml, _.minus, dfs.setMinusSign)
+    setSymbolChar(ldml, _.perMille, dfs.setPerMill)
+    setSymbolStr(ldml, _.infinity, dfs.setInfinity)
+    setSymbolStr(ldml, _.nan, dfs.setNaN)
+    // CLDR fixes the pattern character
+    // http://www.unicode.org/reports/tr35/tr35-numbers.html#Number_Format_Patterns
+    dfs.setDigit('#')
+    dfs
+  }
+
+  def installLDML(ldml: LDML): Unit = {
+    val locale = ldml.toLocale
+    locales += ldml.languageTag -> locale
+    decimalFormatSymbols += locale -> toDFS(locale, ldml)
   }
 
   def installLocale(json: String): Unit = {

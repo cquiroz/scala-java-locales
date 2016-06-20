@@ -1,4 +1,4 @@
-package org.scalajs.testsuite.javalib.util
+package org.scalajs.testsuite.utils
 
 class LocaleTestSetup {
   def cleanDatabase: Unit = { }
