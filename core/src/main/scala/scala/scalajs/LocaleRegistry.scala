@@ -39,11 +39,13 @@ object LocaleRegistry {
   lazy val en_US: LDML      = minimal.en_US
   lazy val en_CA: LDML      = minimal.en_CA
   lazy val fr_CA: LDML      = minimal.fr_CA
+  lazy val root: LDML       = minimal.root
 
   case class LocaleCldr(locale: Locale,
       decimalFormatSymbol: Option[DecimalFormatSymbols])
 
   private lazy val defaultLocales: Map[String, LDML] = Map(
+    root.languageTag -> root,
     en.languageTag -> en,
     fr.languageTag -> fr,
     de.languageTag -> de,

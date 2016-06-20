@@ -68,7 +68,7 @@ object CodeGenerator {
   def findParent(root: XMLLDML, langs: List[List[String]], ldml: XMLLDML): Option[String] = {
     // http://www.unicode.org/reports/tr35/#Locale_Inheritance
 
-    // This searches based on the simple hirerachy resolution based on bundle_name
+    // This searches based on the simple hierarchy resolution based on bundle_name
     // http://www.unicode.org/reports/tr35/#Bundle_vs_Item_Lookup
     ldml.scalaSafeName.split("_").reverse.toList match {
       case x :: Nil if x == root.scalaSafeName => None

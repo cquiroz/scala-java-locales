@@ -31,9 +31,16 @@ case class LDML(parent: Option[LDML], locale: LDMLLocale, defaultNS: Option[LDML
   def languageTag: String = toLocale.toLanguageTag
 
   def toLocale: Locale = {
-    new Locale.Builder().setLanguage(locale.language)
-      .setRegion(locale.territory.getOrElse(""))
-      .setScript(locale.script.getOrElse(""))
-      .setVariant(locale.variant.getOrElse("")).build
+    if (locale.language == "root") {
+      new Locale.Builder().setLanguage("")
+        .setRegion(locale.territory.getOrElse(""))
+        .setScript(locale.script.getOrElse(""))
+        .setVariant(locale.variant.getOrElse("")).build
+    } else {
+      new Locale.Builder().setLanguage(locale.language)
+        .setRegion(locale.territory.getOrElse(""))
+        .setScript(locale.script.getOrElse(""))
+        .setVariant(locale.variant.getOrElse("")).build
+    }
   }
 }

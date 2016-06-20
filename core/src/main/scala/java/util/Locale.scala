@@ -32,7 +32,7 @@ object Locale {
   val US: Locale = LocaleRegistry.en_US.toLocale
   val CANADA: Locale = LocaleRegistry.en_CA.toLocale
   val CANADA_FRENCH: Locale = LocaleRegistry.fr_CA.toLocale
-  val ROOT: Locale = new Locale("", "", "")
+  val ROOT: Locale = LocaleRegistry.root.toLocale
 
   val PRIVATE_USE_EXTENSION: Char = 'x'
   val UNICODE_LOCALE_EXTENSION: Char = 'u'
