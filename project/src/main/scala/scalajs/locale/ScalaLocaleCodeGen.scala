@@ -14,14 +14,21 @@ import scala.collection.breakOut
   */
 case class LDMLNumericSystem(id: String, digits: String)
 
-case class XMLLDMLNumberSymbols(system: LDMLNumericSystem, decimal: String,
-    group: String, percent: String, minus: String, plus: String,
-    perMille: String, infinity: String, nan: String)
+case class XMLLDMLNumberSymbols(system: LDMLNumericSystem,
+    decimal: Option[String] = None,
+    group: Option[String] = None,
+    percent: Option[String] = None,
+    plus: Option[String] = None,
+    minus: Option[String] = None,
+    perMille: Option[String] = None,
+    infinity: Option[String] = None,
+    nan: Option[String] = None)
 
 case class XMLLDMLLocale(language: String, territory: Option[String],
                          variant: Option[String], script: Option[String])
 
-case class XMLLDML(locale: XMLLDMLLocale, defaultNS: Option[LDMLNumericSystem]) {
+case class XMLLDML(locale: XMLLDMLLocale, defaultNS: Option[LDMLNumericSystem],
+    digitSymbols: Map[LDMLNumericSystem, XMLLDMLNumberSymbols]) {
   val scalaSafeName: String = {
     List(Some(locale.language), locale.script, locale.territory, locale.variant)
       .flatten.mkString("_")
@@ -133,7 +140,35 @@ object ScalaLocaleCodeGen {
     val script = Option((xml \ "identity" \ "script" \ "@type").text).filter(_.nonEmpty)
     // Find out the default numeric system
     val defaultNS = Option((xml \ "numbers" \ "defaultNumberingSystem").text).filter(_.nonEmpty).filter(ns.contains)
-    XMLLDML(XMLLDMLLocale(language, territory, variant, script), defaultNS.flatMap(ns.get))
+
+    def symbolN(n: NodeSeq): Option[String] = if (n.isEmpty) None else Some(n.text)
+
+    val symbols = (xml \ "numbers" \\ "symbols").map { s =>
+      // http://www.unicode.org/reports/tr35/tr35-numbers.html#Numbering_Systems
+      // By default, number symbols without a specific numberSystem attribute
+      // are assumed to be used for the "latn" numbering system, which i
+      // western (ASCII) digits
+      val nsAttr = Option((s \ "@numberSystem").text).filter(_.nonEmpty)
+      val sns = nsAttr.flatMap(ns.get).getOrElse(ns.get("latn").get)
+      // TODO process aliases
+      val symbols = s match {
+        case s @ <symbols>{_*}</symbols> if (s \ "alias").isEmpty =>
+          // elements may not be present and they could be the empty string
+          val decimal = symbolN(s \ "decimal")
+          val group = symbolN(s \ "group")
+          val percentSymbol = symbolN(s \ "percentSign")
+          val plusSign = symbolN(s \ "plusSign")
+          val minusSign = symbolN(s \ "minusSign")
+          val perMilleSign = symbolN(s \ "perMille")
+          val infiniteSign = symbolN(s \ "infinite")
+          val nan = symbolN(s \ "nan")
+          XMLLDMLNumberSymbols(sns, decimal, group, percentSymbol, plusSign,
+            minusSign, perMilleSign, infiniteSign, nan)
+      }
+      sns -> symbols
+    }
+    XMLLDML(XMLLDMLLocale(language, territory, variant, script),
+      defaultNS.flatMap(ns.get), symbols.toMap)
   }
 
   def parseNumberingSystems(xml: Elem): Seq[LDMLNumericSystem] = {
