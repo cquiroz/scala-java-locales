@@ -5,7 +5,7 @@ import java.util.Locale
 
 import scala.collection.Map
 import scala.collection.mutable
-import locale.ldml.{LDML, LDMLDigitSymbols}
+import locale.ldml.{LDML, LDMLDigitSymbols, LDMLNumberingSystem}
 import locale.ldml.data.minimal
 
 /**
@@ -128,6 +128,9 @@ object LocaleRegistry {
 
   private def toDFS(locale: Locale, ldml: LDML): DecimalFormatSymbols = {
 
+    def parentNumberingSystem(ldml: LDML): Option[LDMLNumberingSystem] =
+      ldml.defaultNS.orElse(ldml.parent.flatMap(parentNumberingSystem))
+
     def parentSymbol(ldml: LDML, contains: LDMLDigitSymbols => Option[String]): Option[String] =
       ldml.digitSymbols.flatMap(d => contains(d)).orElse(ldml.parent.flatMap(parentSymbol(_, contains)))
 
@@ -138,6 +141,9 @@ object LocaleRegistry {
       parentSymbol(ldml, contains).foreach(set)
 
     val dfs = new DecimalFormatSymbols(locale)
+    // Read the zero from the default numeric system
+    parentNumberingSystem(ldml).flatMap(_.digits.headOption).foreach(dfs.setZeroDigit)
+    // Set the components of the decimal format symbol
     setSymbolChar(ldml, _.decimal, dfs.setDecimalSeparator)
     setSymbolChar(ldml, _.group, dfs.setGroupingSeparator)
     setSymbolChar(ldml, _.list, dfs.setPatternSeparator)

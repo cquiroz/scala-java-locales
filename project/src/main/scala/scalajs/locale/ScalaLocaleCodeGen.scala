@@ -124,7 +124,7 @@ object CodeGenerator {
       IMPORT("scala.scalajs.locale.ldml.LDMLNumberingSystem"),
       OBJECTDEF("numericsystems") := BLOCK(
         ns.map(s =>
-          LAZYVAL(s.id, "LDMLNumberingSystem") := Apply(ldmlNS, LIT(s.id))
+          LAZYVAL(s.id, "LDMLNumberingSystem") := Apply(ldmlNS, LIT(s.id), LIST(s.digits.toList.map(LIT(_))))
         )
       )
     ) inPackage "scala.scalajs.locale.ldml.data"

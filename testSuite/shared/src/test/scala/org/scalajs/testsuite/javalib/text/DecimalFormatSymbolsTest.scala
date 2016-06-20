@@ -43,7 +43,7 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
       case (l, symbols) =>
         val dfs = DecimalFormatSymbols.getInstance(l)
 
-        //assertEquals('0', dfs.getZeroDigit)
+        assertEquals(symbols(0).charAt(0), dfs.getZeroDigit)
         assertEquals(symbols(1).charAt(0), dfs.getGroupingSeparator)
         assertEquals(symbols(2).charAt(0), dfs.getPerMill)
         assertEquals(symbols(3).charAt(0), dfs.getPercent)
@@ -60,7 +60,7 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     List(Locale.JAPAN, Locale.JAPANESE).foreach { l =>
       val dfs = DecimalFormatSymbols.getInstance(l)
 
-      //assertEquals('0', dfs.getZeroDigit)
+      assertEquals('0', dfs.getZeroDigit)
       assertEquals(',', dfs.getGroupingSeparator)
       assertEquals('‰', dfs.getPerMill)
       assertEquals('%', dfs.getPercent)

@@ -5,7 +5,7 @@ import java.util.Locale
 /**
   * Interfaces describing the digit symbols
   */
-case class LDMLNumberingSystem(id: String)
+case class LDMLNumberingSystem(id: String, digits: Seq[Char])
 
 case class LDMLDigitSymbols(decimal: Option[String],
     group: Option[String],
