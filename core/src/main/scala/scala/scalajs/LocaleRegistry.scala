@@ -127,20 +127,28 @@ object LocaleRegistry {
   }
 
   private def toDFS(locale: Locale, ldml: LDML): DecimalFormatSymbols = {
+
+    def parentSymbol(ldml: LDML, contains: LDMLDigitSymbols => Option[String]): Option[String] =
+      ldml.digitSymbols.flatMap(d => contains(d)).orElse(ldml.parent.flatMap(parentSymbol(_, contains)))
+
+    def setSymbolChar(ldml: LDML, contains: LDMLDigitSymbols => Option[String], set: Char => Unit): Unit =
+      parentSymbol(ldml, contains).foreach(v => if (v.isEmpty) set(0) else set(v.charAt(0)))
+
+    def setSymbolStr(ldml: LDML, contains: LDMLDigitSymbols => Option[String], set: String => Unit): Unit =
+      parentSymbol(ldml, contains).foreach(set)
+
     val dfs = new DecimalFormatSymbols(locale)
-    ldml.digitSymbols.foreach {ds =>
-      // CLDR fixes the pattern character
-      // http://www.unicode.org/reports/tr35/tr35-numbers.html#Number_Format_Patterns
-      dfs.setDigit('#')
-      ds.decimal.filter(_.nonEmpty).foreach(v => dfs.setDecimalSeparator(v.charAt(0)))
-      ds.group.filter(_.nonEmpty).foreach(v => dfs.setGroupingSeparator(v.charAt(0)))
-      ds.list.filter(_.nonEmpty).foreach(v => dfs.setPatternSeparator(v.charAt(0)))
-      ds.percent.filter(_.nonEmpty).foreach(v => dfs.setPercent(v.charAt(0)))
-      ds.minus.filter(_.nonEmpty).foreach(v => dfs.setMinusSign(v.charAt(0)))
-      ds.perMille.filter(_.nonEmpty).foreach(v => dfs.setPerMill(v.charAt(0)))
-      ds.infinity.filter(_.nonEmpty).foreach(v => dfs.setInfinity(v))
-      ds.nan.filter(_.nonEmpty).foreach(v => dfs.setNaN(v))
-    }
+    setSymbolChar(ldml, _.decimal, dfs.setDecimalSeparator)
+    setSymbolChar(ldml, _.group, dfs.setGroupingSeparator)
+    setSymbolChar(ldml, _.list, dfs.setPatternSeparator)
+    setSymbolChar(ldml, _.percent, dfs.setPercent)
+    setSymbolChar(ldml, _.minus, dfs.setMinusSign)
+    setSymbolChar(ldml, _.perMille, dfs.setPerMill)
+    setSymbolStr(ldml, _.infinity, dfs.setInfinity)
+    setSymbolStr(ldml, _.nan, dfs.setNaN)
+    // CLDR fixes the pattern character
+    // http://www.unicode.org/reports/tr35/tr35-numbers.html#Number_Format_Patterns
+    dfs.setDigit('#')
     dfs
   }
 

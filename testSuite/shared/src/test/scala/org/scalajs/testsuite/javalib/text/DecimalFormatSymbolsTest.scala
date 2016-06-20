@@ -12,23 +12,13 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
   // the JVM and JS
   @Before def cleanup: Unit = super.cleanDatabase
 
-  @Ignore @Test def test_decimal_format_symbol_en(): Unit = {
-    val dfs = DecimalFormatSymbols.getInstance(Locale.ENGLISH)
-
-    //assertEquals('0', dfs.getZeroDigit)
-    assertEquals(',', dfs.getGroupingSeparator)
-    assertEquals('‰', dfs.getPerMill)
-    assertEquals('%', dfs.getPercent)
-    assertEquals('#', dfs.getDigit)
-    assertEquals(';', dfs.getPatternSeparator)
-    assertEquals("∞", dfs.getInfinity)
-    assertEquals("NaN", dfs.getNaN)
-    assertEquals('-', dfs.getMinusSign)
-  }
-
   val testData = Map(
     Locale.ROOT -> List("0", ",", "‰", "%", "#", ";", "∞", "NaN", "-"),
-    Locale.GERMAN -> List("0", ".", "‰", "%", "#", ";", "∞", "NaN", "-")
+    Locale.ENGLISH -> List("0", ",", "‰", "%", "#", ";", "∞", "NaN", "-"),
+    Locale.FRENCH -> List("0", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-"),
+    Locale.GERMAN -> List("0", ".", "‰", "%", "#", ";", "∞", "NaN", "-"),
+    Locale.ITALIAN -> List("0", ".", "‰", "%", "#", ";", "∞", "NaN", "-")
+    //Locale.JAPANESE -> List("0", ",", "‰", "%", "#", ";", "∞", "NaN（非数）", "-")
   )
 
   @Test def test_decimal_format_symbol(): Unit = {
