@@ -6,13 +6,14 @@ import scala.scalajs.LocaleRegistry
 
 object DecimalFormatSymbols {
 
-  def getAvailableLocales():Array[Locale] = Array.empty
+  def getAvailableLocales(): Array[Locale] = Array.empty
 
-  def getInstance():DecimalFormatSymbols =
+  def getInstance(): DecimalFormatSymbols =
     getInstance(Locale.getDefault(Locale.Category.FORMAT))
 
-  def getInstance(locale: Locale):DecimalFormatSymbols =
-    LocaleRegistry.decimalFormatSymbol(locale).getOrElse(throw new IllegalArgumentException("Unknown locale"))
+  def getInstance(locale: Locale): DecimalFormatSymbols =
+    LocaleRegistry.decimalFormatSymbol(locale)
+      .getOrElse(throw new IllegalArgumentException("Unknown locale"))
 }
 
 class DecimalFormatSymbols(locale: Locale) {

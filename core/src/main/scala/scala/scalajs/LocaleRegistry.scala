@@ -28,8 +28,10 @@ object LocaleRegistry {
   lazy val ko: LDML         = minimal.ko
   lazy val zh: LDML         = minimal.zh
   // The JVM uses Chinese without script unlike CLDR
-  lazy val zh_Hans_CN: LDML = minimal.zh_Hans_CN.copy(locale = minimal.zh_Hans_CN.locale.copy(script = None))
-  lazy val zh_Hant_TW: LDML = minimal.zh_Hant_TW.copy(locale = minimal.zh_Hant_TW.locale.copy(script = None))
+  lazy val zh_Hans_CN: LDML = minimal.zh_Hans_CN
+    .copy(locale = minimal.zh_Hans_CN.locale.copy(script = None))
+  lazy val zh_Hant_TW: LDML = minimal.zh_Hant_TW
+    .copy(locale = minimal.zh_Hant_TW.locale.copy(script = None))
   lazy val fr_FR: LDML      = minimal.fr_FR
   lazy val de_DE: LDML      = minimal.de_DE
   lazy val it_IT: LDML      = minimal.it_IT
@@ -93,8 +95,11 @@ object LocaleRegistry {
   }
 
   def setDefault(category: Locale.Category, newLocale: Locale): Unit = {
-    if (category == null || newLocale == null) throw new NullPointerException("Argument cannot be null")
-    else defaultPerCategory = defaultPerCategory + (category -> Some(newLocale))
+    if (category == null || newLocale == null) {
+      throw new NullPointerException("Argument cannot be null")
+    } else {
+      defaultPerCategory = defaultPerCategory + (category -> Some(newLocale))
+    }
   }
 
   /**
@@ -132,17 +137,20 @@ object LocaleRegistry {
       ldml.defaultNS.orElse(ldml.parent.flatMap(parentNumberingSystem))
 
     def parentSymbol(ldml: LDML, contains: LDMLDigitSymbols => Option[String]): Option[String] =
-      ldml.digitSymbols.flatMap(d => contains(d)).orElse(ldml.parent.flatMap(parentSymbol(_, contains)))
+      ldml.digitSymbols.flatMap(d => contains(d))
+        .orElse(ldml.parent.flatMap(parentSymbol(_, contains)))
 
     def setSymbolChar(ldml: LDML, contains: LDMLDigitSymbols => Option[String], set: Char => Unit): Unit =
-      parentSymbol(ldml, contains).foreach(v => if (v.isEmpty) set(0) else set(v.charAt(0)))
+      parentSymbol(ldml, contains).foreach(v =>
+        if (v.isEmpty) set(0) else set(v.charAt(0)))
 
     def setSymbolStr(ldml: LDML, contains: LDMLDigitSymbols => Option[String], set: String => Unit): Unit =
       parentSymbol(ldml, contains).foreach(set)
 
     val dfs = new DecimalFormatSymbols(locale)
     // Read the zero from the default numeric system
-    parentNumberingSystem(ldml).flatMap(_.digits.headOption).foreach(dfs.setZeroDigit)
+    parentNumberingSystem(ldml).flatMap(_.digits.headOption)
+      .foreach(dfs.setZeroDigit)
     // Set the components of the decimal format symbol
     setSymbolChar(ldml, _.decimal, dfs.setDecimalSeparator)
     setSymbolChar(ldml, _.group, dfs.setGroupingSeparator)
