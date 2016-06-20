@@ -125,16 +125,29 @@ object LocaleRegistry {
   }
 
   private def toDFS(locale: Locale, ldml: LDML): DecimalFormatSymbols = {
-    new DecimalFormatSymbols(locale)
+    val dfs = new DecimalFormatSymbols(locale)
+    ldml.digitSymbols.foreach {ds =>
+      // CLDR fixes the pattern character
+      // http://www.unicode.org/reports/tr35/tr35-numbers.html#Number_Format_Patterns
+      dfs.setDigit('#')
+      ds.decimal.filter(_.nonEmpty).foreach(v => dfs.setDecimalSeparator(v.charAt(0)))
+      ds.group.filter(_.nonEmpty).foreach(v => dfs.setGroupingSeparator(v.charAt(0)))
+      ds.list.filter(_.nonEmpty).foreach(v => dfs.setPatternSeparator(v.charAt(0)))
+      ds.percent.filter(_.nonEmpty).foreach(v => dfs.setPercent(v.charAt(0)))
+      ds.minus.filter(_.nonEmpty).foreach(v => dfs.setMinusSign(v.charAt(0)))
+      ds.perMille.filter(_.nonEmpty).foreach(v => dfs.setPerMill(v.charAt(0)))
+      ds.infinity.filter(_.nonEmpty).foreach(v => dfs.setInfinity(v))
+      ds.nan.filter(_.nonEmpty).foreach(v => dfs.setNaN(v))
+    }
+    dfs
   }
 
   def installLDML(ldml: LDML): Unit = {
     val locale = ldml.toLocale
     locales += ldml.languageTag -> locale
     decimalFormatSymbols += locale -> toDFS(locale, ldml)
-    println(decimalFormatSymbols)
-
   }
+
   def installLocale(json: String): Unit = {
     // TODO Support all the options for unicode, including variants, numeric regions, etc
     val simpleLocaleRegex = "([a-zA-Z]{2,3})[-_]([a-zA-Z]{2})?.*".r

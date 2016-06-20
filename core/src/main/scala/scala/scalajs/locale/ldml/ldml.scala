@@ -9,8 +9,8 @@ case class LDMLNumberingSystem(id: String)
 
 case class LDMLDigitSymbols(decimal: Option[String],
     group: Option[String],
+    list: Option[String],
     percent: Option[String],
-    plus: Option[String],
     minus: Option[String],
     perMille: Option[String],
     infinity: Option[String],

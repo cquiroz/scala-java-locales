@@ -17,6 +17,7 @@ case class LDMLNumericSystem(id: String, digits: String)
 case class XMLLDMLNumberSymbols(system: LDMLNumericSystem,
     decimal: Option[String] = None,
     group: Option[String] = None,
+    list: Option[String] = None,
     percent: Option[String] = None,
     plus: Option[String] = None,
     minus: Option[String] = None,
@@ -94,13 +95,13 @@ object CodeGenerator {
     val numericSymbols = ldml.defaultNS.flatMap(ldml.digitSymbols.get).map { symb =>
       val decimal = symb.decimal.fold(NONE)(s => SOME(LIT(s)))
       val group = symb.group.fold(NONE)(s => SOME(LIT(s)))
+      val list = symb.list.fold(NONE)(s => SOME(LIT(s)))
       val percent = symb.percent.fold(NONE)(s => SOME(LIT(s)))
-      val plus = symb.plus.fold(NONE)(s => SOME(LIT(s)))
       val minus = symb.minus.fold(NONE)(s => SOME(LIT(s)))
       val perMille = symb.perMille.fold(NONE)(s => SOME(LIT(s)))
       val infinity = symb.infinity.fold(NONE)(s => SOME(LIT(s)))
       val nan = symb.nan.fold(NONE)(s => SOME(LIT(s)))
-      Apply(ldmlNumericSym, decimal, group, percent, plus, minus, perMille, infinity, nan)
+      Apply(ldmlNumericSym, decimal, group, list, percent, minus, perMille, infinity, nan)
     }.fold(NONE)(ns => SOME(ns))
 
     LAZYVAL(ldml.scalaSafeName, "LDML") := Apply(ldmlSym, parent, ldmlLocaleTree, defaultNS, numericSymbols)
@@ -171,13 +172,14 @@ object ScalaLocaleCodeGen {
           // elements may not be present and they could be the empty string
           val decimal = symbolN(s \ "decimal")
           val group = symbolN(s \ "group")
+          val list = symbolN(s \ "list")
           val percentSymbol = symbolN(s \ "percentSign")
           val plusSign = symbolN(s \ "plusSign")
           val minusSign = symbolN(s \ "minusSign")
           val perMilleSign = symbolN(s \ "perMille")
-          val infiniteSign = symbolN(s \ "infinite")
+          val infiniteSign = symbolN(s \ "infinity")
           val nan = symbolN(s \ "nan")
-          val sym = XMLLDMLNumberSymbols(sns, decimal, group, percentSymbol, plusSign,
+          val sym = XMLLDMLNumberSymbols(sns, decimal, group, list, percentSymbol, plusSign,
             minusSign, perMilleSign, infiniteSign, nan)
           sns -> sym
       }
