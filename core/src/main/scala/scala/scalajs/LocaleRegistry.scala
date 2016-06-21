@@ -76,7 +76,7 @@ object LocaleRegistry {
   def initDefaultLocales(): Unit = {
     // Initialize
     defaultLocales.foreach {
-      case (_, l) => installLDML(l)
+      case (_, l) => installLocale(l)
     }
   }
 
@@ -166,43 +166,10 @@ object LocaleRegistry {
     dfs
   }
 
-  def installLDML(ldml: LDML): Unit = {
+  def installLocale(ldml: LDML): Unit = {
     val locale = ldml.toLocale
     locales += ldml.languageTag -> locale
     decimalFormatSymbols += locale -> toDFS(locale, ldml)
   }
 
-  def installLocale(json: String): Unit = {
-    // TODO Support all the options for unicode, including variants, numeric regions, etc
-    val simpleLocaleRegex = "([a-zA-Z]{2,3})[-_]([a-zA-Z]{2})?.*".r
-
-    /*val localeJson = js.JSON.parse(json).asInstanceOf[CLDR]
-
-    // Read basic locale data
-    val localeName = localeJson.locale.toString
-    val locale = localeName match {
-      case simpleLocaleRegex(lang, region) => Some(new Locale(lang, region, ""))
-      case _                               => None
-    }*/
-
-    /*val dfs = if (localeJson.number.nu.contains("latn")) {
-      // Uses latin numbers
-      val zeroSign = '0'
-      val decimal = localeJson.number.symbols.latn.decimal.charAt(0)
-      val negativeSign = localeJson.number.symbols.latn.minusSign.charAt(0)
-
-      val decimalFormatSymbol = new DecimalFormatSymbols()
-      decimalFormatSymbol.setZeroDigit(zeroSign)
-      decimalFormatSymbol.setDecimalSeparator(decimal)
-      decimalFormatSymbol.setMinusSign(negativeSign)
-      Some(decimalFormatSymbol)
-    } else {
-      None
-    }*/
-
-    /*locale.foreach {l =>
-      locales = locales + (localeName -> LocaleCldr(l, dfs)) + (localeName.replaceAll("-", "_") -> LocaleCldr(l, dfs))
-    }*/
-
-  }
 }
