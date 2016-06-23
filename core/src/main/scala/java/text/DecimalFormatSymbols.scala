@@ -47,6 +47,7 @@ object DecimalFormatSymbols {
     setSymbolChar(ldml, _.perMille, dfs.setPerMill)
     setSymbolStr(ldml, _.infinity, dfs.setInfinity)
     setSymbolStr(ldml, _.nan, dfs.setNaN)
+    setSymbolStr(ldml, _.exp, dfs.setExponentSeparator)
     // CLDR fixes the pattern character
     // http://www.unicode.org/reports/tr35/tr35-numbers.html#Number_Format_Patterns
     dfs.setDigit('#')
@@ -65,6 +66,7 @@ class DecimalFormatSymbols(locale: Locale) {
   private[this] var patternSeparator: Option[Char] = None
   private[this] var infinity: Option[String] = None
   private[this] var nan: Option[String] = None
+  private[this] var exp: Option[String] = None
 
   DecimalFormatSymbols.initialize(locale, this)
 
@@ -137,4 +139,10 @@ class DecimalFormatSymbols(locale: Locale) {
 
   //def setMonetaryDecimalSeparator(sep: Char): Unit
 
+  def getExponentSeparator(): String= exp.getOrElse("")
+
+  def setExponentSeparator(sep: String): Unit = {
+    if (sep == null) throw new NullPointerException()
+    this.exp = Some(sep)
+  }
 }

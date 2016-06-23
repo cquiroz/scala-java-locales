@@ -23,7 +23,8 @@ case class XMLLDMLNumberSymbols(system: LDMLNumericSystem,
     minus: Option[String] = None,
     perMille: Option[String] = None,
     infinity: Option[String] = None,
-    nan: Option[String] = None)
+    nan: Option[String] = None,
+    exp: Option[String] = None)
 
 case class XMLLDMLLocale(language: String, territory: Option[String],
                          variant: Option[String], script: Option[String])
@@ -102,7 +103,9 @@ object CodeGenerator {
       val perMille = symb.perMille.fold(NONE)(s => SOME(LIT(s)))
       val infinity = symb.infinity.fold(NONE)(s => SOME(LIT(s)))
       val nan = symb.nan.fold(NONE)(s => SOME(LIT(s)))
-      Apply(ldmlNumericSym, decimal, group, list, percent, minus, perMille, infinity, nan)
+      val exp = symb.exp.fold(NONE)(s => SOME(LIT(s)))
+      Apply(ldmlNumericSym, decimal, group, list, percent, minus, perMille,
+        infinity, nan, exp)
     }.fold(NONE)(ns => SOME(ns))
 
     LAZYVAL(ldml.scalaSafeName, "LDML") := Apply(ldmlSym, parent, ldmlLocaleTree, defaultNS, numericSymbols)
@@ -191,8 +194,9 @@ object ScalaLocaleCodeGen {
           val perMilleSign = symbolN(s \ "perMille")
           val infiniteSign = symbolN(s \ "infinity")
           val nan = symbolN(s \ "nan")
+          val exp = symbolN(s \ "exponential")
           val sym = XMLLDMLNumberSymbols(sns, decimal, group, list,
-            percentSymbol, plusSign, minusSign, perMilleSign, infiniteSign, nan)
+            percentSymbol, plusSign, minusSign, perMilleSign, infiniteSign, nan, exp)
           sns -> sym
       }
       symbols.headOption
