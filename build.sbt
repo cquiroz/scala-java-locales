@@ -4,17 +4,19 @@ import LDMLTasks._
 
 val cldrVersion = settingKey[String]("The version of CLDR used.")
 lazy val downloadFromZip: TaskKey[Unit] =
-  taskKey[Unit]("Download the sbt zip and extract it to ./temp")
+  taskKey[Unit]("Download the sbt zip and extract it")
 
 val commonSettings: Seq[Setting[_]] = Seq(
   version := "0.1.0-SNAPSHOT",
-  organization := "com.github.cquiroz.scala-js",
+  cldrVersion := "29",
+  organization := "com.github.cquiroz",
   scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.4", "2.11.8"),
   scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
-  /*mappings in (Compile, packageBin) ~= {
-    _.filter(!_._2.endsWith(".class"))
-  },*/
+  mappings in (Compile, packageBin) ~= {
+    // Exclude CLDR files...
+    _.filter(!_._2.contains("core"))
+  },
   exportJars := true,
   publishMavenStyle := true,
   publishTo := {
@@ -39,20 +41,19 @@ val commonSettings: Seq[Setting[_]] = Seq(
 lazy val root: Project = project.in(file("."))
   .settings(commonSettings)
   .settings(
-      publish := {},
-      publishLocal := {}
+    publish := {},
+    publishLocal := {}
   )
   .aggregate(coreJS, coreJVM, testSuiteJS, testSuiteJVM)
 
 lazy val core: CrossProject = crossProject.crossType(CrossType.Pure).
   settings(commonSettings: _*).
   settings(
-    name := "scalajs-java-locale",
-    cldrVersion := "29",
+    name := "scalajs-locales",
     downloadFromZip := {
       val xmlFiles = ((resourceDirectory in Compile) / "core").value
       if (java.nio.file.Files.notExists(xmlFiles.toPath)) {
-        println("CLDR files missing, downloading...")
+        println(s"CLDR files missing, downloading version ${cldrVersion.value} ...")
         IO.unzipURL(
           new URL(s"http://unicode.org/Public/cldr/${cldrVersion.value}/core.zip"),
           xmlFiles)
@@ -79,12 +80,14 @@ lazy val testSuite: CrossProject = CrossProject(
   jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin)).
   settings(commonSettings: _*).
   settings(
+    publish := {},
+    publishLocal := {},
     testOptions +=
       Tests.Argument(TestFramework("com.novocode.junit.JUnitFramework"),
         "-v", "-a")
   ).
   jsSettings(
-    name := "java locale testSuite on JS",
+    name := "scalajs-locales testSuite on JS",
     scalaJSUseRhino := false
   ).
   jsConfigure(_.dependsOn(coreJS)).
@@ -94,7 +97,7 @@ lazy val testSuite: CrossProject = CrossProject(
     // Use CLDR provider for locales
     // https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr
     javaOptions in Test += "-Djava.locale.providers=CLDR",
-    name := "java locale testSuite on JVM",
+    name := "scalajs-locales testSuite on JVM",
     libraryDependencies +=
       "com.novocode" % "junit-interface" % "0.9" % "test"
   ).

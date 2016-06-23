@@ -214,8 +214,8 @@ object ScalaLocaleCodeGen {
     }
   }
 
-  val parser: SAXParser = {
-    // Use a non validating parser for speed
+  // Note this must be a def or there could be issues with concurrency
+  def parser: SAXParser = {
     val f = SAXParserFactory.newInstance()
     f.setNamespaceAware(false)
     f.setValidating(false)
