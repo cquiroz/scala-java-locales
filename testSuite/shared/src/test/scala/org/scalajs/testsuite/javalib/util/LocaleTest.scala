@@ -242,21 +242,15 @@ class LocaleTest extends LocaleTestSetup {
     assertEquals(Locale.TRADITIONAL_CHINESE, Locale.TAIWAN)
   }
 
-  // Unlike the JVM, the Js backend cannot give a default locale
+  // The tests operate with ENGLISH as the default locale
   @Test def test_no_default_locale(): Unit = {
-    if (!Platform.executingInJVM) {
-      expectThrows(classOf[IllegalStateException], Locale.getDefault)
-    }
+    assertEquals(Locale.ENGLISH, Locale.getDefault)
   }
 
   // Unlike the JVM, the Js backend cannot give a default locale
   @Test def test_no_default_locale_per_category(): Unit = {
-    if (!Platform.executingInJVM) {
-      expectThrows(classOf[IllegalStateException],
-          Locale.getDefault(Locale.Category.DISPLAY))
-      expectThrows(classOf[IllegalStateException],
-          Locale.getDefault(Locale.Category.FORMAT))
-    }
+    assertEquals(Locale.ENGLISH, Locale.getDefault(Locale.Category.DISPLAY))
+    assertEquals(Locale.ENGLISH, Locale.getDefault(Locale.Category.FORMAT))
     expectThrows(classOf[NullPointerException], Locale.getDefault(null))
   }
 
