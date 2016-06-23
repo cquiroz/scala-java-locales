@@ -3,6 +3,7 @@ package java.text
 import java.util.Locale
 
 import scala.scalajs.LocaleRegistry
+import scala.scalajs.locale.ldml.{LDML, LDMLDigitSymbols, LDMLNumberingSystem}
 
 object DecimalFormatSymbols {
 
@@ -12,14 +13,48 @@ object DecimalFormatSymbols {
     getInstance(Locale.getDefault(Locale.Category.FORMAT))
 
   def getInstance(locale: Locale): DecimalFormatSymbols =
-    LocaleRegistry.decimalFormatSymbol(locale)
-      .getOrElse(throw new IllegalArgumentException("Unknown locale"))
+    initialize(locale, new DecimalFormatSymbols(locale))
+
+  private def initialize(locale: Locale, dfs: DecimalFormatSymbols): DecimalFormatSymbols = {
+    LocaleRegistry.ldml(locale).map(toDFS(locale, dfs, _)).getOrElse(dfs)
+  }
+
+  private def toDFS(locale: Locale, dfs: DecimalFormatSymbols, ldml: LDML): DecimalFormatSymbols = {
+
+    def parentNumberingSystem(ldml: LDML): Option[LDMLNumberingSystem] =
+      ldml.defaultNS.orElse(ldml.parent.flatMap(parentNumberingSystem))
+
+    def parentSymbol(ldml: LDML, contains: LDMLDigitSymbols => Option[String]): Option[String] =
+      ldml.digitSymbols.flatMap(d => contains(d))
+        .orElse(ldml.parent.flatMap(parentSymbol(_, contains)))
+
+    def setSymbolChar(ldml: LDML, contains: LDMLDigitSymbols => Option[String], set: Char => Unit): Unit =
+      parentSymbol(ldml, contains).foreach(v =>
+        if (v.isEmpty) set(0) else set(v.charAt(0)))
+
+    def setSymbolStr(ldml: LDML, contains: LDMLDigitSymbols => Option[String], set: String => Unit): Unit =
+      parentSymbol(ldml, contains).foreach(set)
+
+    // Read the zero from the default numeric system
+    parentNumberingSystem(ldml).flatMap(_.digits.headOption)
+      .foreach(dfs.setZeroDigit)
+    // Set the components of the decimal format symbol
+    setSymbolChar(ldml, _.decimal, dfs.setDecimalSeparator)
+    setSymbolChar(ldml, _.group, dfs.setGroupingSeparator)
+    setSymbolChar(ldml, _.list, dfs.setPatternSeparator)
+    setSymbolChar(ldml, _.percent, dfs.setPercent)
+    setSymbolChar(ldml, _.minus, dfs.setMinusSign)
+    setSymbolChar(ldml, _.perMille, dfs.setPerMill)
+    setSymbolStr(ldml, _.infinity, dfs.setInfinity)
+    setSymbolStr(ldml, _.nan, dfs.setNaN)
+    // CLDR fixes the pattern character
+    // http://www.unicode.org/reports/tr35/tr35-numbers.html#Number_Format_Patterns
+    dfs.setDigit('#')
+    dfs
+  }
 }
 
 class DecimalFormatSymbols(locale: Locale) {
-
-  def this() = this(Locale.getDefault(Locale.Category.FORMAT))
-
   private[this] var zeroDigit: Option[Char] = None
   private[this] var minusSign: Option[Char] = None
   private[this] var decimalSeparator: Option[Char] = None
@@ -30,6 +65,10 @@ class DecimalFormatSymbols(locale: Locale) {
   private[this] var patternSeparator: Option[Char] = None
   private[this] var infinity: Option[String] = None
   private[this] var nan: Option[String] = None
+
+  DecimalFormatSymbols.initialize(locale, this)
+
+  def this() = this(Locale.getDefault(Locale.Category.FORMAT))
 
   def getZeroDigit(): Char = zeroDigit.getOrElse(0)
 
