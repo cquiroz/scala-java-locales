@@ -96,7 +96,7 @@ lazy val testSuite: CrossProject = CrossProject(
     fork in Test := true,
     // Use CLDR provider for locales
     // https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr
-    javaOptions in Test += "-Djava.locale.providers=CLDR",
+    javaOptions in Test ++= Seq("-Duser.language=en", "-Duser.country=", "-Djava.locale.providers=CLDR"),
     name := "scalajs-locales testSuite on JVM",
     libraryDependencies +=
       "com.novocode" % "junit-interface" % "0.9" % "test"
