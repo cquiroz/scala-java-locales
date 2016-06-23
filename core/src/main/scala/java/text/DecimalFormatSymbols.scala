@@ -55,7 +55,7 @@ object DecimalFormatSymbols {
   }
 }
 
-class DecimalFormatSymbols(locale: Locale) {
+class DecimalFormatSymbols(private[this] val locale: Locale) extends Cloneable {
   private[this] var zeroDigit: Option[Char] = None
   private[this] var minusSign: Option[Char] = None
   private[this] var decimalSeparator: Option[Char] = None
@@ -145,4 +145,43 @@ class DecimalFormatSymbols(locale: Locale) {
     if (sep == null) throw new NullPointerException()
     this.exp = Some(sep)
   }
+
+  override def clone(): AnyRef =
+    new DecimalFormatSymbols(locale)
+
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case d: DecimalFormatSymbols =>
+        d.getZeroDigit == getZeroDigit &&
+        d.getGroupingSeparator == getGroupingSeparator &&
+        d.getDecimalSeparator == getDecimalSeparator &&
+        d.getPerMill == getPerMill &&
+        d.getPercent == getPercent &&
+        d.getDigit == getDigit &&
+        d.getPatternSeparator == getPatternSeparator &&
+        d.getInfinity == getInfinity  &&
+        d.getNaN == getNaN &&
+        d.getMinusSign == getMinusSign &&
+        d.getExponentSeparator == getExponentSeparator
+      case _ => false
+    }
+
+  // Oddly the JVM seems to always return the same
+  // it breaks the hashCode contract, will skip implementing
+  //override def hashCode(): Int = locale.hashCode()
+    /*val prime = 31
+    var result = 1
+    result = prime * result + getZeroDigit().hashCode()
+    result = prime * result + getGroupingSeparator().hashCode()
+    result = prime * result + getDecimalSeparator().hashCode()
+    result = prime * result + getPerMill().hashCode()
+    result = prime * result + getPercent().hashCode()
+    result = prime * result + getDigit().hashCode()
+    result = prime * result + getPatternSeparator().hashCode()
+    result = prime * result + (if (getInfinity() != null) getInfinity().hashCode() else 0)
+    result = prime * result + (if (getNaN() != null) getNaN().hashCode() else 0)
+    result = prime * result + getMinusSign().hashCode()
+    result = prime * result + getExponentSeparator().hashCode()
+    result
+  }*/
 }

@@ -121,4 +121,38 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     dfs.setExponentSeparator("exp")
     assertEquals("exp", dfs.getExponentSeparator)
   }
+
+  @Test def test_clone(): Unit = {
+    val dfs = new DecimalFormatSymbols()
+    assertEquals(dfs, dfs.clone())
+    assertNotSame(dfs, dfs.clone())
+  }
+
+  @Test def test_equals(): Unit = {
+    val dfs = new DecimalFormatSymbols()
+    assertEquals(dfs, dfs)
+    assertSame(dfs, dfs)
+    assertFalse(dfs.equals(null))
+    assertFalse(dfs.equals(1))
+    val dfs2 = new DecimalFormatSymbols()
+    assertEquals(dfs, dfs2)
+    assertNotSame(dfs, dfs2)
+    dfs2.setDigit('i')
+    assertFalse(dfs.equals(dfs2))
+  }
+
+  @Ignore @Test def test_hash_code(): Unit = {
+    val dfs = new DecimalFormatSymbols()
+    assertEquals(dfs.hashCode, dfs.hashCode)
+    val dfs2 = new DecimalFormatSymbols()
+    assertEquals(dfs.hashCode, dfs2.hashCode)
+    dfs2.setExponentSeparator("abc")
+    // These tests should fail but they pass on the JVM
+    assertEquals(dfs.hashCode, dfs2.hashCode)
+    testData.filter(_._1 != Locale.ROOT).foreach {
+      case (l, symbols) =>
+        val df = DecimalFormatSymbols.getInstance(l)
+        assertFalse(dfs.hashCode.equals(df.hashCode))
+    }
+  }
 }
