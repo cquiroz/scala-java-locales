@@ -85,6 +85,8 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
 
   @Test def test_defaults(): Unit = {
     val dfs = new DecimalFormatSymbols()
+    println(Locale.getDefault)
+    println(Locale.getDefault.toLanguageTag)
     test_dfs(dfs, englishSymbols)
   }
 
