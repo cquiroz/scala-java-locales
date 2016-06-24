@@ -583,5 +583,5 @@ class Locale private[util] (private[this] val language: String,
     case _         => false
   }
 
-  override def hashCode(): Int = toString.hashCode
+  override def hashCode(): Int = toLanguageTag.hashCode
 }

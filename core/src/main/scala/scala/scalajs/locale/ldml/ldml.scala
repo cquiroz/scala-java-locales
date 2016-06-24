@@ -14,7 +14,8 @@ case class LDMLDigitSymbols(decimal: Option[String],
     minus: Option[String],
     perMille: Option[String],
     infinity: Option[String],
-    nan: Option[String])
+    nan: Option[String],
+    exp: Option[String])
 
 /**
   * Interfaces describing an LDML Locale
