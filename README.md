@@ -1,1 +1,64 @@
-# ScalaJSLocaleGen
+# scala-locales
+
+[![Build Status](https://api.travis-ci.org/cquiroz/scalajs-locales.svg?branch=master)](https://travis-ci.org/cquiroz/scalajs-locales)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.8.svg)](https://www.scala-js.org/)
+
+`scalajs-locales` is a clean-room BSD-licensed implementation of the `java.util.Locale` API and related classes as defined on JDK8, mostly for Scala.js usage. It enables the locale API in Scala.js projects and supports usage requiring locales like number and dates formatting.
+
+## Usage
+
+Simply add the following line to your sbt settings:
+
+```scala
+libraryDependencies += "com.github.cquiroz" %%% "scalajs-locales" % "0.1.0-SNAPSHOT"
+```
+
+If you have a `crossProject`, the setting must be used only in the JS part:
+
+```scala
+lazy val myCross = crossProject.
+  ...
+  jsSettings.(
+    libraryDependencies += "com.github.cquiroz" %%% "scalajs-locales" % "0.1.0-SNAPSHOT"
+  )
+```
+
+**Requirement**: you must use a host JDK8 to *build* your project, i.e., to
+launch sbt. `scalajs-locales` does not work on earlier JDKs.
+
+## Work in Progress / linking errors
+
+This library is a work in progress and there are some unimplemented methods. If you use any of those on your Scala.js code, you will get linking errors.
+
+## Usage
+
+TODO
+
+## CLDR
+
+`java.util.Locale` is a relatively simple class and by itself it doesn't provide too much functionality. The key for its usefulness is on providing data about the locale especially in terms of classes like `java.text.DecimalFormatSymbols`, `java.text.DateFormatSymbols`, etc. The [Unicode CLDR](http://cldr.unicode.org/) project is a large repository of locale data that can be used to build the supporting classes, e.g. to get the `DecimalFormatSymbols` for a given locale.
+
+Most of this project is in the form of code generated from the CLDR data. While many similar projects will create compact text or binary representation, this project will generate class instances for locale. While this maybe larger at first, Scala.js code optimization should be able to remove the unused code during optimization.
+
+Starting on Java 8, [CLDR](https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr) is also used by the JVM, for comparisons the java flag `-Djava.locale.providers=CLDR` should be set
+
+## Disclaimer
+
+Locales and the CLDR specifications are vast subjects. The locales in this project are as good as the data and the interpretation of the specification is. While the data and implementation has been tested as much as possible, it is possible and likely that there are errors. Please post an issue or submit a PR if you find such errors.
+
+In general the API attempts to behave be as close as possible to what happens on the JVM, e.g. the numeric system in Java seems to default to `latn` unless expilcitely requested on the locale name.
+
+## Demo
+
+TODO
+
+## Dependencies
+
+`scalajs-java-locale` explicitly doesn't have any dependencies. The `sbt` project has some dependencies for code generation, in particular [treehugger](https://github.com/eed3si9n/treehugger) but they don't carry over to the produced code
+
+## License
+
+Copyright &copy; 2016 Carlos Quiroz
+
+`scala-locales` is distributed under the
+[BSD 3-Clause license](./LICENSE.txt).
