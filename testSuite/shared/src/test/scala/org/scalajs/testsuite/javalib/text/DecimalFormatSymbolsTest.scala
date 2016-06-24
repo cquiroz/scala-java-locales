@@ -9,6 +9,9 @@ import org.scalajs.testsuite.utils.LocaleTestSetup
 import org.scalajs.testsuite.utils.Platform
 import org.scalajs.testsuite.utils.AssertThrows.expectThrows
 
+import scala.scalajs.LocaleRegistry
+import scala.scalajs.locale.ldml.data.all.af
+
 class DecimalFormatSymbolsTest extends LocaleTestSetup {
   // Clean up the locale database, there are different implementations for
   // the JVM and JS
@@ -61,6 +64,15 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     }
   }
 
+  @Test def test_available_locales(): Unit = {
+    val initial = DecimalFormatSymbols.getAvailableLocales.length
+    assertTrue(initial > 0)
+    if (!Platform.executingInJVM) {
+      LocaleRegistry.installLocale(af)
+      assertEquals(initial + 1, DecimalFormatSymbols.getAvailableLocales.length)
+    }
+  }
+
   @Test def test_decimal_format_jp(): Unit = {
     // The JVM Japanese NaN is not the same as from CLDR
     List(Locale.JAPAN, Locale.JAPANESE).foreach { l =>
@@ -85,8 +97,6 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
 
   @Test def test_defaults(): Unit = {
     val dfs = new DecimalFormatSymbols()
-    println(Locale.getDefault)
-    println(Locale.getDefault.toLanguageTag)
     test_dfs(dfs, englishSymbols)
   }
 

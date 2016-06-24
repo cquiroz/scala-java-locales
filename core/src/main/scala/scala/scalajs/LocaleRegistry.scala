@@ -5,7 +5,7 @@ import java.util.Locale
 
 import scala.collection.Map
 import scala.collection.mutable
-import locale.ldml.{LDML, LDMLDigitSymbols, LDMLNumberingSystem}
+import locale.ldml.LDML
 import locale.ldml.data.minimal
 
 /**
