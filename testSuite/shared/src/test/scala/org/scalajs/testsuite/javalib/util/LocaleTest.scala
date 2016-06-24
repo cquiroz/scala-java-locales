@@ -247,7 +247,7 @@ class LocaleTest extends LocaleTestSetup {
     assertEquals(Locale.ENGLISH, Locale.getDefault)
   }
 
-  // Unlike the JVM, the Js backend cannot give a default locale
+  // The tests operate with ENGLISH as the default locale
   @Test def test_no_default_locale_per_category(): Unit = {
     assertEquals(Locale.ENGLISH, Locale.getDefault(Locale.Category.DISPLAY))
     assertEquals(Locale.ENGLISH, Locale.getDefault(Locale.Category.FORMAT))

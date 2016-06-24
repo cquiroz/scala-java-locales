@@ -7,7 +7,7 @@ import scala.scalajs.locale.ldml.{LDML, LDMLDigitSymbols, LDMLNumberingSystem}
 
 object DecimalFormatSymbols {
 
-  def getAvailableLocales(): Array[Locale] = Array.empty
+  def getAvailableLocales(): Array[Locale] = Locale.getAvailableLocales
 
   def getInstance(): DecimalFormatSymbols =
     getInstance(Locale.getDefault(Locale.Category.FORMAT))
