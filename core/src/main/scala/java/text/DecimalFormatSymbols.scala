@@ -2,8 +2,8 @@ package java.text
 
 import java.util.Locale
 
-import scala.scalajs.LocaleRegistry
-import scala.scalajs.locale.ldml.{LDML, LDMLDigitSymbols, LDMLNumberingSystem}
+import scala.scalajs.locale.LocaleRegistry
+import scala.scalajs.locale.ldml.{LDML, Symbols, NumberingSystem}
 
 object DecimalFormatSymbols {
 
@@ -21,18 +21,18 @@ object DecimalFormatSymbols {
 
   private def toDFS(locale: Locale, dfs: DecimalFormatSymbols, ldml: LDML): DecimalFormatSymbols = {
 
-    def parentNumberingSystem(ldml: LDML): Option[LDMLNumberingSystem] =
+    def parentNumberingSystem(ldml: LDML): Option[NumberingSystem] =
       ldml.defaultNS.orElse(ldml.parent.flatMap(parentNumberingSystem))
 
-    def parentSymbol(ldml: LDML, contains: LDMLDigitSymbols => Option[String]): Option[String] =
+    def parentSymbol(ldml: LDML, contains: Symbols => Option[String]): Option[String] =
       ldml.digitSymbols.flatMap(d => contains(d))
         .orElse(ldml.parent.flatMap(parentSymbol(_, contains)))
 
-    def setSymbolChar(ldml: LDML, contains: LDMLDigitSymbols => Option[String], set: Char => Unit): Unit =
+    def setSymbolChar(ldml: LDML, contains: Symbols => Option[String], set: Char => Unit): Unit =
       parentSymbol(ldml, contains).foreach(v =>
         if (v.isEmpty) set(0) else set(v.charAt(0)))
 
-    def setSymbolStr(ldml: LDML, contains: LDMLDigitSymbols => Option[String], set: String => Unit): Unit =
+    def setSymbolStr(ldml: LDML, contains: Symbols => Option[String], set: String => Unit): Unit =
       parentSymbol(ldml, contains).foreach(set)
 
     // Read the zero from the default numeric system

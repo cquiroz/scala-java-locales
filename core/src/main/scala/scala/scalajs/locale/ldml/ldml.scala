@@ -5,17 +5,17 @@ import java.util.Locale
 /**
   * Interfaces describing the digit symbols
   */
-case class LDMLNumberingSystem(id: String, digits: Seq[Char])
+case class NumberingSystem(id: String, digits: Seq[Char])
 
-case class LDMLDigitSymbols(decimal: Option[String],
-    group: Option[String],
-    list: Option[String],
-    percent: Option[String],
-    minus: Option[String],
-    perMille: Option[String],
-    infinity: Option[String],
-    nan: Option[String],
-    exp: Option[String])
+case class Symbols(decimal: Option[String],
+                   group: Option[String],
+                   list: Option[String],
+                   percent: Option[String],
+                   minus: Option[String],
+                   perMille: Option[String],
+                   infinity: Option[String],
+                   nan: Option[String],
+                   exp: Option[String])
 
 /**
   * Interfaces describing an LDML Locale
@@ -26,8 +26,8 @@ case class LDMLLocale(language: String, territory: Option[String],
 /**
   * Wrapper to LDML
   */
-case class LDML(parent: Option[LDML], locale: LDMLLocale, defaultNS: Option[LDMLNumberingSystem],
-    digitSymbols: Option[LDMLDigitSymbols] = None) {
+case class LDML(parent: Option[LDML], locale: LDMLLocale, defaultNS: Option[NumberingSystem],
+                digitSymbols: Option[Symbols] = None) {
 
   def languageTag: String = toLocale.toLanguageTag
 

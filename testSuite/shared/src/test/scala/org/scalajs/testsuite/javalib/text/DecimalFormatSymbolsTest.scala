@@ -9,7 +9,7 @@ import org.scalajs.testsuite.utils.LocaleTestSetup
 import org.scalajs.testsuite.utils.Platform
 import org.scalajs.testsuite.utils.AssertThrows.expectThrows
 
-import scala.scalajs.LocaleRegistry
+import scala.scalajs.locale.LocaleRegistry
 import scala.scalajs.locale.ldml.data.all.af
 
 class DecimalFormatSymbolsTest extends LocaleTestSetup {
@@ -69,6 +69,7 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     assertTrue(initial > 0)
     if (!Platform.executingInJVM) {
       LocaleRegistry.installLocale(af)
+      // In JS all locales have a decimal format symbols instance
       assertEquals(initial + 1, DecimalFormatSymbols.getAvailableLocales.length)
     }
   }

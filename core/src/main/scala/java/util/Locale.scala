@@ -3,8 +3,7 @@ package java.util
 import scala.collection.{Map => SMap, Set => SSet}
 import scala.collection.JavaConverters._
 import scala.util.matching.Regex
-import scala.scalajs.LocaleRegistry
-import scala.scalajs.locale.BCP47
+import scala.scalajs.locale.{BCP47, LocaleRegistry}
 import scala.scalajs.locale.BCP47.{GrandfatheredTag, LanguageTag, PrivateUseTag}
 import scala.scalajs.locale.ldml.data.metadata
 
