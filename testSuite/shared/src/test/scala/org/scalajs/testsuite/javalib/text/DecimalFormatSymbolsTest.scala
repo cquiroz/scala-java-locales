@@ -11,6 +11,8 @@ import org.scalajs.testsuite.utils.AssertThrows.expectThrows
 
 import scala.scalajs.locale.LocaleRegistry
 import scala.scalajs.locale.ldml.data.all.af
+import scala.scalajs.locale.ldml.data.all.ar
+import scala.scalajs.locale.ldml.data.all.bn
 
 class DecimalFormatSymbolsTest extends LocaleTestSetup {
   // Clean up the locale database, there are different implementations for
@@ -19,7 +21,7 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
 
   val englishSymbols = List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
 
-  val testData = List(
+  val standardLocalesData = List(
     Locale.ROOT                -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     Locale.ENGLISH             -> englishSymbols,
     Locale.FRENCH              -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
@@ -42,6 +44,10 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     Locale.CANADA_FRENCH       -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
   )
 
+  val extraLocalesData = List(
+    (ar, "ar") -> List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس")
+  )
+
   def test_dfs(dfs: DecimalFormatSymbols, symbols: List[String]): Unit = {
     assertEquals(symbols(0).charAt(0), dfs.getZeroDigit)
     assertEquals(symbols(1).charAt(0), dfs.getDecimalSeparator)
@@ -51,14 +57,27 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     assertEquals(symbols(5).charAt(0), dfs.getDigit)
     assertEquals(symbols(6).charAt(0), dfs.getPatternSeparator)
     assertEquals(symbols(7), dfs.getInfinity)
-    assertEquals(symbols(8), dfs.getNaN)
+    // Sometimes the JVM uses unicode 'SPACE' instead of 'NO-BREAK SPACE'
+    assertEquals(symbols(8), dfs.getNaN.replace('\u00A0', '\u0020'))
     assertEquals(symbols(9).charAt(0), dfs.getMinusSign)
     assertEquals(symbols(10), dfs.getExponentSeparator)
   }
 
-  @Test def test_default_locales_decimal_format_symbol(): Unit = {
-    testData.foreach {
+  @Ignore @Test def test_default_locales_decimal_format_symbol(): Unit = {
+    standardLocalesData.foreach {
       case (l, symbols) =>
+        val dfs = DecimalFormatSymbols.getInstance(l)
+        test_dfs(dfs, symbols)
+    }
+  }
+
+  @Test def test_extra_locales_decimal_format_symbol(): Unit = {
+    extraLocalesData.foreach {
+      case ((d, tag), symbols) =>
+        if (!Platform.executingInJVM) {
+          LocaleRegistry.installLocale(d)
+        }
+        val l = Locale.forLanguageTag(tag)
         val dfs = DecimalFormatSymbols.getInstance(l)
         test_dfs(dfs, symbols)
     }
@@ -162,7 +181,7 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     dfs2.setExponentSeparator("abc")
     // These tests should fail but they pass on the JVM
     assertEquals(dfs.hashCode, dfs2.hashCode)
-    testData.filter(_._1 != Locale.ROOT).foreach {
+    standardLocalesData.filter(_._1 != Locale.ROOT).foreach {
       case (l, symbols) =>
         val df = DecimalFormatSymbols.getInstance(l)
         assertFalse(dfs.hashCode.equals(df.hashCode))

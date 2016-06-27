@@ -4,6 +4,8 @@ import java.util.Locale
 
 import scala.scalajs.locale.LocaleRegistry
 import scala.scalajs.locale.ldml.{LDML, Symbols, NumberingSystem}
+import scala.scalajs.locale.ldml.data.numericsystems.latn
+import scala.scalajs.locale.ldml.data.numericsystems.arab
 
 object DecimalFormatSymbols {
 
@@ -16,38 +18,42 @@ object DecimalFormatSymbols {
     initialize(locale, new DecimalFormatSymbols(locale))
 
   private def initialize(locale: Locale, dfs: DecimalFormatSymbols): DecimalFormatSymbols = {
-    LocaleRegistry.ldml(locale).map(toDFS(locale, dfs, _)).getOrElse(dfs)
+    LocaleRegistry.ldml(locale).map(l => toDFS(locale, dfs, l, l.defaultNS.getOrElse(latn))).getOrElse(dfs)
   }
 
-  private def toDFS(locale: Locale, dfs: DecimalFormatSymbols, ldml: LDML): DecimalFormatSymbols = {
+  private def toDFS(locale: Locale, dfs: DecimalFormatSymbols,
+     ldml: LDML, ns: NumberingSystem): DecimalFormatSymbols = {
 
     def parentNumberingSystem(ldml: LDML): Option[NumberingSystem] =
       ldml.defaultNS.orElse(ldml.parent.flatMap(parentNumberingSystem))
 
-    def parentSymbol(ldml: LDML, contains: Symbols => Option[String]): Option[String] =
-      ldml.digitSymbols.flatMap(d => contains(d))
-        .orElse(ldml.parent.flatMap(parentSymbol(_, contains)))
+    def parentSymbol(ldml: LDML, ns: NumberingSystem, contains: Symbols => Option[String]): Option[String] =
+      ldml.digitSymbols.find(_.ns == ns).flatMap(d => contains(d))
+        .orElse(ldml.parent.flatMap(parentSymbol(_, ns, contains)))
 
-    def setSymbolChar(ldml: LDML, contains: Symbols => Option[String], set: Char => Unit): Unit =
-      parentSymbol(ldml, contains).foreach(v =>
-        if (v.isEmpty) set(0) else set(v.charAt(0)))
+    def parentSymbolC(ldml: LDML, ns: NumberingSystem, contains: Symbols => Option[Char]): Option[Char] =
+      ldml.digitSymbols.find(_.ns == ns).flatMap(d => contains(d))
+        .orElse(ldml.parent.flatMap(parentSymbolC(_, ns, contains)))
 
-    def setSymbolStr(ldml: LDML, contains: Symbols => Option[String], set: String => Unit): Unit =
-      parentSymbol(ldml, contains).foreach(set)
+    def setSymbolCharC(ldml: LDML, ns: NumberingSystem, contains: Symbols => Option[Char], set: Char => Unit): Unit =
+      parentSymbolC(ldml, ns, contains).foreach(v => set(v))
+
+    def setSymbolStr(ldml: LDML, ns: NumberingSystem, contains: Symbols => Option[String], set: String => Unit): Unit =
+      parentSymbol(ldml, ns, contains).foreach(set)
 
     // Read the zero from the default numeric system
     parentNumberingSystem(ldml).flatMap(_.digits.headOption)
       .foreach(dfs.setZeroDigit)
     // Set the components of the decimal format symbol
-    setSymbolChar(ldml, _.decimal, dfs.setDecimalSeparator)
-    setSymbolChar(ldml, _.group, dfs.setGroupingSeparator)
-    setSymbolChar(ldml, _.list, dfs.setPatternSeparator)
-    setSymbolChar(ldml, _.percent, dfs.setPercent)
-    setSymbolChar(ldml, _.minus, dfs.setMinusSign)
-    setSymbolChar(ldml, _.perMille, dfs.setPerMill)
-    setSymbolStr(ldml, _.infinity, dfs.setInfinity)
-    setSymbolStr(ldml, _.nan, dfs.setNaN)
-    setSymbolStr(ldml, _.exp, dfs.setExponentSeparator)
+    setSymbolCharC(ldml, ns, _.decimal, dfs.setDecimalSeparator)
+    setSymbolCharC(ldml, ns, _.group, dfs.setGroupingSeparator)
+    setSymbolCharC(ldml, ns, _.list, dfs.setPatternSeparator)
+    setSymbolCharC(ldml, ns, _.percent, dfs.setPercent)
+    setSymbolCharC(ldml, ns, _.minus, dfs.setMinusSign)
+    setSymbolCharC(ldml, ns, _.perMille, dfs.setPerMill)
+    setSymbolStr(ldml, ns, _.infinity, dfs.setInfinity)
+    setSymbolStr(ldml, ns, _.nan, dfs.setNaN)
+    setSymbolStr(ldml, ns, _.exp, dfs.setExponentSeparator)
     // CLDR fixes the pattern character
     // http://www.unicode.org/reports/tr35/tr35-numbers.html#Number_Format_Patterns
     dfs.setDigit('#')

@@ -7,15 +7,18 @@ import java.util.Locale
   */
 case class NumberingSystem(id: String, digits: Seq[Char])
 
-case class Symbols(decimal: Option[String],
-                   group: Option[String],
-                   list: Option[String],
-                   percent: Option[String],
-                   minus: Option[String],
-                   perMille: Option[String],
-                   infinity: Option[String],
-                   nan: Option[String],
-                   exp: Option[String])
+case class Symbols(
+  ns: NumberingSystem,
+  aliasOf: Option[NumberingSystem],
+  decimal: Option[Char],
+  group: Option[Char],
+  list: Option[Char],
+  percent: Option[Char],
+  minus: Option[Char],
+  perMille: Option[Char],
+  infinity: Option[String],
+  nan: Option[String],
+  exp: Option[String])
 
 /**
   * Interfaces describing an LDML Locale
@@ -27,7 +30,7 @@ case class LDMLLocale(language: String, territory: Option[String],
   * Wrapper to LDML
   */
 case class LDML(parent: Option[LDML], locale: LDMLLocale, defaultNS: Option[NumberingSystem],
-                digitSymbols: Option[Symbols] = None) {
+                digitSymbols: List[Symbols] = Nil) {
 
   def languageTag: String = toLocale.toLanguageTag
 
