@@ -12,7 +12,21 @@ import org.scalajs.testsuite.utils.AssertThrows.expectThrows
 import scala.scalajs.locale.LocaleRegistry
 import scala.scalajs.locale.ldml.data.all.af
 import scala.scalajs.locale.ldml.data.all.ar
+import scala.scalajs.locale.ldml.data.all.az
+import scala.scalajs.locale.ldml.data.all.az_Cyrl
 import scala.scalajs.locale.ldml.data.all.bn
+import scala.scalajs.locale.ldml.data.all.es_CL
+import scala.scalajs.locale.ldml.data.all.fi_FI
+import scala.scalajs.locale.ldml.data.all.fa
+import scala.scalajs.locale.ldml.data.all.it_CH
+import scala.scalajs.locale.ldml.data.all.ka
+import scala.scalajs.locale.ldml.data.all.lv
+import scala.scalajs.locale.ldml.data.all.my
+import scala.scalajs.locale.ldml.data.all.ru_RU
+import scala.scalajs.locale.ldml.data.all.smn
+import scala.scalajs.locale.ldml.data.all.smn_FI
+import scala.scalajs.locale.ldml.data.all.zh
+import scala.scalajs.locale.ldml.data.all.zh_Hant
 
 class DecimalFormatSymbolsTest extends LocaleTestSetup {
   // Clean up the locale database, there are different implementations for
@@ -45,7 +59,21 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
   )
 
   val extraLocalesData = List(
-    (ar, "ar") -> List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس")
+    // af uses latn
+    (af, "af") -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    (az, "az") -> List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    (az_Cyrl, "az_Cyrl") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    // ar has a default arab set of symbols
+    (ar, "ar") -> List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"),
+    // bn has a default ns but it is a latn alias
+    (bn, "bn") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    (es_CL, "es_CL") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    (fi_FI, "fi_FI") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    (it_CH, "it_CH") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    (ru_RU, "ru_RU") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    (smn_FI, "smn_FI") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    (zh, "zh") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    (zh_Hant, "zh_Hant") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
   )
 
   def test_dfs(dfs: DecimalFormatSymbols, symbols: List[String]): Unit = {
@@ -63,7 +91,7 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     assertEquals(symbols(10), dfs.getExponentSeparator)
   }
 
-  @Ignore @Test def test_default_locales_decimal_format_symbol(): Unit = {
+  @Test def test_default_locales_decimal_format_symbol(): Unit = {
     standardLocalesData.foreach {
       case (l, symbols) =>
         val dfs = DecimalFormatSymbols.getInstance(l)

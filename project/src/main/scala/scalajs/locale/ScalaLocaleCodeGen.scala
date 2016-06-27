@@ -161,6 +161,8 @@ object ScalaLocaleCodeGen {
     path.getParent.toFile.mkdirs()
     println(s"Write to $path")
 
+    //println(treehugger.forest.treeToString(tree))
+
     Files.write(path, treehugger.forest.treeToString(tree)
       .getBytes(Charset.forName("UTF8")))
     path.toFile
