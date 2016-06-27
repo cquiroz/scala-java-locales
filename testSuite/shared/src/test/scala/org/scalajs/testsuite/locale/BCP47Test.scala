@@ -1,7 +1,7 @@
-package org.scalajs.testsuite.testsuite.locale
+package org.scalajs.testsuite.locale
 
-import org.junit.Test
 import org.junit.Assert._
+import org.junit.Test
 
 import scala.scalajs.locale.BCP47
 import scala.scalajs.locale.BCP47.{GrandfatheredTag, LanguageTag, PrivateUseTag}
@@ -57,7 +57,7 @@ class BCP47Test {
     val grandFathered = regularGrandFathered ++ irregularGrandFathered
     grandFathered.map(BCP47.parseTag).zip(grandFathered).foreach {
       case (Some(GrandfatheredTag(t)), g) => assertEquals(g, t)
-      case _ => fail()
+      case _                              => fail()
     }
   }
 
@@ -78,111 +78,114 @@ class BCP47Test {
     // Simple language subtag:
     // de (German)
     assertEquals(Some(LanguageTag("de", None, None, None, Nil, Nil, None)),
-      BCP47.parseTag("de"))
+        BCP47.parseTag("de"))
     // fr (French)
     assertEquals(Some(LanguageTag("fr", None, None, None, Nil, Nil, None)),
-      BCP47.parseTag("fr"))
+        BCP47.parseTag("fr"))
     // ja (Japanese)
     assertEquals(Some(LanguageTag("ja", None, None, None, Nil, Nil, None)),
-      BCP47.parseTag("ja"))
+        BCP47.parseTag("ja"))
     // i-enochian (example of a grandfathered tag)
-    assertEquals(Some(GrandfatheredTag("i-enochian")), BCP47.parseTag("i-enochian"))
+    assertEquals(Some(GrandfatheredTag("i-enochian")),
+        BCP47.parseTag("i-enochian"))
   }
 
   @Test def test_languages_script_samples(): Unit = {
     // Language subtag plus Script subtag:
     // zh-Hant (Chinese written using the Traditional Chinese script)
-    assertEquals(Some(LanguageTag("zh", None, Some("Hant"), None, Nil, Nil, None)),
-      BCP47.parseTag("zh-Hant"))
+    assertEquals(Some(LanguageTag("zh", None, Some("Hant"), None, Nil, Nil,
+                None)), BCP47.parseTag("zh-Hant"))
     // zh-Hans (Chinese written using the Simplified Chinese script)
-    assertEquals(Some(LanguageTag("zh", None, Some("Hans"), None, Nil, Nil, None)),
-      BCP47.parseTag("zh-Hans"))
+    assertEquals(Some(LanguageTag("zh", None, Some("Hans"), None, Nil, Nil,
+                None)), BCP47.parseTag("zh-Hans"))
     // sr-Cyrl (Serbian written using the Cyrillic script)
-    assertEquals(Some(LanguageTag("sr", None, Some("Cyrl"), None, Nil, Nil, None)),
-      BCP47.parseTag("sr-Cyrl"))
+    assertEquals(Some(LanguageTag("sr", None, Some("Cyrl"), None, Nil, Nil,
+                None)), BCP47.parseTag("sr-Cyrl"))
     // sr-Latn (Serbian written using the Latin script)
-    assertEquals(Some(LanguageTag("sr", None, Some("Latn"), None, Nil, Nil, None)),
-      BCP47.parseTag("sr-Latn"))
+    assertEquals(Some(LanguageTag("sr", None, Some("Latn"), None, Nil, Nil,
+                None)), BCP47.parseTag("sr-Latn"))
   }
 
   @Test def test_languages_extended_samples(): Unit = {
     // Extended language subtags:
     // zh-cmn-Hans-CN (Chinese, Mandarin, Simplified script, as used in China)
-    assertEquals(Some(LanguageTag("zh", Some("cmn"), Some("Hans"), Some("CN"), Nil, Nil, None)),
-      BCP47.parseTag("zh-cmn-Hans-CN"))
+    assertEquals(Some(LanguageTag("zh", Some("cmn"), Some("Hans"), Some("CN"),
+                Nil, Nil, None)), BCP47.parseTag("zh-cmn-Hans-CN"))
     // cmn-Hans-CN (Mandarin Chinese, Simplified script, as used in China)
-    assertEquals(Some(LanguageTag("cmn", None, Some("Hans"), Some("CN"), Nil, Nil, None)),
-      BCP47.parseTag("cmn-Hans-CN"))
+    assertEquals(Some(LanguageTag("cmn", None, Some("Hans"), Some("CN"), Nil,
+                Nil, None)), BCP47.parseTag("cmn-Hans-CN"))
     // zh-yue-HK (Chinese, Cantonese, as used in Hong Kong SAR)
-    assertEquals(Some(LanguageTag("zh", Some("yue"), None, Some("HK"), Nil, Nil, None)),
-      BCP47.parseTag("zh-yue-HK"))
+    assertEquals(Some(LanguageTag("zh", Some("yue"), None, Some("HK"), Nil,
+                Nil, None)), BCP47.parseTag("zh-yue-HK"))
     // yue-HK (Cantonese Chinese, as used in Hong Kong SAR)
-    assertEquals(Some(LanguageTag("yue", None, None, Some("HK"), Nil, Nil, None)),
-      BCP47.parseTag("yue-HK"))
+    assertEquals(Some(LanguageTag("yue", None, None, Some("HK"), Nil, Nil,
+                None)), BCP47.parseTag("yue-HK"))
   }
 
   @Test def test_language_script_region_samples(): Unit = {
     // Language-Script-Region:
     // zh-Hans-CN (Chinese written using the Simplified script as used in mainland China)
-    assertEquals(Some(LanguageTag("zh", None, Some("Hans"), Some("CN"), Nil, Nil, None)),
-      BCP47.parseTag("zh-Hans-CN"))
+    assertEquals(Some(LanguageTag("zh", None, Some("Hans"), Some("CN"), Nil,
+                Nil, None)), BCP47.parseTag("zh-Hans-CN"))
     // sr-Latn-RS (Serbian written using the Latin script as used in Serbia)
-    assertEquals(Some(LanguageTag("sr", None, Some("Latn"), Some("RS"), Nil, Nil, None)),
-      BCP47.parseTag("sr-Latn-RS"))
+    assertEquals(Some(LanguageTag("sr", None, Some("Latn"), Some("RS"), Nil,
+                Nil, None)), BCP47.parseTag("sr-Latn-RS"))
   }
 
   @Test def test_language_variant_samples(): Unit = {
     // Language-Variant:
     // sl-rozaj (Resian dialect of Slovenian)
     assertEquals(Some(LanguageTag("sl", None, None, None, List("rozaj"), Nil,
-      None)), BCP47.parseTag("sl-rozaj"))
+                None)), BCP47.parseTag("sl-rozaj"))
     // sl-rozaj-biske (San Giorgio dialect of Resian dialect of Slovenian)
-    assertEquals(Some(LanguageTag("sl", None, None, None, List("rozaj", "biske"),
-      Nil, None)), BCP47.parseTag("sl-rozaj-biske"))
+    assertEquals(Some(LanguageTag("sl", None, None, None,
+                List("rozaj", "biske"), Nil, None)),
+        BCP47.parseTag("sl-rozaj-biske"))
     // sl-nedis (Nadiza dialect of Slovenian)
-    assertEquals(Some(LanguageTag("sl", None, None, None, List("nedis"), Nil, None)),
-      BCP47.parseTag("sl-nedis"))
+    assertEquals(Some(LanguageTag("sl", None, None, None, List("nedis"), Nil,
+                None)), BCP47.parseTag("sl-nedis"))
   }
 
   @Test def test_language_region_variant_samples(): Unit = {
     // Language-Region-Variant:
     // de-CH-1901 (German as used in Switzerland using the 1901 variant [orthography])
     assertEquals(Some(LanguageTag("de", None, None, Some("CH"), List("1901"),
-      Nil, None)), BCP47.parseTag("de-CH-1901"))
+                Nil, None)), BCP47.parseTag("de-CH-1901"))
     // sl-IT-nedis (Slovenian as used in Italy, Nadiza dialect)
     assertEquals(Some(LanguageTag("sl", None, None, Some("IT"), List("nedis"),
-      Nil, None)), BCP47.parseTag("sl-IT-nedis"))
+                Nil, None)), BCP47.parseTag("sl-IT-nedis"))
   }
 
   @Test def test_language_script_region_variant_samples(): Unit = {
     // Language-Script-Region-Variant:
     // hy-Latn-IT-arevela (Eastern Armenian written in Latin script, as used in Italy)
     assertEquals(Some(LanguageTag("hy", None, Some("Latn"), Some("IT"),
-      List("arevela"), Nil, None)), BCP47.parseTag("hy-Latn-IT-arevela"))
+                List("arevela"), Nil, None)),
+        BCP47.parseTag("hy-Latn-IT-arevela"))
   }
 
   @Test def test_language_region_samples(): Unit = {
     // Language-Region:
     // de-DE (German for Germany)
-    assertEquals(Some(LanguageTag("de", None, None, Some("DE"), Nil, Nil, None)),
-      BCP47.parseTag("de-DE"))
+    assertEquals(Some(LanguageTag("de", None, None, Some("DE"), Nil, Nil,
+                None)), BCP47.parseTag("de-DE"))
     // en-US (English as used in the United States)
-    assertEquals(Some(LanguageTag("en", None, None, Some("US"), Nil, Nil, None)),
-      BCP47.parseTag("en-US"))
+    assertEquals(Some(LanguageTag("en", None, None, Some("US"), Nil, Nil,
+                None)), BCP47.parseTag("en-US"))
     // es-419 (Spanish appropriate for the Latin America and Caribbean
     // region using the UN region code)
-    assertEquals(Some(LanguageTag("es", None, None, Some("419"), Nil, Nil, None)),
-      BCP47.parseTag("es-419"))
+    assertEquals(Some(LanguageTag("es", None, None, Some("419"), Nil, Nil,
+                None)), BCP47.parseTag("es-419"))
   }
 
   @Test def test_private_use_samples(): Unit = {
     // Private use subtags:
     // de-CH-x-phonebk
     assertEquals(Some(LanguageTag("de", None, None, Some("CH"), Nil, Nil,
-      Some("phonebk"))), BCP47.parseTag("de-CH-x-phonebk"))
+                Some("phonebk"))), BCP47.parseTag("de-CH-x-phonebk"))
     // az-Arab-x-AZE-derbend
     assertEquals(Some(LanguageTag("az", None, Some("Arab"), None, Nil, Nil,
-      Some("AZE-derbend"))), BCP47.parseTag("az-Arab-x-AZE-derbend"))
+                Some("AZE-derbend"))), BCP47.parseTag("az-Arab-x-AZE-derbend"))
   }
 
   @Test def test_private_use_tag(): Unit = {
@@ -195,15 +198,15 @@ class BCP47Test {
     // Tags that use extensions:
     // en-US-u-islamcal
     assertEquals(Some(LanguageTag("en", None, None, Some("US"), Nil,
-      List("u-islamcal"), None)), BCP47.parseTag("en-US-u-islamcal"))
+                List("u-islamcal"), None)), BCP47.parseTag("en-US-u-islamcal"))
     // zh-CN-a-myext-x-private
     assertEquals(Some(LanguageTag("zh", None, None, Some("CN"), Nil,
-      List("a-myext"), Some("private"))),
-      BCP47.parseTag("zh-CN-a-myext-x-private"))
+                List("a-myext"), Some("private"))),
+        BCP47.parseTag("zh-CN-a-myext-x-private"))
     // en-a-myext-b-another
     assertEquals(Some(LanguageTag("en", None, None, None, Nil,
-      List("a-myext", "b-another"), None)),
-      BCP47.parseTag("en-a-myext-b-another"))
+                List("a-myext", "b-another"), None)),
+        BCP47.parseTag("en-a-myext-b-another"))
   }
 
   @Test def test_invalid_samples(): Unit = {

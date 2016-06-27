@@ -4,9 +4,8 @@ import java.util.Locale
 
 import scala.scalajs.locale.LocaleRegistry
 import scala.scalajs.locale.ldml.{LDML, Symbols, NumberingSystem}
-import scala.scalajs.locale.ldml.data.numericsystems.latn
-import scala.scalajs.locale.ldml.data.numericsystems.latn
 import scala.scalajs.locale.ldml.data.minimal.root
+import scala.scalajs.locale.ldml.data.numericsystems.latn
 
 object DecimalFormatSymbols {
 
@@ -18,35 +17,44 @@ object DecimalFormatSymbols {
   def getInstance(locale: Locale): DecimalFormatSymbols =
     initialize(locale, new DecimalFormatSymbols(locale))
 
-  private def initialize(locale: Locale, dfs: DecimalFormatSymbols): DecimalFormatSymbols = {
-    // Find the correct number system
+  private def initialize(locale: Locale,
+      dfs: DecimalFormatSymbols): DecimalFormatSymbols = {
+    // Find the correct numbering systems for the ldml
     def ns(ldml: LDML): NumberingSystem =
       ldml.defaultNS.flatMap { n =>
         root.digitSymbols.find(_.ns == n).collect {
-          case s if s.aliasOf.isDefined => latn // All aliases go to latn
-          case s => n
+          case s @ Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) => alias
+          case s                                                      => n
         }
       }.getOrElse(latn)
 
-    LocaleRegistry.ldml(locale).map(l => toDFS(locale, dfs, l, ns(l))).getOrElse(dfs)
+    LocaleRegistry
+      .ldml(locale)
+      .map(l => toDFS(locale, dfs, l, ns(l)))
+      .getOrElse(dfs)
   }
 
-  private def toDFS(locale: Locale, dfs: DecimalFormatSymbols,
-     ldml: LDML, ns: NumberingSystem): DecimalFormatSymbols = {
+  private def toDFS(locale: Locale, dfs: DecimalFormatSymbols, ldml: LDML,
+      ns: NumberingSystem): DecimalFormatSymbols = {
 
     def parentSymbols(ldml: LDML, ns: NumberingSystem): Option[Symbols] =
-      ldml.digitSymbols.find(_.ns == ns).orElse(ldml.parent.flatMap(parentSymbols(_, ns)))
+      ldml.digitSymbols
+        .find(_.ns == ns)
+        .orElse(ldml.parent.flatMap(parentSymbols(_, ns)))
 
-    def parentSymbolR[A](ldml: LDML, ns: NumberingSystem, contains: Symbols => Option[A]): Option[A] =
+    def parentSymbolR[A](ldml: LDML, ns: NumberingSystem,
+        contains: Symbols => Option[A]): Option[A] =
       parentSymbols(ldml, ns).flatMap {
         case s @ Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) =>
           parentSymbolR(ldml, alias, contains)
 
         case s @ Symbols(_, _, _, _, _, _, _, _, _, _, _) =>
-          contains(s).orElse(ldml.parent.flatMap(parentSymbolR(_, ns, contains)))
+          contains(s)
+            .orElse(ldml.parent.flatMap(parentSymbolR(_, ns, contains)))
       }
 
-    def setSymbol[A](ldml: LDML, ns: NumberingSystem, contains: Symbols => Option[A], set: A => Unit): Unit =
+    def setSymbol[A](ldml: LDML, ns: NumberingSystem,
+        contains: Symbols => Option[A], set: A => Unit): Unit =
       parentSymbolR(ldml, ns, contains).foreach(set)
 
     // Read the zero from the default numeric system
@@ -68,72 +76,66 @@ object DecimalFormatSymbols {
   }
 }
 
-class DecimalFormatSymbols(private[this] val locale: Locale) extends Cloneable {
-  private[this] var zeroDigit: Option[Char] = None
-  private[this] var minusSign: Option[Char] = None
-  private[this] var decimalSeparator: Option[Char] = None
-  private[this] var groupingSeparator: Option[Char] = None
-  private[this] var perMill: Option[Char] = None
-  private[this] var percent: Option[Char] = None
-  private[this] var digit: Option[Char] = None
-  private[this] var patternSeparator: Option[Char] = None
-  private[this] var infinity: Option[String] = None
-  private[this] var nan: Option[String] = None
-  private[this] var exp: Option[String] = None
+class DecimalFormatSymbols(private[this] val locale: Locale)
+    extends Cloneable {
+  private[this] var zeroDigit: Char = 0
+  private[this] var minusSign: Char = 0
+  private[this] var decimalSeparator: Char = 0
+  private[this] var groupingSeparator: Char = 0
+  private[this] var perMill: Char = 0
+  private[this] var percent: Char = 0
+  private[this] var digit: Char = 0
+  private[this] var patternSeparator: Char = 0
+  private[this] var infinity: String = null
+  private[this] var nan: String = null
+  private[this] var exp: String = null
 
   DecimalFormatSymbols.initialize(locale, this)
 
   def this() = this(Locale.getDefault(Locale.Category.FORMAT))
 
-  def getZeroDigit(): Char = zeroDigit.getOrElse(0)
+  def getZeroDigit(): Char = zeroDigit
 
-  def setZeroDigit(zeroDigit: Char): Unit =
-    this.zeroDigit = Some(zeroDigit)
+  def setZeroDigit(zeroDigit: Char): Unit = this.zeroDigit = zeroDigit
 
-  def getGroupingSeparator(): Char = groupingSeparator.getOrElse(0)
+  def getGroupingSeparator(): Char = groupingSeparator
 
   def setGroupingSeparator(groupingSeparator: Char): Unit =
-    this.groupingSeparator = Some(groupingSeparator)
+    this.groupingSeparator = groupingSeparator
 
-  def getDecimalSeparator(): Char = decimalSeparator.getOrElse(0)
+  def getDecimalSeparator(): Char = decimalSeparator
 
   def setDecimalSeparator(decimalSeparator: Char): Unit =
-    this.decimalSeparator = Some(decimalSeparator)
+    this.decimalSeparator = decimalSeparator
 
-  def getPerMill(): Char = perMill.getOrElse(0)
+  def getPerMill(): Char = perMill
 
-  def setPerMill(perMill: Char): Unit =
-    this.perMill = Some(perMill)
+  def setPerMill(perMill: Char): Unit = this.perMill = perMill
 
-  def getPercent(): Char = percent.getOrElse(0)
+  def getPercent(): Char = percent
 
-  def setPercent(percent: Char): Unit =
-    this.percent = Some(percent)
+  def setPercent(percent: Char): Unit = this.percent = percent
 
-  def getDigit(): Char = digit.getOrElse(0)
+  def getDigit(): Char = digit
 
-  def setDigit(digit: Char): Unit =
-    this.digit = Some(digit)
+  def setDigit(digit: Char): Unit = this.digit = digit
 
-  def getPatternSeparator(): Char = patternSeparator.getOrElse(0)
+  def getPatternSeparator(): Char = patternSeparator
 
   def setPatternSeparator(patternSeparator: Char): Unit =
-    this.patternSeparator = Some(patternSeparator)
+    this.patternSeparator = patternSeparator
 
-  def getInfinity(): String = infinity.getOrElse("")
+  def getInfinity(): String = infinity
 
-  def setInfinity(infinity: String): Unit =
-    this.infinity = Some(infinity)
+  def setInfinity(infinity: String): Unit = this.infinity = infinity
 
-  def getNaN(): String = nan.getOrElse("")
+  def getNaN(): String = nan
 
-  def setNaN(nan: String): Unit =
-    this.nan = Some(nan)
+  def setNaN(nan: String): Unit = this.nan = nan
 
-  def getMinusSign(): Char = minusSign.getOrElse(0)
+  def getMinusSign(): Char = minusSign
 
-  def setMinusSign(minusSign: Char): Unit =
-    this.minusSign = Some(minusSign)
+  def setMinusSign(minusSign: Char): Unit = this.minusSign = minusSign
 
   // TODO Implement currency methods
   //def getCurrencySymbol(): String
@@ -152,11 +154,12 @@ class DecimalFormatSymbols(private[this] val locale: Locale) extends Cloneable {
 
   //def setMonetaryDecimalSeparator(sep: Char): Unit
 
-  def getExponentSeparator(): String= exp.getOrElse("")
+  def getExponentSeparator(): String = if (exp != null) exp else ""
 
   def setExponentSeparator(sep: String): Unit = {
-    if (sep == null) throw new NullPointerException()
-    this.exp = Some(sep)
+    if (sep == null)
+      throw new NullPointerException()
+    this.exp = sep
   }
 
   override def clone(): AnyRef =
@@ -172,7 +175,7 @@ class DecimalFormatSymbols(private[this] val locale: Locale) extends Cloneable {
         d.getPercent == getPercent &&
         d.getDigit == getDigit &&
         d.getPatternSeparator == getPatternSeparator &&
-        d.getInfinity == getInfinity  &&
+        d.getInfinity == getInfinity &&
         d.getNaN == getNaN &&
         d.getMinusSign == getMinusSign &&
         d.getExponentSeparator == getExponentSeparator
@@ -181,8 +184,8 @@ class DecimalFormatSymbols(private[this] val locale: Locale) extends Cloneable {
 
   // Oddly the JVM seems to always return the same
   // it breaks the hashCode contract, will skip implementing
-  //override def hashCode(): Int = locale.hashCode()
-    /*val prime = 31
+  override def hashCode(): Int = {
+    val prime = 31
     var result = 1
     result = prime * result + getZeroDigit().hashCode()
     result = prime * result + getGroupingSeparator().hashCode()
@@ -191,10 +194,11 @@ class DecimalFormatSymbols(private[this] val locale: Locale) extends Cloneable {
     result = prime * result + getPercent().hashCode()
     result = prime * result + getDigit().hashCode()
     result = prime * result + getPatternSeparator().hashCode()
-    result = prime * result + (if (getInfinity() != null) getInfinity().hashCode() else 0)
+    result = prime * result + (if (getInfinity() != null) getInfinity().##
+                               else 0)
     result = prime * result + (if (getNaN() != null) getNaN().hashCode() else 0)
     result = prime * result + getMinusSign().hashCode()
     result = prime * result + getExponentSeparator().hashCode()
     result
-  }*/
+  }
 }

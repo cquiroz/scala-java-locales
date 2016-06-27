@@ -17,7 +17,6 @@ object LocaleRegistry {
     Locale.Category.values().map(_ -> None).toMap
 
   // The spec requires some locales by default
-
   lazy val en: LDML         = minimal.en
   lazy val fr: LDML         = minimal.fr
   lazy val de: LDML         = minimal.de
@@ -70,7 +69,23 @@ object LocaleRegistry {
 
   initDefaultLocales()
 
-  def initDefaultLocales(): Unit = {
+  /**
+    * Install an ldml class making its locale available to the runtime
+    */
+  def installLocale(ldml: LDML): Unit = ldmls += ldml.languageTag -> ldml
+
+  /**
+    * Cleans the registry, useful for testing
+    */
+  def resetRegistry(): Unit = {
+    defaultLocale = None
+    defaultPerCategory =
+        Locale.Category.values().map(_ -> None).toMap
+    ldmls.empty
+    initDefaultLocales()
+  }
+
+  private def initDefaultLocales(): Unit = {
     // Initialize
     defaultLocales.foreach {
       case (_, l) => installLocale(l)
@@ -81,9 +96,12 @@ object LocaleRegistry {
     .getOrElse(throw new IllegalStateException("No default locale set"))
 
   def default(category: Locale.Category): Locale = {
-    if (category == null) throw new NullPointerException("Argument cannot be null")
-    else defaultPerCategory.get(category).flatten
-      .getOrElse(throw new IllegalStateException(s"No default locale set for category $category"))
+    if (category == null) {
+      throw new NullPointerException("Argument cannot be null")
+    } else {
+      defaultPerCategory.get(category).flatten
+        .getOrElse(throw new IllegalStateException(s"No default locale set for category $category"))
+    }
   }
 
   def setDefault(newLocale: Locale): Unit = {
@@ -107,24 +125,13 @@ object LocaleRegistry {
     ldmls.get(languageTag).map(_.toLocale)
   }
 
-  def availableLocales: Iterable[Locale] =
-    ldmls.map(_._2.toLocale)
-
-  def ldml(locale: Locale): Option[LDML] =
-    ldmls.get(locale.toLanguageTag())
+  /**
+    * Returns a list of available locales
+    */
+  def availableLocales: Iterable[Locale] = ldmls.map(_._2.toLocale)
 
   /**
-    * Cleans the registry, useful for testing
+    * Returns the ldml for the given locale
     */
-  def resetRegistry(): Unit = {
-    defaultLocale = None
-    defaultPerCategory =
-        Locale.Category.values().map(_ -> None).toMap
-    ldmls.empty
-    initDefaultLocales()
-  }
-
-  def installLocale(ldml: LDML): Unit =
-    ldmls += ldml.languageTag -> ldml
-
+  def ldml(locale: Locale): Option[LDML] = ldmls.get(locale.toLanguageTag())
 }

@@ -25,7 +25,7 @@ class LocaleBuilderTest {
 
     // Check for compliance
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setLanguage("toolongtobevalid"))
+        new Locale.Builder().setLanguage("toolongtobevalid"))
   }
 
   @Test def test_build_language_canonicalization(): Unit = {
@@ -50,11 +50,11 @@ class LocaleBuilderTest {
 
     // Check for compliance, too long
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setScript("toolongtobevalid"))
+        new Locale.Builder().setScript("toolongtobevalid"))
 
     // Check for compliance, too short
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setScript("ts"))
+        new Locale.Builder().setScript("ts"))
   }
 
   @Test def test_build_script_canonicalization(): Unit = {
@@ -83,15 +83,15 @@ class LocaleBuilderTest {
 
     // Check for compliance, too long
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setRegion("toolongtobevalid"))
+        new Locale.Builder().setRegion("toolongtobevalid"))
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setRegion("1234"))
+        new Locale.Builder().setRegion("1234"))
 
     // Check for compliance, too short
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setRegion("t"))
+        new Locale.Builder().setRegion("t"))
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setRegion("1"))
+        new Locale.Builder().setRegion("1"))
   }
 
   @Test def test_build_with_variant(): Unit = {
@@ -113,13 +113,14 @@ class LocaleBuilderTest {
     }
 
     // Multiple variants are allowed
-    cases.zip(cases).foreach { case (c1, c2) =>
-      val b = new Locale.Builder()
-      val locale1 = b.setVariant(s"$c1-$c2").build
-      assertEquals(s"${c1}_$c2", locale1.getVariant)
+    cases.zip(cases).foreach {
+      case (c1, c2) =>
+        val b = new Locale.Builder()
+        val locale1 = b.setVariant(s"$c1-$c2").build
+        assertEquals(s"${c1}_$c2", locale1.getVariant)
 
-      val locale2 = b.setVariant(s"${c1}_$c2").build
-      assertEquals(s"${c1}_$c2", locale2.getVariant)
+        val locale2 = b.setVariant(s"${c1}_$c2").build
+        assertEquals(s"${c1}_$c2", locale2.getVariant)
     }
 
     val b4 = new Locale.Builder()
@@ -128,15 +129,15 @@ class LocaleBuilderTest {
 
     // Check for compliance, too long
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setVariant("four"))
+        new Locale.Builder().setVariant("four"))
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setVariant("abcde!"))
+        new Locale.Builder().setVariant("abcde!"))
 
     // Check for compliance, too short
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setVariant("t"))
+        new Locale.Builder().setVariant("t"))
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setVariant("1"))
+        new Locale.Builder().setVariant("1"))
   }
 
   @Test def test_build_with_extensions(): Unit = {
@@ -146,19 +147,19 @@ class LocaleBuilderTest {
 
     // null resets
     val b2 = new Locale.Builder()
-    val locale2 = b2.setExtension('a', "ca-japanese").setExtension('a', "")
-        .build
+    val locale2 =
+      b2.setExtension('a', "ca-japanese").setExtension('a', "").build
     assertNull(locale2.getExtension('a'))
 
     // Check for compliance on the keys
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setExtension('!', "abc"))
+        new Locale.Builder().setExtension('!', "abc"))
 
     // Check for compliance on the value
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setExtension('a', "a"))
+        new Locale.Builder().setExtension('a', "a"))
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setExtension('a', "abcdefghi"))
+        new Locale.Builder().setExtension('a', "abcdefghi"))
   }
 
   @Test def test_extensions_canonalization(): Unit = {
@@ -169,8 +170,10 @@ class LocaleBuilderTest {
 
   @Test def test_build_with_unicode_extensions(): Unit = {
     val b1 = new Locale.Builder()
-    val locale = b1.setUnicodeLocaleKeyword("nu", "thai")
-        .setUnicodeLocaleKeyword("ok", "").build
+    val locale = b1
+      .setUnicodeLocaleKeyword("nu", "thai")
+      .setUnicodeLocaleKeyword("ok", "")
+      .build
     assertTrue(locale.getUnicodeLocaleKeys.contains("nu"))
     assertTrue(locale.getUnicodeLocaleKeys.contains("ok"))
     assertEquals("thai", locale.getUnicodeLocaleType("nu"))
@@ -178,40 +181,42 @@ class LocaleBuilderTest {
     assertNull(locale.getUnicodeLocaleType("ko"))
 
     // Check that the extensions is propagated to the general extension
-    assertTrue(locale.getExtensionKeys
-        .contains(Locale.UNICODE_LOCALE_EXTENSION))
-    assertEquals("nu-thai-ok", locale
-        .getExtension(Locale.UNICODE_LOCALE_EXTENSION))
+    assertTrue(
+        locale.getExtensionKeys.contains(Locale.UNICODE_LOCALE_EXTENSION))
+    assertEquals("nu-thai-ok",
+        locale.getExtension(Locale.UNICODE_LOCALE_EXTENSION))
 
     // Check for compliance on the keys
     expectThrows(classOf[NullPointerException],
-      new Locale.Builder().setUnicodeLocaleKeyword(null, "thai"))
+        new Locale.Builder().setUnicodeLocaleKeyword(null, "thai"))
     // key too short
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setUnicodeLocaleKeyword("a", "thai"))
+        new Locale.Builder().setUnicodeLocaleKeyword("a", "thai"))
     // value too short
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setUnicodeLocaleKeyword("nu", "th"))
+        new Locale.Builder().setUnicodeLocaleKeyword("nu", "th"))
     // value too long
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().setUnicodeLocaleKeyword("nu", "toolongvalue"))
+        new Locale.Builder().setUnicodeLocaleKeyword("nu", "toolongvalue"))
   }
 
   @Test def test_replace_unicode_extensions(): Unit = {
     val b1 = new Locale.Builder()
-    val locale1 = b1.setUnicodeLocaleKeyword("nu", "thai")
-        .setUnicodeLocaleKeyword("ok", "").build
+    val locale1 = b1
+      .setUnicodeLocaleKeyword("nu", "thai")
+      .setUnicodeLocaleKeyword("ok", "")
+      .build
     assertEquals("thai", locale1.getUnicodeLocaleType("nu"))
-    val locale2 = b1.setExtension(Locale.UNICODE_LOCALE_EXTENSION, "newvalue")
-        .build
+    val locale2 =
+      b1.setExtension(Locale.UNICODE_LOCALE_EXTENSION, "newvalue").build
     assertTrue(locale2.getUnicodeLocaleKeys.isEmpty)
     assertNull(locale2.getUnicodeLocaleType("nu"))
 
     // Check that the extensions is propagated to the general extension
-    assertTrue(locale2.getExtensionKeys
-        .contains(Locale.UNICODE_LOCALE_EXTENSION))
-    assertEquals("newvalue", locale2
-        .getExtension(Locale.UNICODE_LOCALE_EXTENSION))
+    assertTrue(
+        locale2.getExtensionKeys.contains(Locale.UNICODE_LOCALE_EXTENSION))
+    assertEquals("newvalue",
+        locale2.getExtension(Locale.UNICODE_LOCALE_EXTENSION))
   }
 
   @Test def test_build_with_unicode_attributes(): Unit = {
@@ -221,29 +226,31 @@ class LocaleBuilderTest {
 
     // Check for compliance on the attribute
     expectThrows(classOf[NullPointerException],
-      new Locale.Builder().addUnicodeLocaleAttribute(null))
+        new Locale.Builder().addUnicodeLocaleAttribute(null))
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().addUnicodeLocaleAttribute("toolongvalue"))
+        new Locale.Builder().addUnicodeLocaleAttribute("toolongvalue"))
   }
 
   @Test def test_remove_unicode_attribute(): Unit = {
     val b1 = new Locale.Builder()
-    val locale1 = b1.addUnicodeLocaleAttribute("attr")
-        .removeUnicodeLocaleAttribute("attr").build
+    val locale1 = b1
+      .addUnicodeLocaleAttribute("attr")
+      .removeUnicodeLocaleAttribute("attr")
+      .build
     assertTrue(locale1.getUnicodeLocaleAttributes.isEmpty)
 
     // Check for compliance on the attribute
     if (Platform.executingInJVM) {
       // Against the javadocs the JVM throws an IllformedLocaleException
       expectThrows(classOf[IllformedLocaleException],
-        new Locale.Builder().removeUnicodeLocaleAttribute(null))
+          new Locale.Builder().removeUnicodeLocaleAttribute(null))
     } else {
       // Scala.js follows the spec
       expectThrows(classOf[NullPointerException],
-        new Locale.Builder().removeUnicodeLocaleAttribute(null))
+          new Locale.Builder().removeUnicodeLocaleAttribute(null))
     }
     expectThrows(classOf[IllformedLocaleException],
-      new Locale.Builder().removeUnicodeLocaleAttribute("toolongvalue"))
+        new Locale.Builder().removeUnicodeLocaleAttribute("toolongvalue"))
   }
 
   @Test def test_clear(): Unit = {
@@ -259,10 +266,13 @@ class LocaleBuilderTest {
     assertEquals("", locale2.getVariant)
   }
 
-  @Test def test_clear_extensions():Unit = {
+  @Test def test_clear_extensions(): Unit = {
     val b = new Locale.Builder()
-    val locale1 = b.setLanguage("es").setRegion("CL")
-        .setExtension('a', "ca-japanese").build
+    val locale1 = b
+      .setLanguage("es")
+      .setRegion("CL")
+      .setExtension('a', "ca-japanese")
+      .build
     assertEquals("ca-japanese", locale1.getExtension('a'))
     assertEquals("es", locale1.getLanguage)
     assertEquals("CL", locale1.getCountry)
