@@ -10,28 +10,15 @@ import org.scalajs.testsuite.utils.Platform
 import org.scalajs.testsuite.utils.AssertThrows.expectThrows
 
 import scala.scalajs.locale.LocaleRegistry
-import scala.scalajs.locale.cldr.data.af
-import scala.scalajs.locale.cldr.data.ar
-import scala.scalajs.locale.cldr.data.az
-import scala.scalajs.locale.cldr.data.az_Cyrl
-import scala.scalajs.locale.cldr.data.bn
-import scala.scalajs.locale.cldr.data.es_CL
-import scala.scalajs.locale.cldr.data.fi_FI
-import scala.scalajs.locale.cldr.data.fa
-import scala.scalajs.locale.cldr.data.it_CH
-import scala.scalajs.locale.cldr.data.ka
-import scala.scalajs.locale.cldr.data.lv
-import scala.scalajs.locale.cldr.data.my
-import scala.scalajs.locale.cldr.data.ru_RU
-import scala.scalajs.locale.cldr.data.smn
-import scala.scalajs.locale.cldr.data.smn_FI
-import scala.scalajs.locale.cldr.data.zh
-import scala.scalajs.locale.cldr.data.zh_Hant
+import scala.scalajs.locale.cldr.LDML
+import scala.scalajs.locale.cldr.data._
 
 class DecimalFormatSymbolsTest extends LocaleTestSetup {
   // Clean up the locale database, there are different implementations for
   // the JVM and JS
   @Before def cleanup: Unit = super.cleanDatabase
+
+  case class LocaleTestItem(ldml: LDML, tag: String, cldr31: Boolean = false)
 
   val englishSymbols = List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
 
@@ -60,20 +47,38 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
 
   val extraLocalesData = List(
     // af uses latn
-    (af, "af") -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    (az, "az") -> List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    (az_Cyrl, "az_Cyrl") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    // ar has a default arab set of symbols
-    (ar, "ar") -> List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"),
+    LocaleTestItem(af, "af") -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(az, "az") -> List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(az_Cyrl, "az_Cyrl") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     // bn has a default ns but it is a latn alias
-    (bn, "bn") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    (es_CL, "es_CL") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    (fi_FI, "fi_FI") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    (it_CH, "it_CH") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    (ru_RU, "ru_RU") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    (smn_FI, "smn_FI") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    (zh, "zh") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    (zh_Hant, "zh_Hant") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
+    LocaleTestItem(bn, "bn") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(es_CL, "es_CL") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(fi_FI, "fi_FI") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(it_CH, "it_CH") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(ru_RU, "ru_RU") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(smn_FI, "smn_FI") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(zh, "zh") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(zh_Hant, "zh_Hant") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
+  )
+
+  // These locales show differences with Java due to a different CLDR version
+  val localesDiff = List(
+    // fa uses arabext
+    LocaleTestItem(fa, "fa", true) -> List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "NaN", "-", "×۱۰^"), // JVM
+    LocaleTestItem(fa, "fa") -> List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ناعدد", "−", "×۱۰^"), // JS
+    LocaleTestItem(ka, "ka", true) -> List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JVM
+    LocaleTestItem(ka, "ka") -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "არ არის რიცხვი", "-", "E"), // JS
+    // ar has a default arab set of symbols
+    LocaleTestItem(ar, "ar", true) -> List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JVM
+    LocaleTestItem(ar, "ar") -> List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JS
+    LocaleTestItem(lv, "lv", true) -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "nav skaitlis", "\u2212", "E"), // JVM
+    LocaleTestItem(lv, "lv") -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "nav skaitlis", "-", "E"), // JS
+    LocaleTestItem(my, "my", true) -> List("၀", ".", ",", "‰", "%", "#", "၊", "∞", "NaN", "-", "E"), // JVM
+    LocaleTestItem(my, "my") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "ဂဏန်းမဟုတ်သော", "-", "E"), // JS
+    LocaleTestItem(smn, "smn", true) -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JVM
+    LocaleTestItem(smn, "smn") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "epiloho", "-", "E"), // JS
+    LocaleTestItem(ja, "ja", true) -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN（非数）", "-", "E"), // JVM
+    LocaleTestItem(ja, "ja") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E") // JS
   )
 
   def test_dfs(dfs: DecimalFormatSymbols, symbols: List[String]): Unit = {
@@ -85,8 +90,7 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     assertEquals(symbols(5).charAt(0), dfs.getDigit)
     assertEquals(symbols(6).charAt(0), dfs.getPatternSeparator)
     assertEquals(symbols(7), dfs.getInfinity)
-    // Sometimes the JVM uses unicode 'SPACE' instead of 'NO-BREAK SPACE'
-    assertEquals(symbols(8), dfs.getNaN.replace('\u00A0', '\u0020'))
+    assertEquals(symbols(8), dfs.getNaN)
     assertEquals(symbols(9).charAt(0), dfs.getMinusSign)
     assertEquals(symbols(10), dfs.getExponentSeparator)
   }
@@ -101,13 +105,31 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
 
   @Test def test_extra_locales_decimal_format_symbol(): Unit = {
     extraLocalesData.foreach {
-      case ((d, tag), symbols) =>
+      case (LocaleTestItem(d, tag, _), symbols) =>
         if (!Platform.executingInJVM) {
           LocaleRegistry.installLocale(d)
         }
         val l = Locale.forLanguageTag(tag)
         val dfs = DecimalFormatSymbols.getInstance(l)
         test_dfs(dfs, symbols)
+    }
+  }
+
+  // These tests give the same data on CLDR 21
+  @Test def test_extra_locales_not_agreeing_decimal_format_symbol(): Unit = {
+    localesDiff.foreach {
+      case (LocaleTestItem(d, tag, cldr31), symbols) =>
+        if (!Platform.executingInJVM) {
+          LocaleRegistry.installLocale(d)
+        }
+        val l = Locale.forLanguageTag(tag)
+        val dfs = DecimalFormatSymbols.getInstance(l)
+        if (Platform.executingInJVM && cldr31) {
+          test_dfs(dfs, symbols)
+        }
+        if (!Platform.executingInJVM && !cldr31) {
+          test_dfs(dfs, symbols)
+        }
     }
   }
 
@@ -118,28 +140,6 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
       LocaleRegistry.installLocale(af)
       // In JS all locales have a decimal format symbols instance
       assertEquals(initial + 1, DecimalFormatSymbols.getAvailableLocales.length)
-    }
-  }
-
-  @Test def test_decimal_format_jp(): Unit = {
-    // The JVM Japanese NaN is not the same as from CLDR
-    List(Locale.JAPAN, Locale.JAPANESE).foreach { l =>
-      val dfs = DecimalFormatSymbols.getInstance(l)
-
-      assertEquals('0', dfs.getZeroDigit)
-      assertEquals('.', dfs.getDecimalSeparator)
-      assertEquals(',', dfs.getGroupingSeparator)
-      assertEquals('‰', dfs.getPerMill)
-      assertEquals('%', dfs.getPercent)
-      assertEquals('#', dfs.getDigit)
-      assertEquals(';', dfs.getPatternSeparator)
-      assertEquals("∞", dfs.getInfinity)
-      if (Platform.executingInJVM)
-        assertEquals("NaN（非数）", dfs.getNaN)
-      else
-        assertEquals("NaN", dfs.getNaN)
-      assertEquals('-', dfs.getMinusSign)
-      assertEquals("E", dfs.getExponentSeparator)
     }
   }
 
