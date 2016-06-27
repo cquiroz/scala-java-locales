@@ -38,7 +38,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
   pomIncludeRepository := { _ => false }
 )
 
-lazy val root: Project = project.in(file("."))
+lazy val scalajs_locales: Project = project.in(file("."))
   .settings(commonSettings)
   .settings(
     publish := {},

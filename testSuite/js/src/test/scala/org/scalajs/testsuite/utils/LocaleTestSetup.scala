@@ -2,7 +2,7 @@ package org.scalajs.testsuite.utils
 
 import java.util.Locale
 
-import scala.scalajs.LocaleRegistry
+import scala.scalajs.locale.LocaleRegistry
 
 class LocaleTestSetup {
   def cleanDatabase: Unit = {

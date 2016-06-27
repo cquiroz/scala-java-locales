@@ -2,8 +2,11 @@ package java.text
 
 import java.util.Locale
 
-import scala.scalajs.LocaleRegistry
-import scala.scalajs.locale.ldml.{LDML, LDMLDigitSymbols, LDMLNumberingSystem}
+import scala.scalajs.locale.LocaleRegistry
+import scala.scalajs.locale.ldml.{LDML, Symbols, NumberingSystem}
+import scala.scalajs.locale.ldml.data.numericsystems.latn
+import scala.scalajs.locale.ldml.data.numericsystems.latn
+import scala.scalajs.locale.ldml.data.minimal.root
 
 object DecimalFormatSymbols {
 
@@ -16,38 +19,48 @@ object DecimalFormatSymbols {
     initialize(locale, new DecimalFormatSymbols(locale))
 
   private def initialize(locale: Locale, dfs: DecimalFormatSymbols): DecimalFormatSymbols = {
-    LocaleRegistry.ldml(locale).map(toDFS(locale, dfs, _)).getOrElse(dfs)
+    // Find the correct number system
+    def ns(ldml: LDML): NumberingSystem =
+      ldml.defaultNS.flatMap { n =>
+        root.digitSymbols.find(_.ns == n).collect {
+          case s if s.aliasOf.isDefined => latn // All aliases go to latn
+          case s => n
+        }
+      }.getOrElse(latn)
+
+    LocaleRegistry.ldml(locale).map(l => toDFS(locale, dfs, l, ns(l))).getOrElse(dfs)
   }
 
-  private def toDFS(locale: Locale, dfs: DecimalFormatSymbols, ldml: LDML): DecimalFormatSymbols = {
+  private def toDFS(locale: Locale, dfs: DecimalFormatSymbols,
+     ldml: LDML, ns: NumberingSystem): DecimalFormatSymbols = {
 
-    def parentNumberingSystem(ldml: LDML): Option[LDMLNumberingSystem] =
-      ldml.defaultNS.orElse(ldml.parent.flatMap(parentNumberingSystem))
+    def parentSymbols(ldml: LDML, ns: NumberingSystem): Option[Symbols] =
+      ldml.digitSymbols.find(_.ns == ns).orElse(ldml.parent.flatMap(parentSymbols(_, ns)))
 
-    def parentSymbol(ldml: LDML, contains: LDMLDigitSymbols => Option[String]): Option[String] =
-      ldml.digitSymbols.flatMap(d => contains(d))
-        .orElse(ldml.parent.flatMap(parentSymbol(_, contains)))
+    def parentSymbolR[A](ldml: LDML, ns: NumberingSystem, contains: Symbols => Option[A]): Option[A] =
+      parentSymbols(ldml, ns).flatMap {
+        case s @ Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) =>
+          parentSymbolR(ldml, alias, contains)
 
-    def setSymbolChar(ldml: LDML, contains: LDMLDigitSymbols => Option[String], set: Char => Unit): Unit =
-      parentSymbol(ldml, contains).foreach(v =>
-        if (v.isEmpty) set(0) else set(v.charAt(0)))
+        case s @ Symbols(_, _, _, _, _, _, _, _, _, _, _) =>
+          contains(s).orElse(ldml.parent.flatMap(parentSymbolR(_, ns, contains)))
+      }
 
-    def setSymbolStr(ldml: LDML, contains: LDMLDigitSymbols => Option[String], set: String => Unit): Unit =
-      parentSymbol(ldml, contains).foreach(set)
+    def setSymbol[A](ldml: LDML, ns: NumberingSystem, contains: Symbols => Option[A], set: A => Unit): Unit =
+      parentSymbolR(ldml, ns, contains).foreach(set)
 
     // Read the zero from the default numeric system
-    parentNumberingSystem(ldml).flatMap(_.digits.headOption)
-      .foreach(dfs.setZeroDigit)
+    ns.digits.headOption.foreach(dfs.setZeroDigit)
     // Set the components of the decimal format symbol
-    setSymbolChar(ldml, _.decimal, dfs.setDecimalSeparator)
-    setSymbolChar(ldml, _.group, dfs.setGroupingSeparator)
-    setSymbolChar(ldml, _.list, dfs.setPatternSeparator)
-    setSymbolChar(ldml, _.percent, dfs.setPercent)
-    setSymbolChar(ldml, _.minus, dfs.setMinusSign)
-    setSymbolChar(ldml, _.perMille, dfs.setPerMill)
-    setSymbolStr(ldml, _.infinity, dfs.setInfinity)
-    setSymbolStr(ldml, _.nan, dfs.setNaN)
-    setSymbolStr(ldml, _.exp, dfs.setExponentSeparator)
+    setSymbol(ldml, ns, _.decimal, dfs.setDecimalSeparator)
+    setSymbol(ldml, ns, _.group, dfs.setGroupingSeparator)
+    setSymbol(ldml, ns, _.list, dfs.setPatternSeparator)
+    setSymbol(ldml, ns, _.percent, dfs.setPercent)
+    setSymbol(ldml, ns, _.minus, dfs.setMinusSign)
+    setSymbol(ldml, ns, _.perMille, dfs.setPerMill)
+    setSymbol(ldml, ns, _.infinity, dfs.setInfinity)
+    setSymbol(ldml, ns, _.nan, dfs.setNaN)
+    setSymbol(ldml, ns, _.exp, dfs.setExponentSeparator)
     // CLDR fixes the pattern character
     // http://www.unicode.org/reports/tr35/tr35-numbers.html#Number_Format_Patterns
     dfs.setDigit('#')

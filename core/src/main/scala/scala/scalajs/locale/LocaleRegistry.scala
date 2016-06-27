@@ -1,12 +1,11 @@
-package scala.scalajs
+package scala.scalajs.locale
 
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
-import scala.collection.Map
-import scala.collection.mutable
-import locale.ldml.LDML
-import locale.ldml.data.minimal
+import scala.collection.{Map, mutable}
+import scala.scalajs.locale.ldml.LDML
+import scala.scalajs.locale.ldml.data.minimal
 
 /**
   * Implements a database of locales
