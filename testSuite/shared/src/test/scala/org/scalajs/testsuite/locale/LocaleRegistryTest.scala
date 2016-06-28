@@ -7,7 +7,7 @@ import org.junit.{Before, Test}
 
 import scala.scalajs.locale.LocaleRegistry
 import scala.scalajs.locale.ldml.LDML
-import scala.scalajs.locale.ldml.data.all._
+import scala.scalajs.locale.ldml.data._
 import org.scalajs.testsuite.utils.LocaleTestSetup
 import org.scalajs.testsuite.utils.Platform
 

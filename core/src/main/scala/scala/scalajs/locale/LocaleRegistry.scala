@@ -5,7 +5,7 @@ import java.util.Locale
 
 import scala.collection.{Map, mutable}
 import scala.scalajs.locale.ldml.LDML
-import scala.scalajs.locale.ldml.data.minimal
+import scala.scalajs.locale.ldml.{data => minimal}
 
 /**
   * Implements a database of locales
