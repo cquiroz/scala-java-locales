@@ -42,7 +42,10 @@ class DateFormatSymbols(private[this] val locale: Locale)
 
   def getEras(): Array[String] = eras
 
-  def setEras(eras: Array[String]): Unit = this.eras = eras
+  def setEras(eras: Array[String]): Unit = {
+    if (eras == null) throw new NullPointerException()
+    this.eras = Array[String](eras: _*)
+  }
 
   def getMonths(): Array[String] = months
 
