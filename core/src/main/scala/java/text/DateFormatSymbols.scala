@@ -17,17 +17,13 @@ object DateFormatSymbols {
     initialize(locale, new DateFormatSymbols(locale))
 
   private def initialize(locale: Locale,
-      dfs: DateFormatSymbols): DateFormatSymbols = {
+                         dfs: DateFormatSymbols): DateFormatSymbols = {
 
-    LocaleRegistry
-      .ldml(locale)
-      .map(l => dfs)
-      .getOrElse(dfs)
+    LocaleRegistry.ldml(locale).map(l => dfs).getOrElse(dfs)
   }
 }
 
-class DateFormatSymbols(private[this] val locale: Locale)
-    extends Cloneable {
+class DateFormatSymbols(private[this] val locale: Locale) extends Cloneable {
   private[this] var eras: Array[String] = Array()
   private[this] var months: Array[String] = Array()
   private[this] var shortMonths: Array[String] = Array()
@@ -114,9 +110,12 @@ class DateFormatSymbols(private[this] val locale: Locale)
   }
 
   override def hashCode(): Int = {
-    val state = Seq(Array[AnyRef](eras: _*), Array[AnyRef](months: _*),
-      Array[AnyRef](shortMonths: _*), Array[AnyRef](weekdays: _*),
-      Array[AnyRef](shortWeekdays: _*), Array[AnyRef](amPmStrings: _*))
+    val state = Seq(Array[AnyRef](eras: _*),
+                    Array[AnyRef](months: _*),
+                    Array[AnyRef](shortMonths: _*),
+                    Array[AnyRef](weekdays: _*),
+                    Array[AnyRef](shortWeekdays: _*),
+                    Array[AnyRef](amPmStrings: _*))
     val s = state.map(Arrays.hashCode).foldLeft(0)((a, b) => 31 * a + b)
     val zs = zoneStrings.map(Array[AnyRef](_: _*))
     val zsc = Array[AnyRef](zs: _*)
@@ -127,13 +126,13 @@ class DateFormatSymbols(private[this] val locale: Locale)
   override def equals(other: Any): Boolean = other match {
     case that: DateFormatSymbols =>
       eras.sameElements(that.getEras) &&
-      months.sameElements(that.getMonths) &&
-      shortMonths.sameElements(that.getShortMonths) &&
-      weekdays.sameElements(that.getWeekdays) &&
-      shortWeekdays.sameElements(that.getShortWeekdays) &&
-      amPmStrings.sameElements(that.getAmPmStrings) &&
-      zoneStrings.sameElements(that.getZoneStrings) &&
-      localPatternChars == that.getLocalPatternChars
+        months.sameElements(that.getMonths) &&
+        shortMonths.sameElements(that.getShortMonths) &&
+        weekdays.sameElements(that.getWeekdays) &&
+        shortWeekdays.sameElements(that.getShortWeekdays) &&
+        amPmStrings.sameElements(that.getAmPmStrings) &&
+        zoneStrings.sameElements(that.getZoneStrings) &&
+        localPatternChars == that.getLocalPatternChars
     case _ => false
   }
 }

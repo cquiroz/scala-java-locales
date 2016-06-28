@@ -13,7 +13,8 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
   // the JVM and JS
   @Before def cleanup: Unit = super.cleanDatabase
 
-  def test_setter(get: DateFormatSymbols => Array[String], set: (DateFormatSymbols, Array[String]) => Unit): Unit = {
+  def test_setter(get: DateFormatSymbols => Array[String],
+      set: (DateFormatSymbols, Array[String]) => Unit): Unit = {
     val dfs = new DateFormatSymbols()
     expectThrows(classOf[NullPointerException], set(dfs, null))
     val value = Array("a", "b")
@@ -28,10 +29,13 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
     val dfs = new DateFormatSymbols()
     expectThrows(classOf[NullPointerException], dfs.setZoneStrings(null))
     val zonesTooFew = Array(Array("a", "b"), Array("c", "d"))
-    expectThrows(classOf[IllegalArgumentException], dfs.setZoneStrings(zonesTooFew))
-    val zones = Array(Array("a", "b", "c", "d", "e"), Array("f", "g", "h", "i", "j"))
+    expectThrows(classOf[IllegalArgumentException],
+                 dfs.setZoneStrings(zonesTooFew))
+    val zones =
+      Array(Array("a", "b", "c", "d", "e"), Array("f", "g", "h", "i", "j"))
     dfs.setZoneStrings(zones)
-    assertArrayEquals(Array[AnyRef](zones: _*), Array[AnyRef](dfs.getZoneStrings(): _*))
+    assertArrayEquals(Array[AnyRef](zones: _*),
+                      Array[AnyRef](dfs.getZoneStrings(): _*))
     // Check that the passed array is copied
     zones(0)(0) = "e"
     assertEquals("a", dfs.getZoneStrings()(0)(0))
