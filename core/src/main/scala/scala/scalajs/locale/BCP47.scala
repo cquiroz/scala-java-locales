@@ -14,13 +14,12 @@ object BCP47 {
   lazy val privateUse = "x(?:-[A-Za-z0-9]{1,8})+"
   lazy val langtag =
     s"^(?:$language)(-$script)?(?:-$region)?((?:-$variant)*)((?:-$extension)*)(-$privateUse)?$$"
-  lazy val regular =
-    List("art-lojban", "cel-gaulish", "no-bok", "no-nyn", "zh-guoyu",
-    "zh-hakka", "zh-min-nan", "zh-min", "zh-xiang").mkString("|")
+  lazy val regular = List("art-lojban", "cel-gaulish", "no-bok", "no-nyn",
+      "zh-guoyu", "zh-hakka", "zh-min-nan", "zh-min", "zh-xiang").mkString("|")
   lazy val irregular =
     List("en-GB-oed", "i-ami", "i-bnn", "i-default", "i-enochian", "i-hak",
-    "i-klingon", "i-lux", "i-mingo", "i-navajo", "i-pwn", "i-tao", "i-tay",
-    "i-tsu", "sgn-BE-FR", "sgn-BE-NL", "sgn-CH-DE").mkString("|")
+        "i-klingon", "i-lux", "i-mingo", "i-navajo", "i-pwn", "i-tao", "i-tay",
+        "i-tsu", "sgn-BE-FR", "sgn-BE-NL", "sgn-CH-DE").mkString("|")
   lazy val grandfathered = s"($irregular|$regular)"
   lazy val langtagRegex = s"$grandfathered|$langtag|($privateUse)".r
 
@@ -28,7 +27,8 @@ object BCP47 {
   sealed trait BCP47Tag
   case class LanguageTag(language: String, extendedLanguag: Option[String],
       script: Option[String], region: Option[String], variant: List[String],
-      extension: List[String], privateUse: Option[String]) extends BCP47Tag
+      extension: List[String], privateUse: Option[String])
+      extends BCP47Tag
   case class GrandfatheredTag(language: String) extends BCP47Tag
   case class PrivateUseTag(privateUse: String) extends BCP47Tag
 
@@ -38,12 +38,17 @@ object BCP47 {
 
   // Convert to list removing dashes
   @inline private def rdl(l: String): List[String] =
-    Option(l).filter(_.nonEmpty).map(_.substring(1).split("-").toList).getOrElse(Nil)
+    Option(l)
+      .filter(_.nonEmpty)
+      .map(_.substring(1).split("-").toList)
+      .getOrElse(Nil)
 
   // Convert to list of extensions
   @inline private def rde(l: String): List[String] = {
-    Option(l).filter(_.nonEmpty).map(_.split(s"-").toList.filter(_.nonEmpty)
-      .sliding(2, 2).collect { case List(a, b) => s"$a-$b" }.toList).getOrElse(Nil)
+    Option(l)
+      .filter(_.nonEmpty)
+      .map(_.split(s"-").toList.filter(_.nonEmpty).sliding(2, 2).collect { case List(a, b) => s"$a-$b" }.toList)
+      .getOrElse(Nil)
   }
 
   // Cleans up the private use tag
@@ -71,13 +76,11 @@ object BCP47 {
       case langtagRegex(g, _, _, _, _, _, _, _, _, _) if g != null =>
         Some(GrandfatheredTag(g))
 
-      case langtagRegex(_, _, _, _, _, _, _, _, _, p) if p != null=>
+      case langtagRegex(_, _, _, _, _, _, _, _, _, p) if p != null =>
         Some(PrivateUseTag(p.replaceFirst("x-", "")))
 
       case _ =>
         None
     }
   }
-
-
 }
