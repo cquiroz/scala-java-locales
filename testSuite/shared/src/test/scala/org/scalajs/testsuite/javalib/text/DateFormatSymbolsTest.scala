@@ -68,4 +68,11 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
     dfs.setEras(Array("a", "b"))
     assertFalse(dfs.hashCode.equals(new DateFormatSymbols().hashCode))
   }
+
+  @Test def test_clone(): Unit = {
+    val dfs = new DateFormatSymbols()
+    val cloned = dfs.clone
+    assertEquals(dfs, cloned)
+    assertNotSame(dfs, cloned)
+  }
 }

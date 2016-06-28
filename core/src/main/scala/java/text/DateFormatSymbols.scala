@@ -100,17 +100,17 @@ class DateFormatSymbols(private[this] val locale: Locale)
     this.localPatternChars = localPatternChars
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case that: DateFormatSymbols =>
-        eras.sameElements(that.getEras) &&
-        months.sameElements(that.getMonths) &&
-        shortMonths.sameElements(that.getShortMonths) &&
-        weekdays.sameElements(that.getWeekdays) &&
-        shortWeekdays.sameElements(that.getShortWeekdays) &&
-        amPmStrings.sameElements(that.getAmPmStrings) &&
-        zoneStrings.sameElements(that.getZoneStrings) &&
-        localPatternChars == that.getLocalPatternChars
-    case _ => false
+  override def clone(): AnyRef = {
+    val dfs = new DateFormatSymbols()
+    dfs.setEras(getEras())
+    dfs.setMonths(getMonths())
+    dfs.setShortMonths(getShortMonths())
+    dfs.setWeekdays(getWeekdays())
+    dfs.setShortWeekdays(getShortWeekdays())
+    dfs.setAmPmStrings(getAmPmStrings())
+    dfs.setZoneStrings(getZoneStrings())
+    dfs.setLocalPatternChars(getLocalPatternChars())
+    dfs
   }
 
   override def hashCode(): Int = {
@@ -122,5 +122,18 @@ class DateFormatSymbols(private[this] val locale: Locale)
     val zsc = Array[AnyRef](zs: _*)
 
     31 * (31 * s + Arrays.hashCode(zsc)) + localPatternChars.hashCode
+  }
+
+  override def equals(other: Any): Boolean = other match {
+    case that: DateFormatSymbols =>
+      eras.sameElements(that.getEras) &&
+      months.sameElements(that.getMonths) &&
+      shortMonths.sameElements(that.getShortMonths) &&
+      weekdays.sameElements(that.getWeekdays) &&
+      shortWeekdays.sameElements(that.getShortWeekdays) &&
+      amPmStrings.sameElements(that.getAmPmStrings) &&
+      zoneStrings.sameElements(that.getZoneStrings) &&
+      localPatternChars == that.getLocalPatternChars
+    case _ => false
   }
 }
