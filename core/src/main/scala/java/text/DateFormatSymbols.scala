@@ -1,6 +1,7 @@
 package java.text
 
 import java.util.Locale
+import java.util.Arrays
 
 import scala.scalajs.locale.LocaleRegistry
 import scala.scalajs.locale.ldml.{LDML, NumberingSystem, Symbols}
@@ -34,7 +35,7 @@ class DateFormatSymbols(private[this] val locale: Locale)
   private[this] var shortWeekdays: Array[String] = Array()
   private[this] var amPmStrings: Array[String] = Array()
   private[this] var zoneStrings: Array[Array[String]] = Array()
-  private[this] var localPatternChars: String = null
+  private[this] var localPatternChars: String = ""
 
   DateFormatSymbols.initialize(locale, this)
 
@@ -97,5 +98,29 @@ class DateFormatSymbols(private[this] val locale: Locale)
   def setLocalPatternChars(localPatternChars: String): Unit = {
     if (localPatternChars == null) throw new NullPointerException()
     this.localPatternChars = localPatternChars
+  }
+
+  override def equals(other: Any): Boolean = other match {
+    case that: DateFormatSymbols =>
+        eras.sameElements(that.getEras) &&
+        months.sameElements(that.getMonths) &&
+        shortMonths.sameElements(that.getShortMonths) &&
+        weekdays.sameElements(that.getWeekdays) &&
+        shortWeekdays.sameElements(that.getShortWeekdays) &&
+        amPmStrings.sameElements(that.getAmPmStrings) &&
+        zoneStrings.sameElements(that.getZoneStrings) &&
+        localPatternChars == that.getLocalPatternChars
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    val state = Seq(Array[AnyRef](eras: _*), Array[AnyRef](months: _*),
+      Array[AnyRef](shortMonths: _*), Array[AnyRef](weekdays: _*),
+      Array[AnyRef](shortWeekdays: _*), Array[AnyRef](amPmStrings: _*))
+    val s = state.map(Arrays.hashCode).foldLeft(0)((a, b) => 31 * a + b)
+    val zs = zoneStrings.map(Array[AnyRef](_: _*))
+    val zsc = Array[AnyRef](zs: _*)
+
+    31 * (31 * s + Arrays.hashCode(zsc)) + localPatternChars.hashCode
   }
 }

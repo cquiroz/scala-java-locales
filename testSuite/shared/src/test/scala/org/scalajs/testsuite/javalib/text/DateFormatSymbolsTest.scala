@@ -50,4 +50,22 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
     assertEquals("abc", dfs.getLocalPatternChars())
     expectThrows(classOf[NullPointerException], dfs.setLocalPatternChars(null))
   }
+
+  @Test def test_equals(): Unit = {
+    val dfs = new DateFormatSymbols()
+    assertEquals(dfs, dfs)
+    assertEquals(dfs, new DateFormatSymbols())
+    dfs.setEras(Array("a", "b"))
+    assertFalse(dfs.equals(new DateFormatSymbols()))
+    assertFalse(dfs.equals(null))
+    assertFalse(dfs.equals(1))
+  }
+
+  @Test def test_hash_code(): Unit = {
+    val dfs = new DateFormatSymbols()
+    assertEquals(dfs.hashCode, dfs.hashCode)
+    assertEquals(dfs.hashCode, new DateFormatSymbols().hashCode)
+    dfs.setEras(Array("a", "b"))
+    assertFalse(dfs.hashCode.equals(new DateFormatSymbols().hashCode))
+  }
 }
