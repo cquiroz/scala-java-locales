@@ -4,7 +4,7 @@ import java.util.Locale
 import java.util.Arrays
 
 import scala.scalajs.locale.LocaleRegistry
-import scala.scalajs.locale.ldml.{LDML, NumberingSystem, Symbols}
+import scala.scalajs.locale.cldr.{LDML, NumberingSystem, Symbols}
 
 object DateFormatSymbols {
 

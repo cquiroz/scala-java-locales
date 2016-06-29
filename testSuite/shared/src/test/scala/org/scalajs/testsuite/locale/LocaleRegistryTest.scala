@@ -6,8 +6,8 @@ import org.junit.Assert._
 import org.junit.{Before, Test}
 
 import scala.scalajs.locale.LocaleRegistry
-import scala.scalajs.locale.ldml.LDML
-import scala.scalajs.locale.ldml.data._
+import scala.scalajs.locale.cldr.LDML
+import scala.scalajs.locale.cldr.data._
 import org.scalajs.testsuite.utils.LocaleTestSetup
 import org.scalajs.testsuite.utils.Platform
 

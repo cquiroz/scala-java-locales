@@ -1,4 +1,4 @@
-package scala.scalajs.locale.ldml
+package scala.scalajs.locale.cldr
 
 import java.util.Locale
 
