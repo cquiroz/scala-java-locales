@@ -10,23 +10,23 @@ import org.scalajs.testsuite.utils.Platform
 import org.scalajs.testsuite.utils.AssertThrows.expectThrows
 
 import scala.scalajs.locale.LocaleRegistry
-import scala.scalajs.locale.ldml.data.all.af
-import scala.scalajs.locale.ldml.data.all.ar
-import scala.scalajs.locale.ldml.data.all.az
-import scala.scalajs.locale.ldml.data.all.az_Cyrl
-import scala.scalajs.locale.ldml.data.all.bn
-import scala.scalajs.locale.ldml.data.all.es_CL
-import scala.scalajs.locale.ldml.data.all.fi_FI
-import scala.scalajs.locale.ldml.data.all.fa
-import scala.scalajs.locale.ldml.data.all.it_CH
-import scala.scalajs.locale.ldml.data.all.ka
-import scala.scalajs.locale.ldml.data.all.lv
-import scala.scalajs.locale.ldml.data.all.my
-import scala.scalajs.locale.ldml.data.all.ru_RU
-import scala.scalajs.locale.ldml.data.all.smn
-import scala.scalajs.locale.ldml.data.all.smn_FI
-import scala.scalajs.locale.ldml.data.all.zh
-import scala.scalajs.locale.ldml.data.all.zh_Hant
+import scala.scalajs.locale.ldml.data.af
+import scala.scalajs.locale.ldml.data.ar
+import scala.scalajs.locale.ldml.data.az
+import scala.scalajs.locale.ldml.data.az_Cyrl
+import scala.scalajs.locale.ldml.data.bn
+import scala.scalajs.locale.ldml.data.es_CL
+import scala.scalajs.locale.ldml.data.fi_FI
+import scala.scalajs.locale.ldml.data.fa
+import scala.scalajs.locale.ldml.data.it_CH
+import scala.scalajs.locale.ldml.data.ka
+import scala.scalajs.locale.ldml.data.lv
+import scala.scalajs.locale.ldml.data.my
+import scala.scalajs.locale.ldml.data.ru_RU
+import scala.scalajs.locale.ldml.data.smn
+import scala.scalajs.locale.ldml.data.smn_FI
+import scala.scalajs.locale.ldml.data.zh
+import scala.scalajs.locale.ldml.data.zh_Hant
 
 class DecimalFormatSymbolsTest extends LocaleTestSetup {
   // Clean up the locale database, there are different implementations for

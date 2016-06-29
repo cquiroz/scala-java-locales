@@ -4,7 +4,7 @@ import java.util.Locale
 
 import scala.scalajs.locale.LocaleRegistry
 import scala.scalajs.locale.ldml.{LDML, Symbols, NumberingSystem}
-import scala.scalajs.locale.ldml.data.minimal.root
+import scala.scalajs.locale.ldml.data.root
 import scala.scalajs.locale.ldml.data.numericsystems.latn
 
 object DecimalFormatSymbols {

@@ -10,28 +10,28 @@ import scala.scalajs.locale.ldml.data.metadata
 object Locale {
 
   // Default locales required by the specs
-  val ENGLISH: Locale = LocaleRegistry.en.toLocale
-  val FRENCH: Locale = LocaleRegistry.fr.toLocale
-  val GERMAN: Locale = LocaleRegistry.de.toLocale
-  val ITALIAN: Locale = LocaleRegistry.it.toLocale
-  val JAPANESE: Locale = LocaleRegistry.ja.toLocale
-  val KOREAN: Locale = LocaleRegistry.ko.toLocale
-  val CHINESE: Locale = LocaleRegistry.zh.toLocale
-  val SIMPLIFIED_CHINESE: Locale = LocaleRegistry.zh_Hans_CN.toLocale
-  val TRADITIONAL_CHINESE: Locale = LocaleRegistry.zh_Hant_TW.toLocale
-  val FRANCE: Locale = LocaleRegistry.fr_FR.toLocale
-  val GERMANY: Locale = LocaleRegistry.de_DE.toLocale
-  val ITALY: Locale = LocaleRegistry.it_IT.toLocale
-  val JAPAN: Locale = LocaleRegistry.ja_JP.toLocale
-  val KOREA: Locale = LocaleRegistry.ko_KR.toLocale
-  val CHINA: Locale = LocaleRegistry.zh_Hans_CN.toLocale
-  val PRC: Locale = LocaleRegistry.zh_Hans_CN.toLocale
-  val TAIWAN: Locale = LocaleRegistry.zh_Hant_TW.toLocale
-  val UK: Locale = LocaleRegistry.en_GB.toLocale
-  val US: Locale = LocaleRegistry.en_US.toLocale
-  val CANADA: Locale = LocaleRegistry.en_CA.toLocale
-  val CANADA_FRENCH: Locale = LocaleRegistry.fr_CA.toLocale
-  val ROOT: Locale = LocaleRegistry.root.toLocale
+  lazy val ENGLISH: Locale = LocaleRegistry.en.toLocale
+  lazy val FRENCH: Locale = LocaleRegistry.fr.toLocale
+  lazy val GERMAN: Locale = LocaleRegistry.de.toLocale
+  lazy val ITALIAN: Locale = LocaleRegistry.it.toLocale
+  lazy val JAPANESE: Locale = LocaleRegistry.ja.toLocale
+  lazy val KOREAN: Locale = LocaleRegistry.ko.toLocale
+  lazy val CHINESE: Locale = LocaleRegistry.zh.toLocale
+  lazy val SIMPLIFIED_CHINESE: Locale = LocaleRegistry.zh_Hans_CN.toLocale
+  lazy val TRADITIONAL_CHINESE: Locale = LocaleRegistry.zh_Hant_TW.toLocale
+  lazy val FRANCE: Locale = LocaleRegistry.fr_FR.toLocale
+  lazy val GERMANY: Locale = LocaleRegistry.de_DE.toLocale
+  lazy val ITALY: Locale = LocaleRegistry.it_IT.toLocale
+  lazy val JAPAN: Locale = LocaleRegistry.ja_JP.toLocale
+  lazy val KOREA: Locale = LocaleRegistry.ko_KR.toLocale
+  lazy val CHINA: Locale = LocaleRegistry.zh_Hans_CN.toLocale
+  lazy val PRC: Locale = LocaleRegistry.zh_Hans_CN.toLocale
+  lazy val TAIWAN: Locale = LocaleRegistry.zh_Hant_TW.toLocale
+  lazy val UK: Locale = LocaleRegistry.en_GB.toLocale
+  lazy val US: Locale = LocaleRegistry.en_US.toLocale
+  lazy val CANADA: Locale = LocaleRegistry.en_CA.toLocale
+  lazy val CANADA_FRENCH: Locale = LocaleRegistry.fr_CA.toLocale
+  lazy val ROOT: Locale = LocaleRegistry.root.toLocale
 
   val PRIVATE_USE_EXTENSION: Char = 'x'
   val UNICODE_LOCALE_EXTENSION: Char = 'u'
