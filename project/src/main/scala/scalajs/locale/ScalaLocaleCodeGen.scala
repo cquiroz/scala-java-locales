@@ -186,7 +186,6 @@ object ScalaLocaleCodeGen {
     // Find out the default numeric system
     val defaultNS = Option((xml \ "numbers" \ "defaultNumberingSystem").text)
       .filter(_.nonEmpty).filter(ns.contains)
-
     def symbolS(n: NodeSeq): Option[String] = if (n.isEmpty) None else Some(n.text)
 
     def symbolC(n: NodeSeq): Option[Char] = if (n.isEmpty) None else {
@@ -230,6 +229,16 @@ object ScalaLocaleCodeGen {
       defaultNS.flatMap(ns.get), symbols.toMap)
   }
 
+  // Note this must be a def or there could be issues with concurrency
+  def parser: SAXParser = {
+    val f = SAXParserFactory.newInstance()
+    // Don't validate to speed up generation
+    f.setNamespaceAware(false)
+    f.setValidating(false)
+    f.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
+    f.newSAXParser()
+  }
+
   def parseNumberingSystems(xml: Elem): Seq[NumericSystem] = {
     val ns = xml \ "numberingSystems" \\ "numberingSystem"
 
@@ -243,58 +252,68 @@ object ScalaLocaleCodeGen {
     }
   }
 
-  // Note this must be a def or there could be issues with concurrency
-  def parser: SAXParser = {
-    val f = SAXParserFactory.newInstance()
-    // Don't validate to speed up generation
-    f.setNamespaceAware(false)
-    f.setValidating(false)
-    f.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
-    f.newSAXParser()
-  }
-
-  def generateLocaleData(base: File, data: File): Seq[File] = {
-    val nanos = System.nanoTime()
+  def readNumericSystems(data: File): Seq[NumericSystem] = {
     // Parse the numeric systems
     val numberingSystemsFile = data.toPath.resolve("common")
       .resolve("supplemental").resolve("numberingSystems.xml").toFile
     val numericSystems = parseNumberingSystems(XML.withSAXParser(parser)
       .loadFile(numberingSystemsFile))
-    val numericSystemsMap: Map[String, NumericSystem] =
-      numericSystems.map(n => n.id -> n)(breakOut)
-    // latn NS must exist, break if not found
-    val latnNS: NumericSystem = numericSystemsMap.get("latn").get
+    numericSystems
+  }
 
+  def generateNumericSystemsFile(base: File, numericSystems: Seq[NumericSystem]): File = {
     // Generate numeric systems source code
-    val f1 = writeGeneratedTree(base, "numericsystems",
+    writeGeneratedTree(base, "numericsystems",
       CodeGenerator.numericSystems(numericSystems))
+  }
 
+  def buildLDMLDescriptors(data: File, numericSystemsMap: Map[String, NumericSystem],
+                           latnNS: NumericSystem): List[XMLLDML] = {
     // All files under common/main
     val files = Files.newDirectoryStream(data.toPath.resolve("common")
       .resolve("main")).iterator().asScala.toList
 
-    val clazzes = for {
+    for {
       f <- files.map(k => k.toFile)
       r = new InputStreamReader(new FileInputStream(f), "UTF-8")
     } yield constructLDMLDescriptor(f, XML.withSAXParser(parser).load(r),
       latnNS, numericSystemsMap)
+  }
 
+  def generateLocalesFile(base: File, clazzes: List[XMLLDML]): File = {
+    val names = clazzes.map(_.scalaSafeName)
+
+    // Generate locales code
+    val stdTree = CodeGenerator.buildClassTree("data", clazzes, names)
+    writeGeneratedTree(base, "data", stdTree)
+  }
+
+  def generateMetadataFile(base: File, clazzes: List[XMLLDML]): File = {
     val isoCountryCodes = clazzes.flatMap(_.locale.territory).distinct
       .filter(_.length == 2).sorted
     val isoLanguages = clazzes.map(_.locale.language).distinct
       .filter(_.length == 2).sorted
     val scripts = clazzes.flatMap(_.locale.script).distinct.sorted
-
-    val names = clazzes.map(_.scalaSafeName)
-
     // Generate metadata source code
-    val f2 = writeGeneratedTree(base, "metadata",
+    writeGeneratedTree(base, "metadata",
       CodeGenerator.metadata(isoCountryCodes, isoLanguages, scripts))
+  }
 
-    val stdTree = CodeGenerator.buildClassTree("data", clazzes, names)
+  def generateDataSourceCode(base: File, data: File): Seq[File] = {
+    val nanos = System.nanoTime()
+    val numericSystems = readNumericSystems(data)
+    val f1 = generateNumericSystemsFile(base, numericSystems)
 
-    // Generate locales code
-    val f3 = writeGeneratedTree(base, "data", stdTree)
+    val numericSystemsMap: Map[String, NumericSystem] =
+      numericSystems.map(n => n.id -> n)(breakOut)
+    // latn NS must exist, break if not found
+    val latnNS = numericSystemsMap.get("latn").get
+
+    val ldmls = buildLDMLDescriptors(data, numericSystemsMap, latnNS)
+
+    val f2 = generateMetadataFile(base, ldmls)
+    val f3 = generateLocalesFile(base, ldmls)
+
     println("Generation took " + (System.nanoTime() - nanos) / 1000000 + " [ms]")
     Seq(f1, f2, f3)
   }

@@ -7,6 +7,6 @@ object LDMLTasks {
   val cldrVersion = settingKey[String]("The version of CLDR used.")
 
   def generateLocaleData(base: File, data: File): Seq[File] = {
-    ScalaLocaleCodeGen.generateLocaleData(base, data)
+    ScalaLocaleCodeGen.generateDataSourceCode(base, data)
   }
 }
