@@ -3,9 +3,9 @@ package java.text
 import java.util.Locale
 
 import scala.scalajs.locale.LocaleRegistry
-import scala.scalajs.locale.ldml.{LDML, Symbols, NumberingSystem}
-import scala.scalajs.locale.ldml.data.root
-import scala.scalajs.locale.ldml.data.numericsystems.latn
+import scala.scalajs.locale.cldr.{LDML, Symbols, NumberingSystem}
+import scala.scalajs.locale.cldr.data.root
+import scala.scalajs.locale.cldr.data.numericsystems.latn
 
 object DecimalFormatSymbols {
 

@@ -4,8 +4,8 @@ import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 import scala.collection.{Map, mutable}
-import scala.scalajs.locale.ldml.LDML
-import scala.scalajs.locale.ldml.{data => minimal}
+import scala.scalajs.locale.cldr.LDML
+import scala.scalajs.locale.cldr.data
 
 /**
   * Implements a database of locales
@@ -17,28 +17,28 @@ object LocaleRegistry {
     Locale.Category.values().map(_ -> None).toMap
 
   // The spec requires some locales by default
-  lazy val en: LDML         = minimal.en
-  lazy val fr: LDML         = minimal.fr
-  lazy val de: LDML         = minimal.de
-  lazy val it: LDML         = minimal.it
-  lazy val ja: LDML         = minimal.ja
-  lazy val ko: LDML         = minimal.ko
-  lazy val zh: LDML         = minimal.zh
+  lazy val en: LDML         = data.en
+  lazy val fr: LDML         = data.fr
+  lazy val de: LDML         = data.de
+  lazy val it: LDML         = data.it
+  lazy val ja: LDML         = data.ja
+  lazy val ko: LDML         = data.ko
+  lazy val zh: LDML         = data.zh
   // The JVM uses Chinese without script unlike CLDR
-  lazy val zh_Hans_CN: LDML = minimal.zh_Hans_CN
-    .copy(locale = minimal.zh_Hans_CN.locale.copy(script = None))
-  lazy val zh_Hant_TW: LDML = minimal.zh_Hant_TW
-    .copy(locale = minimal.zh_Hant_TW.locale.copy(script = None))
-  lazy val fr_FR: LDML      = minimal.fr_FR
-  lazy val de_DE: LDML      = minimal.de_DE
-  lazy val it_IT: LDML      = minimal.it_IT
-  lazy val ja_JP: LDML      = minimal.ja_JP
-  lazy val ko_KR: LDML      = minimal.ko_KR
-  lazy val en_GB: LDML      = minimal.en_GB
-  lazy val en_US: LDML      = minimal.en_US
-  lazy val en_CA: LDML      = minimal.en_CA
-  lazy val fr_CA: LDML      = minimal.fr_CA
-  lazy val root: LDML       = minimal.root
+  lazy val zh_Hans_CN: LDML = data.zh_Hans_CN
+    .copy(locale = data.zh_Hans_CN.locale.copy(script = None))
+  lazy val zh_Hant_TW: LDML = data.zh_Hant_TW
+    .copy(locale = data.zh_Hant_TW.locale.copy(script = None))
+  lazy val fr_FR: LDML      = data.fr_FR
+  lazy val de_DE: LDML      = data.de_DE
+  lazy val it_IT: LDML      = data.it_IT
+  lazy val ja_JP: LDML      = data.ja_JP
+  lazy val ko_KR: LDML      = data.ko_KR
+  lazy val en_GB: LDML      = data.en_GB
+  lazy val en_US: LDML      = data.en_US
+  lazy val en_CA: LDML      = data.en_CA
+  lazy val fr_CA: LDML      = data.fr_CA
+  lazy val root: LDML       = data.root
 
   case class LocaleCldr(locale: Locale,
       decimalFormatSymbol: Option[DecimalFormatSymbols])

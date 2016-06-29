@@ -5,7 +5,7 @@ import org.junit.Test
 
 import scala.scalajs.locale.BCP47
 import scala.scalajs.locale.BCP47.{GrandfatheredTag, LanguageTag, PrivateUseTag}
-import scala.scalajs.locale.ldml.data.metadata._
+import scala.scalajs.locale.cldr.data.metadata._
 
 class BCP47Test {
 
