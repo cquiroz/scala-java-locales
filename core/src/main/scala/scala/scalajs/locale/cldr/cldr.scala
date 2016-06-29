@@ -12,6 +12,9 @@ case class Symbols(ns: NumberingSystem, aliasOf: Option[NumberingSystem],
     percent: Option[Char], minus: Option[Char], perMille: Option[Char],
     infinity: Option[String], nan: Option[String], exp: Option[String])
 
+/** Interfaces describing calendar data */
+case class Calendar(id: String)
+
 /**
  * Interfaces describing an LDML Locale
  */
