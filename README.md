@@ -32,7 +32,22 @@ This library is a work in progress and there are some unimplemented methods. If 
 
 ## Usage
 
-TODO
+The API follows the Java API for Locales, any major difference should be considered a bug. However, to avoid loading all the data for locales you need to explicitly install locales you want to use outside the set of standard locales
+
+You can do that by, e.g. installing the Finnish locale
+
+```scala
+import scala.scalajs.locale.LocaleRegistry
+import scala.scalajs.locale.cldr.data.fi_FI
+
+// Install the locale
+LocaleRegistry.installLocale(fi_FI)
+
+// Now you can use the locale
+val dfs = DecimalFormatSymbols.getInstance(Locale.forLanguageTag("fi_FI"))
+```
+
+***Note:*** that calls to `Locale.forLanguageTag("fi_FI")` will succeed regardless of the installation due to the requirements on the `Locale` API
 
 ## CLDR
 
@@ -46,19 +61,19 @@ Starting on Java 8, [CLDR](https://docs.oracle.com/javase/8/docs/technotes/guide
 
 Locales and the CLDR specifications are vast subjects. The locales in this project are as good as the data and the interpretation of the specification is. While the data and implementation has been tested as much as possible, it is possible and likely that there are errors. Please post an issue or submit a PR if you find such errors.
 
-In general the API attempts to behave be as close as possible to what happens on the JVM, e.g. the numeric system in Java seems to default to `latn` unless expilcitely requested on the locale name.
+In general the API attempts to behave be as close as possible to what happens on the JVM, e.g. the numeric system in Java seems to default to `latn` unless explicitly requested on the locale name.
 
 ## Demo
 
-TODO
+A very simple sample project is available at [scalajs-locales-demo](https://github.com/cquiroz/scalajs-locales-demo)
 
 ## Dependencies
 
-`scalajs-java-locale` explicitly doesn't have any dependencies. The `sbt` project has some dependencies for code generation, in particular [treehugger](https://github.com/eed3si9n/treehugger) but they don't carry over to the produced code
+`scalajs-locales` explicitly doesn't have any dependencies. The `sbt` project has some dependencies for code generation, in particular [treehugger](https://github.com/eed3si9n/treehugger) but they don't carry over to the produced code
 
 ## License
 
 Copyright &copy; 2016 Carlos Quiroz
 
-`scala-locales` is distributed under the
+`scalaj-locales` is distributed under the
 [BSD 3-Clause license](./LICENSE.txt).
