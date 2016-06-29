@@ -133,5 +133,5 @@ object LocaleRegistry {
   /**
     * Returns the ldml for the given locale
     */
-  def ldml(locale: Locale): Option[LDML] = ldmls.get(locale.toLanguageTag())
+  def ldml(locale: Locale): Option[LDML] = ldmls.get(locale.toLanguageTag)
 }
