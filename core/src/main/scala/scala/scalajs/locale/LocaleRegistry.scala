@@ -12,10 +12,6 @@ import scala.scalajs.locale.cldr.data
   */
 object LocaleRegistry {
 
-  private var defaultLocale: Option[Locale] = None
-  private var defaultPerCategory: Map[Locale.Category, Option[Locale]] =
-    Locale.Category.values().map(_ -> None).toMap
-
   // The spec requires some locales by default
   lazy val en: LDML         = data.en
   lazy val fr: LDML         = data.fr
@@ -65,6 +61,10 @@ object LocaleRegistry {
     fr_CA.languageTag -> fr_CA
   )
 
+  private var defaultLocale: Locale = en.toLocale
+  private var defaultPerCategory: Map[Locale.Category, Option[Locale]] =
+    Locale.Category.values().map(_ -> None).toMap
+
   private lazy val ldmls: mutable.Map[String, LDML] = mutable.Map.empty
 
   initDefaultLocales()
@@ -78,7 +78,7 @@ object LocaleRegistry {
     * Cleans the registry, useful for testing
     */
   def resetRegistry(): Unit = {
-    defaultLocale = None
+    defaultLocale = en.toLocale
     defaultPerCategory =
         Locale.Category.values().map(_ -> None).toMap
     ldmls.empty
@@ -86,14 +86,13 @@ object LocaleRegistry {
   }
 
   private def initDefaultLocales(): Unit = {
-    // Initialize
+    // Initialize defaults
     defaultLocales.foreach {
       case (_, l) => installLocale(l)
     }
   }
 
   def default: Locale = defaultLocale
-    .getOrElse(throw new IllegalStateException("No default locale set"))
 
   def default(category: Locale.Category): Locale = {
     if (category == null) {
@@ -105,7 +104,10 @@ object LocaleRegistry {
   }
 
   def setDefault(newLocale: Locale): Unit = {
-    defaultLocale = Some(newLocale)
+    if (newLocale == null) {
+      throw new NullPointerException("Argument cannot be null")
+    }
+    defaultLocale = newLocale
     defaultPerCategory = Locale.Category.values().map(_ -> Some(newLocale)).toMap
   }
 

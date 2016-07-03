@@ -243,12 +243,11 @@ class LocaleTest extends LocaleTestSetup {
   }
 
   // The tests operate with ENGLISH as the default locale
-  @Test def test_no_default_locale(): Unit = {
+  @Test def test_default_locale(): Unit = {
     assertEquals(Locale.ENGLISH, Locale.getDefault)
   }
 
-  // The tests operate with ENGLISH as the default locale
-  @Test def test_no_default_locale_per_category(): Unit = {
+  @Test def test_default_locale_per_category(): Unit = {
     assertEquals(Locale.ENGLISH, Locale.getDefault(Locale.Category.DISPLAY))
     assertEquals(Locale.ENGLISH, Locale.getDefault(Locale.Category.FORMAT))
     expectThrows(classOf[NullPointerException], Locale.getDefault(null))
@@ -266,6 +265,8 @@ class LocaleTest extends LocaleTestSetup {
     Locale.setDefault(Locale.Category.DISPLAY, Locale.CHINESE)
     assertEquals(Locale.CANADA_FRENCH, Locale.getDefault)
     assertEquals(Locale.CHINESE, Locale.getDefault(Locale.Category.DISPLAY))
+
+    expectThrows(classOf[NullPointerException], Locale.setDefault(null))
   }
 
   @Test def test_get_available_locales(): Unit = {
