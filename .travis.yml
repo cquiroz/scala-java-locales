@@ -6,7 +6,6 @@ script:
   - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION testSuite/test
   - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION 'set scalaJSUseRhino in Global := false' testSuite/test
   - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION 'set scalaJSUseRhino in Global := false' 'set scalaJSStage in Global := FullOptStage' testSuite/test
-  #- sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION publishLocal
 scala:
   - 2.10.6
   - 2.11.8

@@ -87,6 +87,15 @@ A very simple sample project is available at [scalajs-locales-demo](https://gith
 
 `scalajs-locales` explicitly doesn't have any dependencies. The `sbt` project has some dependencies for code generation, in particular [treehugger](https://github.com/eed3si9n/treehugger) but they don't carry over to the produced code
 
+## Versioning
+
+`scalajs-locales` uses [Semantic Versioning](http://semver.org/) and includes the CLDR version used as a build tag, e.g.:
+
+```
+0.1.0+29 // Version 0.1.0 with CLDR version 29
+```
+
+
 ## License
 
 Copyright &copy; 2016 Carlos Quiroz
