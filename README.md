@@ -49,6 +49,20 @@ val dfs = DecimalFormatSymbols.getInstance(Locale.forLanguageTag("fi_FI"))
 
 ***Note:*** that calls to `Locale.forLanguageTag("fi_FI")` will succeed regardless of the installation due to the requirements on the `Locale` API
 
+## Default Locale
+
+It is **highly** recommended that you set a default locale for your application with, e.g.
+
+```
+Locale.setDefault(Locale.forLanguageTag(<my-locale>))
+```
+
+The Java API requires a default `Locale` though it doesn't mandate a specific one, instead, the runtime should select it depending on the platform.
+
+On `Scala.js` usual platforms like browsers or node.js, there is no reliable way to identify the default locale, however, `scalajs-locales` uses `en` by default. This is a decision based on compatibility with `Scala.js`, which _de facto_ uses `en` for number formatting.
+
+It could be considered to have no default locale, however, this will greatly limit the ability to implement the many API calls that require it.
+
 ## CLDR
 
 `java.util.Locale` is a relatively simple class and by itself it doesn't provide too much functionality. The key for its usefulness is on providing data about the locale especially in terms of classes like `java.text.DecimalFormatSymbols`, `java.text.DateFormatSymbols`, etc. The [Unicode CLDR](http://cldr.unicode.org/) project is a large repository of locale data that can be used to build the supporting classes, e.g. to get the `DecimalFormatSymbols` for a given locale.
