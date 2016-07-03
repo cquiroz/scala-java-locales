@@ -1,4 +1,4 @@
-# scala-locales
+# scalajs-locales
 
 [![Build Status](https://api.travis-ci.org/cquiroz/scalajs-locales.svg?branch=master)](https://travis-ci.org/cquiroz/scalajs-locales)
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.8.svg)](https://www.scala-js.org/)
@@ -55,7 +55,9 @@ val dfs = DecimalFormatSymbols.getInstance(Locale.forLanguageTag("fi_FI"))
 
 Most of this project is in the form of code generated from the CLDR data. While many similar projects will create compact text or binary representation, this project will generate class instances for locale. While this maybe larger at first, Scala.js code optimization should be able to remove the unused code during optimization.
 
-Starting on Java 8, [CLDR](https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr) is also used by the JVM, for comparisons the java flag `-Djava.locale.providers=CLDR` should be set
+Starting on Java 8, [CLDR](https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr) is also used by the JVM, for comparisons the java flag `-Djava.locale.providers=CLDR` should be set.
+
+**Note:** Java 8 ships with an older CLDR version, specifically version 21. `scalajs-locales` uses the latest available version, hence there are some differences between the results and there are new available locales in `scalajs-locales`.
 
 ## Disclaimer
 
