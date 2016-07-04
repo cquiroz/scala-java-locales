@@ -4,7 +4,7 @@ import java.util.Locale
 import java.util.Arrays
 
 import scala.scalajs.locale.LocaleRegistry
-import scala.scalajs.locale.cldr.{LDML, NumberingSystem, Symbols}
+import scala.scalajs.locale.cldr.LDML
 
 object DateFormatSymbols {
 
@@ -20,6 +20,26 @@ object DateFormatSymbols {
                          dfs: DateFormatSymbols): DateFormatSymbols = {
 
     LocaleRegistry.ldml(locale).map(l => dfs).getOrElse(dfs)
+    LocaleRegistry
+      .ldml(locale)
+      .map(l => toDFS(locale, dfs, l))
+      .getOrElse(dfs)
+  }
+
+  private def copyAndPad(m: List[String], size: Int, v: String): Array[String] = {
+    val p = Arrays.copyOf[String](m.toArray[String], size)
+    (m.length until size).foreach(p(_) = v)
+    p
+  }
+
+  private def toDFS(locale: Locale, dfs: DateFormatSymbols, ldml: LDML): DateFormatSymbols = {
+    ldml.calendar.foreach { c =>
+      // Irritatingly the JVM uses a fixed 13 length array for months
+      // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4146173
+      dfs.setMonths(copyAndPad(c.months, 13, ""))
+      dfs.setShortMonths(copyAndPad(c.shortMonths, 13, ""))
+    }
+    dfs
   }
 }
 

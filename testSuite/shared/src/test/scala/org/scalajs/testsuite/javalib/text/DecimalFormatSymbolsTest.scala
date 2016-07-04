@@ -168,16 +168,16 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
   // These tests give the same data on CLDR 21
   @Test def test_extra_locales_not_agreeing_decimal_format_symbol(): Unit = {
     localesDiff.foreach {
-      case (LocaleTestItem(d, tag, cldr31), symbols) =>
+      case (LocaleTestItem(d, tag, cldr21), symbols) =>
         if (!Platform.executingInJVM) {
           LocaleRegistry.installLocale(d)
         }
         val l = Locale.forLanguageTag(tag)
         val dfs = DecimalFormatSymbols.getInstance(l)
-        if (Platform.executingInJVM && cldr31) {
+        if (Platform.executingInJVM && cldr21) {
           test_dfs(dfs, symbols)
         }
-        if (!Platform.executingInJVM && !cldr31) {
+        if (!Platform.executingInJVM && !cldr21) {
           test_dfs(dfs, symbols)
         }
     }

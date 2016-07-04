@@ -384,7 +384,7 @@ object ScalaLocaleCodeGen {
     val numericSystemsMap: Map[String, NumericSystem] =
       numericSystems.map(n => n.id -> n)(breakOut)
     // latn NS must exist, break if not found
-    val latnNS = numericSystemsMap.get("latn").get
+    val latnNS = numericSystemsMap("latn")
 
     val ldmls = buildLDMLDescriptors(data, numericSystemsMap, latnNS)
 
