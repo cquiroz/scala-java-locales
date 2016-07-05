@@ -17,7 +17,18 @@ case class Calendar(id: String) {
   val scalaSafeName: String = id.replace("-", "_")
 }
 
-case class CalendarSymbols(months: Seq[String], shortMonths: Seq[String])
+case class MonthSymbols(months: Seq[String], shortMonths: Seq[String])
+case class WeekdaysSymbols(weekdays: Seq[String], shortWeekdays: Seq[String])
+
+object MonthSymbols {
+  val zero = MonthSymbols(Seq.empty, Seq.empty)
+}
+
+object WeekdaysSymbols {
+  val zero = WeekdaysSymbols(Seq.empty, Seq.empty)
+}
+
+case class CalendarSymbols(months: MonthSymbols, weekdays: WeekdaysSymbols)
 
 case class NumericSystem(id: String, digits: String)
 
@@ -125,7 +136,8 @@ object CodeGenerator {
     }
 
     val gc = ldml.calendar.map { cs =>
-      Apply(ldmlCalendarSym, LIST(cs.months.map(LIT(_))), LIST(cs.shortMonths.map(LIT(_))))
+      Apply(ldmlCalendarSym, LIST(cs.months.months.map(LIT(_))), LIST(cs.months.shortMonths.map(LIT(_))),
+        LIST(cs.weekdays.weekdays.map(LIT(_))), LIST(cs.weekdays.shortWeekdays.map(LIT(_))))
     }.fold(NONE)(s => SOME(s))
 
     OBJECTDEF(ldml.scalaSafeName) withParents Apply(ldmlSym, parent,
@@ -210,22 +222,39 @@ object ScalaLocaleCodeGen {
       .filter(_.nonEmpty)
 
     def readCalendarData(xml: Node): Option[CalendarSymbols] = {
-      def readMonths(mc: Node, width: String): Seq[String] =
+      def readEntries(mc: Node, itemParent: String, entryName: String, width: String): Seq[String] =
         for {
-          w <- mc \ "monthWidth"
+          w <- mc \ itemParent
           if (w \ "@type").text == width
-          m <- w \\ "month"
+          m <- w \\ entryName
         } yield m.text
 
       // read the months context
-      (for {
+      val months = (for {
         mc <- xml \\ "monthContext"
         if (mc \ "@type").text == "format"
       } yield {
-        val wideMonths = readMonths(mc, "wide")
-        val shortMonths = readMonths(mc, "abbreviated")
-        CalendarSymbols(wideMonths, shortMonths)
+        val wideMonths = readEntries(mc, "monthWidth", "month", "wide")
+        val shortMonths = readEntries(mc, "monthWidth", "month", "abbreviated")
+        MonthSymbols(wideMonths, shortMonths)
       }).headOption
+
+      // read the weekdays context
+      val weekdays = (for {
+        mc <- xml \\ "dayContext"
+        if (mc \ "@type").text == "format"
+      } yield {
+        val weekdays = readEntries(mc, "dayWidth", "day", "wide")
+        val shortWeekdays = readEntries(mc, "dayWidth", "day", "abbreviated")
+        WeekdaysSymbols(weekdays, shortWeekdays)
+      }).headOption
+
+      (months, weekdays) match {
+        case (None, Some(w)) => Option(CalendarSymbols(MonthSymbols.zero, w))
+        case (Some(m), None) => Option(CalendarSymbols(m, WeekdaysSymbols.zero))
+        case (Some(m), Some(w)) => Option(CalendarSymbols(m, w))
+        case (None, None) => None
+      }
     }
 
     val gregorian = for {

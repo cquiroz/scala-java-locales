@@ -1,7 +1,6 @@
 package java.text
 
-import java.util.Locale
-import java.util.Arrays
+import java.util.{Arrays, Calendar, Locale}
 
 import scala.scalajs.locale.LocaleRegistry
 import scala.scalajs.locale.cldr.LDML
@@ -32,12 +31,21 @@ object DateFormatSymbols {
     p
   }
 
+  private def padAndCopyDays(m: List[String], size: Int, v: String): Array[String] = {
+    // Days in the JVM are stored starting on index 1, and 0 is empty
+    val v = new Array[String](size)
+    (0 until size).foreach(i => if (i == 0 || i > m.length) v(i) = "" else v(i) = m(i - 1))
+    v
+  }
+
   private def toDFS(locale: Locale, dfs: DateFormatSymbols, ldml: LDML): DateFormatSymbols = {
     ldml.calendar.foreach { c =>
-      // Irritatingly the JVM uses a fixed 13 length array for months
+      // Irritatingly the JVM uses a fixed 13 length array for months and 8 for weekdays
       // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4146173
       dfs.setMonths(copyAndPad(c.months, 13, ""))
       dfs.setShortMonths(copyAndPad(c.shortMonths, 13, ""))
+      dfs.setWeekdays(padAndCopyDays(c.weekdays, 8, ""))
+      dfs.setShortWeekdays(padAndCopyDays(c.shortWeekdays, 8, ""))
     }
     dfs
   }
