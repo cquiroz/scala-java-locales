@@ -3,7 +3,7 @@ package java.text
 import java.util.{Arrays, Locale}
 
 import scala.scalajs.locale.LocaleRegistry
-import scala.scalajs.locale.cldr.LDML
+import scala.scalajs.locale.cldr.{CalendarSymbols, LDML}
 
 object DateFormatSymbols {
 
@@ -37,7 +37,10 @@ object DateFormatSymbols {
   }
 
   private def toDFS(locale: Locale, dfs: DateFormatSymbols, ldml: LDML): DateFormatSymbols = {
-    ldml.calendar.foreach { c =>
+    def parentSymbols(ldml: LDML): Option[CalendarSymbols] =
+      ldml.calendar.orElse(ldml.parent.flatMap(_.calendar))
+
+    parentSymbols(ldml).foreach { c =>
       // Irritatingly the JVM uses a fixed 13 length array for months and 8 for weekdays
       // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4146173
       dfs.setMonths(copyAndPad(c.months, 13, ""))

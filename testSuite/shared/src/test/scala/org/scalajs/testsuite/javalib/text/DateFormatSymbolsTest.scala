@@ -3,7 +3,7 @@ package org.scalajs.testsuite.javalib.text
 import java.text.DateFormatSymbols
 import java.util.{Calendar, Locale}
 
-import org.junit.{Before, Ignore, Test}
+import org.junit.{Before, Test}
 import org.junit.Assert._
 import org.scalajs.testsuite.utils.AssertThrows._
 import org.scalajs.testsuite.utils.LocaleTestSetup
@@ -25,6 +25,14 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
   // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4146173
   val standardLocalesData = List(
     Locale.ENGLISH -> LocaleTestItem(en, "en", cldr21 = false,
+      List("January", "February", "March", "April", "May", "June", "July", "August",
+        "September", "October", "November", "December", ""),
+      List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""),
+      List("", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
+      List("", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
+      List("AM", "PM"),
+      List("BC", "AD")),
+    Locale.US -> LocaleTestItem(en, "en", cldr21 = false,
       List("January", "February", "March", "April", "May", "June", "July", "August",
         "September", "October", "November", "December", ""),
       List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""),

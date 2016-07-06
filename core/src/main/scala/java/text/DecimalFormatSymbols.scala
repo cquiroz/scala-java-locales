@@ -182,8 +182,8 @@ class DecimalFormatSymbols(private[this] val locale: Locale)
       case _ => false
     }
 
-  // Oddly the JVM seems to always return the same
-  // it breaks the hashCode contract, will skip implementing
+  // Oddly the JVM seems to always return the same value
+  // it breaks the hashCode contract
   override def hashCode(): Int = {
     val prime = 31
     var result = 1
