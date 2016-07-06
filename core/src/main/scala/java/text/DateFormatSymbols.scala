@@ -38,7 +38,7 @@ object DateFormatSymbols {
 
   private def toDFS(locale: Locale, dfs: DateFormatSymbols, ldml: LDML): DateFormatSymbols = {
     def parentSymbols(ldml: LDML): Option[CalendarSymbols] =
-      ldml.calendar.orElse(ldml.parent.flatMap(_.calendar))
+      ldml.calendar.orElse(ldml.parent.flatMap(parentSymbols))
 
     def elementsArray(ldml: LDML, read: CalendarSymbols => Option[List[String]]): Option[List[String]] =
       parentSymbols(ldml).flatMap { s => read(s).orElse(ldml.parent.flatMap(elementsArray(_, read))) }
