@@ -17,8 +17,6 @@ object DateFormatSymbols {
 
   private def initialize(locale: Locale,
                          dfs: DateFormatSymbols): DateFormatSymbols = {
-
-    LocaleRegistry.ldml(locale).map(l => dfs).getOrElse(dfs)
     LocaleRegistry
       .ldml(locale)
       .map(l => toDFS(locale, dfs, l))
@@ -47,6 +45,7 @@ object DateFormatSymbols {
       dfs.setWeekdays(padAndCopyDays(c.weekdays, 8, ""))
       dfs.setShortWeekdays(padAndCopyDays(c.shortWeekdays, 8, ""))
       dfs.setAmPmStrings(c.amPm.toArray)
+      dfs.setEras(c.eras.toArray)
     }
     dfs
   }

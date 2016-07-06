@@ -32,7 +32,13 @@ object AmPmSymbols {
   val zero = AmPmSymbols("", "")
 }
 
-case class CalendarSymbols(months: MonthSymbols, weekdays: WeekdaysSymbols, amPm: AmPmSymbols)
+case class EraSymbols(eras: List[String])
+object EraSymbols {
+  val zero = EraSymbols(List("", ""))
+}
+
+case class CalendarSymbols(months: MonthSymbols, weekdays: WeekdaysSymbols,
+    amPm: AmPmSymbols, eras: EraSymbols)
 
 case class NumericSystem(id: String, digits: String)
 
@@ -142,7 +148,7 @@ object CodeGenerator {
     val gc = ldml.calendar.map { cs =>
       Apply(ldmlCalendarSym, LIST(cs.months.months.map(LIT(_))), LIST(cs.months.shortMonths.map(LIT(_))),
         LIST(cs.weekdays.weekdays.map(LIT(_))), LIST(cs.weekdays.shortWeekdays.map(LIT(_))),
-        LIST(LIT(cs.amPm.am), LIT(cs.amPm.pm)))
+        LIST(LIT(cs.amPm.am), LIT(cs.amPm.pm)), LIST(cs.eras.eras.map(LIT(_))))
     }.fold(NONE)(s => SOME(s))
 
     OBJECTDEF(ldml.scalaSafeName) withParents Apply(ldmlSym, parent,
@@ -212,6 +218,76 @@ object ScalaLocaleCodeGen {
     override def test(value: Int): Boolean = !Character.isIdentifierIgnorable(value)
   }
 
+  def readCalendarData(xml: Node): Option[CalendarSymbols] = {
+    def readEntries(mc: Node, itemParent: String, entryName: String, width: String): Seq[String] =
+      for {
+        w <- mc \ itemParent
+        if (w \ "@type").text == width
+        m <- w \\ entryName
+      } yield m.text
+
+    // read the months context
+    val months = (for {
+      mc <- xml \\ "monthContext"
+      if (mc \ "@type").text == "format"
+    } yield {
+      val wideMonths = readEntries(mc, "monthWidth", "month", "wide")
+      val shortMonths = readEntries(mc, "monthWidth", "month", "abbreviated")
+      MonthSymbols(wideMonths, shortMonths)
+    }).headOption
+
+    // read the weekdays context
+    val weekdays = (for {
+      mc <- xml \\ "dayContext"
+      if (mc \ "@type").text == "format"
+    } yield {
+      val weekdays = readEntries(mc, "dayWidth", "day", "wide")
+      val shortWeekdays = readEntries(mc, "dayWidth", "day", "abbreviated")
+      WeekdaysSymbols(weekdays, shortWeekdays)
+    }).headOption
+
+    def readPeriod(n: Node, name: String): Option[String] =
+      (for {
+        p <- n \ "dayPeriod"
+        if (p \ "@type").text == name && (p \ "@alt").text != "variant"
+      } yield p.text).headOption
+
+    // read the day periods
+    val amPm = (for {
+        dpc <- xml \\ "dayPeriods" \ "dayPeriodContext"
+        if (dpc \ "@type").text == "format"
+        dpw <- dpc \\ "dayPeriodWidth"
+        if (dpw \ "@type").text == "wide"
+      } yield {
+        val am = readPeriod(dpw, "am")
+        val pm = readPeriod(dpw, "pm")
+        AmPmSymbols(am.getOrElse(""), pm.getOrElse(""))
+      }).headOption
+
+    def readEras(n: Node, idx: String): Option[String] =  {
+      (for {
+        p <- n \ "eraAbbr" \\ "era"
+        if (p \ "@type").text == idx && (p \ "@alt").text != "variant"
+      } yield p.text).headOption
+    }
+
+    val eras = (for {
+          n <- xml \ "eras"
+        } yield {
+          val bc = readEras(n, "0")
+          val ad = readEras(n, "1")
+          EraSymbols(List(bc, ad).flatten)
+        }).headOption
+
+    if (List(months, weekdays, amPm, eras).exists(_.isDefined)) {
+      Some(CalendarSymbols(months.getOrElse(MonthSymbols.zero),
+        weekdays.getOrElse(WeekdaysSymbols.zero), amPm.getOrElse(AmPmSymbols.zero),
+        eras.getOrElse(EraSymbols.zero)))
+    } else {
+      None
+    }
+  }
+
   /**
     * Parse the xml into an XMLLDML object
     */
@@ -225,61 +301,6 @@ object ScalaLocaleCodeGen {
       .filter(_.nonEmpty)
     val script = Option((xml \ "identity" \ "script" \ "@type").text)
       .filter(_.nonEmpty)
-
-    def readCalendarData(xml: Node): Option[CalendarSymbols] = {
-      def readEntries(mc: Node, itemParent: String, entryName: String, width: String): Seq[String] =
-        for {
-          w <- mc \ itemParent
-          if (w \ "@type").text == width
-          m <- w \\ entryName
-        } yield m.text
-
-      // read the months context
-      val months = (for {
-        mc <- xml \\ "monthContext"
-        if (mc \ "@type").text == "format"
-      } yield {
-        val wideMonths = readEntries(mc, "monthWidth", "month", "wide")
-        val shortMonths = readEntries(mc, "monthWidth", "month", "abbreviated")
-        MonthSymbols(wideMonths, shortMonths)
-      }).headOption
-
-      // read the weekdays context
-      val weekdays = (for {
-        mc <- xml \\ "dayContext"
-        if (mc \ "@type").text == "format"
-      } yield {
-        val weekdays = readEntries(mc, "dayWidth", "day", "wide")
-        val shortWeekdays = readEntries(mc, "dayWidth", "day", "abbreviated")
-        WeekdaysSymbols(weekdays, shortWeekdays)
-      }).headOption
-
-      def readPeriod(n: Node, name: String): Option[String] =  {
-        (for {
-          p <- n \ "dayPeriod"
-          if (p \ "@type").text == name && (p \ "@alt").text != "variant"
-        } yield p.text).headOption
-      }
-
-      // read the day periods
-      val amPm = (for {
-        dpc <- xml \\ "dayPeriods" \ "dayPeriodContext"
-        if (dpc \ "@type").text == "format"
-        dpw <- dpc \\ "dayPeriodWidth"
-        if (dpw \ "@type").text == "wide"
-      } yield {
-        val am = readPeriod(dpw, "am")
-        val pm = readPeriod(dpw, "pm")
-        AmPmSymbols(am.getOrElse(""), pm.getOrElse(""))
-      }).headOption
-
-      if (List(months, weekdays, amPm).exists(_.isDefined)) {
-        Some(CalendarSymbols(months.getOrElse(MonthSymbols.zero),
-          weekdays.getOrElse(WeekdaysSymbols.zero), amPm.getOrElse(AmPmSymbols.zero)))
-      } else {
-        None
-      }
-    }
 
     val gregorian = for {
         n <- xml \ "dates" \\ "calendar"

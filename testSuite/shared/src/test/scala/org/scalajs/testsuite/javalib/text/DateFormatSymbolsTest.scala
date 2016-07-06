@@ -18,8 +18,8 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
   @Before def cleanup: Unit = super.cleanDatabase
 
   case class LocaleTestItem(ldml: LDML, tag: String, cldr21: Boolean,
-      months: List[String], shortMonths: List[String],
-      weekdays: List[String], shortWeekdays: List[String], amPm: List[String])
+      months: List[String], shortMonths: List[String], weekdays: List[String],
+      shortWeekdays: List[String], amPm: List[String], eras: List[String])
 
   // Note that in the JVM the months array is always 13 long :S
   // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4146173
@@ -30,14 +30,16 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
       List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""),
       List("", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
       List("", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
-      List("AM", "PM")),
+      List("AM", "PM"),
+      List("BC", "AD")),
     Locale.FRENCH -> LocaleTestItem(fr, "fr", cldr21 = false,
       List("janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre",
         "octobre", "novembre", "décembre", ""),
       List("janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc.", ""),
       List("", "dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"),
       List("", "dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."),
-      List("AM", "PM"))
+      List("AM", "PM"),
+      List("av. J.-C.", "ap. J.-C."))
   )
 
   val standardLocalesDataDiff = List(
@@ -46,61 +48,71 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
       List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""),
       List("", "1", "2", "3", "4", "5", "6", "7"),
       List("", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
-      List("AM", "PM")),
+      List("AM", "PM"),
+      List("BCE", "CE")),
     Locale.ROOT -> LocaleTestItem(root, "", cldr21 = false,
       List("M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "M09", "M10", "M11", "M12", ""),
       List("", "", "", "", "", "", "", "", "", "", "", "", ""),
       List("", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
       List("", "", "", "", "", "", "", ""),
-      List("", "")),
+      List("", ""),
+      List("BCE", "CE")),
     Locale.GERMAN -> LocaleTestItem(de, "de", cldr21 = true,
       List("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember", ""),
       List("Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez", ""),
       List("", "Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"),
       List("", "So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."),
-      List("vorm.", "nachm.")),
+      List("vorm.", "nachm."),
+      List("v. Chr.", "n. Chr.")),
     Locale.GERMAN -> LocaleTestItem(de, "de", cldr21 = false,
       List("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember", ""),
       List("Jan.", "Feb.", "März", "Apr.", "Mai", "Juni", "Juli", "Aug.", "Sep.", "Okt.", "Nov.", "Dez.", ""),
       List("", "Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"),
       List("", "So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."),
-      List("vorm.", "nachm.")),
+      List("vorm.", "nachm."),
+      List("v. Chr.", "n. Chr.")),
     Locale.ITALIAN -> LocaleTestItem(it, "it", cldr21 = true,
       List("gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre", ""),
       List("gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic", ""),
       List("", "domenica", "lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato"),
       List("", "dom", "lun", "mar", "mer", "gio", "ven", "sab"),
-      List("m.", "p.")),
+      List("m.", "p."),
+      List("aC", "dC")),
     Locale.ITALIAN -> LocaleTestItem(it, "it", cldr21 = false,
       List("gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre", ""),
       List("gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic", ""),
       List("", "domenica", "lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato"),
       List("", "dom", "lun", "mar", "mer", "gio", "ven", "sab"),
-      List("AM", "PM")),
+      List("AM", "PM"),
+      List("a.C.", "d.C.")),
     Locale.KOREAN -> LocaleTestItem(ko, "ko", cldr21 = true,
       List("1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월", ""),
       List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""),
       List("", "일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"),
       List("", "일", "월", "화", "수", "목", "금", "토"),
-      List("오전", "오후")),
+      List("오전", "오후"),
+      List("기원전", "서기")),
     Locale.KOREAN -> LocaleTestItem(ko, "ko", cldr21 = false,
       List("1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월", ""),
       List("1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월", ""),
       List("", "일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"),
       List("", "일", "월", "화", "수", "목", "금", "토"),
-      List("오전", "오후")),
+      List("오전", "오후"),
+      List("BC", "AD")),
     Locale.CHINESE -> LocaleTestItem(it, "it", cldr21 = true,
       List("1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月", ""),
       List("1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月", ""),
       List("", "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"),
       List("", "周日", "周一", "周二", "周三", "周四", "周五", "周六"),
-      List("上午", "下午")),
+      List("上午", "下午"),
+      List("公元前", "公元")),
     Locale.CHINESE -> LocaleTestItem(it, "it", cldr21 = false,
       List("一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月", ""),
       List("1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月", ""),
       List("", "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"),
       List("", "周日", "周一", "周二", "周三", "周四", "周五", "周六"),
-      List("上午", "下午"))
+      List("上午", "下午"),
+      List("公元前", "公元"))
   )
 
   def test_dfs(s: DateFormatSymbols, t: LocaleTestItem): Unit = {
@@ -112,25 +124,22 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
       assertEquals(t.weekdays(d), s.getWeekdays()(d))
       assertEquals(t.shortWeekdays(d), s.getShortWeekdays()(d))
     }
-    println(t.amPm.mkString("-"))
-    println(s.getAmPmStrings.mkString("-"))
     assertArrayEquals(Array[AnyRef](t.amPm: _*), Array[AnyRef](s.getAmPmStrings(): _*))
+    assertArrayEquals(Array[AnyRef](t.eras: _*), Array[AnyRef](s.getEras(): _*))
   }
 
   @Test def test_default_locales_date_format_symbol(): Unit = {
     standardLocalesData.foreach {
-      case (l, t @ LocaleTestItem(_, _, _, _, _, _, _, _)) =>
+      case (l, t @ LocaleTestItem(_, _, _, _, _, _, _, _, _)) =>
         val dfs = DateFormatSymbols.getInstance(l)
-        println(l.toLanguageTag)
         test_dfs(dfs, t)
     }
   }
 
   @Test def test_default_locales_date_format_symbol_with_cldr21(): Unit = {
     standardLocalesDataDiff.foreach {
-      case (l, t @ LocaleTestItem(_, m, cldr21, _, _, _, _, _)) =>
+      case (l, t @ LocaleTestItem(_, m, cldr21, _, _, _, _, _, _)) =>
         val dfs = DateFormatSymbols.getInstance(l)
-        println("TAG " + m)
         if (Platform.executingInJVM && cldr21) {
           test_dfs(dfs, t)
         }

@@ -15,7 +15,8 @@ case class Symbols(ns: NumberingSystem, aliasOf: Option[NumberingSystem],
 /** Interfaces describing calendar data */
 case class Calendar(id: String)
 case class CalendarSymbols(months: List[String], shortMonths: List[String],
-    weekdays: List[String], shortWeekdays: List[String], amPm: List[String])
+    weekdays: List[String], shortWeekdays: List[String], amPm: List[String],
+    eras: List[String])
 
 /**
  * Interfaces describing an LDML Locale
