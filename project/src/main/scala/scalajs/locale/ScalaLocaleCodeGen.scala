@@ -27,9 +27,9 @@ object WeekdaysSymbols {
   val zero = WeekdaysSymbols(Seq.empty, Seq.empty)
 }
 
-case class AmPmSymbols(am: String, pm: String)
+case class AmPmSymbols(amPm: Seq[String])
 object AmPmSymbols {
-  val zero = AmPmSymbols("", "")
+  val zero = AmPmSymbols(Seq.empty)
 }
 
 case class EraSymbols(eras: Seq[String])
@@ -148,7 +148,7 @@ object CodeGenerator {
     val gc = ldml.calendar.map { cs =>
       Apply(ldmlCalendarSym, LIST(cs.months.months.map(LIT(_))), LIST(cs.months.shortMonths.map(LIT(_))),
         LIST(cs.weekdays.weekdays.map(LIT(_))), LIST(cs.weekdays.shortWeekdays.map(LIT(_))),
-        LIST(LIT(cs.amPm.am), LIT(cs.amPm.pm)), LIST(cs.eras.eras.map(LIT(_))))
+        LIST(cs.amPm.amPm.map(LIT(_))), LIST(cs.eras.eras.map(LIT(_))))
     }.fold(NONE)(s => SOME(s))
 
     OBJECTDEF(ldml.scalaSafeName) withParents Apply(ldmlSym, parent,
@@ -261,7 +261,9 @@ object ScalaLocaleCodeGen {
       } yield {
         val am = readPeriod(dpw, "am")
         val pm = readPeriod(dpw, "pm")
-        AmPmSymbols(am.getOrElse(""), pm.getOrElse(""))
+        // This is valid because by the spec am and pm must appear together
+        // http://www.unicode.org/reports/tr35/tr35-dates.html#Day_Period_Rules
+        AmPmSymbols(List(am, pm).flatten)
       }).headOption
 
     def readEras(n: Node, idx: String): Option[String] =  {

@@ -55,8 +55,8 @@ object DateFormatSymbols {
     setElements(ldml, _.shortMonths, l => dfs.setShortMonths(copyAndPad(l, 13, "")))
     setElements(ldml, _.weekdays, l => dfs.setWeekdays(padAndCopyDays(l, 8, "")))
     setElements(ldml, _.shortWeekdays, l => dfs.setShortWeekdays(padAndCopyDays(l, 8, "")))
-    setElements(ldml, _.amPm, l => dfs.setAmPmStrings(l.toArray))
-    setElements(ldml, _.eras, l => dfs.setEras(l.toArray))
+    setElements(ldml, _.amPm, l => dfs.setAmPmStrings(copyAndPad(l, 2, "")))
+    setElements(ldml, _.eras, l => dfs.setEras(copyAndPad(l, 2, "")))
     dfs
   }
 }
