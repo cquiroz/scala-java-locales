@@ -3,7 +3,7 @@ package org.scalajs.testsuite.javalib.text
 import java.text.DateFormatSymbols
 import java.util.{Calendar, Locale}
 
-import org.junit.{Before, Test}
+import org.junit.{Before, Ignore, Test}
 import org.junit.Assert._
 import org.scalajs.testsuite.utils.AssertThrows._
 import org.scalajs.testsuite.utils.LocaleTestSetup
@@ -120,7 +120,23 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
       List("", "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"),
       List("", "周日", "周一", "周二", "周三", "周四", "周五", "周六"),
       List("上午", "下午"),
-      List("公元前", "公元"))
+      List("公元前", "公元")),
+    Locale.UK -> LocaleTestItem(en, "en", cldr21 = true,
+      List("January", "February", "March", "April", "May", "June", "July", "August",
+        "September", "October", "November", "December", ""),
+      List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""),
+      List("", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
+      List("", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
+      List("AM", "PM"),
+      List("BC", "AD")),
+    Locale.UK -> LocaleTestItem(en, "en", cldr21 = false,
+      List("January", "February", "March", "April", "May", "June", "July", "August",
+        "September", "October", "November", "December", ""),
+      List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""),
+      List("", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
+      List("", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
+      List("am", "pm"),
+      List("BC", "AD"))
   )
 
   def test_dfs(s: DateFormatSymbols, t: LocaleTestItem): Unit = {

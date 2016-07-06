@@ -40,16 +40,23 @@ object DateFormatSymbols {
     def parentSymbols(ldml: LDML): Option[CalendarSymbols] =
       ldml.calendar.orElse(ldml.parent.flatMap(_.calendar))
 
-    parentSymbols(ldml).foreach { c =>
-      // Irritatingly the JVM uses a fixed 13 length array for months and 8 for weekdays
-      // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4146173
-      dfs.setMonths(copyAndPad(c.months, 13, ""))
-      dfs.setShortMonths(copyAndPad(c.shortMonths, 13, ""))
-      dfs.setWeekdays(padAndCopyDays(c.weekdays, 8, ""))
-      dfs.setShortWeekdays(padAndCopyDays(c.shortWeekdays, 8, ""))
-      dfs.setAmPmStrings(c.amPm.toArray)
-      dfs.setEras(c.eras.toArray)
+    def elementsArray(ldml: LDML, read: CalendarSymbols => Option[List[String]]): Option[List[String]] =
+      parentSymbols(ldml).flatMap { s => read(s).orElse(ldml.parent.flatMap(elementsArray(_, read))) }
+
+    def setElements(ldml: LDML, read: CalendarSymbols => List[String], set: List[String] => Unit): Unit = {
+      def readNonEmpty(c: CalendarSymbols) = read(c) match {
+        case Nil => None
+        case x => Some(x)
+      }
+      elementsArray(ldml, readNonEmpty).orElse(Some(Nil)).foreach(set)
     }
+
+    setElements(ldml, _.months, l => dfs.setMonths(copyAndPad(l, 13, "")))
+    setElements(ldml, _.shortMonths, l => dfs.setShortMonths(copyAndPad(l, 13, "")))
+    setElements(ldml, _.weekdays, l => dfs.setWeekdays(padAndCopyDays(l, 8, "")))
+    setElements(ldml, _.shortWeekdays, l => dfs.setShortWeekdays(padAndCopyDays(l, 8, "")))
+    setElements(ldml, _.amPm, l => dfs.setAmPmStrings(l.toArray))
+    setElements(ldml, _.eras, l => dfs.setEras(l.toArray))
     dfs
   }
 }

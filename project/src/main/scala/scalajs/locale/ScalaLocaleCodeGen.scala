@@ -32,9 +32,9 @@ object AmPmSymbols {
   val zero = AmPmSymbols("", "")
 }
 
-case class EraSymbols(eras: List[String])
+case class EraSymbols(eras: Seq[String])
 object EraSymbols {
-  val zero = EraSymbols(List("", ""))
+  val zero = EraSymbols(Seq.empty)
 }
 
 case class CalendarSymbols(months: MonthSymbols, weekdays: WeekdaysSymbols,
