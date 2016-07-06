@@ -1,6 +1,6 @@
 package java.text
 
-import java.util.{Arrays, Calendar, Locale}
+import java.util.{Arrays, Locale}
 
 import scala.scalajs.locale.LocaleRegistry
 import scala.scalajs.locale.cldr.LDML
@@ -46,6 +46,7 @@ object DateFormatSymbols {
       dfs.setShortMonths(copyAndPad(c.shortMonths, 13, ""))
       dfs.setWeekdays(padAndCopyDays(c.weekdays, 8, ""))
       dfs.setShortWeekdays(padAndCopyDays(c.shortWeekdays, 8, ""))
+      dfs.setAmPmStrings(c.amPm.toArray)
     }
     dfs
   }

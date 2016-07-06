@@ -18,17 +18,21 @@ case class Calendar(id: String) {
 }
 
 case class MonthSymbols(months: Seq[String], shortMonths: Seq[String])
-case class WeekdaysSymbols(weekdays: Seq[String], shortWeekdays: Seq[String])
-
 object MonthSymbols {
   val zero = MonthSymbols(Seq.empty, Seq.empty)
 }
 
+case class WeekdaysSymbols(weekdays: Seq[String], shortWeekdays: Seq[String])
 object WeekdaysSymbols {
   val zero = WeekdaysSymbols(Seq.empty, Seq.empty)
 }
 
-case class CalendarSymbols(months: MonthSymbols, weekdays: WeekdaysSymbols)
+case class AmPmSymbols(am: String, pm: String)
+object AmPmSymbols {
+  val zero = AmPmSymbols("", "")
+}
+
+case class CalendarSymbols(months: MonthSymbols, weekdays: WeekdaysSymbols, amPm: AmPmSymbols)
 
 case class NumericSystem(id: String, digits: String)
 
@@ -137,7 +141,8 @@ object CodeGenerator {
 
     val gc = ldml.calendar.map { cs =>
       Apply(ldmlCalendarSym, LIST(cs.months.months.map(LIT(_))), LIST(cs.months.shortMonths.map(LIT(_))),
-        LIST(cs.weekdays.weekdays.map(LIT(_))), LIST(cs.weekdays.shortWeekdays.map(LIT(_))))
+        LIST(cs.weekdays.weekdays.map(LIT(_))), LIST(cs.weekdays.shortWeekdays.map(LIT(_))),
+        LIST(LIT(cs.amPm.am), LIT(cs.amPm.pm)))
     }.fold(NONE)(s => SOME(s))
 
     OBJECTDEF(ldml.scalaSafeName) withParents Apply(ldmlSym, parent,
@@ -189,7 +194,7 @@ object CodeGenerator {
 
 object ScalaLocaleCodeGen {
   def writeGeneratedTree(base: File, file: String, tree: treehugger.forest.Tree):File = {
-    val dataPath = base.toPath.resolve("scala").resolve("sacalajs")
+    val dataPath = base.toPath.resolve("scala").resolve("scalajs")
       .resolve("cldr").resolve("data")
     val path = dataPath.resolve(s"$file.scala")
 
@@ -249,11 +254,30 @@ object ScalaLocaleCodeGen {
         WeekdaysSymbols(weekdays, shortWeekdays)
       }).headOption
 
-      (months, weekdays) match {
-        case (None, Some(w)) => Option(CalendarSymbols(MonthSymbols.zero, w))
-        case (Some(m), None) => Option(CalendarSymbols(m, WeekdaysSymbols.zero))
-        case (Some(m), Some(w)) => Option(CalendarSymbols(m, w))
-        case (None, None) => None
+      def readPeriod(n: Node, name: String): Option[String] =  {
+        (for {
+          p <- n \ "dayPeriod"
+          if (p \ "@type").text == name && (p \ "@alt").text != "variant"
+        } yield p.text).headOption
+      }
+
+      // read the day periods
+      val amPm = (for {
+        dpc <- xml \\ "dayPeriods" \ "dayPeriodContext"
+        if (dpc \ "@type").text == "format"
+        dpw <- dpc \\ "dayPeriodWidth"
+        if (dpw \ "@type").text == "wide"
+      } yield {
+        val am = readPeriod(dpw, "am")
+        val pm = readPeriod(dpw, "pm")
+        AmPmSymbols(am.getOrElse(""), pm.getOrElse(""))
+      }).headOption
+
+      if (List(months, weekdays, amPm).exists(_.isDefined)) {
+        Some(CalendarSymbols(months.getOrElse(MonthSymbols.zero),
+          weekdays.getOrElse(WeekdaysSymbols.zero), amPm.getOrElse(AmPmSymbols.zero)))
+      } else {
+        None
       }
     }
 
