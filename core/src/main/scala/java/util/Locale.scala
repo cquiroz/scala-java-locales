@@ -497,7 +497,7 @@ class Locale private[util] (private[this] val language: String,
 
     val countryPart =
       if (hasCountry) s"_${getCountry()}"
-      else if (hasVariant) "_"
+      else if (hasVariant || hasScript) "_"
       else ""
 
     val variantPart =
