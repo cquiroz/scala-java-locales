@@ -18,67 +18,117 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
   // the JVM and JS
   @Before def cleanup: Unit = super.cleanDatabase
 
-  case class LocaleTestItem(ldml: LDML, tag: String, cldr31: Boolean = false)
+  case class LocaleTestItem(ldml: LDML, tag: String, cldr21: Boolean = false)
 
   val englishSymbols = List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
 
   val standardLocalesData = List(
-    Locale.ROOT                -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.ROOT                ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     Locale.ENGLISH             -> englishSymbols,
-    Locale.FRENCH              -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.GERMAN              -> List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.ITALIAN             -> List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.KOREAN              -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.CHINESE             -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.SIMPLIFIED_CHINESE  -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.TRADITIONAL_CHINESE -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "非數值", "-", "E"),
-    Locale.FRANCE              -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.GERMANY             -> List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.ITALY               -> List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.KOREA               -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.CHINA               -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.PRC                 -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.TAIWAN              -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "非數值", "-", "E"),
-    Locale.UK                  -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.US                  -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.CANADA              -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.CANADA_FRENCH       -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
+    Locale.FRENCH              ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.GERMAN              ->
+      List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.ITALIAN             ->
+      List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.KOREAN              ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.CHINESE             ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.SIMPLIFIED_CHINESE  ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.TRADITIONAL_CHINESE ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "非數值", "-", "E"),
+    Locale.FRANCE              ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.GERMANY             ->
+      List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.ITALY               ->
+      List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.KOREA               ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.CHINA               ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.PRC                 ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.TAIWAN              ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "非數值", "-", "E"),
+    Locale.UK                  ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.US                  ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.CANADA              ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    Locale.CANADA_FRENCH       ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
   )
 
   val extraLocalesData = List(
     // af uses latn
-    LocaleTestItem(af, "af") -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(az, "az") -> List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(az_Cyrl, "az_Cyrl") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(af, "af") ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(az, "az") ->
+      List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(az_Cyrl, "az-Cyrl") ->
+      List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     // bn has a default ns but it is a latn alias
-    LocaleTestItem(bn, "bn") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(es_CL, "es_CL") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(fi_FI, "fi_FI") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(it_CH, "it_CH") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(ru_RU, "ru_RU") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(smn_FI, "smn_FI") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(zh, "zh") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(zh_Hant, "zh_Hant") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
+    LocaleTestItem(bn, "bn") ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(es_CL, "es-CL") ->
+      List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(it_CH, "it-CH") ->
+      List("0", ".", "'", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(zh, "zh") ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(zh_Hant, "zh-Hant") ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "非數值", "-", "E")
   )
 
   // These locales show differences with Java due to a different CLDR version
   val localesDiff = List(
+    LocaleTestItem(fi_FI, "fi-FI", cldr21 = true) ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epäluku", "-", "E"),
+    LocaleTestItem(fi_FI, "fi-FI", cldr21 = false) ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epäluku", "−", "E"),
     // fa uses arabext
-    LocaleTestItem(fa, "fa", true) -> List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "NaN", "-", "×۱۰^"), // JVM
-    LocaleTestItem(fa, "fa") -> List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ناعدد", "−", "×۱۰^"), // JS
-    LocaleTestItem(ka, "ka", true) -> List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JVM
-    LocaleTestItem(ka, "ka") -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "არ არის რიცხვი", "-", "E"), // JS
+    LocaleTestItem(fa, "fa", cldr21 = true) ->
+      List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "NaN", "-", "×۱۰^"), // JVM
+    LocaleTestItem(fa, "fa") ->
+      List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ناعدد", "−", "×۱۰^"), // JS
+    LocaleTestItem(ka, "ka", cldr21 = true) ->
+      List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JVM
+    LocaleTestItem(ka, "ka") ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "არ არის რიცხვი", "-", "E"), // JS
     // ar has a default arab set of symbols
-    LocaleTestItem(ar, "ar", true) -> List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JVM
-    LocaleTestItem(ar, "ar") -> List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JS
-    LocaleTestItem(lv, "lv", true) -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "nav skaitlis", "\u2212", "E"), // JVM
-    LocaleTestItem(lv, "lv") -> List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "nav skaitlis", "-", "E"), // JS
-    LocaleTestItem(my, "my", true) -> List("၀", ".", ",", "‰", "%", "#", "၊", "∞", "NaN", "-", "E"), // JVM
-    LocaleTestItem(my, "my") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "ဂဏန်းမဟုတ်သော", "-", "E"), // JS
-    LocaleTestItem(smn, "smn", true) -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JVM
-    LocaleTestItem(smn, "smn") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "epiloho", "-", "E"), // JS
-    LocaleTestItem(ja, "ja", true) -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN（非数）", "-", "E"), // JVM
-    LocaleTestItem(ja, "ja") -> List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E") // JS
+    LocaleTestItem(ar, "ar", cldr21 = true) ->
+      List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JVM
+    LocaleTestItem(ar, "ar") ->
+      List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JS
+    LocaleTestItem(lv, "lv", cldr21 = true) ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "nav skaitlis", "\u2212", "E"), // JVM
+    LocaleTestItem(lv, "lv") ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "nav skaitlis", "-", "E"), // JS
+    LocaleTestItem(my, "my", cldr21 = true) ->
+      List("၀", ".", ",", "‰", "%", "#", "၊", "∞", "NaN", "-", "E"), // JVM
+    LocaleTestItem(my, "my") ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "ဂဏန်းမဟုတ်သော", "-", "E"), // JS
+    LocaleTestItem(smn, "smn", cldr21 = true) ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JVM
+    LocaleTestItem(smn, "smn") ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "epiloho", "-", "E"), // JS
+    LocaleTestItem(smn_FI, "smn-FI", cldr21 = true) ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(smn_FI, "smn-FI") ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "epiloho", "-", "E"),
+    LocaleTestItem(ru_RU, "ru-RU", cldr21 = true) ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "не число", "-", "E"),
+    LocaleTestItem(ru_RU, "ru-RU") ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "не число", "-", "E"),
+    LocaleTestItem(ja, "ja", cldr21 = true) ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN（非数）", "-", "E"), // JVM
+    LocaleTestItem(ja, "ja") ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E") // JS
   )
 
   def test_dfs(dfs: DecimalFormatSymbols, symbols: List[String]): Unit = {
