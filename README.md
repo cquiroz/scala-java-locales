@@ -1,16 +1,16 @@
-# scalajs-locales
+# scala-java-locales
 
-[![Build Status](https://api.travis-ci.org/cquiroz/scalajs-locales.svg?branch=master)](https://travis-ci.org/cquiroz/scalajs-locales)
+[![Build Status](https://api.travis-ci.org/cquiroz/scala-java-locales.svg?branch=master)](https://travis-ci.org/cquiroz/scala-java-locales)
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.8.svg)](https://www.scala-js.org/)
 
-`scalajs-locales` is a clean-room BSD-licensed implementation of the `java.util.Locale` API and related classes as defined on JDK8, mostly for Scala.js usage. It enables the locale API in Scala.js projects and supports usage requiring locales like number and dates formatting.
+`scala-java-locales` is a clean-room BSD-licensed implementation of the `java.util.Locale` API and related classes as defined on JDK8, mostly for Scala.js usage. It enables the locale API in Scala.js projects and supports usage requiring locales like number and dates formatting.
 
 ## Usage
 
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "com.github.cquiroz" %%% "scalajs-locales" % "0.1.0-SNAPSHOT"
+libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.1.0-SNAPSHOT"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -19,12 +19,12 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   jsSettings.(
-    libraryDependencies += "com.github.cquiroz" %%% "scalajs-locales" % "0.1.0-SNAPSHOT"
+    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.1.0-SNAPSHOT"
   )
 ```
 
 **Requirement**: you must use a host JDK8 to *build* your project, i.e., to
-launch sbt. `scalajs-locales` does not work on earlier JDKs.
+launch sbt. `scala-java-locales` does not work on earlier JDKs.
 
 ## Work in Progress / linking errors
 
@@ -37,8 +37,8 @@ The API follows the Java API for Locales, any major difference should be conside
 You can do that by, e.g. installing the Finnish locale
 
 ```scala
-import scala.scalajs.locale.LocaleRegistry
-import scala.scalajs.locale.cldr.data.fi_FI
+import locales.LocaleRegistry
+import locales.cldr.data.fi_FI
 
 // Install the locale
 LocaleRegistry.installLocale(fi_FI)
@@ -59,9 +59,8 @@ Locale.setDefault(Locale.forLanguageTag(<my-locale>))
 
 The Java API requires a default `Locale` though it doesn't mandate a specific one, instead, the runtime should select it depending on the platform.
 
-On `Scala.js` usual platforms like browsers or node.js, there is no reliable way to identify the default locale, however, `scalajs-locales` uses `en` by default. This is a decision based on compatibility with `Scala.js`, which _de facto_ uses `en` for number formatting.
+While the Java Locales use the OS default locale, on `Scala.js` platforms like browsers or node.js, there is no reliable way to identify the default locale. `scala-java-locales` sets `en (English)` as the default locale and **does not** attempt to determine the correct locale for the environment. This is a desigs decision to support the many API calls that require a default locale. It seems that `Scala.js` _de facto_ uses `en` for number formatting.
 
-It could be considered to have no default locale, however, this will greatly limit the ability to implement the many API calls that require it.
 
 ## CLDR
 
@@ -71,7 +70,7 @@ Most of this project is in the form of code generated from the CLDR data. While 
 
 Starting on Java 8, [CLDR](https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr) is also used by the JVM, for comparisons the java flag `-Djava.locale.providers=CLDR` should be set.
 
-**Note:** Java 8 ships with an older CLDR version, specifically version 21. `scalajs-locales` uses the latest available version, hence there are some differences between the results and there are new available locales in `scalajs-locales`.
+**Note:** Java 8 ships with an older CLDR version, specifically version 21. `scala-java-locales` uses the latest available version, hence there are some differences between the results and there are new available locales in `scala-java-locales`.
 
 ## Disclaimer
 
@@ -81,15 +80,15 @@ In general the API attempts to behave be as close as possible to what happens on
 
 ## Demo
 
-A very simple sample project is available at [scalajs-locales-demo](https://github.com/cquiroz/scalajs-locales-demo)
+A very simple `Scala.js` project is available at [scalajs-locales-demo](https://github.com/cquiroz/scalajs-locales-demo)
 
 ## Dependencies
 
-`scalajs-locales` explicitly doesn't have any dependencies. The `sbt` project has some dependencies for code generation, in particular [treehugger](https://github.com/eed3si9n/treehugger) but they don't carry over to the produced code
+`scala-java-locales` explicitly doesn't have any dependencies. The `sbt` project has some dependencies for code generation, in particular [treehugger](https://github.com/eed3si9n/treehugger) but they don't carry over to the produced code
 
 ## Versioning
 
-`scalajs-locales` uses [Semantic Versioning](http://semver.org/) and includes the CLDR version used as a build tag, e.g.:
+`scala-java-locales` uses [Semantic Versioning](http://semver.org/) and includes the CLDR version used as a build tag, e.g.:
 
 ```
 0.1.0+29 // Version 0.1.0 with CLDR version 29
@@ -100,5 +99,5 @@ A very simple sample project is available at [scalajs-locales-demo](https://gith
 
 Copyright &copy; 2016 Carlos Quiroz
 
-`scalaj-locales` is distributed under the
+`scala-java-locales` is distributed under the
 [BSD 3-Clause license](./LICENSE.txt).

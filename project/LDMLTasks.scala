@@ -1,7 +1,7 @@
 import sbt._
 import Keys._
 
-import scalajs.locale.ScalaLocaleCodeGen
+import locales.ScalaLocaleCodeGen
 
 object LDMLTasks {
   val cldrVersion = settingKey[String]("The version of CLDR used.")
