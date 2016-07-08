@@ -8,7 +8,7 @@ lazy val downloadFromZip: TaskKey[Unit] =
 
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion := "29",
-  version := s"0.1.0+${cldrVersion.value}-SNAPSHOT",
+  version := s"0.1.0+${cldrVersion.value}",
   organization := "com.github.cquiroz",
   scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.4", "2.11.8"),
@@ -19,6 +19,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
   },
   exportJars := true,
   publishMavenStyle := true,
+  publishArtifact in Test := false,
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
     if (isSnapshot.value)
@@ -27,13 +28,25 @@ val commonSettings: Seq[Setting[_]] = Seq(
       Some("releases" at nexus + "service/local/staging/deploy/maven2")
   },
   pomExtra :=
-      <developers>
-        <developer>
-          <id>cquiroz</id>
-          <name>Carlos Quiroz</name>
-          <url>https://github.com/cquiroz/</url>
-        </developer>
-      </developers>
+    <url>https://github.com/cquiroz/scala-java-locales</url>
+    <licenses>
+      <license>
+        <name>BSD-style</name>
+        <url>http://www.opensource.org/licenses/bsd-license.php</url>
+        <distribution>repo</distribution>
+      </license>
+    </licenses>
+    <scm>
+      <url>git@github.com:cquiroz/scala-java-locales.git</url>
+      <connection>scm:git:git@github.com:cquiroz/scala-java-locales.git</connection>
+    </scm>
+    <developers>
+      <developer>
+        <id>cquiroz</id>
+        <name>Carlos Quiroz</name>
+        <url>https://github.com/cquiroz/</url>
+      </developer>
+    </developers>
   ,
   pomIncludeRepository := { _ => false }
 )
@@ -41,6 +54,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
 lazy val scalajs_locales: Project = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(
+    name := "scala-java-locales",
     publish := {},
     publishLocal := {}
   )
@@ -82,13 +96,14 @@ lazy val testSuite: CrossProject = CrossProject(
   settings(
     publish := {},
     publishLocal := {},
+    publishArtifact := false,
     testOptions +=
       Tests.Argument(TestFramework("com.novocode.junit.JUnitFramework"),
         "-v", "-a")
   ).
   jsSettings(
     name := "scala-java-locales testSuite on JS",
-    scalaJSUseRhino := false
+    scalaJSUseRhino := false // Tests are too slow in rhino
   ).
   jsConfigure(_.dependsOn(coreJS)).
   jvmSettings(
