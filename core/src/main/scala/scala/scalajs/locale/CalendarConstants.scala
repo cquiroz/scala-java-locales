@@ -1,6 +1,10 @@
-package java.util
+package scala.scalajs.locale
 
-object Calendar {
+/**
+  * This class contains some constants copied from the
+  * @see java.util.Calendar
+  */
+object CalendarConstants {
   val SUNDAY: Int = 1
   val MONDAY: Int = 2
   val TUESDAY: Int = 3

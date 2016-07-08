@@ -1,7 +1,7 @@
 package org.scalajs.testsuite.javalib.text
 
 import java.text.DateFormatSymbols
-import java.util.{Calendar, Locale}
+import java.util.Locale
 
 import org.junit.{Before, Ignore, Test}
 import org.junit.Assert._
@@ -9,7 +9,7 @@ import org.scalajs.testsuite.utils.AssertThrows._
 import org.scalajs.testsuite.utils.LocaleTestSetup
 import org.scalajs.testsuite.utils.Platform
 
-import scala.scalajs.locale.LocaleRegistry
+import scala.scalajs.locale.{CalendarConstants, LocaleRegistry}
 import scala.scalajs.locale.cldr.LDML
 import scala.scalajs.locale.cldr.data._
 
@@ -553,7 +553,7 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
     assertArrayEquals(Array[AnyRef](t.months: _*), Array[AnyRef](s.getMonths(): _*))
     assertArrayEquals(Array[AnyRef](t.shortMonths: _*), Array[AnyRef](s.getShortMonths(): _*))
     for {
-      d <- Calendar.SUNDAY to Calendar.SATURDAY
+      d <- CalendarConstants.SUNDAY to CalendarConstants.SATURDAY
     } {
       assertEquals(t.weekdays(d), s.getWeekdays()(d))
       assertEquals(t.shortWeekdays(d), s.getShortWeekdays()(d))
