@@ -87,24 +87,28 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
 
   // These locales show differences with Java due to a different CLDR version
   val localesDiff = List(
-    LocaleTestItem(fi_FI, "fi-FI", cldr21 = true) ->
-      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epäluku", "-", "E"),
-    LocaleTestItem(fi_FI, "fi-FI", cldr21 = false) ->
-      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epäluku", "−", "E"),
-    // fa uses arabext
-    LocaleTestItem(fa, "fa", cldr21 = true) ->
-      List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "NaN", "-", "×۱۰^"), // JVM
-    LocaleTestItem(fa, "fa") ->
-      List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ناعدد", "−", "×۱۰^"), // JS
-    LocaleTestItem(ka, "ka", cldr21 = true) ->
-      List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JVM
-    LocaleTestItem(ka, "ka") ->
-      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "არ არის რიცხვი", "-", "E"), // JS
     // ar has a default arab set of symbols
     LocaleTestItem(ar, "ar", cldr21 = true) ->
       List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JVM
     LocaleTestItem(ar, "ar") ->
       List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JS
+    // fa uses arabext
+    LocaleTestItem(fa, "fa", cldr21 = true) ->
+      List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "NaN", "-", "×۱۰^"), // JVM
+    LocaleTestItem(fa, "fa") ->
+      List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ناعدد", "−", "×۱۰^"), // JS
+    LocaleTestItem(fi_FI, "fi-FI", cldr21 = true) ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epäluku", "-", "E"),
+    LocaleTestItem(fi_FI, "fi-FI", cldr21 = false) ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epäluku", "−", "E"),
+    LocaleTestItem(ja, "ja", cldr21 = true) ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN（非数）", "-", "E"), // JVM
+    LocaleTestItem(ja, "ja") ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JS
+    LocaleTestItem(ka, "ka", cldr21 = true) ->
+      List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JVM
+    LocaleTestItem(ka, "ka") ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "არ არის რიცხვი", "-", "E"), // JS
     LocaleTestItem(lv, "lv", cldr21 = true) ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "nav skaitlis", "\u2212", "E"), // JVM
     LocaleTestItem(lv, "lv") ->
@@ -124,11 +128,7 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     LocaleTestItem(ru_RU, "ru-RU", cldr21 = true) ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "не число", "-", "E"),
     LocaleTestItem(ru_RU, "ru-RU") ->
-      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "не число", "-", "E"),
-    LocaleTestItem(ja, "ja", cldr21 = true) ->
-      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN（非数）", "-", "E"), // JVM
-    LocaleTestItem(ja, "ja") ->
-      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E") // JS
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "не число", "-", "E")
   )
 
   def test_dfs(dfs: DecimalFormatSymbols, symbols: List[String]): Unit = {
@@ -168,16 +168,16 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
   // These tests give the same data on CLDR 21
   @Test def test_extra_locales_not_agreeing_decimal_format_symbol(): Unit = {
     localesDiff.foreach {
-      case (LocaleTestItem(d, tag, cldr31), symbols) =>
+      case (LocaleTestItem(d, tag, cldr21), symbols) =>
         if (!Platform.executingInJVM) {
           LocaleRegistry.installLocale(d)
         }
         val l = Locale.forLanguageTag(tag)
         val dfs = DecimalFormatSymbols.getInstance(l)
-        if (Platform.executingInJVM && cldr31) {
+        if (Platform.executingInJVM && cldr21) {
           test_dfs(dfs, symbols)
         }
-        if (!Platform.executingInJVM && !cldr31) {
+        if (!Platform.executingInJVM && !cldr21) {
           test_dfs(dfs, symbols)
         }
     }

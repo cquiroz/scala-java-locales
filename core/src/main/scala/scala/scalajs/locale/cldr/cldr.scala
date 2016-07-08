@@ -12,6 +12,12 @@ case class Symbols(ns: NumberingSystem, aliasOf: Option[NumberingSystem],
     percent: Option[Char], minus: Option[Char], perMille: Option[Char],
     infinity: Option[String], nan: Option[String], exp: Option[String])
 
+/** Interfaces describing calendar data */
+case class Calendar(id: String)
+case class CalendarSymbols(months: List[String], shortMonths: List[String],
+    weekdays: List[String], shortWeekdays: List[String], amPm: List[String],
+    eras: List[String])
+
 /**
  * Interfaces describing an LDML Locale
  */
@@ -22,7 +28,8 @@ case class LDMLLocale(language: String, territory: Option[String],
  * Wrapper to LDML
  */
 case class LDML(parent: Option[LDML], locale: LDMLLocale,
-    defaultNS: Option[NumberingSystem], digitSymbols: List[Symbols] = Nil) {
+    defaultNS: Option[NumberingSystem], digitSymbols: List[Symbols] = Nil,
+    calendar: Option[CalendarSymbols]) {
 
   def languageTag: String = toLocale.toLanguageTag
 

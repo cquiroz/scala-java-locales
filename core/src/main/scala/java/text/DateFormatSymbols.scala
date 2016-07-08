@@ -1,10 +1,9 @@
 package java.text
 
-import java.util.Locale
-import java.util.Arrays
+import java.util.{Arrays, Locale}
 
 import scala.scalajs.locale.LocaleRegistry
-import scala.scalajs.locale.cldr.{LDML, NumberingSystem, Symbols}
+import scala.scalajs.locale.cldr.{CalendarSymbols, LDML}
 
 object DateFormatSymbols {
 
@@ -18,8 +17,47 @@ object DateFormatSymbols {
 
   private def initialize(locale: Locale,
                          dfs: DateFormatSymbols): DateFormatSymbols = {
+    LocaleRegistry
+      .ldml(locale)
+      .map(l => toDFS(locale, dfs, l))
+      .getOrElse(dfs)
+  }
 
-    LocaleRegistry.ldml(locale).map(l => dfs).getOrElse(dfs)
+  private def copyAndPad(m: List[String], size: Int, v: String): Array[String] = {
+    val p = Arrays.copyOf[String](m.toArray[String], size)
+    (m.length until size).foreach(p(_) = v)
+    p
+  }
+
+  private def padAndCopyDays(m: List[String], size: Int, v: String): Array[String] = {
+    // Days in the JVM are stored starting on index 1, and 0 is empty
+    val v = new Array[String](size)
+    (0 until size).foreach(i => if (i == 0 || i > m.length) v(i) = "" else v(i) = m(i - 1))
+    v
+  }
+
+  private def toDFS(locale: Locale, dfs: DateFormatSymbols, ldml: LDML): DateFormatSymbols = {
+    def parentSymbols(ldml: LDML): Option[CalendarSymbols] =
+      ldml.calendar.orElse(ldml.parent.flatMap(parentSymbols))
+
+    def elementsArray(ldml: LDML, read: CalendarSymbols => Option[List[String]]): Option[List[String]] =
+      parentSymbols(ldml).flatMap { s => read(s).orElse(ldml.parent.flatMap(elementsArray(_, read))) }
+
+    def setElements(ldml: LDML, read: CalendarSymbols => List[String], set: List[String] => Unit): Unit = {
+      def readNonEmpty(c: CalendarSymbols) = read(c) match {
+        case Nil => None
+        case x => Some(x)
+      }
+      elementsArray(ldml, readNonEmpty).orElse(Some(Nil)).foreach(set)
+    }
+
+    setElements(ldml, _.months, l => dfs.setMonths(copyAndPad(l, 13, "")))
+    setElements(ldml, _.shortMonths, l => dfs.setShortMonths(copyAndPad(l, 13, "")))
+    setElements(ldml, _.weekdays, l => dfs.setWeekdays(padAndCopyDays(l, 8, "")))
+    setElements(ldml, _.shortWeekdays, l => dfs.setShortWeekdays(padAndCopyDays(l, 8, "")))
+    setElements(ldml, _.amPm, l => dfs.setAmPmStrings(copyAndPad(l, 2, "")))
+    setElements(ldml, _.eras, l => dfs.setEras(copyAndPad(l, 2, "")))
+    dfs
   }
 }
 
