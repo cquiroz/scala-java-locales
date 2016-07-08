@@ -1,11 +1,13 @@
 package java.util
 
+import locales.{BCP47, LocaleRegistry}
+
 import scala.collection.{Map => SMap, Set => SSet}
 import scala.collection.JavaConverters._
 import scala.util.matching.Regex
-import scala.scalajs.locale.{BCP47, LocaleRegistry}
-import scala.scalajs.locale.BCP47.{GrandfatheredTag, LanguageTag, PrivateUseTag}
-import scala.scalajs.locale.cldr.data.metadata
+import locales.BCP47.{GrandfatheredTag, LanguageTag, PrivateUseTag}
+
+import locales.cldr.data.metadata
 
 object Locale {
 

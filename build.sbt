@@ -8,7 +8,7 @@ lazy val downloadFromZip: TaskKey[Unit] =
 
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion := "29",
-  version := s"0.1.0-SNAPSHOT+${cldrVersion.value}",
+  version := s"0.1.0+${cldrVersion.value}-SNAPSHOT",
   organization := "com.github.cquiroz",
   scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.4", "2.11.8"),
@@ -39,7 +39,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
 )
 
 lazy val scalajs_locales: Project = project.in(file("."))
-  .settings(commonSettings)
+  .settings(commonSettings: _*)
   .settings(
     publish := {},
     publishLocal := {}
@@ -49,7 +49,7 @@ lazy val scalajs_locales: Project = project.in(file("."))
 lazy val core: CrossProject = crossProject.crossType(CrossType.Pure).
   settings(commonSettings: _*).
   settings(
-    name := "scalajs-locales",
+    name := "scala-java-locales",
     downloadFromZip := {
       val xmlFiles = ((resourceDirectory in Compile) / "core").value
       if (java.nio.file.Files.notExists(xmlFiles.toPath)) {
@@ -87,7 +87,7 @@ lazy val testSuite: CrossProject = CrossProject(
         "-v", "-a")
   ).
   jsSettings(
-    name := "scalajs-locales testSuite on JS",
+    name := "scala-java-locales testSuite on JS",
     scalaJSUseRhino := false
   ).
   jsConfigure(_.dependsOn(coreJS)).
@@ -97,7 +97,7 @@ lazy val testSuite: CrossProject = CrossProject(
     // Use CLDR provider for locales
     // https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr
     javaOptions in Test ++= Seq("-Duser.language=en", "-Duser.country=", "-Djava.locale.providers=CLDR"),
-    name := "scalajs-locales testSuite on JVM",
+    name := "scala-java-locales testSuite on JVM",
     libraryDependencies +=
       "com.novocode" % "junit-interface" % "0.9" % "test"
   ).

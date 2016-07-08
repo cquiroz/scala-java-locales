@@ -2,8 +2,8 @@ package java.text
 
 import java.util.{Arrays, Locale}
 
-import scala.scalajs.locale.LocaleRegistry
-import scala.scalajs.locale.cldr.{CalendarSymbols, LDML}
+import locales.LocaleRegistry
+import locales.cldr.{CalendarSymbols, LDML}
 
 object DateFormatSymbols {
 
@@ -41,9 +41,12 @@ object DateFormatSymbols {
       ldml.calendar.orElse(ldml.parent.flatMap(parentSymbols))
 
     def elementsArray(ldml: LDML, read: CalendarSymbols => Option[List[String]]): Option[List[String]] =
-      parentSymbols(ldml).flatMap { s => read(s).orElse(ldml.parent.flatMap(elementsArray(_, read))) }
+      parentSymbols(ldml).flatMap { s =>
+        read(s).orElse(ldml.parent.flatMap(elementsArray(_, read)))
+      }
 
-    def setElements(ldml: LDML, read: CalendarSymbols => List[String], set: List[String] => Unit): Unit = {
+    def setElements(ldml: LDML, read: CalendarSymbols => List[String],
+        set: List[String] => Unit): Unit = {
       def readNonEmpty(c: CalendarSymbols) = read(c) match {
         case Nil => None
         case x => Some(x)
@@ -51,12 +54,18 @@ object DateFormatSymbols {
       elementsArray(ldml, readNonEmpty).orElse(Some(Nil)).foreach(set)
     }
 
-    setElements(ldml, _.months, l => dfs.setMonths(copyAndPad(l, 13, "")))
-    setElements(ldml, _.shortMonths, l => dfs.setShortMonths(copyAndPad(l, 13, "")))
-    setElements(ldml, _.weekdays, l => dfs.setWeekdays(padAndCopyDays(l, 8, "")))
-    setElements(ldml, _.shortWeekdays, l => dfs.setShortWeekdays(padAndCopyDays(l, 8, "")))
-    setElements(ldml, _.amPm, l => dfs.setAmPmStrings(copyAndPad(l, 2, "")))
-    setElements(ldml, _.eras, l => dfs.setEras(copyAndPad(l, 2, "")))
+    setElements(ldml, _.months,
+      l => dfs.setMonths(copyAndPad(l, 13, "")))
+    setElements(ldml, _.shortMonths,
+      l => dfs.setShortMonths(copyAndPad(l, 13, "")))
+    setElements(ldml, _.weekdays,
+      l => dfs.setWeekdays(padAndCopyDays(l, 8, "")))
+    setElements(ldml, _.shortWeekdays,
+      l => dfs.setShortWeekdays(padAndCopyDays(l, 8, "")))
+    setElements(ldml, _.amPm,
+      l => dfs.setAmPmStrings(copyAndPad(l, 2, "")))
+    setElements(ldml, _.eras,
+      l => dfs.setEras(copyAndPad(l, 2, "")))
     dfs
   }
 }

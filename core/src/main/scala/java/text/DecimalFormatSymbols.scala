@@ -2,10 +2,11 @@ package java.text
 
 import java.util.Locale
 
-import scala.scalajs.locale.LocaleRegistry
-import scala.scalajs.locale.cldr.{LDML, Symbols, NumberingSystem}
-import scala.scalajs.locale.cldr.data.root
-import scala.scalajs.locale.cldr.data.numericsystems.latn
+import locales.LocaleRegistry
+
+import locales.cldr.{LDML, NumberingSystem, Symbols}
+import locales.cldr.data.root
+import locales.cldr.data.numericsystems.latn
 
 object DecimalFormatSymbols {
 
