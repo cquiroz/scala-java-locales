@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0
+
+* Add class java.text.Format
+* Add class java.text.FieldPosition
+* Add class java.text.CharacterIterator
+* Add class java.text.AttributedCharacterIterator
+* Add class java.text.ParsePosition
+* Add class java.text.ParseException
+
 ## 0.1.1
 
 * Cross build and publish to scala 2.10.6, 2.11.8 and 2.12.0-M5
