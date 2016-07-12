@@ -63,7 +63,7 @@ object LocaleRegistry {
 
   private var defaultLocale: Locale = en.toLocale
   private var defaultPerCategory: Map[Locale.Category, Option[Locale]] =
-    Locale.Category.values().map(_ -> None).toMap
+    Locale.Category.values().map(_ -> Some(defaultLocale)).toMap
 
   private lazy val ldmls: mutable.Map[String, LDML] = mutable.Map.empty
 
@@ -80,7 +80,7 @@ object LocaleRegistry {
   def resetRegistry(): Unit = {
     defaultLocale = en.toLocale
     defaultPerCategory =
-        Locale.Category.values().map(_ -> None).toMap
+        Locale.Category.values().map(_ -> Some(defaultLocale)).toMap
     ldmls.empty
     initDefaultLocales()
   }
