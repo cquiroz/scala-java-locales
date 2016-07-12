@@ -36,6 +36,6 @@ class FieldPosition(private[this] val attribute: Format.Field, private[this] val
   }
 
 
-  override def toString =
+  override def toString(): String =
     s"java.text.FieldPosition[field=$getField,attribute=$getFieldAttribute,beginIndex=$getBeginIndex,endIndex=$getEndIndex]"
 }

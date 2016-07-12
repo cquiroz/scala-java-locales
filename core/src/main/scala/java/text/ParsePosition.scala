@@ -23,6 +23,6 @@ class ParsePosition(private[this] var index: Int) {
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 
-  override def toString =
+  override def toString(): String =
     s"java.text.ParsePosition[index=$getIndex,errorIndex=$getErrorIndex]"
 }
