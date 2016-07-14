@@ -40,6 +40,14 @@ object EraSymbols {
 case class CalendarSymbols(months: MonthSymbols, weekdays: WeekdaysSymbols,
     amPm: AmPmSymbols, eras: EraSymbols)
 
+case class DateTimePattern(patternType: String, pattern: String)
+
+case class CalendarPatterns(datePatterns: List[DateTimePattern], timePatterns: List[DateTimePattern])
+
+object CalendarPatterns {
+  val zero = CalendarPatterns(Nil, Nil)
+}
+
 case class NumericSystem(id: String, digits: String)
 
 case class NumberSymbols(system: NumericSystem,
@@ -64,7 +72,9 @@ case class XMLLDMLLocale(language: String, territory: Option[String],
     variant: Option[String], script: Option[String])
 
 case class XMLLDML(locale: XMLLDMLLocale, defaultNS: Option[NumericSystem],
-    digitSymbols: Map[NumericSystem, NumberSymbols], calendar: Option[CalendarSymbols]) {
+    digitSymbols: Map[NumericSystem, NumberSymbols], calendar: Option[CalendarSymbols],
+    datePatterns: Option[CalendarPatterns]) {
+
   val scalaSafeName: String = {
     List(Some(locale.language), locale.script, locale.territory, locale.variant)
       .flatten.mkString("_")
@@ -96,6 +106,7 @@ object CodeGenerator {
       IMPORT("locales.cldr.LDMLLocale"),
       IMPORT("locales.cldr.Symbols"),
       IMPORT("locales.cldr.CalendarSymbols"),
+      IMPORT("locales.cldr.CalendarPatterns"),
       IMPORT("locales.cldr.data.numericsystems._")) ++ objectBlock
     ) inPackage "locales.cldr.data"
   }
@@ -118,6 +129,7 @@ object CodeGenerator {
     val ldmlSym = getModule("LDML")
     val ldmlNumericSym = getModule("Symbols")
     val ldmlCalendarSym = getModule("CalendarSymbols")
+    val ldmlCalendarPatternsSym = getModule("CalendarPatterns")
     val ldmlLocaleSym = getModule("LDMLLocale")
 
     val parent = findParent(root, langs, ldml).fold(NONE)(v => SOME(REF(v)))
@@ -151,8 +163,21 @@ object CodeGenerator {
         LIST(cs.amPm.amPm.map(LIT(_))), LIST(cs.eras.eras.map(LIT(_))))
     }.fold(NONE)(s => SOME(s))
 
+    val gcp = ldml.datePatterns.map { cs =>
+      def patternToIndex(i: String) = i match {
+        case "full" => 1
+        case "long" => 2
+        case "medium" => 3
+        case "short" => 4
+      }
+
+      val dates = MAKE_MAP(cs.datePatterns.map(p => TUPLE(LIT(patternToIndex(p.patternType)), LIT(p.pattern))))
+      val times = MAKE_MAP(cs.timePatterns.map(p => TUPLE(LIT(patternToIndex(p.patternType)), LIT(p.pattern))))
+      Apply(ldmlCalendarPatternsSym, dates, times)
+    }.fold(NONE)(s => SOME(s))
+
     OBJECTDEF(ldml.scalaSafeName) withParents Apply(ldmlSym, parent,
-      ldmlLocaleTree, defaultNS, LIST(numericSymbols), gc)
+      ldmlLocaleTree, defaultNS, LIST(numericSymbols), gc, gcp)
   }
 
   def metadata(codes: List[String], languages: List[String], scripts: List[String]): Tree = {
@@ -289,6 +314,26 @@ object ScalaLocaleCodeGen {
     }
   }
 
+  def readCalendarPatterns(xml: Node): Option[CalendarPatterns] = {
+    def readPatterns(n: Node, formatType: String): Seq[DateTimePattern] =
+      for {
+        p <- n \\ formatType
+      } yield DateTimePattern((p \ "@type").text, (p \\ "pattern").text)
+
+    val datePatterns = (for {
+        df <- xml \\ "dateFormats"
+      } yield {
+        readPatterns(df, "dateFormatLength")
+      }).headOption.map(_.toList)
+
+    val timePatterns = (for {
+        df <- xml \\ "timeFormats"
+      } yield {
+        readPatterns(df, "timeFormatLength")
+      }).headOption.map(_.toList)
+
+    Some(CalendarPatterns(datePatterns.getOrElse(Nil), timePatterns.getOrElse(Nil)))
+  }
   /**
     * Parse the xml into an XMLLDML object
     */
@@ -308,6 +353,12 @@ object ScalaLocaleCodeGen {
         if (n \ "@type").text == "gregorian"
         if n.text.nonEmpty
       } yield readCalendarData(n)
+
+    val gregorianDatePatterns = for {
+        n <- xml \ "dates" \\ "calendar"
+        if (n \ "@type").text == "gregorian"
+        if n.text.nonEmpty
+      } yield readCalendarPatterns(n)
 
     // Find out the default numeric system
     val defaultNS = Option((xml \ "numbers" \ "defaultNumberingSystem").text)
@@ -352,7 +403,7 @@ object ScalaLocaleCodeGen {
       nsSymbols
     }
     XMLLDML(XMLLDMLLocale(language, territory, variant, script),
-      defaultNS.flatMap(ns.get), symbols.toMap, gregorian.flatten.headOption)
+      defaultNS.flatMap(ns.get), symbols.toMap, gregorian.flatten.headOption, gregorianDatePatterns.flatten.headOption)
   }
 
   // Note this must be a def or there could be issues with concurrency
