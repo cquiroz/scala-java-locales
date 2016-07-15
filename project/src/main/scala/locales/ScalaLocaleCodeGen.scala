@@ -165,10 +165,10 @@ object CodeGenerator {
 
     val gcp = ldml.datePatterns.map { cs =>
       def patternToIndex(i: String) = i match {
-        case "full" => 1
-        case "long" => 2
-        case "medium" => 3
-        case "short" => 4
+        case "full" => 0
+        case "long" => 1
+        case "medium" => 2
+        case "short" => 3
       }
 
       val dates = MAKE_MAP(cs.datePatterns.map(p => TUPLE(LIT(patternToIndex(p.patternType)), LIT(p.pattern))))

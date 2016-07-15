@@ -2,6 +2,8 @@ package java.text
 
 import java.util.Locale
 
+import locales.LocaleRegistry
+
 abstract class DateFormat protected () extends Format {
   // override final def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
   // def format(date: Date, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
@@ -44,21 +46,51 @@ object DateFormat {
   val HOUR0_FIELD: Int = 16
   val TIMEZONE_FIELD: Int = 17
 
-  val FULL: Int = 1
-  val LONG: Int = 2
-  val MEDIUM: Int = 3
-  val SHORT: Int = 4
+  val FULL: Int = 0
+  val LONG: Int = 1
+  val MEDIUM: Int = 2
+  val SHORT: Int = 3
   val DEFAULT: Int = 2
 
-  final def getTimeInstance(): DateFormat = ???
-  final def getTimeInstance(style: Int): DateFormat = ???
-  final def getTimeInstance(style: Int, aLocale: Locale): DateFormat = ???
-  final def getDateInstance(): DateFormat = ???
-  final def getDateInstance(style: Int): DateFormat = ???
-  final def getDateInstance(style: Int, aLocale: Locale): DateFormat = ???
-  final def getDateTimeInstance(): DateFormat = ???
-  final def getDateTimeInstance(style: Int): DateFormat = ???
-  final def getDateTimeInstance(style: Int, aLocale: Locale): DateFormat = ???
+  final def getTimeInstance(): DateFormat = getTimeInstance(DEFAULT)
+
+  final def getTimeInstance(style: Int): DateFormat =
+    getTimeInstance(style, Locale.getDefault(Locale.Category.FORMAT))
+
+  final def getTimeInstance(style: Int, aLocale: Locale): DateFormat =
+    LocaleRegistry.ldml(aLocale).flatMap { ldml =>
+      val ptrn = ldml.calendarPatterns.flatMap(_.timePatterns.get(style))
+      ptrn.map(new SimpleDateFormat(_, aLocale))
+    }.getOrElse(new SimpleDateFormat("", aLocale))
+
+  final def getDateInstance(): DateFormat = getDateInstance(DEFAULT)
+
+  final def getDateInstance(style: Int): DateFormat =
+    getDateInstance(style, Locale.getDefault(Locale.Category.FORMAT))
+
+  final def getDateInstance(style: Int, aLocale: Locale): DateFormat =
+    LocaleRegistry.ldml(aLocale).flatMap { ldml =>
+      val ptrn = ldml.calendarPatterns.flatMap(_.datePatterns.get(style))
+      ptrn.map(new SimpleDateFormat(_, aLocale))
+    }.getOrElse(new SimpleDateFormat("", aLocale))
+
+  final def getDateTimeInstance(): DateFormat = getDateInstance(DEFAULT)
+
+  final def getDateTimeInstance(dateStyle: Int, timeStyle: Int): DateFormat =
+    getDateTimeInstance(dateStyle, timeStyle, Locale.getDefault(Locale.Category.FORMAT))
+
+  final def getDateTimeInstance(dateStyle: Int, timeStyle: Int, aLocale: Locale): DateFormat =
+    LocaleRegistry.ldml(aLocale).flatMap { ldml =>
+      val datePtrn = ldml.calendarPatterns.flatMap(_.datePatterns.get(dateStyle))
+      val timePtrn = ldml.calendarPatterns.flatMap(_.timePatterns.get(timeStyle))
+      (datePtrn, timePtrn) match {
+        case (Some(d), Some(t)) => Some(new SimpleDateFormat(s"$d $t", aLocale))
+        case (Some(d), None) => Some(new SimpleDateFormat(s"$d", aLocale))
+        case (None, Some(t)) => Some(new SimpleDateFormat(s"$t", aLocale))
+        case _ => Some(new SimpleDateFormat("", aLocale))
+      }
+    }.getOrElse(new SimpleDateFormat("", aLocale))
+
   final def getInstance(style: Int, aLocale: Locale): DateFormat = ???
   def getAvailableLocales(): Array[Locale] = ???
 }
