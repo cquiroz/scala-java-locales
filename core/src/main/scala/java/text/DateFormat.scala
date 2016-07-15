@@ -3,6 +3,7 @@ package java.text
 import java.util.Locale
 
 import locales.LocaleRegistry
+import locales.cldr.{CalendarPatterns, LDML}
 
 abstract class DateFormat protected () extends Format {
   // override final def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
@@ -52,6 +53,12 @@ object DateFormat {
   val SHORT: Int = 3
   val DEFAULT: Int = 2
 
+  private def parentPatterns(ldml: LDML): Option[CalendarPatterns] =
+    ldml.calendarPatterns.orElse(ldml.parent.flatMap(parentPatterns))
+
+  private def patternsR(ldml: LDML, get: CalendarPatterns => Option[String]): Option[String] =
+    ldml.calendarPatterns.flatMap(get).orElse(ldml.parent.flatMap(patternsR(_, get)))
+
   final def getTimeInstance(): DateFormat = getTimeInstance(DEFAULT)
 
   final def getTimeInstance(style: Int): DateFormat =
@@ -59,7 +66,7 @@ object DateFormat {
 
   final def getTimeInstance(style: Int, aLocale: Locale): DateFormat =
     LocaleRegistry.ldml(aLocale).flatMap { ldml =>
-      val ptrn = ldml.calendarPatterns.flatMap(_.timePatterns.get(style))
+      val ptrn = patternsR(ldml, _.timePatterns.get(style))
       ptrn.map(new SimpleDateFormat(_, aLocale))
     }.getOrElse(new SimpleDateFormat("", aLocale))
 
@@ -70,7 +77,9 @@ object DateFormat {
 
   final def getDateInstance(style: Int, aLocale: Locale): DateFormat =
     LocaleRegistry.ldml(aLocale).flatMap { ldml =>
-      val ptrn = ldml.calendarPatterns.flatMap(_.datePatterns.get(style))
+      //val ptrn = parentPatterns(ldml).flatMap(_.datePatterns.get(style))
+      val ptrn = patternsR(ldml, _.datePatterns.get(style))
+      println(ptrn)
       ptrn.map(new SimpleDateFormat(_, aLocale))
     }.getOrElse(new SimpleDateFormat("", aLocale))
 
@@ -81,8 +90,10 @@ object DateFormat {
 
   final def getDateTimeInstance(dateStyle: Int, timeStyle: Int, aLocale: Locale): DateFormat =
     LocaleRegistry.ldml(aLocale).flatMap { ldml =>
-      val datePtrn = ldml.calendarPatterns.flatMap(_.datePatterns.get(dateStyle))
-      val timePtrn = ldml.calendarPatterns.flatMap(_.timePatterns.get(timeStyle))
+      //val datePtrn = parentPatterns(ldml).flatMap(_.datePatterns.get(dateStyle))
+      val datePtrn = patternsR(ldml, _.datePatterns.get(dateStyle))
+      //val timePtrn = parentPatterns(ldml).flatMap(_.timePatterns.get(timeStyle))
+      val timePtrn = patternsR(ldml, _.timePatterns.get(timeStyle))
       (datePtrn, timePtrn) match {
         case (Some(d), Some(t)) => Some(new SimpleDateFormat(s"$d $t", aLocale))
         case (Some(d), None) => Some(new SimpleDateFormat(s"$d", aLocale))
@@ -91,6 +102,8 @@ object DateFormat {
       }
     }.getOrElse(new SimpleDateFormat("", aLocale))
 
-  final def getInstance(style: Int, aLocale: Locale): DateFormat = ???
-  def getAvailableLocales(): Array[Locale] = ???
+  final def getInstance(): DateFormat =
+    getDateTimeInstance(SHORT, SHORT)
+
+  def getAvailableLocales(): Array[Locale] = Locale.getAvailableLocales
 }

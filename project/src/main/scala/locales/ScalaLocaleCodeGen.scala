@@ -169,6 +169,7 @@ object CodeGenerator {
         case "long" => 1
         case "medium" => 2
         case "short" => 3
+        case x => throw new IllegalArgumentException(s"Unknown format $x, abort ")
       }
 
       val dates = MAKE_MAP(cs.datePatterns.map(p => TUPLE(LIT(patternToIndex(p.patternType)), LIT(p.pattern))))
@@ -315,21 +316,23 @@ object ScalaLocaleCodeGen {
   }
 
   def readCalendarPatterns(xml: Node): Option[CalendarPatterns] = {
-    def readPatterns(n: Node, formatType: String): Seq[DateTimePattern] =
+    def readPatterns(n: Node, sub: String, formatType: String): Seq[DateTimePattern] =
       for {
-        p <- n \\ formatType
-      } yield DateTimePattern((p \ "@type").text, (p \\ "pattern").text)
+        ft <- n \ formatType
+        p <- ft \ sub \ "pattern"
+        if (p \ "@alt").text != "variant"
+      } yield DateTimePattern((ft \ "@type").text, p.text)
 
     val datePatterns = (for {
         df <- xml \\ "dateFormats"
       } yield {
-        readPatterns(df, "dateFormatLength")
+        readPatterns(df, "dateFormat", "dateFormatLength")
       }).headOption.map(_.toList)
 
     val timePatterns = (for {
         df <- xml \\ "timeFormats"
       } yield {
-        readPatterns(df, "timeFormatLength")
+        readPatterns(df, "timeFormat", "timeFormatLength")
       }).headOption.map(_.toList)
 
     Some(CalendarPatterns(datePatterns.getOrElse(Nil), timePatterns.getOrElse(Nil)))
