@@ -77,9 +77,7 @@ object DateFormat {
 
   final def getDateInstance(style: Int, aLocale: Locale): DateFormat =
     LocaleRegistry.ldml(aLocale).flatMap { ldml =>
-      //val ptrn = parentPatterns(ldml).flatMap(_.datePatterns.get(style))
       val ptrn = patternsR(ldml, _.datePatterns.get(style))
-      println(ptrn)
       ptrn.map(new SimpleDateFormat(_, aLocale))
     }.getOrElse(new SimpleDateFormat("", aLocale))
 
@@ -90,9 +88,7 @@ object DateFormat {
 
   final def getDateTimeInstance(dateStyle: Int, timeStyle: Int, aLocale: Locale): DateFormat =
     LocaleRegistry.ldml(aLocale).flatMap { ldml =>
-      //val datePtrn = parentPatterns(ldml).flatMap(_.datePatterns.get(dateStyle))
       val datePtrn = patternsR(ldml, _.datePatterns.get(dateStyle))
-      //val timePtrn = parentPatterns(ldml).flatMap(_.timePatterns.get(timeStyle))
       val timePtrn = patternsR(ldml, _.timePatterns.get(timeStyle))
       (datePtrn, timePtrn) match {
         case (Some(d), Some(t)) => Some(new SimpleDateFormat(s"$d $t", aLocale))

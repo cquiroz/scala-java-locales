@@ -3,12 +3,15 @@ package testsuite.javalib.text
 import java.text.{DateFormat, SimpleDateFormat}
 import java.util.Locale
 
+import locales.LocaleRegistry
+import locales.cldr.LDML
+import locales.cldr.data._
 import org.junit.Assert._
 import org.junit.Test
 import testsuite.utils.{LocaleTestSetup, Platform}
 
 class DateFormatTest extends LocaleTestSetup {
-  case class TestCase(l: Locale, cldr21: Boolean, dateFormats: Map[Int, String], timeFormats: Map[Int, String])
+  case class TestCase(ldml: LDML, tag: String, l: Locale, cldr21: Boolean, dateFormats: Map[Int, String], timeFormats: Map[Int, String])
 
   @Test def test_constants(): Unit = {
     assertEquals(0, DateFormat.ERA_FIELD)
@@ -71,7 +74,7 @@ class DateFormatTest extends LocaleTestSetup {
   }
 
   val stdLocales = List(
-    TestCase(Locale.ENGLISH, cldr21 = false, Map(
+    TestCase(root, "", Locale.ENGLISH, cldr21 = false, Map(
             DateFormat.FULL -> "EEEE, MMMM d, y",
             DateFormat.LONG -> "MMMM d, y",
             DateFormat.MEDIUM -> "MMM d, y",
@@ -81,7 +84,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "h:mm:ss a z",
             DateFormat.MEDIUM -> "h:mm:ss a",
             DateFormat.SHORT -> "h:mm a")),
-    TestCase(Locale.US, cldr21 = false, Map(
+    TestCase(root, "", Locale.US, cldr21 = false, Map(
             DateFormat.FULL -> "EEEE, MMMM d, y",
             DateFormat.LONG -> "MMMM d, y",
             DateFormat.MEDIUM -> "MMM d, y",
@@ -94,7 +97,7 @@ class DateFormatTest extends LocaleTestSetup {
   )
 
   val stdLocalesDiff = List(
-    TestCase(Locale.FRENCH, cldr21 = true, Map( // JVM
+    TestCase(root, "", Locale.FRENCH, cldr21 = true, Map( // JVM
             DateFormat.FULL -> "EEEE d MMMM y",
             DateFormat.LONG -> "d MMMM y",
             DateFormat.MEDIUM -> "d MMM y",
@@ -104,167 +107,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "HH:mm:ss z",
             DateFormat.MEDIUM -> "HH:mm:ss",
             DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.FRENCH, cldr21 = false, Map( // JS
-            DateFormat.FULL -> "EEEE d MMMM y",
-            DateFormat.LONG -> "d MMMM y",
-            DateFormat.MEDIUM -> "d MMM y",
-            DateFormat.SHORT -> "dd/MM/y"),
-          Map(
-            DateFormat.FULL -> "HH:mm:ss zzzz",
-            DateFormat.LONG -> "HH:mm:ss z",
-            DateFormat.MEDIUM -> "HH:mm:ss",
-            DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.GERMAN, cldr21 = true, Map(
-            DateFormat.FULL -> "EEEE, d. MMMM y",
-            DateFormat.LONG -> "d. MMMM y",
-            DateFormat.MEDIUM -> "dd.MM.yyyy",
-            DateFormat.SHORT -> "dd.MM.yy"),
-          Map(
-            DateFormat.FULL -> "HH:mm:ss zzzz",
-            DateFormat.LONG -> "HH:mm:ss z",
-            DateFormat.MEDIUM -> "HH:mm:ss",
-            DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.GERMAN, cldr21 = false, Map(
-            DateFormat.FULL -> "EEEE, d. MMMM y",
-            DateFormat.LONG -> "d. MMMM y",
-            DateFormat.MEDIUM -> "dd.MM.y",
-            DateFormat.SHORT -> "dd.MM.yy"),
-          Map(
-            DateFormat.FULL -> "HH:mm:ss zzzz",
-            DateFormat.LONG -> "HH:mm:ss z",
-            DateFormat.MEDIUM -> "HH:mm:ss",
-            DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.ITALIAN, cldr21 = true, Map(
-            DateFormat.FULL -> "EEEE d MMMM y",
-            DateFormat.LONG -> "dd MMMM y",
-            DateFormat.MEDIUM -> "dd/MMM/y",
-            DateFormat.SHORT -> "dd/MM/yy"),
-          Map(
-            DateFormat.FULL -> "HH:mm:ss zzzz",
-            DateFormat.LONG -> "HH:mm:ss z",
-            DateFormat.MEDIUM -> "HH:mm:ss",
-            DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.ITALIAN, cldr21 = false, Map(
-            DateFormat.FULL -> "EEEE d MMMM y",
-            DateFormat.LONG -> "d MMMM y",
-            DateFormat.MEDIUM -> "dd MMM y",
-            DateFormat.SHORT -> "dd/MM/yy"),
-          Map(
-            DateFormat.FULL -> "HH:mm:ss zzzz",
-            DateFormat.LONG -> "HH:mm:ss z",
-            DateFormat.MEDIUM -> "HH:mm:ss",
-            DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.JAPANESE, cldr21 = true, Map(
-            DateFormat.FULL -> "y年M月d日EEEE",
-            DateFormat.LONG -> "y年M月d日",
-            DateFormat.MEDIUM -> "yyyy/MM/dd",
-            DateFormat.SHORT -> "yyyy/MM/dd"),
-          Map(
-            DateFormat.FULL -> "H時mm分ss秒 zzzz",
-            DateFormat.LONG -> "H:mm:ss z",
-            DateFormat.MEDIUM -> "H:mm:ss",
-            DateFormat.SHORT -> "H:mm")),
-    TestCase(Locale.JAPANESE, cldr21 = false, Map(
-            DateFormat.FULL -> "y年M月d日EEEE",
-            DateFormat.LONG -> "y年M月d日",
-            DateFormat.MEDIUM -> "y/MM/dd",
-            DateFormat.SHORT -> "y/MM/dd"),
-          Map(
-            DateFormat.FULL -> "H時mm分ss秒 zzzz",
-            DateFormat.LONG -> "H:mm:ss z",
-            DateFormat.MEDIUM -> "H:mm:ss",
-            DateFormat.SHORT -> "H:mm")),
-    TestCase(Locale.KOREAN, cldr21 = true, Map(
-            DateFormat.FULL -> "y년 M월 d일 EEEE",
-            DateFormat.LONG -> "y년 M월 d일",
-            DateFormat.MEDIUM -> "yyyy. M. d.",
-            DateFormat.SHORT -> "yy. M. d."),
-          Map(
-            DateFormat.FULL -> "a h시 m분 s초 zzzz",
-            DateFormat.LONG -> "a h시 m분 s초 z",
-            DateFormat.MEDIUM -> "a h:mm:ss",
-            DateFormat.SHORT -> "a h:mm")),
-    TestCase(Locale.KOREAN, cldr21 = false, Map(
-            DateFormat.FULL -> "y년 M월 d일 EEEE",
-            DateFormat.LONG -> "y년 M월 d일",
-            DateFormat.MEDIUM -> "y. M. d.",
-            DateFormat.SHORT -> "yy. M. d."),
-          Map(
-            DateFormat.FULL -> "a h시 m분 s초 zzzz",
-            DateFormat.LONG -> "a h시 m분 s초 z",
-            DateFormat.MEDIUM -> "a h:mm:ss",
-            DateFormat.SHORT -> "a h:mm")),
-    TestCase(Locale.CHINESE, cldr21 = true, Map(
-            DateFormat.FULL -> "y年M月d日EEEE",
-            DateFormat.LONG -> "y年M月d日",
-            DateFormat.MEDIUM -> "yyyy-M-d",
-            DateFormat.SHORT -> "yy-M-d"),
-          Map(
-            DateFormat.FULL -> "zzzzah时mm分ss秒",
-            DateFormat.LONG -> "zah时mm分ss秒",
-            DateFormat.MEDIUM -> "ah:mm:ss",
-            DateFormat.SHORT -> "ah:mm")),
-    TestCase(Locale.CHINESE, cldr21 = false, Map(
-            DateFormat.FULL -> "y年M月d日EEEE",
-            DateFormat.LONG -> "y年M月d日",
-            DateFormat.MEDIUM -> "y年M月d日",
-            DateFormat.SHORT -> "y/M/d"),
-          Map(
-            DateFormat.FULL -> "zzzz ah:mm:ss",
-            DateFormat.LONG -> "z ah:mm:ss",
-            DateFormat.MEDIUM -> "ah:mm:ss",
-            DateFormat.SHORT -> "ah:mm")),
-    TestCase(Locale.SIMPLIFIED_CHINESE, cldr21 = true, Map(
-            DateFormat.FULL -> "y年M月d日EEEE",
-            DateFormat.LONG -> "y年M月d日",
-            DateFormat.MEDIUM -> "yyyy-M-d",
-            DateFormat.SHORT -> "yy-M-d"),
-          Map(
-            DateFormat.FULL -> "zzzzah时mm分ss秒",
-            DateFormat.LONG -> "zah时mm分ss秒",
-            DateFormat.MEDIUM -> "ah:mm:ss",
-            DateFormat.SHORT -> "ah:mm")),
-    TestCase(Locale.SIMPLIFIED_CHINESE, cldr21 = false, Map(
-            DateFormat.FULL -> "y年M月d日EEEE",
-            DateFormat.LONG -> "y年M月d日",
-            DateFormat.MEDIUM -> "y年M月d日",
-            DateFormat.SHORT -> "y/M/d"),
-          Map(
-            DateFormat.FULL -> "zzzz ah:mm:ss",
-            DateFormat.LONG -> "z ah:mm:ss",
-            DateFormat.MEDIUM -> "ah:mm:ss",
-            DateFormat.SHORT -> "ah:mm")),
-    TestCase(Locale.TRADITIONAL_CHINESE, cldr21 = true, Map(
-            DateFormat.FULL -> "y年M月d日EEEE",
-            DateFormat.LONG -> "y年M月d日",
-            DateFormat.MEDIUM -> "yyyy/M/d",
-            DateFormat.SHORT -> "y/M/d"),
-          Map(
-            DateFormat.FULL -> "zzzzah時mm分ss秒",
-            DateFormat.LONG -> "zah時mm分ss秒",
-            DateFormat.MEDIUM -> "ah:mm:ss",
-            DateFormat.SHORT -> "ah:mm")),
-    TestCase(Locale.TRADITIONAL_CHINESE, cldr21 = false, Map(
-            DateFormat.FULL -> "y年M月d日 EEEE",
-            DateFormat.LONG -> "y年M月d日",
-            DateFormat.MEDIUM -> "y年M月d日",
-            DateFormat.SHORT -> "y/M/d"),
-          Map(
-            DateFormat.FULL -> "ah:mm:ss [zzzz]",
-            DateFormat.LONG -> "ah:mm:ss [z]",
-            DateFormat.MEDIUM -> "ah:mm:ss",
-            DateFormat.SHORT -> "ah:mm")),
-    TestCase(Locale.FRANCE, cldr21 = true, Map( // JVM
-            DateFormat.FULL -> "EEEE d MMMM y",
-            DateFormat.LONG -> "d MMMM y",
-            DateFormat.MEDIUM -> "d MMM y",
-            DateFormat.SHORT -> "dd/MM/yy"),
-          Map(
-            DateFormat.FULL -> "HH:mm:ss zzzz",
-            DateFormat.LONG -> "HH:mm:ss z",
-            DateFormat.MEDIUM -> "HH:mm:ss",
-            DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.FRANCE, cldr21 = false, Map( // JS
+    TestCase(root, "", Locale.FRENCH, cldr21 = false, Map( // JS
             DateFormat.FULL -> "EEEE d MMMM y",
             DateFormat.LONG -> "d MMMM y",
             DateFormat.MEDIUM -> "d MMM y",
@@ -274,7 +117,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "HH:mm:ss z",
             DateFormat.MEDIUM -> "HH:mm:ss",
             DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.GERMANY, cldr21 = true, Map(
+    TestCase(root, "", Locale.GERMAN, cldr21 = true, Map(
             DateFormat.FULL -> "EEEE, d. MMMM y",
             DateFormat.LONG -> "d. MMMM y",
             DateFormat.MEDIUM -> "dd.MM.yyyy",
@@ -284,7 +127,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "HH:mm:ss z",
             DateFormat.MEDIUM -> "HH:mm:ss",
             DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.GERMANY, cldr21 = false, Map(
+    TestCase(root, "", Locale.GERMAN, cldr21 = false, Map(
             DateFormat.FULL -> "EEEE, d. MMMM y",
             DateFormat.LONG -> "d. MMMM y",
             DateFormat.MEDIUM -> "dd.MM.y",
@@ -294,7 +137,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "HH:mm:ss z",
             DateFormat.MEDIUM -> "HH:mm:ss",
             DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.ITALY, cldr21 = true, Map(
+    TestCase(root, "", Locale.ITALIAN, cldr21 = true, Map(
             DateFormat.FULL -> "EEEE d MMMM y",
             DateFormat.LONG -> "dd MMMM y",
             DateFormat.MEDIUM -> "dd/MMM/y",
@@ -304,7 +147,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "HH:mm:ss z",
             DateFormat.MEDIUM -> "HH:mm:ss",
             DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.ITALY, cldr21 = false, Map(
+    TestCase(root, "", Locale.ITALIAN, cldr21 = false, Map(
             DateFormat.FULL -> "EEEE d MMMM y",
             DateFormat.LONG -> "d MMMM y",
             DateFormat.MEDIUM -> "dd MMM y",
@@ -314,7 +157,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "HH:mm:ss z",
             DateFormat.MEDIUM -> "HH:mm:ss",
             DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.JAPAN, cldr21 = true, Map(
+    TestCase(root, "", Locale.JAPANESE, cldr21 = true, Map(
             DateFormat.FULL -> "y年M月d日EEEE",
             DateFormat.LONG -> "y年M月d日",
             DateFormat.MEDIUM -> "yyyy/MM/dd",
@@ -324,7 +167,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "H:mm:ss z",
             DateFormat.MEDIUM -> "H:mm:ss",
             DateFormat.SHORT -> "H:mm")),
-    TestCase(Locale.JAPAN, cldr21 = false, Map(
+    TestCase(root, "", Locale.JAPANESE, cldr21 = false, Map(
             DateFormat.FULL -> "y年M月d日EEEE",
             DateFormat.LONG -> "y年M月d日",
             DateFormat.MEDIUM -> "y/MM/dd",
@@ -334,7 +177,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "H:mm:ss z",
             DateFormat.MEDIUM -> "H:mm:ss",
             DateFormat.SHORT -> "H:mm")),
-    TestCase(Locale.KOREA, cldr21 = true, Map(
+    TestCase(root, "", Locale.KOREAN, cldr21 = true, Map(
             DateFormat.FULL -> "y년 M월 d일 EEEE",
             DateFormat.LONG -> "y년 M월 d일",
             DateFormat.MEDIUM -> "yyyy. M. d.",
@@ -344,7 +187,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "a h시 m분 s초 z",
             DateFormat.MEDIUM -> "a h:mm:ss",
             DateFormat.SHORT -> "a h:mm")),
-    TestCase(Locale.KOREA, cldr21 = false, Map(
+    TestCase(root, "", Locale.KOREAN, cldr21 = false, Map(
             DateFormat.FULL -> "y년 M월 d일 EEEE",
             DateFormat.LONG -> "y년 M월 d일",
             DateFormat.MEDIUM -> "y. M. d.",
@@ -354,7 +197,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "a h시 m분 s초 z",
             DateFormat.MEDIUM -> "a h:mm:ss",
             DateFormat.SHORT -> "a h:mm")),
-    TestCase(Locale.CHINA, cldr21 = true, Map(
+    TestCase(root, "", Locale.CHINESE, cldr21 = true, Map(
             DateFormat.FULL -> "y年M月d日EEEE",
             DateFormat.LONG -> "y年M月d日",
             DateFormat.MEDIUM -> "yyyy-M-d",
@@ -364,7 +207,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "zah时mm分ss秒",
             DateFormat.MEDIUM -> "ah:mm:ss",
             DateFormat.SHORT -> "ah:mm")),
-    TestCase(Locale.CHINA, cldr21 = false, Map(
+    TestCase(root, "", Locale.CHINESE, cldr21 = false, Map(
             DateFormat.FULL -> "y年M月d日EEEE",
             DateFormat.LONG -> "y年M月d日",
             DateFormat.MEDIUM -> "y年M月d日",
@@ -374,7 +217,27 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "z ah:mm:ss",
             DateFormat.MEDIUM -> "ah:mm:ss",
             DateFormat.SHORT -> "ah:mm")),
-    TestCase(Locale.TAIWAN, cldr21 = true, Map(
+    TestCase(root, "", Locale.SIMPLIFIED_CHINESE, cldr21 = true, Map(
+            DateFormat.FULL -> "y年M月d日EEEE",
+            DateFormat.LONG -> "y年M月d日",
+            DateFormat.MEDIUM -> "yyyy-M-d",
+            DateFormat.SHORT -> "yy-M-d"),
+          Map(
+            DateFormat.FULL -> "zzzzah时mm分ss秒",
+            DateFormat.LONG -> "zah时mm分ss秒",
+            DateFormat.MEDIUM -> "ah:mm:ss",
+            DateFormat.SHORT -> "ah:mm")),
+    TestCase(root, "", Locale.SIMPLIFIED_CHINESE, cldr21 = false, Map(
+            DateFormat.FULL -> "y年M月d日EEEE",
+            DateFormat.LONG -> "y年M月d日",
+            DateFormat.MEDIUM -> "y年M月d日",
+            DateFormat.SHORT -> "y/M/d"),
+          Map(
+            DateFormat.FULL -> "zzzz ah:mm:ss",
+            DateFormat.LONG -> "z ah:mm:ss",
+            DateFormat.MEDIUM -> "ah:mm:ss",
+            DateFormat.SHORT -> "ah:mm")),
+    TestCase(root, "", Locale.TRADITIONAL_CHINESE, cldr21 = true, Map(
             DateFormat.FULL -> "y年M月d日EEEE",
             DateFormat.LONG -> "y年M月d日",
             DateFormat.MEDIUM -> "yyyy/M/d",
@@ -384,7 +247,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "zah時mm分ss秒",
             DateFormat.MEDIUM -> "ah:mm:ss",
             DateFormat.SHORT -> "ah:mm")),
-    TestCase(Locale.TAIWAN, cldr21 = false, Map(
+    TestCase(root, "", Locale.TRADITIONAL_CHINESE, cldr21 = false, Map(
             DateFormat.FULL -> "y年M月d日 EEEE",
             DateFormat.LONG -> "y年M月d日",
             DateFormat.MEDIUM -> "y年M月d日",
@@ -394,7 +257,147 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "ah:mm:ss [z]",
             DateFormat.MEDIUM -> "ah:mm:ss",
             DateFormat.SHORT -> "ah:mm")),
-    TestCase(Locale.UK, cldr21 = true, Map(
+    TestCase(root, "", Locale.FRANCE, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "EEEE d MMMM y",
+            DateFormat.LONG -> "d MMMM y",
+            DateFormat.MEDIUM -> "d MMM y",
+            DateFormat.SHORT -> "dd/MM/yy"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(root, "", Locale.FRANCE, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "EEEE d MMMM y",
+            DateFormat.LONG -> "d MMMM y",
+            DateFormat.MEDIUM -> "d MMM y",
+            DateFormat.SHORT -> "dd/MM/y"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(root, "", Locale.GERMANY, cldr21 = true, Map(
+            DateFormat.FULL -> "EEEE, d. MMMM y",
+            DateFormat.LONG -> "d. MMMM y",
+            DateFormat.MEDIUM -> "dd.MM.yyyy",
+            DateFormat.SHORT -> "dd.MM.yy"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(root, "", Locale.GERMANY, cldr21 = false, Map(
+            DateFormat.FULL -> "EEEE, d. MMMM y",
+            DateFormat.LONG -> "d. MMMM y",
+            DateFormat.MEDIUM -> "dd.MM.y",
+            DateFormat.SHORT -> "dd.MM.yy"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(root, "", Locale.ITALY, cldr21 = true, Map(
+            DateFormat.FULL -> "EEEE d MMMM y",
+            DateFormat.LONG -> "dd MMMM y",
+            DateFormat.MEDIUM -> "dd/MMM/y",
+            DateFormat.SHORT -> "dd/MM/yy"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(root, "", Locale.ITALY, cldr21 = false, Map(
+            DateFormat.FULL -> "EEEE d MMMM y",
+            DateFormat.LONG -> "d MMMM y",
+            DateFormat.MEDIUM -> "dd MMM y",
+            DateFormat.SHORT -> "dd/MM/yy"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(root, "", Locale.JAPAN, cldr21 = true, Map(
+            DateFormat.FULL -> "y年M月d日EEEE",
+            DateFormat.LONG -> "y年M月d日",
+            DateFormat.MEDIUM -> "yyyy/MM/dd",
+            DateFormat.SHORT -> "yyyy/MM/dd"),
+          Map(
+            DateFormat.FULL -> "H時mm分ss秒 zzzz",
+            DateFormat.LONG -> "H:mm:ss z",
+            DateFormat.MEDIUM -> "H:mm:ss",
+            DateFormat.SHORT -> "H:mm")),
+    TestCase(root, "", Locale.JAPAN, cldr21 = false, Map(
+            DateFormat.FULL -> "y年M月d日EEEE",
+            DateFormat.LONG -> "y年M月d日",
+            DateFormat.MEDIUM -> "y/MM/dd",
+            DateFormat.SHORT -> "y/MM/dd"),
+          Map(
+            DateFormat.FULL -> "H時mm分ss秒 zzzz",
+            DateFormat.LONG -> "H:mm:ss z",
+            DateFormat.MEDIUM -> "H:mm:ss",
+            DateFormat.SHORT -> "H:mm")),
+    TestCase(root, "", Locale.KOREA, cldr21 = true, Map(
+            DateFormat.FULL -> "y년 M월 d일 EEEE",
+            DateFormat.LONG -> "y년 M월 d일",
+            DateFormat.MEDIUM -> "yyyy. M. d.",
+            DateFormat.SHORT -> "yy. M. d."),
+          Map(
+            DateFormat.FULL -> "a h시 m분 s초 zzzz",
+            DateFormat.LONG -> "a h시 m분 s초 z",
+            DateFormat.MEDIUM -> "a h:mm:ss",
+            DateFormat.SHORT -> "a h:mm")),
+    TestCase(root, "", Locale.KOREA, cldr21 = false, Map(
+            DateFormat.FULL -> "y년 M월 d일 EEEE",
+            DateFormat.LONG -> "y년 M월 d일",
+            DateFormat.MEDIUM -> "y. M. d.",
+            DateFormat.SHORT -> "yy. M. d."),
+          Map(
+            DateFormat.FULL -> "a h시 m분 s초 zzzz",
+            DateFormat.LONG -> "a h시 m분 s초 z",
+            DateFormat.MEDIUM -> "a h:mm:ss",
+            DateFormat.SHORT -> "a h:mm")),
+    TestCase(root, "", Locale.CHINA, cldr21 = true, Map(
+            DateFormat.FULL -> "y年M月d日EEEE",
+            DateFormat.LONG -> "y年M月d日",
+            DateFormat.MEDIUM -> "yyyy-M-d",
+            DateFormat.SHORT -> "yy-M-d"),
+          Map(
+            DateFormat.FULL -> "zzzzah时mm分ss秒",
+            DateFormat.LONG -> "zah时mm分ss秒",
+            DateFormat.MEDIUM -> "ah:mm:ss",
+            DateFormat.SHORT -> "ah:mm")),
+    TestCase(root, "", Locale.CHINA, cldr21 = false, Map(
+            DateFormat.FULL -> "y年M月d日EEEE",
+            DateFormat.LONG -> "y年M月d日",
+            DateFormat.MEDIUM -> "y年M月d日",
+            DateFormat.SHORT -> "y/M/d"),
+          Map(
+            DateFormat.FULL -> "zzzz ah:mm:ss",
+            DateFormat.LONG -> "z ah:mm:ss",
+            DateFormat.MEDIUM -> "ah:mm:ss",
+            DateFormat.SHORT -> "ah:mm")),
+    TestCase(root, "", Locale.TAIWAN, cldr21 = true, Map(
+            DateFormat.FULL -> "y年M月d日EEEE",
+            DateFormat.LONG -> "y年M月d日",
+            DateFormat.MEDIUM -> "yyyy/M/d",
+            DateFormat.SHORT -> "y/M/d"),
+          Map(
+            DateFormat.FULL -> "zzzzah時mm分ss秒",
+            DateFormat.LONG -> "zah時mm分ss秒",
+            DateFormat.MEDIUM -> "ah:mm:ss",
+            DateFormat.SHORT -> "ah:mm")),
+    TestCase(root, "", Locale.TAIWAN, cldr21 = false, Map(
+            DateFormat.FULL -> "y年M月d日 EEEE",
+            DateFormat.LONG -> "y年M月d日",
+            DateFormat.MEDIUM -> "y年M月d日",
+            DateFormat.SHORT -> "y/M/d"),
+          Map(
+            DateFormat.FULL -> "ah:mm:ss [zzzz]",
+            DateFormat.LONG -> "ah:mm:ss [z]",
+            DateFormat.MEDIUM -> "ah:mm:ss",
+            DateFormat.SHORT -> "ah:mm")),
+    TestCase(root, "", Locale.UK, cldr21 = true, Map(
             DateFormat.FULL -> "EEEE, d MMMM y",
             DateFormat.LONG -> "d MMMM y",
             DateFormat.MEDIUM -> "d MMM y",
@@ -404,7 +407,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "HH:mm:ss z",
             DateFormat.MEDIUM -> "HH:mm:ss",
             DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.UK, cldr21 = false, Map(
+    TestCase(root, "", Locale.UK, cldr21 = false, Map(
             DateFormat.FULL -> "EEEE, MMMM d, y",
             DateFormat.LONG -> "MMMM d, y",
             DateFormat.MEDIUM -> "MMM d, y",
@@ -414,7 +417,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "HH:mm:ss z",
             DateFormat.MEDIUM -> "HH:mm:ss",
             DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.CANADA, cldr21 = true, Map(
+    TestCase(root, "", Locale.CANADA, cldr21 = true, Map(
             DateFormat.FULL -> "EEEE, d MMMM, y",
             DateFormat.LONG -> "d MMMM, y",
             DateFormat.MEDIUM -> "yyyy-MM-dd",
@@ -424,7 +427,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "h:mm:ss a z",
             DateFormat.MEDIUM -> "h:mm:ss a",
             DateFormat.SHORT -> "h:mm a")),
-    TestCase(Locale.CANADA, cldr21 = false, Map(
+    TestCase(root, "", Locale.CANADA, cldr21 = false, Map(
             DateFormat.FULL -> "EEEE, MMMM d, y",
             DateFormat.LONG -> "MMMM d, y",
             DateFormat.MEDIUM -> "MMM d, y",
@@ -434,7 +437,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "h:mm:ss a z",
             DateFormat.MEDIUM -> "h:mm:ss a",
             DateFormat.SHORT -> "h:mm a")),
-    TestCase(Locale.CANADA_FRENCH, cldr21 = true, Map( // JVM
+    TestCase(root, "", Locale.CANADA_FRENCH, cldr21 = true, Map( // JVM
             DateFormat.FULL -> "EEEE d MMMM y",
             DateFormat.LONG -> "d MMMM y",
             DateFormat.MEDIUM -> "yyyy-MM-dd",
@@ -444,7 +447,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "HH:mm:ss z",
             DateFormat.MEDIUM -> "HH:mm:ss",
             DateFormat.SHORT -> "HH:mm")),
-    TestCase(Locale.CANADA_FRENCH, cldr21 = false, Map( // JS
+    TestCase(root, "", Locale.CANADA_FRENCH, cldr21 = false, Map( // JS
             DateFormat.FULL -> "EEEE d MMMM y",
             DateFormat.LONG -> "d MMMM y",
             DateFormat.MEDIUM -> "d MMM y",
@@ -454,6 +457,294 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "HH:mm:ss z",
             DateFormat.MEDIUM -> "HH:mm:ss",
             DateFormat.SHORT -> "HH:mm"))
+  )
+
+  // Test cases by language tag where the JVM gives the same asJS
+  val localesByTag = List(
+    TestCase(bn, "bn", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "EEEE, d MMMM, y",
+            DateFormat.LONG -> "d MMMM, y",
+            DateFormat.MEDIUM -> "d MMM, y",
+            DateFormat.SHORT -> "d/M/yy"),
+          Map(
+            DateFormat.FULL -> "h:mm:ss a zzzz",
+            DateFormat.LONG -> "h:mm:ss a z",
+            DateFormat.MEDIUM -> "h:mm:ss a",
+            DateFormat.SHORT -> "h:mm a")),
+    TestCase(lv, "lv", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "EEEE, y. 'gada' d. MMMM",
+            DateFormat.LONG -> "y. 'gada' d. MMMM",
+            DateFormat.MEDIUM -> "y. 'gada' d. MMM",
+            DateFormat.SHORT -> "dd.MM.yy"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm"))
+  )
+
+  // Test cases by language tag where the JVM differs from JS
+  val localesByTagDiff = List(
+    TestCase(af, "af", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "EEEE dd MMMM y",
+            DateFormat.LONG -> "dd MMMM y",
+            DateFormat.MEDIUM -> "dd MMM y",
+            DateFormat.SHORT -> "yyyy-MM-dd"),
+          Map(
+            DateFormat.FULL -> "h:mm:ss a zzzz",
+            DateFormat.LONG -> "h:mm:ss a z",
+            DateFormat.MEDIUM -> "h:mm:ss a",
+            DateFormat.SHORT -> "h:mm a")),
+    TestCase(af, "af", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "EEEE, dd MMMM y",
+            DateFormat.LONG -> "dd MMMM y",
+            DateFormat.MEDIUM -> "dd MMM y",
+            DateFormat.SHORT -> "y-MM-dd"),
+          Map(
+            DateFormat.FULL -> "h:mm:ss a zzzz",
+            DateFormat.LONG -> "h:mm:ss a z",
+            DateFormat.MEDIUM -> "h:mm:ss a",
+            DateFormat.SHORT -> "h:mm a")),
+    TestCase(az, "az", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "EEEE, d, MMMM, y",
+            DateFormat.LONG -> "d MMMM , y",
+            DateFormat.MEDIUM -> "d MMM, y",
+            DateFormat.SHORT -> "yyyy-MM-dd"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(az, "az", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "d MMMM y, EEEE",
+            DateFormat.LONG -> "d MMMM y",
+            DateFormat.MEDIUM -> "d MMM y",
+            DateFormat.SHORT -> "dd.MM.yy"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(az_Cyrl, "az-Cyrl", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "EEEE, d, MMMM, y",
+            DateFormat.LONG -> "d MMMM , y",
+            DateFormat.MEDIUM -> "d MMM, y",
+            DateFormat.SHORT -> "yyyy-MM-dd"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(az_Cyrl, "az-Cyrl", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "EEEE, d, MMMM, y",
+            DateFormat.LONG -> "d MMMM, y",
+            DateFormat.MEDIUM -> "d MMM, y",
+            DateFormat.SHORT -> "dd.MM.yy"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(es_CL, "es-CL", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "EEEE, d 'de' MMMM 'de' y",
+            DateFormat.LONG -> "d 'de' MMMM 'de' y",
+            DateFormat.MEDIUM -> "dd-MM-yyyy",
+            DateFormat.SHORT -> "dd-MM-yy"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "H:mm:ss z",
+            DateFormat.MEDIUM -> "H:mm:ss",
+            DateFormat.SHORT -> "H:mm")),
+    TestCase(es_CL, "es-CL", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "EEEE, d 'de' MMMM 'de' y",
+            DateFormat.LONG -> "d 'de' MMMM 'de' y",
+            DateFormat.MEDIUM -> "dd-MM-y",
+            DateFormat.SHORT -> "dd-MM-yy"),
+          Map(
+            DateFormat.FULL -> "H:mm:ss (zzzz)",
+            DateFormat.LONG -> "H:mm:ss z",
+            DateFormat.MEDIUM -> "H:mm:ss",
+            DateFormat.SHORT -> "H:mm")),
+    TestCase(it_CH, "it-CH", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "EEEE, d MMMM y",
+            DateFormat.LONG -> "d MMMM y",
+            DateFormat.MEDIUM -> "d-MMM-y",
+            DateFormat.SHORT -> "dd.MM.yy"),
+          Map(
+            DateFormat.FULL -> "HH.mm:ss 'h' zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(it_CH, "it-CH", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "EEEE, d MMMM y",
+            DateFormat.LONG -> "d MMMM y",
+            DateFormat.MEDIUM -> "d MMM y",
+            DateFormat.SHORT -> "dd.MM.yy"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(zh, "zh", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "y年M月d日EEEE",
+            DateFormat.LONG -> "y年M月d日",
+            DateFormat.MEDIUM -> "yyyy-M-d",
+            DateFormat.SHORT -> "yy-M-d"),
+          Map(
+            DateFormat.FULL -> "zzzzah时mm分ss秒",
+            DateFormat.LONG -> "zah时mm分ss秒",
+            DateFormat.MEDIUM -> "ah:mm:ss",
+            DateFormat.SHORT -> "ah:mm")),
+    TestCase(zh, "zh", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "y年M月d日EEEE",
+            DateFormat.LONG -> "y年M月d日",
+            DateFormat.MEDIUM -> "y年M月d日",
+            DateFormat.SHORT -> "y/M/d"),
+          Map(
+            DateFormat.FULL -> "zzzz ah:mm:ss",
+            DateFormat.LONG -> "z ah:mm:ss",
+            DateFormat.MEDIUM -> "ah:mm:ss",
+            DateFormat.SHORT -> "ah:mm")),
+    TestCase(zh_Hant, "zh-Hant", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "y年M月d日EEEE",
+            DateFormat.LONG -> "y年M月d日",
+            DateFormat.MEDIUM -> "yyyy/M/d",
+            DateFormat.SHORT -> "y/M/d"),
+          Map(
+            DateFormat.FULL -> "zzzzah時mm分ss秒",
+            DateFormat.LONG -> "zah時mm分ss秒",
+            DateFormat.MEDIUM -> "ah:mm:ss",
+            DateFormat.SHORT -> "ah:mm")),
+    TestCase(zh_Hant, "zh-Hant", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "y年M月d日 EEEE",
+            DateFormat.LONG -> "y年M月d日",
+            DateFormat.MEDIUM -> "y年M月d日",
+            DateFormat.SHORT -> "y/M/d"),
+          Map(
+            DateFormat.FULL -> "ah:mm:ss [zzzz]",
+            DateFormat.LONG -> "ah:mm:ss [z]",
+            DateFormat.MEDIUM -> "ah:mm:ss",
+            DateFormat.SHORT -> "ah:mm")),
+    TestCase(ar, "ar", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "EEEE، d MMMM، y",
+            DateFormat.LONG -> "d MMMM، y",
+            DateFormat.MEDIUM -> "dd‏/MM‏/yyyy",
+            DateFormat.SHORT -> "d‏/M‏/yyyy"),
+          Map(
+            DateFormat.FULL -> "zzzz h:mm:ss a",
+            DateFormat.LONG -> "z h:mm:ss a",
+            DateFormat.MEDIUM -> "h:mm:ss a",
+            DateFormat.SHORT -> "h:mm a")),
+    TestCase(ar, "ar", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "EEEE، d MMMM، y",
+            DateFormat.LONG -> "d MMMM، y",
+            DateFormat.MEDIUM -> "dd‏/MM‏/y",
+            DateFormat.SHORT -> "d‏/M‏/y"),
+          Map(
+            DateFormat.FULL -> "h:mm:ss a zzzz",
+            DateFormat.LONG -> "h:mm:ss a z",
+            DateFormat.MEDIUM -> "h:mm:ss a",
+            DateFormat.SHORT -> "h:mm a")),
+    TestCase(fa, "fa", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "EEEE d MMMM y",
+            DateFormat.LONG -> "d MMMM y",
+            DateFormat.MEDIUM -> "d MMM y",
+            DateFormat.SHORT -> "yyyy/M/d"),
+          Map(
+            DateFormat.FULL -> "H:mm:ss (zzzz)",
+            DateFormat.LONG -> "H:mm:ss (z)",
+            DateFormat.MEDIUM -> "H:mm:ss",
+            DateFormat.SHORT -> "H:mm")),
+    TestCase(fa, "fa", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "EEEE d MMMM y",
+            DateFormat.LONG -> "d MMMM y",
+            DateFormat.MEDIUM -> "d MMM y",
+            DateFormat.SHORT -> "y/M/d"),
+          Map(
+            DateFormat.FULL -> "H:mm:ss (zzzz)",
+            DateFormat.LONG -> "H:mm:ss (z)",
+            DateFormat.MEDIUM -> "H:mm:ss",
+            DateFormat.SHORT -> "H:mm")),
+    TestCase(fi_FI, "fi-FI", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "EEEE, d. MMMM y",
+            DateFormat.LONG -> "d. MMMM y",
+            DateFormat.MEDIUM -> "d.M.yyyy",
+            DateFormat.SHORT -> "d.M.yyyy"),
+          Map(
+            DateFormat.FULL -> "H.mm.ss zzzz",
+            DateFormat.LONG -> "H.mm.ss z",
+            DateFormat.MEDIUM -> "H.mm.ss",
+            DateFormat.SHORT -> "H.mm")),
+    TestCase(fi_FI, "fi-FI", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "cccc d. MMMM y",
+            DateFormat.LONG -> "d. MMMM y",
+            DateFormat.MEDIUM -> "d.M.y",
+            DateFormat.SHORT -> "d.M.y"),
+          Map(
+            DateFormat.FULL -> "H.mm.ss zzzz",
+            DateFormat.LONG -> "H.mm.ss z",
+            DateFormat.MEDIUM -> "H.mm.ss",
+            DateFormat.SHORT -> "H.mm")),
+    TestCase(ka, "ka", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "EEEE, y MMMM dd",
+            DateFormat.LONG -> "y MMMM d",
+            DateFormat.MEDIUM -> "y MMM d",
+            DateFormat.SHORT -> "yyyy-MM-dd"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(ka, "ka", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "EEEE, dd MMMM, y",
+            DateFormat.LONG -> "d MMMM, y",
+            DateFormat.MEDIUM -> "d MMM. y",
+            DateFormat.SHORT -> "dd.MM.yy"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(my, "my", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "EEEE, y MMMM dd",
+            DateFormat.LONG -> "y MMMM d",
+            DateFormat.MEDIUM -> "y MMM d",
+            DateFormat.SHORT -> "yy/MM/dd"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(my, "my", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "EEEE၊ dd MMMM y",
+            DateFormat.LONG -> "d MMMM y",
+            DateFormat.MEDIUM -> "d MMM y",
+            DateFormat.SHORT -> "dd-MM-yy"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(ru_RU, "ru-RU", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "EEEE, d MMMM y\u00A0'г'.",
+            DateFormat.LONG -> "d MMMM y\u00A0'г'.",
+            DateFormat.MEDIUM -> "dd.MM.yyyy",
+            DateFormat.SHORT -> "dd.MM.yy"),
+          Map(
+            DateFormat.FULL -> "H:mm:ss zzzz",
+            DateFormat.LONG -> "H:mm:ss z",
+            DateFormat.MEDIUM -> "H:mm:ss",
+            DateFormat.SHORT -> "H:mm")),
+     TestCase(ru_RU, "ru-RU", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "EEEE, d MMMM y 'г'.",
+            DateFormat.LONG -> "d MMMM y 'г'.",
+            DateFormat.MEDIUM -> "d MMM y 'г'.",
+            DateFormat.SHORT -> "dd.MM.yy"),
+          Map(
+            DateFormat.FULL -> "H:mm:ss zzzz",
+            DateFormat.LONG -> "H:mm:ss z",
+            DateFormat.MEDIUM -> "H:mm:ss",
+            DateFormat.SHORT -> "H:mm"))
   )
 
   @Test def test_standard_locales(): Unit = {
@@ -481,8 +772,6 @@ class DateFormatTest extends LocaleTestSetup {
 
   @Test def test_standard_locales_diff(): Unit = {
     stdLocalesDiff.filter(tc => (Platform.executingInJVM && tc.cldr21) || (!Platform.executingInJVM && !tc.cldr21)).foreach { tc =>
-      println(tc.l.toLanguageTag())
-
       for {
         df <- tc.dateFormats
       } yield {
@@ -500,6 +789,64 @@ class DateFormatTest extends LocaleTestSetup {
         tf <- tc.timeFormats
       } yield {
         assertEquals(s"${df._2} ${tf._2}", DateFormat.getDateTimeInstance(df._1, tf._1, tc.l).asInstanceOf[SimpleDateFormat].toPattern())
+      }
+    }
+  }
+
+  @Test def test_extra_locales(): Unit = {
+    localesByTag.foreach { tc =>
+      if (!Platform.executingInJVM) {
+        LocaleRegistry.installLocale(tc.ldml)
+      }
+      val locale = Locale.forLanguageTag(tc.tag)
+
+      for {
+        df <- tc.dateFormats
+      } yield {
+        assertEquals(df._2, DateFormat.getDateInstance(df._1, locale).asInstanceOf[SimpleDateFormat].toPattern())
+      }
+
+      for {
+        tf <- tc.timeFormats
+      } yield {
+        assertEquals(tf._2, DateFormat.getTimeInstance(tf._1, locale).asInstanceOf[SimpleDateFormat].toPattern())
+      }
+
+      for {
+        df <- tc.dateFormats
+        tf <- tc.timeFormats
+      } yield {
+        assertEquals(s"${df._2} ${tf._2}", DateFormat.getDateTimeInstance(df._1, tf._1, locale).asInstanceOf[SimpleDateFormat].toPattern())
+      }
+    }
+  }
+
+  @Test def test_extra_locales_diff(): Unit = {
+    localesByTagDiff.filter(tc => (Platform.executingInJVM && tc.cldr21) || (!Platform.executingInJVM && !tc.cldr21)).foreach { tc =>
+      if (!Platform.executingInJVM) {
+        LocaleRegistry.installLocale(tc.ldml)
+      }
+      val locale = Locale.forLanguageTag(tc.tag)
+
+      for {
+        df <- tc.dateFormats
+      } yield {
+        assertEquals(df._2, DateFormat.getDateInstance(df._1, locale).asInstanceOf[SimpleDateFormat].toPattern())
+      }
+
+      for {
+        tf <- tc.timeFormats
+      } yield {
+        assertEquals(tf._2, DateFormat.getTimeInstance(tf._1, locale).asInstanceOf[SimpleDateFormat].toPattern())
+      }
+
+      for {
+        df <- tc.dateFormats
+        tf <- tc.timeFormats
+      } yield {
+        if (!tc.cldr21) {
+          assertEquals(s"${df._2} ${tf._2}", DateFormat.getDateTimeInstance(df._1, tf._1, locale).asInstanceOf[SimpleDateFormat].toPattern())
+        }
       }
     }
   }
