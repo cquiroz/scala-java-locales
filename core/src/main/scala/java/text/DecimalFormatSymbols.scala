@@ -21,13 +21,14 @@ object DecimalFormatSymbols {
   private def initialize(locale: Locale,
       dfs: DecimalFormatSymbols): DecimalFormatSymbols = {
     // Find the correct numbering systems for the ldml
-    def ns(ldml: LDML): NumberingSystem =
+    def ns(ldml: LDML): NumberingSystem = {
       ldml.defaultNS.flatMap { n =>
         root.digitSymbols.find(_.ns == n).collect {
-          case s @ Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) => alias
-          case s                                                      => n
+          case s@Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) => alias
+          case s => n
         }
       }.getOrElse(latn)
+    }
 
     LocaleRegistry
       .ldml(locale)

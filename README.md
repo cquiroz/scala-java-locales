@@ -18,7 +18,7 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 ```scala
 lazy val myCross = crossProject.
   ...
-  jsSettings.(
+  .jsSettings(
     libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.2.0+29"
   )
 ```
