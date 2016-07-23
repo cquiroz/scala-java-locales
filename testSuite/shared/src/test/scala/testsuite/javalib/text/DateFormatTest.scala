@@ -7,7 +7,7 @@ import locales.LocaleRegistry
 import locales.cldr.LDML
 import locales.cldr.data._
 import org.junit.Assert._
-import org.junit.Test
+import org.junit.{Ignore, Test}
 import testsuite.utils.{LocaleTestSetup, Platform}
 
 class DateFormatTest extends LocaleTestSetup {
@@ -408,10 +408,10 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.MEDIUM -> "HH:mm:ss",
             DateFormat.SHORT -> "HH:mm")),
     TestCase(root, "", Locale.UK, cldr21 = false, Map(
-            DateFormat.FULL -> "EEEE, MMMM d, y",
-            DateFormat.LONG -> "MMMM d, y",
-            DateFormat.MEDIUM -> "MMM d, y",
-            DateFormat.SHORT -> "M/d/yy"),
+            DateFormat.FULL -> "EEEE, d MMMM y",
+            DateFormat.LONG -> "d MMMM y",
+            DateFormat.MEDIUM -> "d MMM y",
+            DateFormat.SHORT -> "dd/MM/y"),
           Map(
             DateFormat.FULL -> "HH:mm:ss zzzz",
             DateFormat.LONG -> "HH:mm:ss z",
@@ -561,10 +561,10 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.MEDIUM -> "dd-MM-y",
             DateFormat.SHORT -> "dd-MM-yy"),
           Map(
-            DateFormat.FULL -> "H:mm:ss (zzzz)",
-            DateFormat.LONG -> "H:mm:ss z",
-            DateFormat.MEDIUM -> "H:mm:ss",
-            DateFormat.SHORT -> "H:mm")),
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
     TestCase(it_CH, "it-CH", Locale.ROOT, cldr21 = true, Map( // JVM
             DateFormat.FULL -> "EEEE, d MMMM y",
             DateFormat.LONG -> "d MMMM y",
