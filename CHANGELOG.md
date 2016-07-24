@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0
+
+Provides minimal implementation of DateFormat for scala-java-time
+
+* Add basic implementation java.text.NumberFormat
+* Add basic implementation java.text.DateFormat
+* Add basic implementation java.text.SimpleDateFormat
+
 ## 0.2.0
 
 * Add class java.text.Format
