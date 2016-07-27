@@ -10,7 +10,7 @@
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.0+29"
+libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.0-cldr29"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -19,7 +19,7 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   .jsSettings(
-    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.0+29"
+    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.0-cldr29"
   )
 ```
 
@@ -91,7 +91,7 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 `scala-java-locales` uses [Semantic Versioning](http://semver.org/) and includes the CLDR version used as a build tag, e.g.:
 
 ```
-0.1.0+29 // Version 0.1.0 with CLDR version 29
+0.1.0-cldr29 // Version 0.1.0 with CLDR version 29
 ```
 
 
