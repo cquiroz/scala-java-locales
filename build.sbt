@@ -8,7 +8,7 @@ lazy val downloadFromZip: TaskKey[Unit] =
 
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion := "29",
-  version := s"0.3.0-cldr${cldrVersion.value}",
+  version := s"0.4.0-cldr${cldrVersion.value}-SNAPSHOT",
   organization := "com.github.cquiroz",
   scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.0-M5"),
