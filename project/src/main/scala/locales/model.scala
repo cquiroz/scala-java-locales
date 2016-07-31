@@ -38,6 +38,12 @@ object CalendarPatterns {
   val zero = CalendarPatterns(Nil, Nil)
 }
 
+case class NumberPatterns(decimalFormat: Option[String], percentFormat: Option[String])
+
+object NumberPatterns {
+  val zero = NumberPatterns(None, None)
+}
+
 case class NumericSystem(id: String, digits: String)
 
 case class NumberSymbols(system: NumericSystem,
@@ -90,7 +96,9 @@ case class XMLLDMLLocale(language: String, territory: Option[String],
 
 case class XMLLDML(locale: XMLLDMLLocale, fileName: String, defaultNS: Option[NumericSystem],
     digitSymbols: Map[NumericSystem, NumberSymbols], calendar: Option[CalendarSymbols],
-    datePatterns: Option[CalendarPatterns], currencies: Seq[NumberCurrency]) {
+    datePatterns: Option[CalendarPatterns],
+    currencies: Seq[NumberCurrency],
+    numberPatterns: NumberPatterns) {
 
   val scalaSafeName: String = {
     List(Some(locale.language), locale.script, locale.territory, locale.variant)
