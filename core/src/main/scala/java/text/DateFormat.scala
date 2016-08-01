@@ -53,9 +53,6 @@ object DateFormat {
   val SHORT: Int = 3
   val DEFAULT: Int = 2
 
-  private def parentPatterns(ldml: LDML): Option[CalendarPatterns] =
-    ldml.calendarPatterns.orElse(ldml.parent.flatMap(parentPatterns))
-
   private def patternsR(ldml: LDML, get: CalendarPatterns => Option[String]): Option[String] =
     ldml.calendarPatterns.flatMap(get).orElse(ldml.parent.flatMap(patternsR(_, get)))
 
