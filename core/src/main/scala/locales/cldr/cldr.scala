@@ -20,7 +20,6 @@ case class CalendarSymbols(months: List[String], shortMonths: List[String],
 
 case class CalendarPatterns(datePatterns: Map[Int, String], timePatterns: Map[Int, String])
 
-
 /** Number Currencies */
 case class CurrencyDisplayName(name: String, count: Option[String])
 case class CurrencySymbol(symbol: String, alt: Option[String])
@@ -47,6 +46,9 @@ case class CurrencyDataRegion(countryCode: String, currencies: Seq[CurrencyDataR
 case class CurrencyDataRegionCurrency(currencyCode: String,
     from: Option[String], to: Option[String], tender: Option[Boolean])
 
+/** Number Formatting Patterns */
+case class NumberPatterns(decimalPattern: Option[String], percentPattern: Option[String])
+
 /**
  * Interfaces describing an LDML Locale
  */
@@ -62,7 +64,8 @@ case class LDML(parent: Option[LDML],
     digitSymbols: List[Symbols] = Nil,
     calendarSymbols: Option[CalendarSymbols],
     calendarPatterns: Option[CalendarPatterns],
-    currencies: List[NumberCurrency]) {
+    currencies: List[NumberCurrency],
+    numberPatterns: NumberPatterns) {
 
   private val byCurrencyCode: Map[String, NumberCurrency] =
     currencies.groupBy{ _.currencyCode }.map{ case (code, list) => code.toUpperCase -> list.head }
