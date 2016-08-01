@@ -2,8 +2,11 @@ package java.text
 
 import java.util.Locale
 
+import locales.LocaleRegistry
+import locales.cldr.{LDML, NumberPatterns}
+
 abstract class NumberFormat protected () extends Format {
-  override final def parseObject(source: String, pos: ParsePosition): AnyRef = ???
+  def parseObject(source: String, pos: ParsePosition): AnyRef
 
   override def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
 
@@ -39,15 +42,32 @@ object NumberFormat {
   val INTEGER_FIELD: Int = 0
   val FRACTION_FIELD: Int = 1
 
-  //final def getInstance(): NumberFormat = ???
-  //def getInstance(inLocale: Locale): NumberFormat = ???
-  //final def getNumberInstance(): NumberFormat = ???
-  //def getNumberInstance(inLocale: Locale): NumberFormat = ???
+  private def patternsR(ldml: LDML, get: NumberPatterns => Option[String]): Option[String] =
+    get(ldml.numberPatterns).orElse(ldml.parent.flatMap(patternsR(_, get)))
+
+  final def getInstance(): NumberFormat = getNumberInstance()
+
+  def getInstance(inLocale: Locale): NumberFormat = getNumberInstance(inLocale)
+
+  final def getNumberInstance(): NumberFormat = getInstance(Locale.getDefault(Locale.Category.FORMAT))
+
+  def getNumberInstance(inLocale: Locale): NumberFormat =
+    LocaleRegistry.ldml(inLocale).flatMap { ldml =>
+      val ptrn = patternsR(ldml, _.decimalPattern)
+      ptrn.map(new DecimalFormat(_, DecimalFormatSymbols.getInstance(inLocale)))
+    }.getOrElse(new DecimalFormat("", DecimalFormatSymbols.getInstance(inLocale)))
+
   //final def getIntegerInstance(): NumberFormat = ???
   //def getIntegerInstance(inLocale: Locale): NumberFormat = ???
   //final def getCurrencyInstance(): NumberFormat = ???
   //def getCurrencyInstance(inLocale: Locale): NumberFormat = ???
-  //final def getPercentInstance(): NumberFormat = ???
-  //def getPercentInstance(inLocale: Locale): NumberFormat = ???
+
+  final def getPercentInstance(): NumberFormat = getPercentInstance(Locale.getDefault(Locale.Category.FORMAT))
+  def getPercentInstance(inLocale: Locale): NumberFormat =
+    LocaleRegistry.ldml(inLocale).flatMap { ldml =>
+      val ptrn = patternsR(ldml, _.percentPattern)
+      ptrn.map(new DecimalFormat(_, DecimalFormatSymbols.getInstance(inLocale)))
+    }.getOrElse(new DecimalFormat("", DecimalFormatSymbols.getInstance(inLocale)))
+
   //def getAvailableLocales(): Array[Locale] = ???
 }

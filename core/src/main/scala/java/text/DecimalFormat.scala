@@ -1,13 +1,14 @@
 package java.text
 
-class DecimalFormat(private[this] val pattern: String, private[this] var symbols: DecimalFormatSymbols) extends Format {
+class DecimalFormat(private[this] val pattern: String, private[this] var symbols: DecimalFormatSymbols)
+    extends NumberFormat {
   def this(pattern: String) = this(pattern, DecimalFormatSymbols.getInstance())
 
-  //def this() = this("???", DecimalFormatSymbols.getInstance())
+  def this() = this("???", DecimalFormatSymbols.getInstance())
 
   override final def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
 
-  override final def parseObject(source: String, pos: ParsePosition): AnyRef = ???
+  override def parseObject(source: String, pos: ParsePosition): AnyRef = ???
 
   // TODO implement
   //def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
