@@ -500,16 +500,6 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.FULL -> "HH:mm:ss zzzz",
             DateFormat.LONG -> "HH:mm:ss z",
             DateFormat.MEDIUM -> "HH:mm:ss",
-            DateFormat.SHORT -> "HH:mm")),
-    TestCase(nb, "nb-NO", Locale.ROOT, cldr21 = false, Map( // JS
-            DateFormat.FULL -> "EEEE d. MMMM y",
-            DateFormat.LONG -> "d. MMMM y",
-            DateFormat.MEDIUM -> "d. MMM y",
-            DateFormat.SHORT -> "dd.MM.yy"),
-          Map(
-            DateFormat.FULL -> "HH:mm:ss zzzz",
-            DateFormat.LONG -> "HH:mm:ss z",
-            DateFormat.MEDIUM -> "HH:mm:ss",
             DateFormat.SHORT -> "HH:mm"))
   )
 
@@ -765,7 +755,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.LONG -> "H:mm:ss z",
             DateFormat.MEDIUM -> "H:mm:ss",
             DateFormat.SHORT -> "H:mm")),
-     TestCase(ru_RU, "ru-RU", Locale.ROOT, cldr21 = false, Map( // JS
+    TestCase(ru_RU, "ru-RU", Locale.ROOT, cldr21 = false, Map( // JS
             DateFormat.FULL -> "EEEE, d MMMM y 'г'.",
             DateFormat.LONG -> "d MMMM y 'г'.",
             DateFormat.MEDIUM -> "d MMM y 'г'.",
@@ -774,7 +764,17 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.FULL -> "H:mm:ss zzzz",
             DateFormat.LONG -> "H:mm:ss z",
             DateFormat.MEDIUM -> "H:mm:ss",
-            DateFormat.SHORT -> "H:mm"))
+            DateFormat.SHORT -> "H:mm")),
+    TestCase(nb_NO, "nb-NO", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "EEEE d. MMMM y",
+            DateFormat.LONG -> "d. MMMM y",
+            DateFormat.MEDIUM -> "d. MMM y",
+            DateFormat.SHORT -> "dd.MM.y"),
+          Map(
+            DateFormat.FULL -> "HH.mm.ss zzzz",
+            DateFormat.LONG -> "HH.mm.ss z",
+            DateFormat.MEDIUM -> "HH.mm.ss",
+            DateFormat.SHORT -> "HH.mm"))
   )
 
   @Test def test_standard_locales(): Unit = {
