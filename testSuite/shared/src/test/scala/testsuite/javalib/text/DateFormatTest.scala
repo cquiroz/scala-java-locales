@@ -1,6 +1,6 @@
 package testsuite.javalib.text
 
-import java.text.{DateFormat, SimpleDateFormat}
+import java.text.{DateFormat, DateFormatSymbols, SimpleDateFormat}
 import java.util.Locale
 
 import locales.LocaleRegistry
@@ -97,6 +97,26 @@ class DateFormatTest extends LocaleTestSetup {
   )
 
   val stdLocalesDiff = List(
+    TestCase(root, "und", Locale.ROOT, cldr21 = true, Map( // JVM
+            DateFormat.FULL -> "EEEE, y MMMM dd",
+            DateFormat.LONG -> "y MMMM d",
+            DateFormat.MEDIUM -> "y MMM d",
+            DateFormat.SHORT -> "yyyy-MM-dd"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
+    TestCase(root, "und", Locale.ROOT, cldr21 = false, Map( // JS
+            DateFormat.FULL -> "y MMMM d, EEEE",
+            DateFormat.LONG -> "y MMMM d",
+            DateFormat.MEDIUM -> "y MMM d",
+            DateFormat.SHORT -> "y-MM-dd"),
+          Map(
+            DateFormat.FULL -> "HH:mm:ss zzzz",
+            DateFormat.LONG -> "HH:mm:ss z",
+            DateFormat.MEDIUM -> "HH:mm:ss",
+            DateFormat.SHORT -> "HH:mm")),
     TestCase(root, "", Locale.FRENCH, cldr21 = true, Map( // JVM
             DateFormat.FULL -> "EEEE d MMMM y",
             DateFormat.LONG -> "d MMMM y",
@@ -459,7 +479,7 @@ class DateFormatTest extends LocaleTestSetup {
             DateFormat.SHORT -> "HH:mm"))
   )
 
-  // Test cases by language tag where the JVM gives the same asJS
+  // Test cases by language tag where the JVM gives the same as JS
   val localesByTag = List(
     TestCase(bn, "bn", Locale.ROOT, cldr21 = true, Map( // JVM
             DateFormat.FULL -> "EEEE, d MMMM, y",
@@ -848,6 +868,34 @@ class DateFormatTest extends LocaleTestSetup {
           assertEquals(s"${df._2} ${tf._2}", DateFormat.getDateTimeInstance(df._1, tf._1, locale).asInstanceOf[SimpleDateFormat].toPattern())
         }
       }
+    }
+  }
+
+  @Test def test_bad_tag_matches_root_dfs(): Unit = {
+    val l = Locale.forLanguageTag("no_NO")
+    stdLocalesDiff.foreach {
+      case tc @ TestCase(_, _, lo, cldr21, df, tf) if lo == Locale.ROOT && ((Platform.executingInJVM && cldr21) || (!Platform.executingInJVM && !cldr21)) =>
+        for {
+          df <- tc.dateFormats
+        } yield {
+          assertEquals(df._2, DateFormat.getDateInstance(df._1, l).asInstanceOf[SimpleDateFormat].toPattern())
+        }
+
+        for {
+          tf <- tc.timeFormats
+        } yield {
+          assertEquals(tf._2, DateFormat.getTimeInstance(tf._1, l).asInstanceOf[SimpleDateFormat].toPattern())
+        }
+
+        for {
+          df <- tc.dateFormats
+          tf <- tc.timeFormats
+        } yield {
+          if (!tc.cldr21) {
+            assertEquals(s"${df._2} ${tf._2}", DateFormat.getDateTimeInstance(df._1, tf._1, l).asInstanceOf[SimpleDateFormat].toPattern())
+          }
+        }
+      case _ =>
     }
   }
 }

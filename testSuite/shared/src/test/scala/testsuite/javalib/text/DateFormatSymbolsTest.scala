@@ -663,4 +663,19 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
     assertEquals(dfs, cloned)
     assertNotSame(dfs, cloned)
   }
+
+  @Test def test_bad_tag_matches_root_dfs(): Unit = {
+    val l = Locale.forLanguageTag("no_NO")
+    val dfs = DateFormatSymbols.getInstance(l)
+    standardLocalesDataDiff.foreach {
+      case (_, t @ LocaleTestItem(r, _, cldr21, _, _, _, _, _, _)) if r == root =>
+        if (Platform.executingInJVM && cldr21) {
+          test_dfs(dfs, t)
+        }
+        if (!Platform.executingInJVM && !cldr21) {
+          test_dfs(dfs, t)
+        }
+      case (_, _) =>
+    }
+  }
 }
