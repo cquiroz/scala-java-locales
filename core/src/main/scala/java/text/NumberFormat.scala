@@ -6,6 +6,8 @@ import locales.LocaleRegistry
 import locales.cldr.{LDML, NumberPatterns}
 
 abstract class NumberFormat protected () extends Format {
+  private[this] var parseIntegerOnly: Boolean = false
+
   def parseObject(source: String, pos: ParsePosition): AnyRef
 
   override def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
@@ -17,8 +19,12 @@ abstract class NumberFormat protected () extends Format {
   // def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
   // def parse(source: String, parsePosition: ParsePosition): Number = ???
   // def parse(source: String): Number = ???
-  // def isParseIntegerOnly(): Boolean = ???
-  // def setParseIntegerOnly(value: Boolean): Unit = ???
+
+  def isParseIntegerOnly(): Boolean = this.parseIntegerOnly
+
+  def setParseIntegerOnly(value: Boolean): Unit = {
+    this.parseIntegerOnly = value
+  }
   // override def hashCode(): Int = ???
   // override def equals(obj: Any): Boolean = ???
   // override def clone(): Any = ???
