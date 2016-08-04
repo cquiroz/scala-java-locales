@@ -63,8 +63,17 @@ object NumberFormat {
       ptrn.map(new DecimalFormat(_, DecimalFormatSymbols.getInstance(inLocale)))
     }.getOrElse(new DecimalFormat("", DecimalFormatSymbols.getInstance(inLocale)))
 
-  //final def getIntegerInstance(): NumberFormat = ???
-  //def getIntegerInstance(inLocale: Locale): NumberFormat = ???
+  final def getIntegerInstance(): NumberFormat = getIntegerInstance(Locale.getDefault(Locale.Category.FORMAT))
+
+  def getIntegerInstance(inLocale: Locale): NumberFormat = {
+    val f = LocaleRegistry.ldml(inLocale).flatMap { ldml =>
+      val ptrn = patternsR(ldml, _.decimalPattern)
+      ptrn.map(p => new DecimalFormat(p.substring(0, p.indexOf(".")), DecimalFormatSymbols.getInstance(inLocale)))
+    }.getOrElse(new DecimalFormat("", DecimalFormatSymbols.getInstance(inLocale)))
+    f.setParseIntegerOnly(true)
+    f
+  }
+
   //final def getCurrencyInstance(): NumberFormat = ???
   //def getCurrencyInstance(inLocale: Locale): NumberFormat = ???
 
