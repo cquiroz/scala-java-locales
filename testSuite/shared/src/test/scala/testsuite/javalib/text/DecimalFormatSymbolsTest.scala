@@ -252,6 +252,16 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     assertFalse(dfs.equals(dfs2))
   }
 
+  @Test def test_bad_tag_matches_root_dfs(): Unit = {
+    val l = Locale.forLanguageTag("no_NO")
+    val dfs = DecimalFormatSymbols.getInstance(l)
+    standardLocalesData.foreach {
+      case (Locale.ROOT, symbols) =>
+        test_dfs(dfs, symbols)
+      case (_, _) =>
+    }
+  }
+
   @Ignore @Test def test_hash_code(): Unit = {
     val dfs = new DecimalFormatSymbols()
     assertEquals(dfs.hashCode, dfs.hashCode)
