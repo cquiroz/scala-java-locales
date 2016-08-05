@@ -2,11 +2,12 @@ package testsuite.javalib.text
 
 import java.text.{DecimalFormat, DecimalFormatSymbols, NumberFormat}
 import java.util.Locale
+import java.math.RoundingMode
 
 import locales.LocaleRegistry
 import locales.cldr.LDML
 import locales.cldr.data._
-import org.junit.Test
+import org.junit.{Ignore, Test}
 import org.junit.Assert._
 import testsuite.utils.{LocaleTestSetup, Platform}
 
@@ -68,6 +69,10 @@ class NumberFormatTest extends LocaleTestSetup {
     assertEquals(1, NumberFormat.FRACTION_FIELD)
   }
 
+  @Test def test_available_locales(): Unit = {
+    assertTrue(NumberFormat.getAvailableLocales.contains(Locale.ENGLISH))
+  }
+
   @Test def test_default_instance(): Unit = {
     val nf = NumberFormat.getNumberInstance.asInstanceOf[DecimalFormat]
     assertEquals("#,##0.###", nf.toPattern)
@@ -88,15 +93,24 @@ class NumberFormatTest extends LocaleTestSetup {
       assertEquals(t.nf, nf.toPattern)
       assertFalse(nf.isParseIntegerOnly)
       assertEquals(DecimalFormatSymbols.getInstance(t.l), nf.getDecimalFormatSymbols)
+      assertEquals(Integer.MAX_VALUE, nf.getMaximumIntegerDigits)
+      assertEquals(1, nf.getMinimumIntegerDigits)
+      assertEquals(RoundingMode.HALF_EVEN, nf.getRoundingMode)
 
       val inf = NumberFormat.getIntegerInstance(t.l).asInstanceOf[DecimalFormat]
       assertEquals(t.inf, inf.toPattern)
       assertTrue(inf.isParseIntegerOnly)
       assertEquals(DecimalFormatSymbols.getInstance(t.l), inf.getDecimalFormatSymbols)
+      assertEquals(Integer.MAX_VALUE, inf.getMaximumIntegerDigits)
+      assertEquals(1, inf.getMinimumIntegerDigits)
+      assertEquals(RoundingMode.HALF_EVEN, inf.getRoundingMode)
 
       val pf = NumberFormat.getPercentInstance(t.l).asInstanceOf[DecimalFormat]
       assertEquals(t.pf, pf.toPattern)
       assertEquals(DecimalFormatSymbols.getInstance(t.l), pf.getDecimalFormatSymbols)
+      assertEquals(Integer.MAX_VALUE, pf.getMaximumIntegerDigits)
+      assertEquals(1, pf.getMinimumIntegerDigits)
+      assertEquals(RoundingMode.HALF_EVEN, pf.getRoundingMode)
     }
   }
 
@@ -110,15 +124,32 @@ class NumberFormatTest extends LocaleTestSetup {
       assertEquals(t.nf, nf.toPattern)
       assertFalse(nf.isParseIntegerOnly)
       assertEquals(DecimalFormatSymbols.getInstance(l), nf.getDecimalFormatSymbols)
+      assertEquals(Integer.MAX_VALUE, nf.getMaximumIntegerDigits)
+      assertEquals(1, nf.getMinimumIntegerDigits)
+      assertEquals(3, nf.getMaximumFractionDigits)
+      assertEquals(0, nf.getMinimumFractionDigits)
+      assertTrue(nf.isGroupingUsed)
+      assertEquals(RoundingMode.HALF_EVEN, nf.getRoundingMode)
 
       val inf = NumberFormat.getIntegerInstance(l).asInstanceOf[DecimalFormat]
       assertEquals(t.inf, inf.toPattern)
       assertTrue(inf.isParseIntegerOnly)
       assertEquals(DecimalFormatSymbols.getInstance(l), inf.getDecimalFormatSymbols)
+      assertEquals(Integer.MAX_VALUE, inf.getMaximumIntegerDigits)
+      assertEquals(1, inf.getMinimumIntegerDigits)
+      assertEquals(0, inf.getMaximumFractionDigits)
+      assertTrue(inf.isGroupingUsed)
+      assertEquals(RoundingMode.HALF_EVEN, inf.getRoundingMode)
 
       val pf = NumberFormat.getPercentInstance(l).asInstanceOf[DecimalFormat]
       assertEquals(t.pf, pf.toPattern)
       assertEquals(DecimalFormatSymbols.getInstance(l), pf.getDecimalFormatSymbols)
+      assertEquals(Integer.MAX_VALUE, pf.getMaximumIntegerDigits)
+      assertEquals(1, pf.getMinimumIntegerDigits)
+      assertEquals(0, pf.getMaximumFractionDigits)
+      assertEquals(0, pf.getMinimumFractionDigits)
+      assertTrue(pf.isGroupingUsed)
+      assertEquals(RoundingMode.HALF_EVEN, pf.getRoundingMode)
     }
   }
 
@@ -132,16 +163,33 @@ class NumberFormatTest extends LocaleTestSetup {
       assertEquals(t.nf, nf.toPattern)
       assertFalse(nf.isParseIntegerOnly)
       assertEquals(DecimalFormatSymbols.getInstance(l), nf.getDecimalFormatSymbols)
+      assertEquals(Integer.MAX_VALUE, nf.getMaximumIntegerDigits)
+      assertEquals(1, nf.getMinimumIntegerDigits)
+      assertEquals(3, nf.getMaximumFractionDigits)
+      assertEquals(0, nf.getMinimumFractionDigits)
+      assertTrue(nf.isGroupingUsed)
+      assertEquals(RoundingMode.HALF_EVEN, nf.getRoundingMode)
 
       val inf = NumberFormat.getIntegerInstance(l).asInstanceOf[DecimalFormat]
       assertEquals(t.inf, inf.toPattern)
       assertTrue(inf.isParseIntegerOnly)
       assertEquals(DecimalFormatSymbols.getInstance(l), inf.getDecimalFormatSymbols)
+      assertEquals(Integer.MAX_VALUE, inf.getMaximumIntegerDigits)
+      assertEquals(1, inf.getMinimumIntegerDigits)
+      assertEquals(0, inf.getMaximumFractionDigits)
+      assertEquals(0, inf.getMinimumFractionDigits)
+      assertTrue(inf.isGroupingUsed)
+      assertEquals(RoundingMode.HALF_EVEN, inf.getRoundingMode)
 
       val pf = NumberFormat.getPercentInstance(l).asInstanceOf[DecimalFormat]
       assertEquals(t.pf, pf.toPattern)
       assertEquals(DecimalFormatSymbols.getInstance(l), pf.getDecimalFormatSymbols)
+      assertEquals(Integer.MAX_VALUE, pf.getMaximumIntegerDigits)
+      assertEquals(1, pf.getMinimumIntegerDigits)
+      assertEquals(0, pf.getMaximumFractionDigits)
+      assertEquals(0, pf.getMinimumFractionDigits)
+      assertTrue(pf.isGroupingUsed)
+      assertEquals(RoundingMode.HALF_EVEN, pf.getRoundingMode)
     }
   }
-
 }
