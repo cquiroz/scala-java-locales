@@ -3,7 +3,7 @@ package java.text
 import java.math.RoundingMode
 import java.util.Locale
 
-import locales.LocaleRegistry
+import locales.{DecimalFormatUtil, LocaleRegistry}
 import locales.cldr.{LDML, NumberPatterns}
 
 import scala.math.{max, min}
@@ -17,7 +17,7 @@ abstract class NumberFormat protected () extends Format {
   private[this] var roundingMode: RoundingMode = RoundingMode.HALF_EVEN
   private[this] var groupingUsed: Boolean = false
 
-  def parseObject(source: String, pos: ParsePosition): AnyRef
+  override def parseObject(source: String, pos: ParsePosition): AnyRef
 
   override def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
 
@@ -81,23 +81,25 @@ object NumberFormat {
   val INTEGER_FIELD: Int = 0
   val FRACTION_FIELD: Int = 1
 
-  private def setup(nf: NumberFormat): NumberFormat = {
+  private def setup(nf: DecimalFormat): NumberFormat = {
     nf.setMaximumIntegerDigits(Integer.MAX_VALUE)
     nf.setMaximumFractionDigits(3)
     nf.setGroupingUsed(true) // Should this be inferred from the pattern?
+    nf.setNegativePrefix(DecimalFormatUtil.localizedSymbol(nf, DecimalFormatUtil.PatternCharMinus).toString)
     nf
   }
 
-  private def integerSetup(nf: NumberFormat): NumberFormat = {
+  private def integerSetup(nf: DecimalFormat): NumberFormat = {
     setup(nf)
     nf.setMaximumFractionDigits(0)
-    //nf.setMinimumFractionDigits(0)
     nf
   }
 
-  private def percentSetup(nf: NumberFormat): NumberFormat = {
+  private def percentSetup(nf: DecimalFormat): NumberFormat = {
     setup(nf)
     nf.setMaximumFractionDigits(0)
+    nf.setNegativeSuffix(DecimalFormatUtil.suffixFor(nf, DecimalFormatUtil.PatternCharPercent))
+    nf.setPositiveSuffix(DecimalFormatUtil.suffixFor(nf, DecimalFormatUtil.PatternCharPercent))
     nf
   }
 

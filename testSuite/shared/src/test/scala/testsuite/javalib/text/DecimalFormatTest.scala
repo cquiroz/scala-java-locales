@@ -18,6 +18,11 @@ class DecimalFormatTest {
     assertEquals(0, f.getMinimumFractionDigits)
     assertEquals(RoundingMode.HALF_EVEN, f.getRoundingMode)
     assertFalse(f.isGroupingUsed)
+
+    assertEquals("", f.getPositivePrefix)
+    assertEquals("", f.getPositiveSuffix)
+    assertEquals("-", f.getNegativePrefix)
+    assertEquals("", f.getNegativeSuffix)
   }
 
   @Test def test_setters(): Unit = {
@@ -58,6 +63,28 @@ class DecimalFormatTest {
 
     f.setGroupingUsed(true)
     assertTrue(f.isGroupingUsed)
+
+    f.setPositivePrefix("A")
+    assertEquals("A", f.getPositivePrefix)
+
+    f.setNegativePrefix("B")
+    assertEquals("B", f.getNegativePrefix)
+
+    f.setPositiveSuffix("C")
+    assertEquals("C", f.getPositiveSuffix)
+
+    f.setNegativeSuffix("D")
+    assertEquals("D", f.getNegativeSuffix)
+
+    // Check for null arguments
+    f.setPositivePrefix(null)
+    assertNull(f.getPositivePrefix)
+    f.setPositiveSuffix(null)
+    assertNull(f.getPositiveSuffix)
+    f.setNegativePrefix(null)
+    assertNull(f.getNegativePrefix)
+    f.setNegativeSuffix(null)
+    assertNull(f.getNegativeSuffix)
   }
 
   @Test def test_max_min_interactions(): Unit = {
