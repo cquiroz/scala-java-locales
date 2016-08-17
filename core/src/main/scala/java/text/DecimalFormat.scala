@@ -2,32 +2,53 @@ package java.text
 
 class DecimalFormat(private[this] val pattern: String, private[this] var symbols: DecimalFormatSymbols)
     extends NumberFormat {
+
+  private var positivePrefix: String = ""
+  private var negativePrefix: String = "-"
+  private var positiveSuffix: String = ""
+  private var negativeSuffix: String = ""
+
   def this(pattern: String) = this(pattern, DecimalFormatSymbols.getInstance())
 
   def this() = this("???", DecimalFormatSymbols.getInstance())
 
   override final def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
 
-  override def parseObject(source: String, pos: ParsePosition): AnyRef = ???
+  def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
+
+  def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
+
+  def parse(source: String, parsePosition: ParsePosition): Number = ???
+
+  def parseObject(source: String, pos: ParsePosition): AnyRef = ???
 
   // TODO implement
   //def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
   //def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
   //def parse(source: String, parsePosition: ParsePosition): Number = ???
   //def parse(source: String): Number = ???
+
   def getDecimalFormatSymbols(): DecimalFormatSymbols = symbols
 
   def setDecimalFormatSymbols(symbols: DecimalFormatSymbols): Unit =
     this.symbols = symbols
 
-  // def getPositivePrefix(): String = ???
-  // def setPositivePrefix(newValue: String): Unit = ???
-  // def getNegativePrefix(): String = ???
-  // def setNegativePrefix(newValue: String): Unit = ???
-  // def getPositiveSuffix(): String = ???
-  // def setPositiveSuffix(newValue: String): Unit = ???
-  // def getNegativeSuffix(): String = ???
-  // def setNegativeSuffix(newValue: String): Unit = ???
+  def getPositivePrefix(): String = this.positivePrefix
+
+  def setPositivePrefix(newValue: String): Unit = this.positivePrefix = newValue
+
+  def getNegativePrefix(): String = this.negativePrefix
+
+  def setNegativePrefix(newValue: String): Unit = this.negativePrefix = newValue
+
+  def getPositiveSuffix(): String = this.positiveSuffix
+
+  def setPositiveSuffix(newValue: String): Unit = this.positiveSuffix = newValue
+
+  def getNegativeSuffix(): String = this.negativeSuffix
+
+  def setNegativeSuffix(newValue: String): Unit = this.negativeSuffix = newValue
+
   // def getMultiplier(): Int = ???
   // def setMultiplier(newValue: Int): Unit = ???
   // override def setGroupingUsed(newValue: Boolean): Unit = ???
