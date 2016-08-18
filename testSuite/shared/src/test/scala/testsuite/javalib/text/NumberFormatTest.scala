@@ -103,6 +103,7 @@ class NumberFormatTest extends LocaleTestSetup {
       assertEquals("", nf.getPositiveSuffix)
       assertEquals(nf.getDecimalFormatSymbols.getMinusSign.toString, nf.getNegativePrefix)
       assertEquals("", nf.getNegativeSuffix)
+      assertEquals(1, nf.getMultiplier)
 
       val inf = NumberFormat.getIntegerInstance(t.l).asInstanceOf[DecimalFormat]
       assertEquals(t.inf, inf.toPattern)
@@ -118,6 +119,7 @@ class NumberFormatTest extends LocaleTestSetup {
       assertEquals("", inf.getPositiveSuffix)
       assertEquals(inf.getDecimalFormatSymbols.getMinusSign.toString, inf.getNegativePrefix)
       assertEquals("", inf.getNegativeSuffix)
+      assertEquals(1, inf.getMultiplier)
 
       val pf = NumberFormat.getPercentInstance(t.l).asInstanceOf[DecimalFormat]
       assertEquals(t.pf, pf.toPattern)
@@ -132,6 +134,7 @@ class NumberFormatTest extends LocaleTestSetup {
       assertEquals(DecimalFormatUtil.suffixFor(pf, DecimalFormatUtil.PatternCharPercent), pf.getPositiveSuffix)
       assertEquals(pf.getDecimalFormatSymbols.getMinusSign.toString, pf.getNegativePrefix)
       assertEquals(DecimalFormatUtil.suffixFor(pf, DecimalFormatUtil.PatternCharPercent), pf.getNegativeSuffix)
+      assertEquals(100, pf.getMultiplier)
     }
   }
 
@@ -155,6 +158,7 @@ class NumberFormatTest extends LocaleTestSetup {
       assertEquals("", nf.getPositiveSuffix)
       assertEquals(nf.getDecimalFormatSymbols.getMinusSign.toString, nf.getNegativePrefix)
       assertEquals("", nf.getNegativeSuffix)
+      assertEquals(1, nf.getMultiplier)
 
       val inf = NumberFormat.getIntegerInstance(l).asInstanceOf[DecimalFormat]
       assertEquals(t.inf, inf.toPattern)
@@ -170,6 +174,7 @@ class NumberFormatTest extends LocaleTestSetup {
       assertEquals("", inf.getPositiveSuffix)
       assertEquals(inf.getDecimalFormatSymbols.getMinusSign.toString, inf.getNegativePrefix)
       assertEquals("", inf.getNegativeSuffix)
+      assertEquals(1, inf.getMultiplier)
 
       val pf = NumberFormat.getPercentInstance(l).asInstanceOf[DecimalFormat]
       assertEquals(t.pf, pf.toPattern)
@@ -184,6 +189,7 @@ class NumberFormatTest extends LocaleTestSetup {
       assertEquals(DecimalFormatUtil.suffixFor(pf, DecimalFormatUtil.PatternCharPercent), pf.getPositiveSuffix)
       assertEquals(pf.getDecimalFormatSymbols.getMinusSign.toString, pf.getNegativePrefix)
       assertEquals(DecimalFormatUtil.suffixFor(pf, DecimalFormatUtil.PatternCharPercent), pf.getNegativeSuffix)
+      assertEquals(100, pf.getMultiplier)
     }
   }
 
@@ -207,6 +213,7 @@ class NumberFormatTest extends LocaleTestSetup {
       assertEquals("", nf.getPositiveSuffix)
       assertTrue(nf.getDecimalFormatSymbols.getMinusSign.toString == nf.getNegativePrefix ||
         nf.getDecimalFormatSymbols.getMinusSign.toString == nf.getNegativeSuffix)
+      assertEquals(1, nf.getMultiplier)
 
       val inf = NumberFormat.getIntegerInstance(l).asInstanceOf[DecimalFormat]
       assertEquals(t.inf, inf.toPattern)
@@ -222,6 +229,7 @@ class NumberFormatTest extends LocaleTestSetup {
       assertEquals("", inf.getPositiveSuffix)
       assertTrue(inf.getDecimalFormatSymbols.getMinusSign.toString == inf.getNegativePrefix ||
         inf.getDecimalFormatSymbols.getMinusSign.toString == inf.getNegativeSuffix)
+      assertEquals(1, inf.getMultiplier)
 
       val pf = NumberFormat.getPercentInstance(l).asInstanceOf[DecimalFormat]
       assertEquals(t.pf, pf.toPattern)
@@ -236,6 +244,7 @@ class NumberFormatTest extends LocaleTestSetup {
       assertEquals(DecimalFormatUtil.suffixFor(pf, DecimalFormatUtil.PatternCharPercent), pf.getPositiveSuffix)
       assertTrue(pf.getDecimalFormatSymbols.getMinusSign.toString == pf.getNegativePrefix ||
         pf.getDecimalFormatSymbols.getMinusSign.toString == pf.getNegativeSuffix)
+      assertEquals(100, pf.getMultiplier)
     }
   }
 }
