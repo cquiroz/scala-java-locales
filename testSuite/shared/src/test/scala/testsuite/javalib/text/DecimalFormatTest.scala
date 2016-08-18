@@ -23,6 +23,7 @@ class DecimalFormatTest {
     assertEquals("", f.getPositiveSuffix)
     assertEquals("-", f.getNegativePrefix)
     assertEquals("", f.getNegativeSuffix)
+    assertEquals(1, f.getMultiplier)
   }
 
   @Test def test_setters(): Unit = {
@@ -85,6 +86,12 @@ class DecimalFormatTest {
     assertNull(f.getNegativePrefix)
     f.setNegativeSuffix(null)
     assertNull(f.getNegativeSuffix)
+
+    f.setMultiplier(2)
+    assertEquals(2, f.getMultiplier)
+
+    f.setMultiplier(-1)
+    assertEquals(-1, f.getMultiplier)
   }
 
   @Test def test_max_min_interactions(): Unit = {

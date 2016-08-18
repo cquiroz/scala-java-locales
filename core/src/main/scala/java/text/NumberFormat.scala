@@ -100,6 +100,7 @@ object NumberFormat {
     nf.setMaximumFractionDigits(0)
     nf.setNegativeSuffix(DecimalFormatUtil.suffixFor(nf, DecimalFormatUtil.PatternCharPercent))
     nf.setPositiveSuffix(DecimalFormatUtil.suffixFor(nf, DecimalFormatUtil.PatternCharPercent))
+    nf.setMultiplier(100)
     nf
   }
 

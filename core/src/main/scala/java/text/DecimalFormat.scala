@@ -7,6 +7,7 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   private var negativePrefix: String = "-"
   private var positiveSuffix: String = ""
   private var negativeSuffix: String = ""
+  private var multiplier: Int = 1
 
   def this(pattern: String) = this(pattern, DecimalFormatSymbols.getInstance())
 
@@ -49,8 +50,10 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
 
   def setNegativeSuffix(newValue: String): Unit = this.negativeSuffix = newValue
 
-  // def getMultiplier(): Int = ???
-  // def setMultiplier(newValue: Int): Unit = ???
+  def getMultiplier(): Int = this.multiplier
+
+  def setMultiplier(newValue: Int): Unit = this.multiplier = newValue
+
   // override def setGroupingUsed(newValue: Boolean): Unit = ???
   // def getGroupingSize(): Int = ???
   // def setGroupingSize(newValue: Int): Unit = ???
