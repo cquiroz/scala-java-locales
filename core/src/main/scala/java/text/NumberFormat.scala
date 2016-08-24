@@ -8,7 +8,7 @@ import locales.cldr.{LDML, NumberPatterns}
 
 import scala.math.{max, min}
 
-abstract class NumberFormat protected () extends Format {
+ abstract class NumberFormat protected () extends Format {
   private[this] var parseIntegerOnly: Boolean = false
   private[this] var maximumIntegerDigits: Int = 3
   private[this] var minimumIntegerDigits: Int = 1
@@ -85,7 +85,6 @@ object NumberFormat {
     nf.setMaximumIntegerDigits(Integer.MAX_VALUE)
     nf.setMaximumFractionDigits(3)
     nf.setGroupingUsed(true) // Should this be inferred from the pattern?
-    nf.setNegativePrefix(DecimalFormatUtil.localizedSymbol(nf, DecimalFormatUtil.PatternCharMinus).toString)
     nf
   }
 
@@ -98,8 +97,6 @@ object NumberFormat {
   private def percentSetup(nf: DecimalFormat): NumberFormat = {
     setup(nf)
     nf.setMaximumFractionDigits(0)
-    nf.setNegativeSuffix(DecimalFormatUtil.suffixFor(nf, DecimalFormatUtil.PatternCharPercent))
-    nf.setPositiveSuffix(DecimalFormatUtil.suffixFor(nf, DecimalFormatUtil.PatternCharPercent))
     nf.setMultiplier(100)
     nf
   }

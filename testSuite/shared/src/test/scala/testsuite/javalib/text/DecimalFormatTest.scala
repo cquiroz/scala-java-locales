@@ -24,6 +24,7 @@ class DecimalFormatTest {
     assertEquals("-", f.getNegativePrefix)
     assertEquals("", f.getNegativeSuffix)
     assertEquals(1, f.getMultiplier)
+    assertEquals(0, f.getGroupingSize)
   }
 
   @Test def test_setters(): Unit = {
@@ -92,6 +93,11 @@ class DecimalFormatTest {
 
     f.setMultiplier(-1)
     assertEquals(-1, f.getMultiplier)
+
+    f.setGroupingSize(5)
+    assertEquals(5, f.getGroupingSize)
+    f.setGroupingSize(-1)
+    assertEquals(-1, f.getGroupingSize)
   }
 
   @Test def test_max_min_interactions(): Unit = {
@@ -114,5 +120,63 @@ class DecimalFormatTest {
     // more than maximum, update maximum
     f.setMaximumFractionDigits(3)
     assertEquals(3 ,f.getMaximumFractionDigits)
+  }
+
+  @Test def test_grouping_size_parsing(): Unit = {
+    val f1 = new DecimalFormat("##0.#####E0")
+    assertEquals(0, f1.getGroupingSize)
+
+    val f2 = new DecimalFormat("##,####,####")
+    assertEquals(4, f2.getGroupingSize)
+
+    val f3 = new DecimalFormat("##,####,####.##")
+    assertEquals(4, f3.getGroupingSize)
+
+    val f4 = new DecimalFormat("")
+    assertEquals(3, f4.getGroupingSize)
+
+    val f5 = new DecimalFormat("#####")
+    assertEquals(0, f5.getGroupingSize)
+
+    val f6 = new DecimalFormat("#,##,###,####")
+    assertEquals(4, f6.getGroupingSize)
+
+    val f7 = new DecimalFormat("######,####")
+    assertEquals(4, f7.getGroupingSize)
+
+    val f8 = new DecimalFormat("#,##0%")
+    assertEquals(3, f8.getGroupingSize)
+
+    val f9 = new DecimalFormat("#,##0 %")
+    assertEquals(3, f9.getGroupingSize)
+
+    val f10 = new DecimalFormat("#A,##P0W%")
+    assertEquals(3, f10.getGroupingSize)
+
+    val f11 = new DecimalFormat("#A,## #P0W%")
+    assertEquals(4, f11.getGroupingSize)
+
+    val f12 = new DecimalFormat("###,#'#'")
+    assertEquals(1, f12.getGroupingSize)
+  }
+
+  @Test def test_prefixes_parsing(): Unit = {
+    val f1 = new DecimalFormat("#,##0.00")
+    assertEquals("", f1.getPositivePrefix())
+    assertEquals("", f1.getPositiveSuffix())
+    assertEquals("-", f1.getNegativePrefix())
+    assertEquals("", f1.getNegativeSuffix())
+
+    val f2 = new DecimalFormat("(#,##0.00)")
+    assertEquals("(", f2.getPositivePrefix())
+    assertEquals(")", f2.getPositiveSuffix())
+    assertEquals("-(", f2.getNegativePrefix())
+    assertEquals(")", f2.getNegativeSuffix())
+
+    val f3 = new DecimalFormat("##0.#####E0")
+    assertEquals("", f3.getPositivePrefix())
+    assertEquals("", f3.getPositiveSuffix())
+    assertEquals("-", f3.getNegativePrefix())
+    assertEquals("", f3.getNegativeSuffix())
   }
 }
