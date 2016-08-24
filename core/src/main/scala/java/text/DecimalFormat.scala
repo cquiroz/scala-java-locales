@@ -1,13 +1,27 @@
 package java.text
 
+import locales.DecimalFormatUtil._
+
 class DecimalFormat(private[this] val pattern: String, private[this] var symbols: DecimalFormatSymbols)
     extends NumberFormat {
 
-  private var positivePrefix: String = ""
-  private var negativePrefix: String = "-"
-  private var positiveSuffix: String = ""
-  private var negativeSuffix: String = ""
+  val patterns = toDecimalPatterns(pattern)
+
+  private var positivePrefix: String = localizeString(patterns.positive.prefix, symbols)
+  private var negativePrefix: String =
+    if (patterns.negative.prefix.isEmpty) {
+      symbols.getMinusSign.toString
+    } else {
+      if (!patterns.negative.prefix.contains(PatternCharMinus)) {
+        localizeString("-" + patterns.negative.prefix, symbols)
+      } else {
+        localizeString(patterns.negative.prefix, symbols)
+      }
+    }
+  private var positiveSuffix: String = localizeString(patterns.positive.suffix, symbols)
+  private var negativeSuffix: String = localizeString(patterns.negative.suffix, symbols)
   private var multiplier: Int = 1
+  private var groupingSize: Int = groupingCount(patterns.positive.pattern)
 
   def this(pattern: String) = this(pattern, DecimalFormatSymbols.getInstance())
 
@@ -55,8 +69,11 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   def setMultiplier(newValue: Int): Unit = this.multiplier = newValue
 
   // override def setGroupingUsed(newValue: Boolean): Unit = ???
-  // def getGroupingSize(): Int = ???
-  // def setGroupingSize(newValue: Int): Unit = ???
+
+  def getGroupingSize(): Int = this.groupingSize
+
+  def setGroupingSize(newValue: Int): Unit = this.groupingSize = newValue
+
   // def isDecimalSeparatorAlwaysShown(): Boolean = ???
   // def setDecimalSeparatorAlwaysShown(newValue: Boolean): Unit = ???
   // def isParseBigDecimal(): Boolean = ???
