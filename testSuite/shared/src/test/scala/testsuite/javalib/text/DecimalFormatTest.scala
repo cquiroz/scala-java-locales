@@ -25,6 +25,8 @@ class DecimalFormatTest {
     assertEquals("", f.getNegativeSuffix)
     assertEquals(1, f.getMultiplier)
     assertEquals(0, f.getGroupingSize)
+    assertFalse(f.isDecimalSeparatorAlwaysShown)
+    assertFalse(f.isParseBigDecimal)
   }
 
   @Test def test_setters(): Unit = {
@@ -98,6 +100,12 @@ class DecimalFormatTest {
     assertEquals(5, f.getGroupingSize)
     f.setGroupingSize(-1)
     assertEquals(-1, f.getGroupingSize)
+
+    f.setDecimalSeparatorAlwaysShown(false)
+    assertFalse(f.isDecimalSeparatorAlwaysShown)
+
+    f.setParseBigDecimal(true)
+    assertTrue(f.isParseBigDecimal)
   }
 
   @Test def test_max_min_interactions(): Unit = {

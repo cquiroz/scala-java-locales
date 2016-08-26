@@ -22,6 +22,8 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   private var negativeSuffix: String = localizeString(patterns.negative.suffix, symbols)
   private var multiplier: Int = 1
   private var groupingSize: Int = groupingCount(patterns.positive.pattern)
+  private var decimalSeparatorAlwaysShown: Boolean = false
+  private var parseBigDecimal: Boolean = false
 
   def this(pattern: String) = this(pattern, DecimalFormatSymbols.getInstance())
 
@@ -74,10 +76,14 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
 
   def setGroupingSize(newValue: Int): Unit = this.groupingSize = newValue
 
-  // def isDecimalSeparatorAlwaysShown(): Boolean = ???
-  // def setDecimalSeparatorAlwaysShown(newValue: Boolean): Unit = ???
-  // def isParseBigDecimal(): Boolean = ???
-  // def setParseBigDecimal(newValue: Boolean): Unit = ???
+  def isDecimalSeparatorAlwaysShown(): Boolean = this.decimalSeparatorAlwaysShown
+
+  def setDecimalSeparatorAlwaysShown(newValue: Boolean): Unit =
+    this.decimalSeparatorAlwaysShown = newValue
+
+  def isParseBigDecimal(): Boolean = this.parseBigDecimal
+
+  def setParseBigDecimal(newValue: Boolean): Unit = this.parseBigDecimal = newValue
   // override def clone(): Any = ???
   // override def hashCode(): Int = ???
   // override def equals(obj: Any): Boolean = ???
