@@ -8,7 +8,7 @@ import locales.cldr.{LDML, NumberPatterns}
 
 import scala.math.{max, min}
 
- abstract class NumberFormat protected () extends Format {
+abstract class NumberFormat protected () extends Format {
   private[this] var parseIntegerOnly: Boolean = false
   private[this] var maximumIntegerDigits: Int = 3
   private[this] var minimumIntegerDigits: Int = 1
@@ -19,13 +19,21 @@ import scala.math.{max, min}
 
   override def parseObject(source: String, pos: ParsePosition): AnyRef
 
-  override def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
+  override def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = {
+    obj match {
+      case n: Number if n.doubleValue() == n.longValue() => format(n.longValue(), toAppendTo, pos)
+      case n: Number                                     => format(n.doubleValue(), toAppendTo, pos)
+      case _                                             => throw new IllegalArgumentException("Cannot format given Object as a Number")
+    }
+  }
 
   // TODO implement
   // final def format(number: Double): String = ???
   // final def format(number: Long): String = ???
-  // def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
-  // def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
+
+  def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
+
+  def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
   // def parse(source: String, parsePosition: ParsePosition): Number = ???
   // def parse(source: String): Number = ???
 

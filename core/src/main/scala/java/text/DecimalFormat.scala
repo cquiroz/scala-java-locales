@@ -29,11 +29,35 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
 
   def this() = this("???", DecimalFormatSymbols.getInstance())
 
-  override final def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
+  override def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
 
-  def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
+  override def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = {
+    if (number == 0) {
+      new StringBuffer("0")
+    } else {
+      val result = new StringBuffer("")
+      val negative = number < 0
+      // Imperative way to do it
+      var remainder = if (negative) -number else number
+      var pos = 0
+      while (remainder != 0) {
+        val leftover = remainder % 10
+        val t = (leftover + (leftover >> 31)) ^ (leftover >> 31)
+        result.append(t.toString)
+        pos += 1
+        if (pos % getGroupingSize() == 0 && ((remainder + (remainder >> 31)) ^ (remainder >> 31)) >= 10) {
+          result.append(getDecimalFormatSymbols().getGroupingSeparator)
+        }
+        remainder = remainder / 10
+      }
+      if (negative) {
+        result.append(getNegativePrefix())
+      }
+      result.reverse()
+    }
+  }
 
-  def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
+  override def format(number: Long): String = format(number, new StringBuffer, new FieldPosition(0)).toString
 
   def parse(source: String, parsePosition: ParsePosition): Number = ???
 
