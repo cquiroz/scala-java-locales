@@ -10,6 +10,7 @@ import locales.cldr.data._
 import org.junit.{Ignore, Test}
 import org.junit.Assert._
 import testsuite.utils.{LocaleTestSetup, Platform}
+import testsuite.utils.AssertThrows._
 
 class NumberFormatTest extends LocaleTestSetup {
   case class TestCase(tag: String, ldml: LDML, l: Locale, cldr21: Boolean, nf: String, inf: String, pf: String)
@@ -273,5 +274,25 @@ class NumberFormatTest extends LocaleTestSetup {
       assertFalse(pf.isDecimalSeparatorAlwaysShown)
       assertFalse(pf.isParseBigDecimal)
     }
+  }
+
+  @Test def test_format_not_allowed(): Unit = {
+    val nf = NumberFormat.getNumberInstance
+    expectThrows(classOf[IllegalArgumentException], nf.format("Abc"))
+  }
+
+  @Test def test_format_integer(): Unit = {
+    val nf = NumberFormat.getIntegerInstance
+    assertEquals("123", nf.format(123))
+    assertEquals("0", nf.format(0))
+    assertEquals("-123", nf.format(-123))
+    // Should include grouping
+    // TODO test with grouping size 0
+    assertEquals("1,000", nf.format(1000))
+    assertEquals("2,147,483,647", nf.format(Int.MaxValue))
+    assertEquals("9,223,372,036,854,775,807", nf.format(Long.MaxValue))
+    assertEquals("-1,000", nf.format(-1000))
+    assertEquals("-2,147,483,648", nf.format(Int.MinValue))
+    assertEquals("-9,223,372,036,854,775,808", nf.format(Long.MinValue))
   }
 }

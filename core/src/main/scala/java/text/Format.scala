@@ -3,7 +3,7 @@ package java.text
 import AttributedCharacterIterator.Attribute
 
 abstract class Format protected () extends Cloneable {
-  def format(obj: AnyRef): String = format(obj, new StringBuffer(), new FieldPosition(0)).toString()
+  def format(obj: AnyRef): String = format(obj, new StringBuffer(), new FieldPosition(0)).toString
 
   def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer
 
