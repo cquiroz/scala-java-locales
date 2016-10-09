@@ -1,6 +1,11 @@
 # Changelog
 
-## 0.3.0
+## 0.3.0-cldr30
+
+* Updated CLDR to version 30
+* Updated to scala.js 0.6.12 and scala 2.12.0-RC1
+
+## 0.3.0-cldr29
 
 Provides minimal implementation of DateFormat for scala-java-time
 
@@ -8,7 +13,7 @@ Provides minimal implementation of DateFormat for scala-java-time
 * Add basic implementation java.text.DateFormat
 * Add basic implementation java.text.SimpleDateFormat
 
-## 0.2.0
+## 0.2.0-cldr29
 
 * Add class java.text.Format
 * Add class java.text.FieldPosition
@@ -17,11 +22,11 @@ Provides minimal implementation of DateFormat for scala-java-time
 * Add class java.text.ParsePosition
 * Add class java.text.ParseException
 
-## 0.1.1
+## 0.1.1-cldr29
 
 * Cross build and publish to scala 2.10.6, 2.11.8 and 2.12.0-M5
 
-## 0.1.0
+## 0.1.0-cldr29
 
 First release of scala-java-locales:
 
