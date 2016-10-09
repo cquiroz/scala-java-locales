@@ -92,7 +92,7 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     LocaleTestItem(ar, "ar", cldr21 = true) ->
       List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JVM
     LocaleTestItem(ar, "ar") ->
-      List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JS
+      List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "؜-", "اس"), // JS
     // fa uses arabext
     LocaleTestItem(fa, "fa", cldr21 = true) ->
       List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "NaN", "-", "×۱۰^"), // JVM
@@ -113,7 +113,7 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     LocaleTestItem(lv, "lv", cldr21 = true) ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "nav skaitlis", "\u2212", "E"), // JVM
     LocaleTestItem(lv, "lv") ->
-      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "nav skaitlis", "-", "E"), // JS
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NS", "-", "E"), // JS
     LocaleTestItem(my, "my", cldr21 = true) ->
       List("၀", ".", ",", "‰", "%", "#", "၊", "∞", "NaN", "-", "E"), // JVM
     LocaleTestItem(my, "my") ->
@@ -121,11 +121,11 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     LocaleTestItem(smn, "smn", cldr21 = true) ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JVM
     LocaleTestItem(smn, "smn") ->
-      List("0", ".", ",", "‰", "%", "#", ";", "∞", "epiloho", "-", "E"), // JS
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epiloho", "-", "E"), // JS
     LocaleTestItem(smn_FI, "smn-FI", cldr21 = true) ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     LocaleTestItem(smn_FI, "smn-FI") ->
-      List("0", ".", ",", "‰", "%", "#", ";", "∞", "epiloho", "-", "E"),
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epiloho", "-", "E"),
     LocaleTestItem(ru_RU, "ru-RU", cldr21 = true) ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "не число", "-", "E"),
     LocaleTestItem(ru_RU, "ru-RU") ->
