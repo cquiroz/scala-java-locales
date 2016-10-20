@@ -29,7 +29,7 @@ abstract class NumberFormat protected () extends Format {
 
   // TODO implement
   // final def format(number: Double): String = ???
-  // final def format(number: Long): String = ???
+  def format(number: Long): String = ???
 
   def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
 
