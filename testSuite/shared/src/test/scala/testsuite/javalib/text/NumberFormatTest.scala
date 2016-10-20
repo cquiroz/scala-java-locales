@@ -51,8 +51,6 @@ class NumberFormatTest extends LocaleTestSetup {
     TestCase("ka", ka, Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0\u00A0%"),
     TestCase("lv", lv, Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
     TestCase("my", my, Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("smn", smn, Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("smn-FI", smn_FI, Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
     TestCase("ru-RU", ru_RU, Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0\u00A0%")
   )
 
@@ -62,7 +60,11 @@ class NumberFormatTest extends LocaleTestSetup {
     TestCase("bn", bn, Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
     TestCase("bn", bn, Locale.ROOT, cldr21 = false, "#,##,##0.###", "#,##,##0", "#,##,##0%"),
     TestCase("es-CL", es_CL, Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("es-CL", es_CL, Locale.ROOT, cldr21 = false, "#,##0.###", "#,##0", "#,##0 %")
+    TestCase("es-CL", es_CL, Locale.ROOT, cldr21 = false, "#,##0.###", "#,##0", "#,##0 %"),
+    TestCase("smn", smn, Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("smn-FI", smn_FI, Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("smn", smn, Locale.ROOT, cldr21 = false, "#,##0.###", "#,##0", "#,##0\u00A0%"),
+    TestCase("smn-FI", smn_FI, Locale.ROOT, cldr21 = false, "#,##0.###", "#,##0", "#,##0\u00A0%")
   )
 
   @Test def test_constants(): Unit = {
