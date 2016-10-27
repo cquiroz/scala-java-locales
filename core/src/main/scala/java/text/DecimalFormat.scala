@@ -5,7 +5,7 @@ import locales.DecimalFormatUtil._
 class DecimalFormat(private[this] val pattern: String, private[this] var symbols: DecimalFormatSymbols)
     extends NumberFormat {
 
-  val patterns = toDecimalPatterns(pattern)
+  private val patterns = toDecimalPatterns(pattern)
 
   private var positivePrefix: String = localizeString(patterns.positive.prefix, symbols)
   private var negativePrefix: String =
@@ -32,29 +32,36 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   override def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
 
   override def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = {
-    if (number == 0) {
-      new StringBuffer("0")
-    } else {
-      val result = new StringBuffer("")
-      val negative = number < 0
-      // Imperative way to do it
-      var remainder = if (negative) -number else number
-      var pos = 0
-      while (remainder != 0) {
-        val leftover = remainder % 10
-        val t = (leftover + (leftover >> 31)) ^ (leftover >> 31)
+    val result = if (number == 0) new StringBuffer("0") else new StringBuffer("")
+    val negative = number < 0
+    // Imperative way to do it
+    var remainder = if (negative) -number else number
+    var pos = result.length()
+    while (remainder != 0 || pos < getMinimumIntegerDigits) {
+      val leftover = remainder % 10
+      val t = (leftover + (leftover >> 31)) ^ (leftover >> 31)
+      if (pos < getMaximumIntegerDigits) {
         result.append(t.toString)
+      }
+      if (getMaximumIntegerDigits == 0) {
+        result.append("0")
+        remainder = 0
+      } else {
         pos += 1
-        if (pos % getGroupingSize() == 0 && ((remainder + (remainder >> 31)) ^ (remainder >> 31)) >= 10) {
+        if (pos < getMaximumIntegerDigits && isGroupingUsed && pos % getGroupingSize() == 0 && ((remainder + (remainder >> 31)) ^ (remainder >> 31)) >= 10) {
+          result.append(getDecimalFormatSymbols().getGroupingSeparator)
+        } else
+
+        if (remainder < 10 && pos < getMinimumIntegerDigits && pos % getGroupingSize() == 0) {
           result.append(getDecimalFormatSymbols().getGroupingSeparator)
         }
         remainder = remainder / 10
       }
-      if (negative) {
-        result.append(getNegativePrefix())
-      }
-      result.reverse()
     }
+    if (negative) {
+      result.append(getNegativePrefix())
+    }
+    result.reverse()
   }
 
   override def format(number: Long): String = format(number, new StringBuffer, new FieldPosition(0)).toString

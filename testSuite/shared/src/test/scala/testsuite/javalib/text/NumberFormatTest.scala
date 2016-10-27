@@ -288,13 +288,100 @@ class NumberFormatTest extends LocaleTestSetup {
     assertEquals("123", nf.format(123))
     assertEquals("0", nf.format(0))
     assertEquals("-123", nf.format(-123))
-    // Should include grouping
-    // TODO test with grouping size 0
     assertEquals("1,000", nf.format(1000))
+    assertEquals("100,000", nf.format(100000))
+    assertEquals("10,000,000", nf.format(10000000))
     assertEquals("2,147,483,647", nf.format(Int.MaxValue))
     assertEquals("9,223,372,036,854,775,807", nf.format(Long.MaxValue))
     assertEquals("-1,000", nf.format(-1000))
+    assertEquals("-100,000", nf.format(-100000))
+    assertEquals("-10,000,000", nf.format(-10000000))
     assertEquals("-2,147,483,648", nf.format(Int.MinValue))
     assertEquals("-9,223,372,036,854,775,808", nf.format(Long.MinValue))
   }
+
+  @Test def test_format_grouping(): Unit = {
+    val nf = NumberFormat.getIntegerInstance
+    nf.setGroupingUsed(false)
+    assertEquals("123", nf.format(123))
+    assertEquals("0", nf.format(0))
+    assertEquals("-123", nf.format(-123))
+    assertEquals("1000", nf.format(1000))
+    assertEquals("100000", nf.format(100000))
+    assertEquals("10000000", nf.format(10000000))
+    assertEquals("2147483647", nf.format(Int.MaxValue))
+    assertEquals("9223372036854775807", nf.format(Long.MaxValue))
+    assertEquals("-1000", nf.format(-1000))
+    assertEquals("-100000", nf.format(-100000))
+    assertEquals("-10000000", nf.format(-10000000))
+    assertEquals("-2147483648", nf.format(Int.MinValue))
+    assertEquals("-9223372036854775808", nf.format(Long.MinValue))
+  }
+
+  @Test def test_format_max_digits_count(): Unit = {
+    val nf = NumberFormat.getIntegerInstance
+    nf.setMaximumIntegerDigits(0)
+    assertEquals("0", nf.format(123))
+    assertEquals("0", nf.format(0))
+    assertEquals("-0", nf.format(-123))
+    assertEquals("0", nf.format(1000))
+    assertEquals("0", nf.format(100000))
+    assertEquals("0", nf.format(10000000))
+    assertEquals("0", nf.format(Int.MaxValue))
+    assertEquals("0", nf.format(Long.MaxValue))
+    assertEquals("-0", nf.format(-1000))
+    assertEquals("-0", nf.format(-100000))
+    assertEquals("-0", nf.format(-10000000))
+    assertEquals("-0", nf.format(Int.MinValue))
+    assertEquals("-0", nf.format(Long.MinValue))
+
+    nf.setMaximumIntegerDigits(5)
+    assertEquals("123", nf.format(123))
+    assertEquals("0", nf.format(0))
+    assertEquals("-123", nf.format(-123))
+    assertEquals("1,000", nf.format(1000))
+    assertEquals("00,000", nf.format(100000))
+    assertEquals("00,000", nf.format(10000000))
+    assertEquals("83,647", nf.format(Int.MaxValue))
+    assertEquals("75,807", nf.format(Long.MaxValue))
+    assertEquals("-1,000", nf.format(-1000))
+    assertEquals("-00,000", nf.format(-100000))
+    assertEquals("-00,000", nf.format(-10000000))
+    assertEquals("-83,648", nf.format(Int.MinValue))
+    assertEquals("-75,808", nf.format(Long.MinValue))
+  }
+
+  @Test def test_format_min_digits_count(): Unit = {
+    val nf = NumberFormat.getIntegerInstance
+    nf.setMinimumIntegerDigits(0)
+    assertEquals("123", nf.format(123))
+    assertEquals("0", nf.format(0))
+    assertEquals("-123", nf.format(-123))
+    assertEquals("1,000", nf.format(1000))
+    assertEquals("100,000", nf.format(100000))
+    assertEquals("10,000,000", nf.format(10000000))
+    assertEquals("2,147,483,647", nf.format(Int.MaxValue))
+    assertEquals("9,223,372,036,854,775,807", nf.format(Long.MaxValue))
+    assertEquals("-1,000", nf.format(-1000))
+    assertEquals("-100,000", nf.format(-100000))
+    assertEquals("-10,000,000", nf.format(-10000000))
+    assertEquals("-2,147,483,648", nf.format(Int.MinValue))
+    assertEquals("-9,223,372,036,854,775,808", nf.format(Long.MinValue))
+
+    nf.setMinimumIntegerDigits(5)
+    assertEquals("00,123", nf.format(123))
+    assertEquals("00,000", nf.format(0))
+    assertEquals("-00,123", nf.format(-123))
+    assertEquals("01,000", nf.format(1000))
+    assertEquals("100,000", nf.format(100000))
+    assertEquals("10,000,000", nf.format(10000000))
+    assertEquals("2,147,483,647", nf.format(Int.MaxValue))
+    assertEquals("9,223,372,036,854,775,807", nf.format(Long.MaxValue))
+    assertEquals("-01,000", nf.format(-1000))
+    assertEquals("-100,000", nf.format(-100000))
+    assertEquals("-10,000,000", nf.format(-10000000))
+    assertEquals("-2,147,483,648", nf.format(Int.MinValue))
+    assertEquals("-9,223,372,036,854,775,808", nf.format(Long.MinValue))
+  }
+
 }
