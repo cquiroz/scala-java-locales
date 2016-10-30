@@ -34,8 +34,10 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   override def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = {
     val result = if (number == 0) new StringBuffer("0") else new StringBuffer("")
     val negative = number < 0
+    // TODO the multiplier can make overflow, we should use BigDecimal instead
+    val n = number * getMultiplier
     // Imperative way to do it
-    var remainder = if (negative) -number else number
+    var remainder = (n + (n >> 31)) ^ (n >> 31)
     var pos = result.length()
     while (remainder != 0 || pos < getMinimumIntegerDigits) {
       val leftover = remainder % 10
@@ -59,9 +61,10 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
       }
     }
     if (negative) {
-      result.append(getNegativePrefix())
+      new StringBuffer(getNegativePrefix()).append(result.reverse().toString).append(getNegativeSuffix())
+    } else {
+      new StringBuffer(getPositivePrefix()).append(result.reverse().toString).append(getPositiveSuffix())
     }
-    result.reverse()
   }
 
   override def format(number: Long): String = format(number, new StringBuffer, new FieldPosition(0)).toString
