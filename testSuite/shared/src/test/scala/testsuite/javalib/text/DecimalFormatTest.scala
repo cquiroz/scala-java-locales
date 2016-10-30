@@ -1,7 +1,7 @@
 package testsuite.javalib.text
 
 import java.math.RoundingMode
-import java.text.{DecimalFormat, DecimalFormatSymbols}
+import java.text.{DecimalFormat, DecimalFormatSymbols, NumberFormat}
 
 import org.junit.Assert._
 import org.junit.Test
@@ -170,21 +170,144 @@ class DecimalFormatTest {
 
   @Test def test_prefixes_parsing(): Unit = {
     val f1 = new DecimalFormat("#,##0.00")
-    assertEquals("", f1.getPositivePrefix())
-    assertEquals("", f1.getPositiveSuffix())
-    assertEquals("-", f1.getNegativePrefix())
-    assertEquals("", f1.getNegativeSuffix())
+    assertEquals("", f1.getPositivePrefix)
+    assertEquals("", f1.getPositiveSuffix)
+    assertEquals("-", f1.getNegativePrefix)
+    assertEquals("", f1.getNegativeSuffix)
 
     val f2 = new DecimalFormat("(#,##0.00)")
-    assertEquals("(", f2.getPositivePrefix())
-    assertEquals(")", f2.getPositiveSuffix())
-    assertEquals("-(", f2.getNegativePrefix())
-    assertEquals(")", f2.getNegativeSuffix())
+    assertEquals("(", f2.getPositivePrefix)
+    assertEquals(")", f2.getPositiveSuffix)
+    assertEquals("-(", f2.getNegativePrefix)
+    assertEquals(")", f2.getNegativeSuffix)
 
     val f3 = new DecimalFormat("##0.#####E0")
-    assertEquals("", f3.getPositivePrefix())
-    assertEquals("", f3.getPositiveSuffix())
-    assertEquals("-", f3.getNegativePrefix())
-    assertEquals("", f3.getNegativeSuffix())
+    assertEquals("", f3.getPositivePrefix)
+    assertEquals("", f3.getPositiveSuffix)
+    assertEquals("-", f3.getNegativePrefix)
+    assertEquals("", f3.getNegativeSuffix)
+  }
+
+  @Test def test_format_positive_prefix(): Unit = {
+    val nf = NumberFormat.getIntegerInstance.asInstanceOf[DecimalFormat]
+    nf.setPositivePrefix("ABC")
+    assertEquals("ABC123", nf.format(123))
+    assertEquals("ABC0", nf.format(0))
+    assertEquals("-123", nf.format(-123))
+    assertEquals("ABC1,000", nf.format(1000))
+    assertEquals("ABC100,000", nf.format(100000))
+    assertEquals("ABC10,000,000", nf.format(10000000))
+    assertEquals("ABC2,147,483,647", nf.format(Int.MaxValue))
+    assertEquals("ABC9,223,372,036,854,775,807", nf.format(Long.MaxValue))
+    assertEquals("-1,000", nf.format(-1000))
+    assertEquals("-100,000", nf.format(-100000))
+    assertEquals("-10,000,000", nf.format(-10000000))
+    assertEquals("-2,147,483,648", nf.format(Int.MinValue))
+    assertEquals("-9,223,372,036,854,775,808", nf.format(Long.MinValue))
+  }
+
+  @Test def test_format_positive_suffix(): Unit = {
+    val nf = NumberFormat.getIntegerInstance.asInstanceOf[DecimalFormat]
+    nf.setPositiveSuffix("ABC")
+    assertEquals("123ABC", nf.format(123))
+    assertEquals("0ABC", nf.format(0))
+    assertEquals("-123", nf.format(-123))
+    assertEquals("1,000ABC", nf.format(1000))
+    assertEquals("100,000ABC", nf.format(100000))
+    assertEquals("10,000,000ABC", nf.format(10000000))
+    assertEquals("2,147,483,647ABC", nf.format(Int.MaxValue))
+    assertEquals("9,223,372,036,854,775,807ABC", nf.format(Long.MaxValue))
+    assertEquals("-1,000", nf.format(-1000))
+    assertEquals("-100,000", nf.format(-100000))
+    assertEquals("-10,000,000", nf.format(-10000000))
+    assertEquals("-2,147,483,648", nf.format(Int.MinValue))
+    assertEquals("-9,223,372,036,854,775,808", nf.format(Long.MinValue))
+  }
+
+  @Test def test_format_negative_prefix(): Unit = {
+    val nf = NumberFormat.getIntegerInstance.asInstanceOf[DecimalFormat]
+    nf.setNegativePrefix("ABC")
+    assertEquals("123", nf.format(123))
+    assertEquals("0", nf.format(0))
+    assertEquals("ABC123", nf.format(-123))
+    assertEquals("1,000", nf.format(1000))
+    assertEquals("100,000", nf.format(100000))
+    assertEquals("10,000,000", nf.format(10000000))
+    assertEquals("2,147,483,647", nf.format(Int.MaxValue))
+    assertEquals("9,223,372,036,854,775,807", nf.format(Long.MaxValue))
+    assertEquals("ABC1,000", nf.format(-1000))
+    assertEquals("ABC100,000", nf.format(-100000))
+    assertEquals("ABC10,000,000", nf.format(-10000000))
+    assertEquals("ABC2,147,483,648", nf.format(Int.MinValue))
+    assertEquals("ABC9,223,372,036,854,775,808", nf.format(Long.MinValue))
+  }
+
+  @Test def test_format_negative_suffix(): Unit = {
+    val nf = NumberFormat.getIntegerInstance.asInstanceOf[DecimalFormat]
+    nf.setNegativeSuffix("ABC")
+    assertEquals("123", nf.format(123))
+    assertEquals("0", nf.format(0))
+    assertEquals("-123ABC", nf.format(-123))
+    assertEquals("1,000", nf.format(1000))
+    assertEquals("100,000", nf.format(100000))
+    assertEquals("10,000,000", nf.format(10000000))
+    assertEquals("2,147,483,647", nf.format(Int.MaxValue))
+    assertEquals("9,223,372,036,854,775,807", nf.format(Long.MaxValue))
+    assertEquals("-1,000ABC", nf.format(-1000))
+    assertEquals("-100,000ABC", nf.format(-100000))
+    assertEquals("-10,000,000ABC", nf.format(-10000000))
+    assertEquals("-2,147,483,648ABC", nf.format(Int.MinValue))
+    assertEquals("-9,223,372,036,854,775,808ABC", nf.format(Long.MinValue))
+  }
+
+  @Test def test_format_multiplier(): Unit = {
+    val df = NumberFormat.getIntegerInstance.asInstanceOf[DecimalFormat]
+    df.setMultiplier(2)
+    assertEquals("246", df.format(123))
+    assertEquals("0", df.format(0))
+    assertEquals("-246", df.format(-123))
+    assertEquals("2,000", df.format(1000))
+    assertEquals("200,000", df.format(100000))
+    assertEquals("20,000,000", df.format(10000000))
+    //assertEquals("4,294,967,294", df.format(Int.MaxValue))
+    //assertEquals("18,446,744,073,709,551,614", df.format(Long.MaxValue))
+    assertEquals("-2,000", df.format(-1000))
+    assertEquals("-200,000", df.format(-100000))
+    assertEquals("-20,000,000", df.format(-10000000))
+    //assertEquals("-4,294,967,296", df.format(Int.MinValue))
+    //assertEquals("-18,446,744,073,709,551,616", df.format(Long.MinValue))
+
+    df.setMultiplier(100)
+    assertEquals("12,300", df.format(123))
+    assertEquals("0", df.format(0))
+    assertEquals("-12,300", df.format(-123))
+    assertEquals("100,000", df.format(1000))
+    assertEquals("10,000,000", df.format(100000))
+    assertEquals("1,000,000,000", df.format(10000000))
+    //assertEquals("214,748,364,700", df.format(Int.MaxValue))
+    //assertEquals("922,337,203,685,477,580,700", df.format(Long.MaxValue))
+    assertEquals("-100,000", df.format(-1000))
+    assertEquals("-10,000,000", df.format(-100000))
+    assertEquals("-1,000,000,000", df.format(-10000000))
+    //assertEquals("-214,748,364,800", df.format(Int.MinValue))
+    //assertEquals("-922,337,203,685,477,580,800", df.format(Long.MinValue))
+  }
+
+  @Test def test_format_group_size(): Unit = {
+    val df = NumberFormat.getIntegerInstance.asInstanceOf[DecimalFormat]
+    df.setGroupingSize(4)
+    assertEquals("123", df.format(123))
+    assertEquals("0", df.format(0))
+    assertEquals("-123", df.format(-123))
+    assertEquals("1000", df.format(1000))
+    assertEquals("10,0000", df.format(100000))
+    assertEquals("1000,0000", df.format(10000000))
+    assertEquals("21,4748,3647", df.format(Int.MaxValue))
+    assertEquals("922,3372,0368,5477,5807", df.format(Long.MaxValue))
+    assertEquals("-1000", df.format(-1000))
+    assertEquals("-10,0000", df.format(-100000))
+    assertEquals("-1000,0000", df.format(-10000000))
+    assertEquals("-21,4748,3648", df.format(Int.MinValue))
+    assertEquals("-922,3372,0368,5477,5808", df.format(Long.MinValue))
   }
 }
