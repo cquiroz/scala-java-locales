@@ -11,7 +11,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
   version := s"0.3.0-cldr${cldrVersion.value}",
   organization := "com.github.cquiroz",
   scalaVersion := "2.11.8",
-  crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.0-RC1"),
+  crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.0"),
   scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
   mappings in (Compile, packageBin) ~= {
     // Exclude CLDR files...
