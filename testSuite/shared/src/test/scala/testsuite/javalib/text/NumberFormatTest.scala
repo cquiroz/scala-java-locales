@@ -384,4 +384,44 @@ class NumberFormatTest extends LocaleTestSetup {
     assertEquals("-9,223,372,036,854,775,808", nf.format(Long.MinValue))
   }
 
+  @Test def test_format_locales_different_group(): Unit = {
+    val nf = NumberFormat.getIntegerInstance(Locale.CANADA_FRENCH)
+    // Different group separator
+    assertEquals("123", nf.format(123))
+    assertEquals("0", nf.format(0))
+    assertEquals("-123", nf.format(-123))
+    assertEquals("1\u00A0000", nf.format(1000))
+    assertEquals("100\u00A0000", nf.format(100000))
+    assertEquals("10\u00A0000\u00A0000", nf.format(10000000))
+    assertEquals("2\u00A0147\u00A0483\u00A0647", nf.format(Int.MaxValue))
+    assertEquals("9\u00A0223\u00A0372\u00A0036\u00A0854\u00A0775\u00A0807", nf.format(Long.MaxValue))
+    assertEquals("-1\u00A0000", nf.format(-1000))
+    assertEquals("-100\u00A0000", nf.format(-100000))
+    assertEquals("-10\u00A0000\u00A0000", nf.format(-10000000))
+    assertEquals("-2\u00A0147\u00A0483\u00A0648", nf.format(Int.MinValue))
+    assertEquals("-9\u00A0223\u00A0372\u00A0036\u00A0854\u00A0775\u00A0808", nf.format(Long.MinValue))
+  }
+
+  @Test def test_format_locales_different_negative(): Unit = {
+    if (!Platform.executingInJVM) {
+      LocaleRegistry.installLocale(lt)
+    }
+    val nf = NumberFormat.getIntegerInstance(Locale.forLanguageTag("lt")).asInstanceOf[DecimalFormat]
+    nf.getDecimalFormatSymbols.setGroupingSeparator(',')
+    // Different negative sign
+    assertEquals("123", nf.format(123))
+    assertEquals("0", nf.format(0))
+    assertEquals("\u2212123", nf.format(-123))
+    assertEquals("1,000", nf.format(1000))
+    assertEquals("100,000", nf.format(100000))
+    assertEquals("10,000,000", nf.format(10000000))
+    assertEquals("2,147,483,647", nf.format(Int.MaxValue))
+    assertEquals("9,223,372,036,854,775,807", nf.format(Long.MaxValue))
+    assertEquals("\u22121,000", nf.format(-1000))
+    assertEquals("\u2212100,000", nf.format(-100000))
+    assertEquals("\u221210,000,000", nf.format(-10000000))
+    assertEquals("\u22122,147,483,648", nf.format(Int.MinValue))
+    assertEquals("\u22129,223,372,036,854,775,808", nf.format(Long.MinValue))
+  }
+
 }
