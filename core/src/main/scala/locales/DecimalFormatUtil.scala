@@ -107,8 +107,8 @@ object DecimalFormatUtil {
   }
 
   def toDecimalPatterns(pattern: String): DecimalPatterns = pattern.split(';').toList match {
-    case Nil => DecimalPatterns(PatternParts(""), PatternParts(""))
-    case p :: Nil => DecimalPatterns(decimalPatternSplit(p), decimalPatternSplit(p))
+    case Nil         => DecimalPatterns(PatternParts(""), PatternParts(""))
+    case p :: Nil    => DecimalPatterns(decimalPatternSplit(p), decimalPatternSplit(p))
     case p :: n :: _ => DecimalPatterns(decimalPatternSplit(p), decimalPatternSplit(n))
   }
 
