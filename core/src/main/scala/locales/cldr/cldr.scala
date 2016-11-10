@@ -70,14 +70,14 @@ case class LDML(parent: Option[LDML],
   // Need to lookup the symbol & description independently
   def getNumberCurrencySymbol(currencyCode: String): Seq[CurrencySymbol] = {
     (
-      byCurrencyCode.get(currencyCode).filter{ _.symbols.nonEmpty }.map{ _.symbols } orElse
+      byCurrencyCode.get(currencyCode.toUpperCase).filter{ _.symbols.nonEmpty }.map{ _.symbols } orElse
       parent.map{ _.getNumberCurrencySymbol(currencyCode) }
     ).getOrElse(IndexedSeq.empty)
   }
 
   def getNumberCurrencyDescription(currencyCode: String): Seq[CurrencyDisplayName] = {
     (
-      byCurrencyCode.get(currencyCode).filter{ _.displayNames.nonEmpty }.map{ _.displayNames } orElse
+      byCurrencyCode.get(currencyCode.toUpperCase).filter{ _.displayNames.nonEmpty }.map{ _.displayNames } orElse
       parent.map{ _.getNumberCurrencyDescription(currencyCode) }
     ).getOrElse(IndexedSeq.empty)
   }
