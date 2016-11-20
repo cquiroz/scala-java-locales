@@ -103,8 +103,7 @@ lazy val testSuite: CrossProject = CrossProject(
         "-v", "-a")
   ).
   jsSettings(
-    name := "scala-java-locales testSuite on JS",
-    scalaJSUseRhino := false // Tests are too slow in rhino
+    name := "scala-java-locales testSuite on JS"
   ).
   jsConfigure(_.dependsOn(coreJS)).
   jvmSettings(
