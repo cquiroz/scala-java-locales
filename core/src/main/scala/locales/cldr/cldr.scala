@@ -20,6 +20,33 @@ case class CalendarSymbols(months: List[String], shortMonths: List[String],
 
 case class CalendarPatterns(datePatterns: Map[Int, String], timePatterns: Map[Int, String])
 
+
+/** Number Currencies */
+case class CurrencyDisplayName(name: String, count: Option[String])
+case class CurrencySymbol(symbol: String, alt: Option[String])
+case class NumberCurrency(currencyCode: String, symbols: Seq[CurrencySymbol], displayNames: Seq[CurrencyDisplayName])
+
+/**
+ * Interfaces describing the supplementary currency data
+ */
+case class CurrencyData(currencyTypes: Seq[CurrencyType],
+    fractions: Seq[CurrencyDataFractionsInfo],
+    regions: Seq[CurrencyDataRegion],
+    numericCodes: Seq[CurrencyNumericCode])
+
+case class CurrencyType(currencyCode: String, currencyName: String)
+
+case class CurrencyNumericCode(currencyCode: String, numericCode: Int)
+
+// currency code "DEFAULT" is used if currency code doesn't exist
+case class CurrencyDataFractionsInfo(currencyCode: String, digits: Int, rounding: Int,
+    cashDigits: Option[Int], cashRounding: Option[Int])
+
+case class CurrencyDataRegion(countryCode: String, currencies: Seq[CurrencyDataRegionCurrency])
+
+case class CurrencyDataRegionCurrency(currencyCode: String,
+    from: Option[String], to: Option[String], tender: Option[Boolean])
+
 /**
  * Interfaces describing an LDML Locale
  */
@@ -29,9 +56,31 @@ case class LDMLLocale(language: String, territory: Option[String],
 /**
  * Wrapper to LDML
  */
-case class LDML(parent: Option[LDML], locale: LDMLLocale,
-    defaultNS: Option[NumberingSystem], digitSymbols: List[Symbols] = Nil,
-    calendarSymbols: Option[CalendarSymbols], calendarPatterns: Option[CalendarPatterns]) {
+case class LDML(parent: Option[LDML],
+    locale: LDMLLocale,
+    defaultNS: Option[NumberingSystem],
+    digitSymbols: List[Symbols] = Nil,
+    calendarSymbols: Option[CalendarSymbols],
+    calendarPatterns: Option[CalendarPatterns],
+    currencies: List[NumberCurrency]) {
+
+  private val byCurrencyCode: Map[String, NumberCurrency] =
+    currencies.groupBy{ _.currencyCode }.map{ case (code, list) => code.toUpperCase -> list.head }
+
+  // Need to lookup the symbol & description independently
+  def getNumberCurrencySymbol(currencyCode: String): Seq[CurrencySymbol] = {
+    (
+      byCurrencyCode.get(currencyCode.toUpperCase).filter{ _.symbols.nonEmpty }.map{ _.symbols } orElse
+      parent.map{ _.getNumberCurrencySymbol(currencyCode) }
+    ).getOrElse(IndexedSeq.empty)
+  }
+
+  def getNumberCurrencyDescription(currencyCode: String): Seq[CurrencyDisplayName] = {
+    (
+      byCurrencyCode.get(currencyCode.toUpperCase).filter{ _.displayNames.nonEmpty }.map{ _.displayNames } orElse
+      parent.map{ _.getNumberCurrencyDescription(currencyCode) }
+    ).getOrElse(IndexedSeq.empty)
+  }
 
   def languageTag: String = toLocale.toLanguageTag
 

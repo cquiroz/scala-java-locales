@@ -13,6 +13,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
   scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.0"),
   scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
+  javaOptions ++= Seq("-Dfile.encoding=UTF8"),
   mappings in (Compile, packageBin) ~= {
     // Exclude CLDR files...
     _.filter(!_._2.contains("core"))
@@ -102,8 +103,7 @@ lazy val testSuite: CrossProject = CrossProject(
         "-v", "-a")
   ).
   jsSettings(
-    name := "scala-java-locales testSuite on JS",
-    scalaJSUseRhino := false // Tests are too slow in rhino
+    name := "scala-java-locales testSuite on JS"
   ).
   jsConfigure(_.dependsOn(coreJS)).
   jvmSettings(
@@ -111,7 +111,7 @@ lazy val testSuite: CrossProject = CrossProject(
     fork in Test := true,
     // Use CLDR provider for locales
     // https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr
-    javaOptions in Test ++= Seq("-Duser.language=en", "-Duser.country=", "-Djava.locale.providers=CLDR"),
+    javaOptions in Test ++= Seq("-Duser.language=en", "-Duser.country=", "-Djava.locale.providers=CLDR", "-Dfile.encoding=UTF8"),
     name := "scala-java-locales testSuite on JVM",
     libraryDependencies +=
       "com.novocode" % "junit-interface" % "0.9" % "test"
