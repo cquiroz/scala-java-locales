@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0-cldr30
+
+* Added implementation of java.util.Currency
+
 ## 0.3.1-cldr30
 
 * Updated to scala.js 0.6.13 and scala 2.12.0
