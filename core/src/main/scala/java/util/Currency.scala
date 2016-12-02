@@ -23,13 +23,13 @@ object Currency {
     Currency(currencyType.currencyCode, numericCode, fractions.digits, currencyType.currencyName, None)
   }.toSet
 
-  require(all.size > 0, "No currency data?")
+  require(all.nonEmpty, "No currency data?")
 
   private val currencyCodeMap: SMap[String, Currency] = all.toSeq.groupBy{ _.getCurrencyCode }.map{
     case (currencyCode: String, matches: Seq[Currency]) => currencyCode -> matches.head
   }
 
-  def getAvailableCurrencies(): Set[Currency] = all.asJava
+  def getAvailableCurrencies(): java.util.Set[Currency] = all.asJava
 
   // NullPointerException - if locale or its country code is null
   // IllegalArgumentException - if the country of the given locale is not a supported ISO 3166 country code.
