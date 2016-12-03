@@ -10,10 +10,6 @@ import scala.math.{max, min}
 
 abstract class NumberFormat protected () extends Format {
   private[this] var parseIntegerOnly: Boolean = false
-  private[this] var maximumIntegerDigits: Int = 3
-  private[this] var minimumIntegerDigits: Int = 1
-  private[this] var maximumFractionDigits: Int = 5
-  private[this] var minimumFractionDigits: Int = 0
   private[this] var roundingMode: RoundingMode = RoundingMode.HALF_EVEN
   private[this] var groupingUsed: Boolean = false
 
@@ -27,13 +23,12 @@ abstract class NumberFormat protected () extends Format {
     }
   }
 
-  // TODO implement
-  // final def format(number: Double): String = ???
-  def format(number: Long): String = ???
+  final def format(number: Double): String = format(number, new StringBuffer, IgnoreFieldPosition).toString
+  final def format(number: Long): String = format(number, new StringBuffer, IgnoreFieldPosition).toString
 
-  def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
+  def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer
+  def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer
 
-  def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
   // def parse(source: String, parsePosition: ParsePosition): Number = ???
   // def parse(source: String): Number = ???
 
@@ -41,6 +36,7 @@ abstract class NumberFormat protected () extends Format {
 
   def setParseIntegerOnly(value: Boolean): Unit = this.parseIntegerOnly = value
 
+  // TODO: Can we proxy these through ParsedPattern in DecimalFormat?
   // override def hashCode(): Int = ???
   // override def equals(obj: Any): Boolean = ???
   // override def clone(): Any = ???
@@ -49,33 +45,17 @@ abstract class NumberFormat protected () extends Format {
 
   def setGroupingUsed(newValue: Boolean): Unit = this.groupingUsed = newValue
 
-  def getMaximumIntegerDigits(): Int = this.maximumIntegerDigits
+  def getMaximumIntegerDigits(): Int
+  def setMaximumIntegerDigits(newValue: Int): Unit
 
-  def setMaximumIntegerDigits(newValue: Int): Unit = {
-    this.maximumIntegerDigits = max(newValue, 0)
-    this.minimumIntegerDigits = min(this.minimumIntegerDigits, this.maximumIntegerDigits)
-  }
+  def getMinimumIntegerDigits(): Int
+  def setMinimumIntegerDigits(newValue: Int): Unit
 
-  def getMinimumIntegerDigits(): Int = this.minimumIntegerDigits
+  def getMaximumFractionDigits(): Int
+  def setMaximumFractionDigits(newValue: Int): Unit
 
-  def setMinimumIntegerDigits(newValue: Int): Unit = {
-    this.minimumIntegerDigits = max(newValue, 0)
-    this.maximumIntegerDigits = max(this.minimumIntegerDigits, this.maximumIntegerDigits)
-  }
-
-  def getMaximumFractionDigits(): Int = this.maximumFractionDigits
-
-  def setMaximumFractionDigits(newValue: Int): Unit = {
-    this.maximumFractionDigits = max(newValue, 0)
-    this.minimumFractionDigits = min(this.minimumFractionDigits, this.maximumFractionDigits)
-  }
-
-  def getMinimumFractionDigits(): Int = this.minimumFractionDigits
-
-  def setMinimumFractionDigits(newValue: Int): Unit = {
-    this.minimumFractionDigits = max(newValue, 0)
-    this.maximumFractionDigits = max(this.minimumFractionDigits, this.maximumFractionDigits)
-  }
+  def getMinimumFractionDigits(): Int
+  def setMinimumFractionDigits(newValue: Int): Unit
 
   // def getCurrency(): Currency = ???
   // def setCurrency(currency: Currency): Unit = ???
@@ -131,10 +111,16 @@ object NumberFormat {
   def getIntegerInstance(inLocale: Locale): NumberFormat = {
     val f = LocaleRegistry.ldml(inLocale).flatMap { ldml =>
       val ptrn = patternsR(ldml, _.decimalPattern)
-      ptrn.map(p => new DecimalFormat(p.substring(0, p.indexOf(".")),
-        DecimalFormatSymbols.getInstance(inLocale))).map(integerSetup)
+      ptrn.map(p =>
+        new DecimalFormat(
+          p.substring(0, p.indexOf(".")),
+          DecimalFormatSymbols.getInstance(inLocale)
+        )
+      ).map(integerSetup)
     }.getOrElse(new DecimalFormat("", DecimalFormatSymbols.getInstance(inLocale)))
+
     f.setParseIntegerOnly(true)
+
     f
   }
 
