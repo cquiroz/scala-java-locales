@@ -5,13 +5,15 @@ import java.text.{DecimalFormat, DecimalFormatSymbols}
 import scala.math.max
 
 case class PatternParts(prefix: String, pattern: String, suffix: String)
+
 object PatternParts {
-  def apply(pattern: String):PatternParts = PatternParts("", pattern, "")
+  def apply(pattern: String): PatternParts = PatternParts("", pattern, "")
 }
 
-case class DecimalPatterns(positive: PatternParts, negative: PatternParts)
+case class DecimalPatterns(positive: PatternParts, negative: Option[PatternParts])
 
 object DecimalFormatUtil {
+  // These are the "standard" pattern characters we convert any localized patterns to
   val PatternCharZeroDigit = '0'
   val PatternCharGroupingSeparator = ','
   val PatternCharDecimalSeparator = '.'
@@ -28,9 +30,9 @@ object DecimalFormatUtil {
   private val numberPatternChars = List(PatternCharZeroDigit, PatternCharDigit, PatternCharDecimalSeparator, PatternCharMinus,
     PatternCharGroupingSeparator, PatternCharExponent)
 
-  def lastIndexOfPattern(pattern: String, symbbl: Char): Int = {
+  def lastIndexOfPattern(pattern: String, symbol: Char): Int = {
     val max = pattern.length - 1
-    allPatternChars.filterNot(_ == symbbl).map(pattern.lastIndexOf(_, max)).max
+    allPatternChars.filterNot(_ == symbol).map(pattern.lastIndexOf(_, max)).max
   }
 
   def suffixFor(format: DecimalFormat, symbol: Char): String = {
@@ -99,17 +101,18 @@ object DecimalFormatUtil {
 
   def localizeString(str: String, symbols: DecimalFormatSymbols): String = {
     str.map {
-      case PatternCharPercent => symbols.getPercent
-      case PatternCharMinus   => symbols.getMinusSign
-      case PatternCharPerMile => symbols.getPerMill
-      case c                  => c
+      case PatternCharPercent   => symbols.getPercent
+      case PatternCharMinus     => symbols.getMinusSign
+      case PatternCharPerMile   => symbols.getPerMill
+      case PatternCharZeroDigit => symbols.getZeroDigit
+      case c                    => c
     }
   }
 
   def toDecimalPatterns(pattern: String): DecimalPatterns = pattern.split(';').toList match {
-    case Nil         => DecimalPatterns(PatternParts(""), PatternParts(""))
-    case p :: Nil    => DecimalPatterns(decimalPatternSplit(p), decimalPatternSplit(p))
-    case p :: n :: _ => DecimalPatterns(decimalPatternSplit(p), decimalPatternSplit(n))
+    case Nil         => DecimalPatterns(PatternParts(""), None)
+    case p :: Nil    => DecimalPatterns(decimalPatternSplit(p), None)
+    case p :: n :: _ => DecimalPatterns(decimalPatternSplit(p), Some(decimalPatternSplit(n)))
   }
 
   def groupingCount(pattern: String): Int = {
@@ -128,5 +131,55 @@ object DecimalFormatUtil {
       case PatternCharMinus   => f.getDecimalFormatSymbols.getMinusSign
       case x => x
     }
+  }
+
+  implicit class RichString(val s: String) extends AnyVal {
+    def toBlankOption: Option[String] = {
+      if (s == null) return None
+
+      s.find{!Character.isWhitespace(_)}.map{ _ => s }
+    }
+  }
+
+  // This probably isn't perfect if there is a malformed pattern ("#0#0.0#0E#0") but should be good enough
+  // TODO: Maybe just add a regexp to validate the correctness of the pattern somewhere else
+  private def countMinimum(pattern: String, c: Char, trailingCount: Boolean = true): Option[Int] = {
+    pattern.indexOf(c) match {
+      case -1  => None
+      case idx =>
+        // If trailing then take everything after the ".", if preceding take until the "." and reverse it
+        // to count the zeroes directly before the "."
+        val haystack: String = if (trailingCount) pattern.substring(idx+1) else pattern.substring(0, idx).reverse
+        Some(haystack.filterNot{_ == PatternCharGroupingSeparator}.takeWhile(_ == PatternCharZeroDigit).size)
+    }
+  }
+
+  // Expects a non-localized pattern
+  def toParsedPattern(pattern: String): ParsedPattern = {
+    val patterns = toDecimalPatterns(pattern)
+
+    val prefixAndSuffix: String = patterns.positive.suffix + patterns.positive.suffix
+
+    // These present in the prefix or suffix modify the multiplier
+    val hasPercent: Boolean = prefixAndSuffix.exists(_ == PatternCharPercent)
+    val hasMile: Boolean = prefixAndSuffix.exists(_ == PatternCharPerMile)
+    assert(
+      (hasPercent && !hasMile) || (!hasPercent && hasMile) || (!hasPercent && !hasMile),
+      "Can either be percent or mile, not both"
+    )
+
+    ParsedPattern(
+      positivePrefix           = patterns.positive.prefix.toBlankOption,
+      positiveSuffix           = patterns.positive.suffix.toBlankOption,
+      negativePrefix           = patterns.negative.flatMap{ _.prefix.toBlankOption },
+      negativeSuffix           = patterns.negative.flatMap{ _.suffix.toBlankOption },
+      defaultNegativePrefix    = if (patterns.negative.isEmpty) patterns.positive.prefix.toBlankOption else None,
+      defaultNegativeSuffix    = if (patterns.negative.isEmpty) patterns.positive.suffix.toBlankOption else None,
+      multiplier               = if (hasPercent) 100 else if (hasMile) 1000 else 1,
+      groupingSize             = groupingCount(patterns.positive.pattern),
+      minimumIntegerDigits     = countMinimum(pattern, PatternCharDecimalSeparator, false),
+      minimumFractionDigits    = countMinimum(pattern, PatternCharDecimalSeparator, true),
+      minimumExponentDigits    = countMinimum(pattern, PatternCharExponent, true)
+    )
   }
 }

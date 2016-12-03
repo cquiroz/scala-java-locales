@@ -10,7 +10,7 @@ import scala.math.{max, min}
 
 abstract class NumberFormat protected () extends Format {
   private[this] var parseIntegerOnly: Boolean = false
-  private[this] var maximumIntegerDigits: Int = 3
+  private[this] var maximumIntegerDigits: Int = Int.MaxValue
   private[this] var minimumIntegerDigits: Int = 1
   private[this] var maximumFractionDigits: Int = 5
   private[this] var minimumFractionDigits: Int = 0
@@ -27,13 +27,12 @@ abstract class NumberFormat protected () extends Format {
     }
   }
 
-  // TODO implement
-  // final def format(number: Double): String = ???
-  def format(number: Long): String = ???
+  final def format(number: Double): String = format(number, new StringBuffer, IgnoreFieldPosition).toString
+  final def format(number: Long): String = format(number, new StringBuffer, IgnoreFieldPosition).toString
 
-  def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
+  def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer
+  def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer
 
-  def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
   // def parse(source: String, parsePosition: ParsePosition): Number = ???
   // def parse(source: String): Number = ???
 
