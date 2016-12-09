@@ -310,7 +310,12 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   def getGroupingSize(): Int = parsedPattern.groupingSize
 
   def setGroupingSize(newValue: Int): Unit =
-    this.parsedPattern = parsedPattern.copy(groupingSize = newValue)
+    this.parsedPattern = parsedPattern.copy(groupingSize = newValue, isGroupingUsed = (newValue > 0))
+
+  def isGroupingUsed(): Boolean = parsedPattern.isGroupingUsed
+
+  def setGroupingUsed(newValue: Boolean): Unit =
+    this.parsedPattern = parsedPattern.copy(isGroupingUsed = newValue)
 
   def isDecimalSeparatorAlwaysShown(): Boolean = this.decimalSeparatorAlwaysShown
 

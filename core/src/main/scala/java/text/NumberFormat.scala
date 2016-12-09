@@ -9,7 +9,6 @@ import locales.cldr.{LDML, NumberPatterns}
 abstract class NumberFormat protected () extends Format {
   private[this] var parseIntegerOnly: Boolean = false
   private[this] var roundingMode: RoundingMode = RoundingMode.HALF_EVEN
-  private[this] var groupingUsed: Boolean = false
 
   override def parseObject(source: String, pos: ParsePosition): AnyRef
 
@@ -31,12 +30,10 @@ abstract class NumberFormat protected () extends Format {
   // def parse(source: String): Number = ???
 
   def isParseIntegerOnly(): Boolean = this.parseIntegerOnly
-
   def setParseIntegerOnly(value: Boolean): Unit = this.parseIntegerOnly = value
 
-  def isGroupingUsed(): Boolean = this.groupingUsed
-
-  def setGroupingUsed(newValue: Boolean): Unit = this.groupingUsed = newValue
+  def isGroupingUsed(): Boolean
+  def setGroupingUsed(newValue: Boolean): Unit
 
   def getMaximumIntegerDigits(): Int
   def setMaximumIntegerDigits(newValue: Int): Unit
@@ -54,7 +51,6 @@ abstract class NumberFormat protected () extends Format {
   def setCurrency(currency: Currency): Unit
 
   def getRoundingMode(): RoundingMode = roundingMode
-
   def setRoundingMode(mode: RoundingMode): Unit = this.roundingMode = mode
 }
 
@@ -65,7 +61,6 @@ object NumberFormat {
   private def setup(nf: DecimalFormat): NumberFormat = {
     nf.setMaximumIntegerDigits(Integer.MAX_VALUE)
     nf.setMaximumFractionDigits(3)
-    nf.setGroupingUsed(true) // Should this be inferred from the pattern?
     nf
   }
 

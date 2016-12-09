@@ -209,6 +209,7 @@ object DecimalFormatUtil {
       exponentMin orElse count
     }
 
+    val groupSize: Int = groupingCount(patterns.positive.pattern)
 
     ParsedPattern(
       positivePrefix           = patterns.positive.prefix.toBlankOption,
@@ -222,7 +223,8 @@ object DecimalFormatUtil {
 
       multiplier               = if (hasPercent) 100 else if (hasMile) 1000 else 1,
 
-      groupingSize             = groupingCount(patterns.positive.pattern),
+      groupingSize             = groupSize,
+      isGroupingUsed           = (groupSize > 0),
 
       minimumIntegerDigits     = minIntegerDigits,
       minimumFractionDigits    = countMinimum(patterns.positive.pattern, PatternCharDecimalSeparator, true),
