@@ -19,13 +19,13 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   }
 
   // This holds all of the specifics about the decimal pattern
-  private var parsedPattern = applyPattern(pattern)
+  private var parsedPattern = usePattern(pattern)
 
   private var decimalSeparatorAlwaysShown: Boolean = false
   private var parseBigDecimal: Boolean = false
 
   // Need to be able to update the complete pattern for this instance
-  private def applyPattern(p: String): ParsedPattern = {
+  private def usePattern(p: String): ParsedPattern = {
     this.parsedPattern = DecimalFormatUtil.toParsedPattern(p)
 
     this.parsedPattern
@@ -70,21 +70,8 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     digitsWritten
   }
 
-  /**
-   *
-  @ java.math.BigDecimal.valueOf(1234.50001).precision
-  res157: Int = 9
-  @ java.math.BigDecimal.valueOf(1234.50001).scale
-  res158: Int = 5
-
-
-  @ java.math.BigDecimal.valueOf(.50001).precision
-  res160: Int = 5
-  @ java.math.BigDecimal.valueOf(.50001).scale
-  res161: Int = 5
-  */
-
-  private def isExponentPowerMultiple(): Boolean =
+  // If the exponent after the mantissa should be a particular number multiple (like engineering notation/etc)
+  private def isExponentPowerMultiple(): Boolean = useScientificNotation &&
     (getMaximumIntegerDigits > getMinimumIntegerDigits && getMaximumIntegerDigits > 1)
 
   // JavaDocs: The number of significant digits in the mantissa is the sum of the minimum integer and maximum
@@ -97,60 +84,37 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   // Return the scaled big decimal + power unit
   def getExponentNumberAndPower(n: JavaBigDecimal): (JavaBigDecimal, Int) =
     // zero shortcut
-    if (n.compareTo(JavaBigDecimal.ZERO) == 0) (JavaBigDecimal.ZERO, 0) else {
-
+    if (n.compareTo(JavaBigDecimal.ZERO) == 0) (JavaBigDecimal.ZERO, 0)
+    else {
       val isJustFraction: Boolean = (n.abs.compareTo(JavaBigDecimal.ONE) == -1)
-
       val originalDecimalPosition: Int = (n.precision - n.scale)
+      val newPrecision: Int = min(n.precision, totalExponentPrecision)
 
-      // TODO: Merge the exponential/non exponential back together?
-      if (isExponentPowerMultiple) {
+      val newIntegerSize = if (isExponentPowerMultiple) {
+        def matchesMultiple(idx: Int): Boolean =
+          (((originalDecimalPosition - (getMaximumIntegerDigits - idx)) % getMaximumIntegerDigits) == 0)
 
-        var newPrecision: Int = min(n.precision, totalExponentPrecision)
-        var newIntegerSize: Int = {
-          def matchesMultiple(idx: Int): Boolean =
-            (((originalDecimalPosition - (getMaximumIntegerDigits - idx)) % getMaximumIntegerDigits) == 0)
-
-          (0 until getMaximumIntegerDigits).collectFirst {
-            case idx: Int if matchesMultiple(idx) => (getMaximumIntegerDigits - idx)
-          }.getOrElse(1)
-        }
-
-        var possiblePow: Int = originalDecimalPosition - newIntegerSize
-
-        val scalePrecision = {
-          val unscaled = new JavaBigDecimal(n.unscaledValue, newPrecision - newIntegerSize)
-
-          // TODO: WTF is going on here with the rounding mode?
-          unscaled.divide(
-            JavaBigDecimal.TEN.pow(n.precision - newPrecision),
-            if (isJustFraction) RoundingMode.HALF_UP else getRoundingMode
-          )
-        }
-
-        (
-          scalePrecision,
-          originalDecimalPosition - newIntegerSize
-        )
+        (0 until getMaximumIntegerDigits).collectFirst {
+          case idx: Int if matchesMultiple(idx) => (getMaximumIntegerDigits - idx)
+        }.getOrElse(1)
       } else {
-        val newPrecision: Int = min(n.precision, totalExponentPrecision)
-        val newIntegerSize: Int = max(min(newPrecision, getMaximumIntegerDigits), 1)
+        max(min(newPrecision, getMaximumIntegerDigits), 1)
+      }
 
-        val Array(newPrecisionInt: JavaBigInteger, remainderInt: JavaBigInteger) =
-          n.unscaledValue.divideAndRemainder(JavaBigInteger.TEN.pow(n.precision - newPrecision))
+      val scalePrecision = {
+        val unscaled = new JavaBigDecimal(n.unscaledValue, newPrecision - newIntegerSize)
 
-        val r = new JavaBigDecimal(remainderInt, 0)
-        val roundCorrection = r.divide(JavaBigDecimal.TEN.pow(r.precision), 0, getRoundingMode).toBigInteger
-        val roundedNewDecimal: JavaBigInteger = newPrecisionInt.add(roundCorrection)
-
-        val scalePrecision = new JavaBigDecimal(roundedNewDecimal, 0)
-
-        (
-          scalePrecision.movePointLeft(scalePrecision.precision - newIntegerSize),
-          originalDecimalPosition - newIntegerSize
+        // TODO: WTF is going on here with the rounding mode?
+        unscaled.divide(
+          JavaBigDecimal.TEN.pow(n.precision - newPrecision),
+          if (isJustFraction) RoundingMode.HALF_UP else getRoundingMode
         )
       }
 
+      (
+        scalePrecision,
+        originalDecimalPosition - newIntegerSize
+      )
     }
 
   // Based upon number count, add in the number of group separators
@@ -283,7 +247,7 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
 
   def setDecimalFormatSymbols(symbols: DecimalFormatSymbols): Unit = {
     this.symbols = symbols
-    applyPattern(this.pattern)
+    usePattern(this.pattern)
   }
 
   // Swap out the percent or mile characters from the prefix/suffix localized characters set
@@ -356,8 +320,8 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
 
   def setParseBigDecimal(newValue: Boolean): Unit = this.parseBigDecimal = newValue
 
-
-  // TODO: can we use
+  // TODO: can we use ParsedPattern for these?  Would need to add in
+  //    parseIntegerOnly, roundingMode, and groupingUsed from NumberFormat
   // override def clone(): Any = ???
   // override def hashCode(): Int = ???
   // override def equals(obj: Any): Boolean = ???
@@ -410,12 +374,9 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     )
   }
 
-  // def applyPattern(pattern: String): Unit = ???
+   def applyPattern(pattern: String): Unit = usePattern(pattern)
   // def applyLocalizedPattern(pattern: String)
-
 
   // def getCurrency(): Currency = ???
   // def setCurrency(currency: Currency): Unit = ???
-  // def getRoundingMode(): RoundingMode = ???
-  // def setRoundingMode(currency: RoundingMode): Unit = ???
 }
