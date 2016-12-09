@@ -1,12 +1,10 @@
 package java.text
 
 import java.math.RoundingMode
-import java.util.Locale
+import java.util.{Currency, Locale}
 
-import locales.{DecimalFormatUtil, LocaleRegistry}
+import locales.LocaleRegistry
 import locales.cldr.{LDML, NumberPatterns}
-
-import scala.math.{max, min}
 
 abstract class NumberFormat protected () extends Format {
   private[this] var parseIntegerOnly: Boolean = false
@@ -36,11 +34,6 @@ abstract class NumberFormat protected () extends Format {
 
   def setParseIntegerOnly(value: Boolean): Unit = this.parseIntegerOnly = value
 
-  // TODO: Can we proxy these through ParsedPattern in DecimalFormat?
-  // override def hashCode(): Int = ???
-  // override def equals(obj: Any): Boolean = ???
-  // override def clone(): Any = ???
-
   def isGroupingUsed(): Boolean = this.groupingUsed
 
   def setGroupingUsed(newValue: Boolean): Unit = this.groupingUsed = newValue
@@ -57,8 +50,8 @@ abstract class NumberFormat protected () extends Format {
   def getMinimumFractionDigits(): Int
   def setMinimumFractionDigits(newValue: Int): Unit
 
-  // def getCurrency(): Currency = ???
-  // def setCurrency(currency: Currency): Unit = ???
+  def getCurrency(): Currency
+  def setCurrency(currency: Currency): Unit
 
   def getRoundingMode(): RoundingMode = roundingMode
 
@@ -125,7 +118,7 @@ object NumberFormat {
   }
 
   //final def getCurrencyInstance(): NumberFormat = ???
-  //def getCurrencyInstance(inLocale: Locale): NumberFormat = ???
+  //final def getCurrencyInstance(inLocale: Locale): NumberFormat = ???
 
   final def getPercentInstance(): NumberFormat =
     getPercentInstance(Locale.getDefault(Locale.Category.FORMAT))

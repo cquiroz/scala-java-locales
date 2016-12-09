@@ -1,9 +1,10 @@
 package java.text
 
-import java.math.{MathContext, RoundingMode, BigDecimal => JavaBigDecimal, BigInteger => JavaBigInteger}
-import java.util.Locale
+import java.math.{RoundingMode, BigDecimal => JavaBigDecimal, BigInteger => JavaBigInteger}
+import java.util.{Currency, Locale}
 import locales.{DecimalFormatUtil, LocaleRegistry, ParsedPattern}
 import scala.math.{max, min}
+
 
 // The constructor needs a non-localized pattern
 class DecimalFormat(private[this] val pattern: String, private[this] var symbols: DecimalFormatSymbols)
@@ -19,7 +20,7 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   }
 
   // This holds all of the specifics about the decimal pattern
-  private var parsedPattern = usePattern(pattern)
+  protected var parsedPattern = usePattern(pattern)
 
   private var decimalSeparatorAlwaysShown: Boolean = false
   private var parseBigDecimal: Boolean = false
@@ -320,12 +321,6 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
 
   def setParseBigDecimal(newValue: Boolean): Unit = this.parseBigDecimal = newValue
 
-  // TODO: can we use ParsedPattern for these?  Would need to add in
-  //    parseIntegerOnly, roundingMode, and groupingUsed from NumberFormat
-  // override def clone(): Any = ???
-  // override def hashCode(): Int = ???
-  // override def equals(obj: Any): Boolean = ???
-
   // TODO: Generate String based upon the parsedPattern
   def toPattern(): String = pattern
   // def toLocalizedPattern(): String = pattern
@@ -374,9 +369,70 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     )
   }
 
-   def applyPattern(pattern: String): Unit = usePattern(pattern)
-  // def applyLocalizedPattern(pattern: String)
+  def applyPattern(pattern: String): Unit = usePattern(pattern)
 
-  // def getCurrency(): Currency = ???
-  // def setCurrency(currency: Currency): Unit = ???
+  def applyLocalizedPattern(pattern: String) = {
+    val standardPattern = pattern
+
+    usePattern(standardPattern)
+  }
+
+  def getCurrency(): Currency = ???
+
+  def setCurrency(currency: Currency): Unit = ???
+
+  override def clone(): AnyRef = {
+    val f = new DecimalFormat(toPattern())
+
+    // Non pattern-based settings to propogate
+    f.setParseIntegerOnly(isParseIntegerOnly)
+    f.setParseBigDecimal(isParseBigDecimal)
+    f.setGroupingUsed(isGroupingUsed)
+    f.setRoundingMode(getRoundingMode)
+
+    f
+  }
+
+  override def hashCode(): Int = {
+    val prime = 31
+    var result = 1
+    result = prime * result + getCurrency().hashCode()
+    result = prime * result + getDecimalFormatSymbols().hashCode()
+    result = prime * result + getGroupingSize().hashCode()
+    result = prime * result + getMaximumFractionDigits().hashCode()
+    result = prime * result + getMaximumIntegerDigits().hashCode()
+    result = prime * result + getMinimumFractionDigits().hashCode()
+    result = prime * result + getMinimumIntegerDigits().hashCode()
+    result = prime * result + getMultiplier().hashCode()
+    result = prime * result + getNegativePrefix().hashCode()
+    result = prime * result + getNegativeSuffix().hashCode()
+    result = prime * result + getPositivePrefix().hashCode()
+    result = prime * result + getPositiveSuffix().hashCode()
+    result = prime * result + getRoundingMode().hashCode()
+    result = prime * result + isDecimalSeparatorAlwaysShown().hashCode()
+    result = prime * result + isParseBigDecimal().hashCode()
+    result
+  }
+
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case f: DecimalFormat =>
+        f.getCurrency() == getCurrency &&
+          f.getDecimalFormatSymbols() == getDecimalFormatSymbols &&
+          f.getGroupingSize() == getGroupingSize() &&
+          f.getMaximumFractionDigits() == getMaximumFractionDigits() &&
+          f.getMaximumIntegerDigits() == getMaximumIntegerDigits() &&
+          f.getMinimumFractionDigits() == getMinimumFractionDigits() &&
+          f.getMinimumIntegerDigits() == getMinimumIntegerDigits() &&
+          f.getMultiplier() == getMultiplier() &&
+          f.getNegativePrefix() == getNegativePrefix() &&
+          f.getNegativeSuffix() == getNegativeSuffix() &&
+          f.getPositivePrefix() == getPositivePrefix() &&
+          f.getPositiveSuffix() == getPositiveSuffix() &&
+          f.getRoundingMode() == getRoundingMode() &&
+          f.isDecimalSeparatorAlwaysShown() == isDecimalSeparatorAlwaysShown() &&
+          f.isParseBigDecimal() == isParseBigDecimal()
+
+      case _ => false
+    }
 }
