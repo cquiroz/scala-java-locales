@@ -60,7 +60,6 @@ object NumberFormat {
 
   private def setup(nf: DecimalFormat): NumberFormat = {
     nf.setMaximumIntegerDigits(Integer.MAX_VALUE)
-    nf.setMaximumFractionDigits(3)
     nf
   }
 
