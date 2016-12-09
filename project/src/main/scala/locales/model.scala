@@ -38,10 +38,13 @@ object CalendarPatterns {
   val zero = CalendarPatterns(Nil, Nil)
 }
 
-case class NumberPatterns(decimalFormat: Option[String], percentFormat: Option[String])
+case class NumberPatterns(
+    decimalFormat: Option[String],
+    percentFormat: Option[String],
+    currencyFormat: Option[String])
 
 object NumberPatterns {
-  val zero = NumberPatterns(None, None)
+  val zero = NumberPatterns(None, None, None)
 }
 
 case class NumericSystem(id: String, digits: String)

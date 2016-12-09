@@ -226,6 +226,13 @@ object ScalaLocaleCodeGen {
         if (d \ "@type").text.isEmpty
       } yield d \ "percentFormat" \ "pattern").headOption.map(_.text)
 
+    val currencyPatterns = (for {
+      n <- xml \ "numbers" \\ "currencyFormats"
+      if (n \ "@numberSystem").text == "latn"
+      d <- n \ "currencyFormatLength"
+      if ((d \ "@type").text.isEmpty || (d \ "@type").text == "standard")
+    } yield d \ "currencyFormat" \ "pattern").headOption.map(_.text)
+
     // Find out the default numeric system
     val defaultNS = Option((xml \ "numbers" \ "defaultNumberingSystem").text)
       .filter(_.nonEmpty).filter(ns.contains)
@@ -285,7 +292,8 @@ object ScalaLocaleCodeGen {
 
     XMLLDML(XMLLDMLLocale(language, territory, variant, script), fileName,
       defaultNS.flatMap(ns.get), symbols.toMap, gregorian.flatten.headOption,
-      gregorianDatePatterns.flatten.headOption, currencies, NumberPatterns(decimalPatterns, percentagePatterns))
+      gregorianDatePatterns.flatten.headOption, currencies,
+      NumberPatterns(decimalPatterns, percentagePatterns, currencyPatterns))
   }
 
   // Note this must be a def or there could be issues with concurrency

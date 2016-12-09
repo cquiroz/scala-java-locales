@@ -47,7 +47,10 @@ case class CurrencyDataRegionCurrency(currencyCode: String,
     from: Option[String], to: Option[String], tender: Option[Boolean])
 
 /** Number Formatting Patterns */
-case class NumberPatterns(decimalPattern: Option[String], percentPattern: Option[String])
+case class NumberPatterns(
+    decimalPattern: Option[String],
+    percentPattern: Option[String],
+    currencyPattern: Option[String])
 
 /**
  * Interfaces describing an LDML Locale

@@ -117,8 +117,14 @@ object NumberFormat {
     f
   }
 
-  //final def getCurrencyInstance(): NumberFormat = ???
-  //final def getCurrencyInstance(inLocale: Locale): NumberFormat = ???
+  final def getCurrencyInstance(): NumberFormat =
+    getCurrencyInstance(Locale.getDefault(Locale.Category.FORMAT))
+
+  final def getCurrencyInstance(inLocale: Locale): NumberFormat =
+    LocaleRegistry.ldml(inLocale).flatMap { ldml =>
+      val ptrn = patternsR(ldml, _.currencyPattern)
+      ptrn.map(new DecimalFormat(_, DecimalFormatSymbols.getInstance(inLocale))).map(setup)
+    }.getOrElse(new DecimalFormat("", DecimalFormatSymbols.getInstance(inLocale)))
 
   final def getPercentInstance(): NumberFormat =
     getPercentInstance(Locale.getDefault(Locale.Category.FORMAT))

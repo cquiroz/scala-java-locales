@@ -123,7 +123,8 @@ object CodeGenerator {
     val np = {
       val decimal = ldml.numberPatterns.decimalFormat.fold(NONE)(s => SOME(LIT(s)))
       val percent = ldml.numberPatterns.percentFormat.fold(NONE)(s => SOME(LIT(s)))
-      Apply(ldmlNumberPatternsSym, decimal, percent)
+      val currency = ldml.numberPatterns.currencyFormat.fold(NONE)(s => SOME(LIT(s)))
+      Apply(ldmlNumberPatternsSym, decimal, percent, currency)
     }
 
     OBJECTDEF(ldml.scalaSafeName) withParents Apply(ldmlSym, parent,
