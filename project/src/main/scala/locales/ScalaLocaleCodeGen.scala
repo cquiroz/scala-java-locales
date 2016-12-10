@@ -217,21 +217,36 @@ object ScalaLocaleCodeGen {
         if (n \ "@numberSystem").text == "latn"
         d <- n \ "decimalFormatLength"
         if (d \ "@type").text.isEmpty
-      } yield d \ "decimalFormat" \ "pattern").headOption.map(_.text)
+        f <- d \\ "decimalFormat"
+        p <- f \ "pattern"
+      } yield p).headOption.map(_.text)
 
     val percentagePatterns = (for {
         n <- xml \ "numbers" \\ "percentFormats"
         if (n \ "@numberSystem").text == "latn"
         d <- n \ "percentFormatLength"
         if (d \ "@type").text.isEmpty
-      } yield d \ "percentFormat" \ "pattern").headOption.map(_.text)
+        f <- d \\ "percentFormat"
+        p <- f \ "pattern"
+    } yield p).headOption.map(_.text)
 
     val currencyPatterns = (for {
       n <- xml \ "numbers" \\ "currencyFormats"
       if (n \ "@numberSystem").text == "latn"
       d <- n \ "currencyFormatLength"
-      if ((d \ "@type").text.isEmpty || (d \ "@type").text == "standard")
-    } yield d \ "currencyFormat" \ "pattern").headOption.map(_.text)
+      if (d \ "@type").text.isEmpty
+      f <- d \\ "currencyFormat"
+      p <- f \ "pattern"
+    } yield (f, p)).map{ case (f, p) =>
+      // We want accounting first if they have it, next standard, no @type, then other @type
+      val sort: Int = (f \ "@type").map{ _.text match {
+        case "accounting" => 1
+        case "standard"   => 2
+        case _            => 4
+      } }.headOption.getOrElse(3) // a @blank type is set to 3
+
+      (sort, p.text)
+    }.sorted.headOption.map{_._2}
 
     // Find out the default numeric system
     val defaultNS = Option((xml \ "numbers" \ "defaultNumberingSystem").text)
