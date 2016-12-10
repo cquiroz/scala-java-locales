@@ -5,7 +5,6 @@ import java.util.{Currency, Locale}
 import locales.{DecimalFormatUtil, LocaleRegistry, ParsedPattern}
 import scala.math.{max, min}
 
-
 // The constructor needs a non-localized pattern
 class DecimalFormat(private[this] val pattern: String, private[this] var symbols: DecimalFormatSymbols)
     extends NumberFormat {
@@ -20,10 +19,11 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   }
 
   // This holds all of the specifics about the decimal pattern
-  protected var parsedPattern = usePattern(pattern)
+  private var parsedPattern = usePattern(pattern)
 
   private var decimalSeparatorAlwaysShown: Boolean = false
   private var parseBigDecimal: Boolean = false
+  private var currency: Currency = Currency.getInstance(Locale.getDefault)
 
   // Need to be able to update the complete pattern for this instance
   private def usePattern(p: String): ParsedPattern = {
@@ -131,14 +131,11 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   // ...Trying to get a mostly correct/easier to read/understand implementation first
   // TODO: Currently ignoring FieldPosition argument
   private def subFormat(number: JavaBigDecimal, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = {
-    val negative: Boolean = number.signum == -1
+    val isNegative: Boolean = number.signum == -1
 
-    // Add Prefixes
-    if (negative) {
-      toAppendTo.append(getNegativePrefix())
-    } else {
-      toAppendTo.append(getPositivePrefix())
-    }
+    // Add Prefix
+    val prefix: String = if (isNegative) getNegativePrefix() else getPositivePrefix()
+    toAppendTo.append(prefix)
 
     val multiplied: JavaBigDecimal = number.multiply(JavaBigDecimal.valueOf(getMultiplier)).abs
 
@@ -229,11 +226,8 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     }
 
     // Add Suffixes
-    if (negative) {
-      toAppendTo.append(getNegativeSuffix())
-    } else {
-      toAppendTo.append(getPositiveSuffix())
-    }
+    val suffix: String = if (isNegative) getNegativeSuffix() else getPositiveSuffix()
+    toAppendTo.append(suffix)
   }
 
   def parse(source: String, parsePosition: ParsePosition): Number = ???
@@ -255,7 +249,8 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   private def replaceLocalizedPrefixOrSuffixSymbols(s: String): String = {
     if (s == null) ""
     else s.replace(DecimalFormatUtil.PatternCharPercent, symbols.getPercent)
-           .replace(DecimalFormatUtil.PatternCharPerMile, symbols.getPerMill)
+          .replace(DecimalFormatUtil.PatternCharPerMile, symbols.getPerMill)
+          .replace(DecimalFormatUtil.PatternCharCurrencySymbol.toString, getCurrency().getSymbol())
   }
 
   def getPositivePrefix(): String = {
@@ -304,8 +299,6 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
 
   def setMultiplier(newValue: Int): Unit =
     this.parsedPattern = parsedPattern.copy(multiplier = newValue)
-
-  // override def setGroupingUsed(newValue: Boolean): Unit = ???
 
   def getGroupingSize(): Int = parsedPattern.groupingSize
 
@@ -382,9 +375,9 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     usePattern(standardPattern)
   }
 
-  def getCurrency(): Currency = ???
+  def getCurrency(): Currency = currency
 
-  def setCurrency(currency: Currency): Unit = ???
+  def setCurrency(currency: Currency): Unit = this.currency = currency
 
   override def clone(): AnyRef = {
     val f = new DecimalFormat(toPattern())

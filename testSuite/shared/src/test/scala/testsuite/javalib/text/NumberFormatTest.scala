@@ -7,12 +7,19 @@ import java.math.RoundingMode
 import locales.{DecimalFormatUtil, LocaleRegistry}
 import locales.cldr.LDML
 import locales.cldr.data._
-import org.junit.{Ignore, Test}
+import org.junit.{Before, Ignore, Test}
 import org.junit.Assert._
 import testsuite.utils.{LocaleTestSetup, Platform}
 import testsuite.utils.AssertThrows._
 
 class NumberFormatTest extends LocaleTestSetup {
+  // Clean up the locale database, there are different implementations for
+  // the JVM and JS
+  @Before def cleanup: Unit = {
+    super.cleanDatabase
+    Locale.setDefault(Locale.US) // For Currency support
+  }
+
   case class TestCase(tag: String, ldml: LDML, l: Locale, cldr21: Boolean, nf: String, inf: String, pf: String)
 
   val stdLocales = List(
@@ -425,5 +432,4 @@ class NumberFormatTest extends LocaleTestSetup {
     assertEquals("\u22122,147,483,648", nf.format(Int.MinValue))
     assertEquals("\u22129,223,372,036,854,775,808", nf.format(Long.MinValue))
   }
-
 }

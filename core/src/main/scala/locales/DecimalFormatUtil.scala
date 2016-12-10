@@ -23,6 +23,7 @@ object DecimalFormatUtil {
   val PatternCharSeparator = ';'
   val PatternCharExponent = 'E'
   val PatternCharMinus = '-'
+  val PatternCharCurrencySymbol = '\u00A4'
 
   private val allPatternChars = List(PatternCharZeroDigit, PatternCharGroupingSeparator, PatternCharDecimalSeparator,
     PatternCharPerMile, PatternCharPercent, PatternCharDigit, PatternCharSeparator, PatternCharExponent, PatternCharMinus)

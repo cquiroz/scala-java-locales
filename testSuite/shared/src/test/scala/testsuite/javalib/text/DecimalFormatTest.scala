@@ -2,11 +2,23 @@ package testsuite.javalib.text
 
 import java.math.RoundingMode
 import java.text.{DecimalFormat, DecimalFormatSymbols, NumberFormat}
+import java.util.Locale
 
 import org.junit.Assert._
-import org.junit.Test
+import org.junit.{Before, Test}
 
-class DecimalFormatTest {
+import testsuite.utils.Platform
+import testsuite.utils.LocaleTestSetup
+
+// Need Locale for Currency support
+class DecimalFormatTest extends LocaleTestSetup {
+  // Clean up the locale database, there are different implementations for
+  // the JVM and JS
+  @Before def cleanup: Unit = {
+    super.cleanDatabase
+    Locale.setDefault(Locale.US)
+  }
+
   @Test def test_constructor(): Unit = {
     val f = new DecimalFormat("##0.#####E0")
     assertEquals("toPattern", "##0.#####E0", f.toPattern)
@@ -570,5 +582,29 @@ class DecimalFormatTest {
     assertEquals("-12.34E-6", "-12.34E-6", f.format(-.00001234))
     assertEquals("-1.234E-6", "-1.234E-6", f.format(-.000001234))
     assertEquals("-123.4E-9", "-123.4E-9", f.format(-.0000001234))
+  }
+
+  @Test def test_format_currency(): Unit = {
+    val f = NumberFormat.getCurrencyInstance(Locale.US)
+
+    assertEquals("0", "$0.00", f.format(0))
+
+    assertEquals(".12",         "$0.12",          f.format(.12))
+    assertEquals("123",         "$123.00",        f.format(123))
+    assertEquals("123.45",      "$123.45",        f.format(123.45))
+    assertEquals("1234.56",     "$1,234.56",      f.format(1234.56))
+    assertEquals("12345.67",    "$12,345.67",     f.format(12345.67))
+    assertEquals("123456.78",   "$123,456.78",    f.format(123456.78))
+    assertEquals("1234567.89",  "$1,234,567.89",  f.format(1234567.89))
+    assertEquals("12345678.90", "$12,345,678.90", f.format(12345678.90))
+
+    assertEquals("-.12",         "($0.12)",          f.format(-.12))
+    assertEquals("-123",         "($123.00)",        f.format(-123))
+    assertEquals("-123.45",      "($123.45)",        f.format(-123.45))
+    assertEquals("-1234.56",     "($1,234.56)",      f.format(-1234.56))
+    assertEquals("-12345.67",    "($12,345.67)",     f.format(-12345.67))
+    assertEquals("-123456.78",   "($123,456.78)",    f.format(-123456.78))
+    assertEquals("-1234567.89",  "($1,234,567.89)",  f.format(-1234567.89))
+    assertEquals("-12345678.90", "($12,345,678.90)", f.format(-12345678.90))
   }
 }
