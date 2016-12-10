@@ -7,21 +7,21 @@ lazy val downloadFromZip: TaskKey[Unit] =
   taskKey[Unit]("Download the sbt zip and extract it")
 
 val commonSettings: Seq[Setting[_]] = Seq(
-  cldrVersion := "30",
-  version := s"0.4.0-cldr${cldrVersion.value}",
-  organization := "com.github.cquiroz",
-  scalaVersion := "2.11.8",
+  cldrVersion        := "30",
+  version            := s"0.5.0-cldr${cldrVersion.value}-SNAPSHOT",
+  organization       := "io.github.cquiroz",
+  scalaVersion       := "2.11.8",
   crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.0"),
-  scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
-  javaOptions ++= Seq("-Dfile.encoding=UTF8"),
+  scalacOptions      ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
+  javaOptions        ++= Seq("-Dfile.encoding=UTF8"),
   mappings in (Compile, packageBin) ~= {
     // Exclude CLDR files...
     _.filter(!_._2.contains("core"))
   },
-  exportJars := true,
-  publishMavenStyle := true,
+  exportJars              := true,
+  publishMavenStyle       := true,
   publishArtifact in Test := false,
-  publishTo := {
+  publishTo               := {
     val nexus = "https://oss.sonatype.org/"
     if (isSnapshot.value)
       Some("snapshots" at nexus + "content/repositories/snapshots")
@@ -48,6 +48,24 @@ val commonSettings: Seq[Setting[_]] = Seq(
         <url>https://github.com/cquiroz/</url>
       </developer>
     </developers>
+    <contributors>
+      <contributor>
+        <name>Eric Peters</name>
+        <url>https://github.com/er1c</url>
+      </contributor>
+      <contributor>
+        <name>A. Alonso Dominguez</name>
+        <url>https://github.com/alonsodomin</url>
+      </contributor>
+      <contributor>
+        <name>Marius B. Kotsbak</name>
+        <url>https://github.com/mkotsbak</url>
+      </contributor>
+      <contributor>
+        <name>Timothy Klim</name>
+        <url>https://github.com/TimothyKlim</url>
+      </contributor>
+    </contributors>
   ,
   pomIncludeRepository := { _ => false }
 )
