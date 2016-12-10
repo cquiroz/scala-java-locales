@@ -125,7 +125,7 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     } else count
   }
 
-  private def getZeroDigits(count: Int): String = (0 until count).map{ _ => symbols.getZeroDigit }.mkString
+  private def repeatDigits(count: Int, c: Char): String = (0 until count).map{ _ => c }.mkString
 
   // Handle formatting any big decimal...I'm sure this algorithm can be optimized
   // ...Trying to get a mostly correct/easier to read/understand implementation first
@@ -211,12 +211,12 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
 
         // Add zero-end padding minimum fraction digits
         if (fractionStr.length < getMinimumFractionDigits) {
-          toAppendTo.append(getZeroDigits(getMinimumFractionDigits - fractionStr.length))
+          toAppendTo.append(repeatDigits(getMinimumFractionDigits - fractionStr.length, symbols.getZeroDigit))
         }
 
       // No fraction value, but we have a minimum fraction digits to set...
       case 0 if (getMinimumFractionDigits > 0) =>
-        toAppendTo.append(s"${symbols.getDecimalSeparator}${getZeroDigits(getMinimumFractionDigits)}")
+        toAppendTo.append(s"${symbols.getDecimalSeparator}${repeatDigits(getMinimumFractionDigits, symbols.getZeroDigit)}")
       case _  => // No fraction value, is less than, or we have no minimum digits requirement
     }
 
@@ -319,9 +319,91 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
 
   def setParseBigDecimal(newValue: Boolean): Unit = this.parseBigDecimal = newValue
 
-  // TODO: Generate String based upon the parsedPattern
-  def toPattern(): String = pattern
-  // def toLocalizedPattern(): String = pattern
+  def toPattern(): String = generatePattern(false)
+  def toLocalizedPattern(): String = generatePattern(true)
+
+  private def generatePattern(localize: Boolean): String = {
+    val isExponent: Boolean =
+      parsedPattern.minimumExponentDigits.isDefined || parsedPattern.maximumExponentDigits.isDefined
+
+    // Create the core pattern.
+    val sb = new StringBuilder
+
+    val requiredIntegersStr: String = repeatDigits(
+      getMinimumIntegerDigits(),
+      if (localize) symbols.getZeroDigit else DecimalFormatUtil.PatternCharZeroDigit
+    )
+
+    val optionalIntegersStr: String = repeatDigits(
+      if (isExponent) (getMaximumIntegerDigits() - getMinimumIntegerDigits())
+      else max((getGroupingSize() - getMinimumIntegerDigits() + 1), 1),
+      if (localize) symbols.getDigit else DecimalFormatUtil.PatternCharDigit
+    )
+
+    if (isGroupingUsed() && getGroupingSize() > 0) {
+      val integerStr = requiredIntegersStr + optionalIntegersStr
+      val c: Char = if (localize) symbols.getGroupingSeparator else DecimalFormatUtil.PatternCharGroupingSeparator
+      sb.append(integerStr.grouped(getGroupingSize()).mkString(c.toString).reverse)
+    } else {
+      sb.append(optionalIntegersStr)
+      sb.append(requiredIntegersStr)
+    }
+
+    val requiredFractionsStr: String = repeatDigits(
+      getMinimumFractionDigits(),
+      if (localize) symbols.getZeroDigit else DecimalFormatUtil.PatternCharZeroDigit
+    )
+
+    val optionalFractionsStr: String = repeatDigits(
+      getMaximumFractionDigits() - getMinimumFractionDigits(),
+      if (localize) symbols.getDigit else DecimalFormatUtil.PatternCharDigit
+    )
+
+    // Append the decimal separator
+    if (requiredFractionsStr.nonEmpty || optionalFractionsStr.nonEmpty)
+      sb.append(if (localize) symbols.getDecimalSeparator else DecimalFormatUtil.PatternCharDecimalSeparator)
+
+    // Add Fractions
+    if (requiredFractionsStr.nonEmpty) sb.append(requiredFractionsStr)
+    if (optionalFractionsStr.nonEmpty) sb.append(optionalFractionsStr)
+
+    // Add Exponents
+    if (isExponent) {
+      sb.append(if (localize) symbols.getExponentSeparator else DecimalFormatUtil.PatternCharExponent)
+
+      val minStr: String = parsedPattern.minimumExponentDigits.map{ len: Int =>
+        repeatDigits(len, if (localize) symbols.getZeroDigit else DecimalFormatUtil.PatternCharZeroDigit)
+      }.getOrElse("")
+
+      sb.append(minStr)
+
+      val maxStr = parsedPattern.maximumExponentDigits.map{ len: Int =>
+        repeatDigits(len - minStr.size, if (localize) symbols.getDigit else DecimalFormatUtil.PatternCharDigit)
+      }.getOrElse("")
+
+      sb.append(maxStr)
+    }
+
+    val pattern: String = sb.toString()
+
+    val result = new StringBuilder
+
+    parsedPattern.positivePrefix.map{ result.append }
+    result.append(pattern)
+    parsedPattern.positiveSuffix.map{ result.append }
+
+    // Add negative pattern
+    if (parsedPattern.negativePrefix.isDefined || parsedPattern.negativeSuffix.isDefined) {
+      // Pattern separator
+      result.append(if (localize) symbols.getPatternSeparator else DecimalFormatUtil.PatternCharSeparator)
+
+      parsedPattern.negativePrefix.foreach{ result.append }
+      result.append(pattern)
+      parsedPattern.negativeSuffix.foreach{ result.append }
+    }
+
+    result.toString()
+  }
 
   def getMaximumIntegerDigits(): Int = parsedPattern.maximumIntegerDigits.getOrElse(Int.MaxValue)
 
@@ -334,7 +416,10 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     )
   }
 
-  def getMinimumIntegerDigits(): Int = parsedPattern.minimumIntegerDigits.getOrElse(1)
+  private def minFractionDigitsAreEmpty: Boolean = parsedPattern.minimumFractionDigits.isEmpty ||
+    parsedPattern.minimumFractionDigits.exists{ _ == 0 }
+
+  def getMinimumIntegerDigits(): Int = parsedPattern.minimumIntegerDigits.getOrElse(0)
 
   def setMinimumIntegerDigits(newValue: Int): Unit = {
     val newMin: Int = max(newValue, 0)

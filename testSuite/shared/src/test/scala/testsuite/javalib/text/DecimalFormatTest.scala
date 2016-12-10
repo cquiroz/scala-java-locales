@@ -607,4 +607,57 @@ class DecimalFormatTest extends LocaleTestSetup {
     assertEquals("-1234567.89",  "($1,234,567.89)",  f.format(-1234567.89))
     assertEquals("-12345678.90", "($12,345,678.90)", f.format(-12345678.90))
   }
+
+  @Test def test_to_pattern_positive_patterns(): Unit = {
+    val patternTests: Seq[(String, String)] = Seq(
+      ("#,##0.##", "#,##0.##"),
+      ("#,##0.0#", "#,##0.0#"),
+      ("#0.0#", "#0.0#"),
+      ("#.#", "#0.#"),
+      ("#.0", "#.0"),
+      ("0.0", "#0.0"),
+      ("##0.##E0", "##0.##E0"),
+      ("##0.##E00", "##0.##E00")
+    )
+
+    patternTests.foreach{ case (in: String, out: String) =>
+      val f = new DecimalFormat(in)
+      val p = new DecimalFormat("foo"+in)
+      val s = new DecimalFormat(in+"bar")
+      val b = new DecimalFormat("foo"+in+"bar")
+
+      assertEquals(s"$in, $out", out, f.toPattern)
+      assertEquals(s"foo $in, $out", "foo"+out, p.toPattern)
+      assertEquals(s"$in, $out bar", out+"bar", s.toPattern)
+      assertEquals(s"foo $in, $out bar", "foo"+out+"bar", b.toPattern)
+    }
+  }
+
+  @Test def test_to_pattern_negative_patterns(): Unit = {
+    val patternTests: Seq[(String, String)] = Seq(
+      ("#,##0.##;(#,##0.##)", "#,##0.##;(#,##0.##)"),
+      ("#,##0.0#;(#,##0.0#)", "#,##0.0#;(#,##0.0#)"),
+      ("###0.0#;(###0.0#)", "#0.0#;(#0.0#)"),
+      ("#.#;(#.#)", "#0.#;(#0.#)"),
+      ("#.0;(#.0)", "#.0;(#.0)"),
+      ("0.0;(0.0)", "#0.0;(#0.0)"),
+      ("##0.##E0;(##0.##E0)", "##0.##E0;(##0.##E0)"),
+      ("##0.##E00;(##0.##E00)", "##0.##E00;(##0.##E00)"),
+
+      // Add positive prefix/sufixes
+      ("foo#,##0.##bar;(#,##0.##)", "foo#,##0.##bar;(#,##0.##)"),
+      ("foo#,##0.0#bar;(#,##0.0#)", "foo#,##0.0#bar;(#,##0.0#)"),
+      ("foo###0.0#bar;(###0.0#)", "foo#0.0#bar;(#0.0#)"),
+      ("foo#.#bar;(#.#)", "foo#0.#bar;(#0.#)"),
+      ("foo#.0bar;(#.0)", "foo#.0bar;(#.0)"),
+      ("foo0.0bar;(0.0)", "foo#0.0bar;(#0.0)"),
+      ("foo##0.##E0bar;(##0.##E0)", "foo##0.##E0bar;(##0.##E0)"),
+      ("foo##0.##E00bar;(##0.##E00)", "foo##0.##E00bar;(##0.##E00)")
+    )
+    patternTests.foreach{ case (in: String, out: String) =>
+      val f = new DecimalFormat(in)
+
+      assertEquals(s"$in, $out", out, f.toPattern)
+    }
+  }
 }

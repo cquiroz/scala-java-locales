@@ -155,7 +155,8 @@ object DecimalFormatUtil {
         // If trailing then take everything after the ".", if preceding take until the "." and reverse it
         // to count the zeroes directly before the "."
         val haystack: String = if (trailingCount) pattern.substring(idx+1) else pattern.substring(0, idx).reverse
-        Some(haystack.filterNot{_ == PatternCharGroupingSeparator}.takeWhile(_ == PatternCharZeroDigit).size)
+        val min: Int = haystack.filterNot{_ == PatternCharGroupingSeparator}.takeWhile(_ == PatternCharZeroDigit).size
+        if (min > 0) Some(min) else None
     }
   }
 
@@ -185,6 +186,9 @@ object DecimalFormatUtil {
 
     val hasExponent: Boolean = patterns.positive.pattern.exists{_ == PatternCharExponent}
 
+    // Need to default to a Some(1) for minIntegerDigits
+    val minFractionDigits: Option[Int] = countMinimum(patterns.positive.pattern, PatternCharDecimalSeparator, true)
+
     // A little special since only applies to patterns with an exponent
     val maxIntegerDigits: Option[Int] = if (hasExponent) {
       val decimalPosition: Int = patterns.positive.pattern.indexOf(PatternCharDecimalSeparator)
@@ -207,7 +211,8 @@ object DecimalFormatUtil {
           if (maxInt > minInt && maxInt > 1)
         } yield (1)
 
-      exponentMin orElse count
+
+      exponentMin orElse count orElse (if (minFractionDigits.isDefined) None else Some(1)) // Default to 1 if no min fraction or min count
     }
 
     val groupSize: Int = groupingCount(patterns.positive.pattern)
@@ -228,7 +233,7 @@ object DecimalFormatUtil {
       isGroupingUsed           = (groupSize > 0),
 
       minimumIntegerDigits     = minIntegerDigits,
-      minimumFractionDigits    = countMinimum(patterns.positive.pattern, PatternCharDecimalSeparator, true),
+      minimumFractionDigits    = minFractionDigits,
       minimumExponentDigits    = countMinimum(patterns.positive.pattern, PatternCharExponent, true),
 
       maximumIntegerDigits     = maxIntegerDigits,
