@@ -60,14 +60,14 @@ class LocaleRegistryTest extends LocaleTestSetup {
   }
 
   @Test def test_available_locales(): Unit = {
+    super.cleanDatabase
     val originalLength = Locale.getAvailableLocales.length
     if (!Platform.executingInJVM) {
       testData.foreach { l =>
         LocaleRegistry.installLocale(l.ldml)
       }
-    }
-    if (!Platform.executingInJVM)
       assertEquals(originalLength + testData.length - 1, //root is already installed
-          Locale.getAvailableLocales.length)
+        Locale.getAvailableLocales.length)
+    }
   }
 }

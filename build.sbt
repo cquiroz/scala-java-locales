@@ -102,6 +102,7 @@ lazy val testSuite: CrossProject = CrossProject(
         "-v", "-a")
   ).
   jsSettings(
+    parallelExecution in Test := false,
     name := "scala-java-locales testSuite on JS"
   ).
   jsConfigure(_.dependsOn(coreJS)).
