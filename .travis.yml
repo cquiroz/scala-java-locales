@@ -8,9 +8,9 @@ jdk:
   - oraclejdk8
 install:
   - . $HOME/.nvm/nvm.sh
-  - nvm install stable
-  - nvm use stable
+  - nvm install 6.5.0
+  - nvm use 6.5.0
 script:
   - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION coreJS/scalastyle testSuiteJVM/scalastyle testSuiteJVM/test:scalastyle testSuite/scalastyle testSuite/test:scalastyle
   - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION testSuiteJVM/test
-  - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION '; set scalaJSStage in Global := FullOptStage; set postLinkJSEnv in Global := new org.scalajs.jsenv.RetryingComJSEnv(NodeJSEnv().value)' testSuite/test
+  - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION '; set scalaJSStage in Global := FullOptStage' testSuite/test
