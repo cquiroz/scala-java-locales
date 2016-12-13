@@ -1,7 +1,7 @@
 package java.text
 
 // Make this a super class so we can match against it
-object IgnoreFieldPosition extends FieldPosition(0)
+private[text] object IgnoreFieldPosition extends FieldPosition(0)
 
 class FieldPosition(private[this] val attribute: Format.Field, private[this] val fieldId: Int) {
   private[this] var beginIndex: Int = 0

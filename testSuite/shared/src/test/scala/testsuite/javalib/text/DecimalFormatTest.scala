@@ -92,6 +92,8 @@ class DecimalFormatTest extends LocaleTestSetup {
     f.setNegativeSuffix("D")
     assertEquals("D", f.getNegativeSuffix)
 
+    // TODO: this should probably be fixed in the impl to do the nulls like the JVM
+    
     // Check for null arguments
     //f.setPositivePrefix(null)
     //assertNull(f.getPositivePrefix)
@@ -124,6 +126,9 @@ class DecimalFormatTest extends LocaleTestSetup {
   // JavaDoc Example: If there is an explicit negative subpattern, it serves only to specify the negative prefix and
   // suffix; the number of digits, minimal digits, and other characteristics are all the same as the positive pattern.
   // That means that "#,##0.0#;(#)" produces precisely the same behavior as "#,##0.0#;(#,##0.0#)".
+  
+  // Uhh...there's a strange bug in the JVM:
+  // val f = new java.text.DecimalFormat("#,##0.0#;(#)") => f.format(-1) => "(1.0" (missing last ')')
   @Test def test_javadoc_negative_prefix(): Unit = {
     val f1 = new DecimalFormat("#,##0.0#;(#)")
     val f2 = new DecimalFormat("#,##0.0#;(#,##0.0#)")
@@ -310,13 +315,13 @@ class DecimalFormatTest extends LocaleTestSetup {
     assertEquals("2,000", "2,000", df.format(1000))
     assertEquals("200,000", "200,000", df.format(100000))
     assertEquals("20,000,000", "20,000,000", df.format(10000000))
-    //assertEquals("4,294,967,294", df.format(Int.MaxValue))
-    //assertEquals("18,446,744,073,709,551,614", df.format(Long.MaxValue))
+    assertEquals("4,294,967,294", df.format(Int.MaxValue))
+    assertEquals("18,446,744,073,709,551,614", df.format(Long.MaxValue))
     assertEquals("-2,000", "-2,000", df.format(-1000))
     assertEquals("-200,000", "-200,000", df.format(-100000))
     assertEquals("-20,000,000", "-20,000,000", df.format(-10000000))
-    //assertEquals("-4,294,967,296", df.format(Int.MinValue))
-    //assertEquals("-18,446,744,073,709,551,616", df.format(Long.MinValue))
+    assertEquals("-4,294,967,296", df.format(Int.MinValue))
+    assertEquals("-18,446,744,073,709,551,616", df.format(Long.MinValue))
 
     df.setMultiplier(100)
     assertEquals("12,300", "12,300", df.format(123))
@@ -325,13 +330,13 @@ class DecimalFormatTest extends LocaleTestSetup {
     assertEquals("100,000", "100,000", df.format(1000))
     assertEquals("10,000,000", "10,000,000", df.format(100000))
     assertEquals("1,000,000,000", "1,000,000,000", df.format(10000000))
-    //assertEquals("214,748,364,700", df.format(Int.MaxValue))
-    //assertEquals("922,337,203,685,477,580,700", df.format(Long.MaxValue))
+    assertEquals("214,748,364,700", df.format(Int.MaxValue))
+    assertEquals("922,337,203,685,477,580,700", df.format(Long.MaxValue))
     assertEquals("-100,000", "-100,000", df.format(-1000))
     assertEquals("-10,000,000", "-10,000,000", df.format(-100000))
     assertEquals("-1,000,000,000", "-1,000,000,000", df.format(-10000000))
-    //assertEquals("-214,748,364,800", df.format(Int.MinValue))
-    //assertEquals("-922,337,203,685,477,580,800", df.format(Long.MinValue))
+    assertEquals("-214,748,364,800", df.format(Int.MinValue))
+    assertEquals("-922,337,203,685,477,580,800", df.format(Long.MinValue))
   }
 
   @Test def test_format_group_size(): Unit = {
@@ -361,13 +366,9 @@ class DecimalFormatTest extends LocaleTestSetup {
     assertEquals("1,000.123", "1,000.123", df.format(1000.1234))
     assertEquals("10,000.123", "10,000.123", df.format(10000.1234))
     assertEquals("10,000,000.123", "10,000,000.123", df.format(10000000.1234))
-//    assertEquals("21,4748,3647", "21,4748,3647", df.format(Int.MaxValue))
-//    assertEquals("922,3372,0368,5477,5807", "922,3372,0368,5477,5807", df.format(Long.MaxValue))
     assertEquals("-1,000.123", "-1,000.123", df.format(-1000.1234))
     assertEquals("-10,000.123", "-10,000.123", df.format(-10000.1234))
     assertEquals("-10,000,0000.123", "-10,000,000.123", df.format(-10000000.1234))
-//    assertEquals("-21,4748,3648", "-21,4748,3648", df.format(Int.MinValue))
-//    assertEquals("-922,3372,0368,5477,5808", "-922,3372,0368,5477,5808", df.format(Long.MinValue))
   }
 
 
@@ -384,13 +385,13 @@ class DecimalFormatTest extends LocaleTestSetup {
     assertEquals("1,000.12340", "1,000.12340", df.format(1000.1234))
     assertEquals("10,000.12340", "10,000.12340", df.format(10000.1234))
     assertEquals("10,000,000.12340", "10,000,000.12340", df.format(10000000.1234))
-    //    assertEquals("21,4748,3647", "21,4748,3647", df.format(Int.MaxValue))
-    //    assertEquals("922,3372,0368,5477,5807", "922,3372,0368,5477,5807", df.format(Long.MaxValue))
+    assertEquals("2,147,483,647.00000", "2,147,483,647.00000", df.format(Int.MaxValue))
+    assertEquals("9,223,372,036,854,775,807.00000", "9,223,372,036,854,775,807.00000", df.format(Long.MaxValue))
     assertEquals("-1,000.12340", "-1,000.12340", df.format(-1000.1234))
     assertEquals("-10,000.12340", "-10,000.12340", df.format(-10000.1234))
     assertEquals("-10,000,0000.12340", "-10,000,000.12340", df.format(-10000000.1234))
-    //    assertEquals("-21,4748,3648", "-21,4748,3648", df.format(Int.MinValue))
-    //    assertEquals("-922,3372,0368,5477,5808", "-922,3372,0368,5477,5808", df.format(Long.MinValue))
+    assertEquals("-2,147,483,648.00000", "-2,147,483,648.00000", df.format(Int.MinValue))
+    assertEquals("-9,223,372,036,854,775,808.00000", "-9,223,372,036,854,775,808.00000", df.format(Long.MinValue))
   }
 
   @Test def test_format_decimals_max_fractions(): Unit = {
@@ -405,13 +406,9 @@ class DecimalFormatTest extends LocaleTestSetup {
     assertEquals("1,000.12340", "1,000.12", df.format(1000.1234))
     assertEquals("10,000.12340", "10,000.12", df.format(10000.1234))
     assertEquals("10,000,000.12340", "10,000,000.12", df.format(10000000.1234))
-    //    assertEquals("21,4748,3647", "21,4748,3647", df.format(Int.MaxValue))
-    //    assertEquals("922,3372,0368,5477,5807", "922,3372,0368,5477,5807", df.format(Long.MaxValue))
     assertEquals("-1,000.12340", "-1,000.12", df.format(-1000.1234))
     assertEquals("-10,000.12340", "-10,000.12", df.format(-10000.1234))
     assertEquals("-10,000,0000.12340", "-10,000,000.12", df.format(-10000000.1234))
-    //    assertEquals("-21,4748,3648", "-21,4748,3648", df.format(Int.MinValue))
-    //    assertEquals("-922,3372,0368,5477,5808", "-922,3372,0368,5477,5808", df.format(Long.MinValue))
   }
 
   @Test def test_format_exponents(): Unit = {

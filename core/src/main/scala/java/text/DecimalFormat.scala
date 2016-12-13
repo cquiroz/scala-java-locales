@@ -13,17 +13,24 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
 
   def this() = {
     this(
-      LocaleRegistry.ldml(Locale.getDefault).flatMap{ _.numberPatterns.decimalPattern }.getOrElse(???),
+      LocaleRegistry.ldml(Locale.getDefault).flatMap{ _.numberPatterns.decimalPattern }.getOrElse("#,##0.##"),
       DecimalFormatSymbols.getInstance()
     )
   }
 
   // This holds all of the specifics about the decimal pattern
-  private var parsedPattern = usePattern(pattern)
+  private var parsedPattern: ParsedPattern = usePattern(pattern)
 
   private var decimalSeparatorAlwaysShown: Boolean = false
   private var parseBigDecimal: Boolean = false
   private var currency: Currency = Currency.getInstance(Locale.getDefault)
+  
+  // Helpers to avoid using .compareTo, annoying have to re-import within defs
+  private val bigIntegerOrdering = implicitly[Ordering[JavaBigInteger]]
+  import bigIntegerOrdering.mkOrderingOps
+      
+  private val bigDecimalOrdering = implicitly[Ordering[JavaBigDecimal]]
+  import bigDecimalOrdering.mkOrderingOps
 
   // Need to be able to update the complete pattern for this instance
   private def usePattern(p: String): ParsedPattern = {
@@ -53,11 +60,13 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
 
   /* Write number to strBuilder, return Digits Written */
   private def formatNumber(number: JavaBigInteger, builder: StringBuilder, isIntegerPart: Boolean): Int = {
+    import bigIntegerOrdering.mkOrderingOps
+
     var digitsWritten: Int = 0
 
     var n: JavaBigInteger = number
     while (
-      n.compareTo(JavaBigInteger.ZERO) == 1 &&
+      n > JavaBigInteger.ZERO &&
       (if (isIntegerPart) (totalDigitsWritten(digitsWritten) <= getMaximumIntegerDigits) else true)
     ) {
       if (isIntegerPart && !useScientificNotation) handleGroupSeparator(builder, digitsWritten)
@@ -83,11 +92,13 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     else (getMinimumIntegerDigits + getMaximumFractionDigits)
 
   // Return the scaled big decimal + power unit
-  def getExponentNumberAndPower(n: JavaBigDecimal): (JavaBigDecimal, Int) =
+  def getExponentNumberAndPower(n: JavaBigDecimal): (JavaBigDecimal, Int) = {
+    import bigDecimalOrdering.mkOrderingOps
+
     // zero shortcut
     if (n.compareTo(JavaBigDecimal.ZERO) == 0) (JavaBigDecimal.ZERO, 0)
     else {
-      val isJustFraction: Boolean = (n.abs.compareTo(JavaBigDecimal.ONE) == -1)
+      val isJustFraction: Boolean = (n.abs < JavaBigDecimal.ONE)
       val originalDecimalPosition: Int = (n.precision - n.scale)
       val newPrecision: Int = min(n.precision, totalExponentPrecision)
 
@@ -117,6 +128,7 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
         originalDecimalPosition - newIntegerSize
       )
     }
+  }
 
   // Based upon number count, add in the number of group separators
   private def totalDigitsWritten(count: Int): Int = {
@@ -131,6 +143,8 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   // ...Trying to get a mostly correct/easier to read/understand implementation first
   // TODO: Currently ignoring FieldPosition argument
   private def subFormat(number: JavaBigDecimal, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = {
+    import bigDecimalOrdering.mkOrderingOps
+
     val isNegative: Boolean = number.signum == -1
 
     // Add Prefix
@@ -151,7 +165,7 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     val integerPart: JavaBigDecimal = new JavaBigDecimal(targetNumber.toBigInteger, 0)
     var integerDigitsWritten: Int = 0
 
-    if ((integerPart.compareTo(JavaBigDecimal.ZERO) == 0) || (getMaximumIntegerDigits == 0)) {
+    if ((integerPart == JavaBigDecimal.ZERO) || (getMaximumIntegerDigits == 0)) {
       integerStrBuilder.append(symbols.getZeroDigit)
       integerDigitsWritten += 1
     } else {
@@ -171,53 +185,50 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     // We have the integer portion ready, append it to the builder
     toAppendTo.append(integerStrBuilder.result.reverse)
 
-    // Compare the target number to the strictly-integer value...
-    targetNumber.compareTo(integerPart) match {
-      // We have a fractional value...
-      case 1  =>
-        toAppendTo.append(symbols.getDecimalSeparator)
+    // We have a fraction value
+    if (targetNumber > integerPart) {
+      toAppendTo.append(symbols.getDecimalSeparator)
 
-        val fractionStrBuilder = new StringBuilder()
+      val fractionStrBuilder = new StringBuilder()
 
-        // Special case for exponents
-        val fractionMaxDigits: Int = if (useScientificNotation) {
-          totalExponentPrecision - integerDigitsWritten
-        } else getMaximumFractionDigits
+      // Special case for exponents
+      val fractionMaxDigits: Int = if (useScientificNotation) {
+        totalExponentPrecision - integerDigitsWritten
+      } else getMaximumFractionDigits
 
-        // Set scale to max fraction digits, subtract integer part, & get
-        // 12.0123 -> (set scale 5) 12.01230 -> (minus 12) 0.01230) -> unscaled value 1230
-        val fractionPart: JavaBigInteger =
-        targetNumber.setScale(fractionMaxDigits, getRoundingMode).subtract(integerPart).unscaledValue()
+      // Set scale to max fraction digits, subtract integer part, & get
+      // 12.0123 -> (set scale 5) 12.01230 -> (minus 12) 0.01230) -> unscaled value 1230
+      val fractionPart: JavaBigInteger =
+      targetNumber.setScale(fractionMaxDigits, getRoundingMode).subtract(integerPart).unscaledValue()
 
-        // Convert integer 1230 to a reversed string (0321)
-        formatNumber(fractionPart, fractionStrBuilder, false)
+      // Convert integer 1230 to a reversed string (0321)
+      formatNumber(fractionPart, fractionStrBuilder, false)
 
-        // 0321
-        val unscaledString = fractionStrBuilder.result
+      // 0321
+      val unscaledString = fractionStrBuilder.result
 
-        // Drop extra zero's at the end, then add significant '0's to end, then reverse it
-        // 0321 => 321 => 3210 => 0123
-        val fractionStr: String = {
-          val truncatedStr: String = unscaledString.dropWhile(_ == symbols.getZeroDigit)
+      // Drop extra zero's at the end, then add significant '0's to end, then reverse it
+      // 0321 => 321 => 3210 => 0123
+      val fractionStr: String = {
+        val truncatedStr: String = unscaledString.dropWhile(_ == symbols.getZeroDigit)
 
-          truncatedStr +
-          (0 until (fractionMaxDigits - unscaledString.length)).map { _ =>
-            symbols.getZeroDigit
-          }.mkString
-        }.reverse
+        truncatedStr +
+        (0 until (fractionMaxDigits - unscaledString.length)).map { _ =>
+          symbols.getZeroDigit
+        }.mkString
+      }.reverse
 
-        // Add our fraction with significant prefix zeroes
-        toAppendTo.append(fractionStr)
+      // Add our fraction with significant prefix zeroes
+      toAppendTo.append(fractionStr)
 
-        // Add zero-end padding minimum fraction digits
-        if (fractionStr.length < getMinimumFractionDigits) {
-          toAppendTo.append(repeatDigits(getMinimumFractionDigits - fractionStr.length, symbols.getZeroDigit))
-        }
-
-      // No fraction value, but we have a minimum fraction digits to set...
-      case 0 if (getMinimumFractionDigits > 0) =>
-        toAppendTo.append(s"${symbols.getDecimalSeparator}${repeatDigits(getMinimumFractionDigits, symbols.getZeroDigit)}")
-      case _  => // No fraction value, is less than, or we have no minimum digits requirement
+      // Add zero-end padding minimum fraction digits
+      if (fractionStr.length < getMinimumFractionDigits) {
+        toAppendTo.append(repeatDigits(getMinimumFractionDigits - fractionStr.length, symbols.getZeroDigit))
+      }
+    // No fraction value, but we have a minimum fraction digits to set...
+    // 0.00 equals (0) returns false :/, so can't use ordering
+    } else if (targetNumber.compareTo(integerPart) == 0 && getMinimumFractionDigits > 0) {
+      toAppendTo.append(s"${symbols.getDecimalSeparator}${repeatDigits(getMinimumFractionDigits, symbols.getZeroDigit)}")
     }
 
     if (useScientificNotation) {
@@ -454,7 +465,7 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
 
   def applyPattern(pattern: String): Unit = usePattern(pattern)
 
-  def applyLocalizedPattern(pattern: String) = {
+  def applyLocalizedPattern(pattern: String): Unit = {
     val standardPattern = pattern
 
     usePattern(standardPattern)
