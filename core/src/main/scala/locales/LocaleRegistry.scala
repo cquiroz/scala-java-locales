@@ -81,7 +81,7 @@ object LocaleRegistry {
     defaultLocale = en.toLocale
     defaultPerCategory =
         Locale.Category.values().map(_ -> Some(defaultLocale)).toMap
-    ldmls.empty
+    ldmls.clear()
     initDefaultLocales()
   }
 
