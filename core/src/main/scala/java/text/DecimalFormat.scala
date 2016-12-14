@@ -165,7 +165,7 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     val integerPart: JavaBigDecimal = new JavaBigDecimal(targetNumber.toBigInteger, 0)
     var integerDigitsWritten: Int = 0
 
-    if ((integerPart == JavaBigDecimal.ZERO) || (getMaximumIntegerDigits == 0)) {
+    if ((integerPart.compareTo(JavaBigDecimal.ZERO) == 0) || (getMaximumIntegerDigits == 0)) {
       integerStrBuilder.append(symbols.getZeroDigit)
       integerDigitsWritten += 1
     } else {
