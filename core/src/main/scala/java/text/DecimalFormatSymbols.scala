@@ -90,7 +90,9 @@ class DecimalFormatSymbols(private[this] val locale: Locale)
   private[this] var patternSeparator: Char = 0
   private[this] var infinity: String = null
   private[this] var nan: String = null
+  private[this] var expSeparator: String = null
   private[this] var exp: String = null
+
 
   DecimalFormatSymbols.initialize(locale, this)
 
@@ -181,6 +183,7 @@ class DecimalFormatSymbols(private[this] val locale: Locale)
         d.getNaN == getNaN &&
         d.getMinusSign == getMinusSign &&
         d.getExponentSeparator == getExponentSeparator
+
       case _ => false
     }
 
