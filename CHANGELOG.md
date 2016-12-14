@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0-cldr30
+
+* Added implementation of java.util.NumberFormat
+* Added implementation of java.util.DecimalFormat
+* Changed organization to io.github.cquiroz
+
 ## 0.4.0-cldr30
 
 * Added implementation of java.util.Currency
