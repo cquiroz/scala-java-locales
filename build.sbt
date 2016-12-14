@@ -11,7 +11,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
   version            := s"0.5.0-cldr${cldrVersion.value}",
   organization       := "io.github.cquiroz",
   scalaVersion       := "2.11.8",
-  crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.0"),
+  crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.1"),
   scalacOptions      ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
   javaOptions        ++= Seq("-Dfile.encoding=UTF8"),
   mappings in (Compile, packageBin) ~= {
