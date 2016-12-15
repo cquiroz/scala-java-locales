@@ -8,10 +8,10 @@ lazy val downloadFromZip: TaskKey[Unit] =
 
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion        := "30",
-  version            := s"0.5.0-cldr${cldrVersion.value}-SNAPSHOT",
+  version            := s"0.5.0-cldr${cldrVersion.value}",
   organization       := "io.github.cquiroz",
   scalaVersion       := "2.11.8",
-  crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.0"),
+  crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.1"),
   scalacOptions      ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
   javaOptions        ++= Seq("-Dfile.encoding=UTF8"),
   mappings in (Compile, packageBin) ~= {
@@ -84,7 +84,7 @@ lazy val core: CrossProject = crossProject.crossType(CrossType.Pure).
   settings(
     name := "scala-java-locales",
     downloadFromZip := {
-      val xmlFiles = ((resourceDirectory in Compile) / "core").value
+      val xmlFiles = (resourceDirectory in Compile).value / "core"
       if (java.nio.file.Files.notExists(xmlFiles.toPath)) {
         println(s"CLDR files missing, downloading version ${cldrVersion.value} ...")
         IO.unzipURL(
@@ -94,10 +94,10 @@ lazy val core: CrossProject = crossProject.crossType(CrossType.Pure).
         println("CLDR files already available")
       }
     },
-    compile in Compile <<= (compile in Compile).dependsOn(downloadFromZip),
+    compile in Compile := (compile in Compile).dependsOn(downloadFromZip).value,
     sourceGenerators in Compile += Def.task {
       generateLocaleData((sourceManaged in Compile).value,
-        ((resourceDirectory in Compile) / "core").value)
+        (resourceDirectory in Compile).value / "core")
     }.taskValue
   ).
   jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))

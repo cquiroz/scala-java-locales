@@ -24,11 +24,11 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   private var decimalSeparatorAlwaysShown: Boolean = false
   private var parseBigDecimal: Boolean = false
   private var currency: Currency = Currency.getInstance(Locale.getDefault)
-  
+
   // Helpers to avoid using .compareTo, annoying have to re-import within defs
   private val bigIntegerOrdering = implicitly[Ordering[JavaBigInteger]]
   import bigIntegerOrdering.mkOrderingOps
-      
+
   private val bigDecimalOrdering = implicitly[Ordering[JavaBigDecimal]]
   import bigDecimalOrdering.mkOrderingOps
 
@@ -316,9 +316,9 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   def setGroupingSize(newValue: Int): Unit =
     this.parsedPattern = parsedPattern.copy(groupingSize = newValue, isGroupingUsed = (newValue > 0))
 
-  def isGroupingUsed(): Boolean = parsedPattern.isGroupingUsed
+  override def isGroupingUsed(): Boolean = parsedPattern.isGroupingUsed
 
-  def setGroupingUsed(newValue: Boolean): Unit =
+  override def setGroupingUsed(newValue: Boolean): Unit =
     this.parsedPattern = parsedPattern.copy(isGroupingUsed = newValue)
 
   def isDecimalSeparatorAlwaysShown(): Boolean = this.decimalSeparatorAlwaysShown
@@ -416,9 +416,9 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     result.toString()
   }
 
-  def getMaximumIntegerDigits(): Int = parsedPattern.maximumIntegerDigits.getOrElse(Int.MaxValue)
+  override def getMaximumIntegerDigits(): Int = parsedPattern.maximumIntegerDigits.getOrElse(Int.MaxValue)
 
-  def setMaximumIntegerDigits(newValue: Int): Unit = {
+  override def setMaximumIntegerDigits(newValue: Int): Unit = {
     val newMax: Int = max(newValue, 0)
 
     this.parsedPattern = parsedPattern.copy(
@@ -430,9 +430,9 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
   private def minFractionDigitsAreEmpty: Boolean = parsedPattern.minimumFractionDigits.isEmpty ||
     parsedPattern.minimumFractionDigits.exists{ _ == 0 }
 
-  def getMinimumIntegerDigits(): Int = parsedPattern.minimumIntegerDigits.getOrElse(0)
+  override def getMinimumIntegerDigits(): Int = parsedPattern.minimumIntegerDigits.getOrElse(0)
 
-  def setMinimumIntegerDigits(newValue: Int): Unit = {
+  override def setMinimumIntegerDigits(newValue: Int): Unit = {
     val newMin: Int = max(newValue, 0)
 
     this.parsedPattern = parsedPattern.copy(
@@ -441,9 +441,9 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     )
   }
 
-  def getMaximumFractionDigits(): Int = parsedPattern.maximumFractionDigits.getOrElse(5)
+  override def getMaximumFractionDigits(): Int = parsedPattern.maximumFractionDigits.getOrElse(5)
 
-  def setMaximumFractionDigits(newValue: Int): Unit = {
+  override def setMaximumFractionDigits(newValue: Int): Unit = {
     val newMax: Int = max(newValue, 0)
 
     this.parsedPattern = parsedPattern.copy(
@@ -452,9 +452,9 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     )
   }
 
-  def getMinimumFractionDigits(): Int = parsedPattern.minimumFractionDigits.getOrElse(0)
+  override def getMinimumFractionDigits(): Int = parsedPattern.minimumFractionDigits.getOrElse(0)
 
-  def setMinimumFractionDigits(newValue: Int): Unit = {
+  override def setMinimumFractionDigits(newValue: Int): Unit = {
     val newMin: Int = max(newValue, 0)
 
     this.parsedPattern = parsedPattern.copy(
@@ -471,9 +471,9 @@ class DecimalFormat(private[this] val pattern: String, private[this] var symbols
     usePattern(standardPattern)
   }
 
-  def getCurrency(): Currency = currency
+  override def getCurrency(): Currency = currency
 
-  def setCurrency(currency: Currency): Unit = this.currency = currency
+  override def setCurrency(currency: Currency): Unit = this.currency = currency
 
   override def clone(): AnyRef = {
     val f = new DecimalFormat(toPattern())
