@@ -436,30 +436,29 @@ class NumberFormatTest extends LocaleTestSetup {
     assertEquals("\u22129,223,372,036,854,775,808", nf.format(Long.MinValue))
   }
 
+  // This works with JAVA_OPTS="-Djava.locale.providers=CLDR"
   @Test def test_non_latin(): Unit = {
     // Arabic-Indic
     if (!Platform.executingInJVM) {
-      LocaleRegistry.installLocale(hi_IN)
+      LocaleRegistry.installLocale(ar_JO)
     }
 
-    val locale = Locale.forLanguageTag("hi-IN")
+    val locale = Locale.forLanguageTag("ar-JO")
     assertTrue(locale != null)
     Locale.setDefault(locale) // Override the US default
 
     val df = NumberFormat.getInstance(locale)
-    println(s"decimal: ${df.format(1234567890.123)}")
-    assertEquals("Decimal Format", "१,२३४,५६७,८९०.१२३", df.format(1234567890.123))
+    assertEquals("Decimal Format", "١٬٢٣٤٬٥٦٧٬٨٩٠٫١٢٣", df.format(1234567890.123))
 
     val pf = NumberFormat.getPercentInstance(locale)
-    println(s"percent: ${pf.format(1234567890)}")
-    assertEquals("Percent Format", "१२३,४५६,७८९,०००%", pf.format(1234567890))
+    assertEquals("Percent Format", "١٢٣٬٤٥٦٬٧٨٩٬٠٠٠٪", pf.format(1234567890))
 
     val nf = NumberFormat.getNumberInstance(locale)
     println(s"number: ${nf.format(1234567890)}")
-    assertEquals("Number Format", "१,२३४,५६७,८९०", nf.format(1234567890))
+    assertEquals("Number Format", "١٬٢٣٤٬٥٦٧٬٨٩٠", nf.format(1234567890))
 
     val cf = NumberFormat.getCurrencyInstance(locale)
     println(s"currencyFormat: ${cf.format(123456789.01)}")
-    assertEquals("Currency Format", "रू १२३,४५६,७८९.०१", cf.format(123456789.01))
+    assertEquals("Currency Format", "د.أ.‏ ١٢٣٬٤٥٦٬٧٨٩٫٠١٠", cf.format(123456789.01))
   }
 }
