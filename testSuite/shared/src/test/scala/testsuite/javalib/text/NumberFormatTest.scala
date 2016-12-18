@@ -435,4 +435,31 @@ class NumberFormatTest extends LocaleTestSetup {
     assertEquals("\u22122,147,483,648", nf.format(Int.MinValue))
     assertEquals("\u22129,223,372,036,854,775,808", nf.format(Long.MinValue))
   }
+
+  @Test def test_non_latin(): Unit = {
+    // Arabic-Indic
+    if (!Platform.executingInJVM) {
+      LocaleRegistry.installLocale(hi_IN)
+    }
+
+    val locale = Locale.forLanguageTag("hi-IN")
+    assertTrue(locale != null)
+    Locale.setDefault(locale) // Override the US default
+
+    val df = NumberFormat.getInstance(locale)
+    println(s"decimal: ${df.format(1234567890.123)}")
+    assertEquals("Decimal Format", "१,२३४,५६७,८९०.१२३", df.format(1234567890.123))
+
+    val pf = NumberFormat.getPercentInstance(locale)
+    println(s"percent: ${pf.format(1234567890)}")
+    assertEquals("Percent Format", "१२३,४५६,७८९,०००%", pf.format(1234567890))
+
+    val nf = NumberFormat.getNumberInstance(locale)
+    println(s"number: ${nf.format(1234567890)}")
+    assertEquals("Number Format", "१,२३४,५६७,८९०", nf.format(1234567890))
+
+    val cf = NumberFormat.getCurrencyInstance(locale)
+    println(s"currencyFormat: ${cf.format(123456789.01)}")
+    assertEquals("Currency Format", "रू १२३,४५६,७८९.०१", cf.format(123456789.01))
+  }
 }
