@@ -82,14 +82,22 @@ case class CurrencyData(currencyTypes: Seq[CurrencyType],
     regions: Seq[CurrencyDataRegion],
     numericCodes: Seq[CurrencyNumericCode])
 
-case class CurrencyType(currencyCode: String, currencyName: String)
+case class CurrencyType(currencyCode: String, currencyName: String) {
+  def scalaSafeName: String = s"${currencyCode}Type"
+}
 
-case class CurrencyNumericCode(currencyCode: String, numericCode: Int)
+case class CurrencyNumericCode(currencyCode: String, numericCode: Int) {
+  def scalaSafeName: String = s"${currencyCode}NumericCode"
+}
 
 case class CurrencyDataFractionsInfo(currencyCode: String, digits: Int, rounding: Int,
-    cashDigits: Option[Int], cashRounding: Option[Int])
+    cashDigits: Option[Int], cashRounding: Option[Int]) {
+  def scalaSafeName: String = s"${currencyCode}FractionsInfo"
+}
 
-case class CurrencyDataRegion(countryCode: String, currencies: Seq[CurrencyDataRegionCurrency])
+case class CurrencyDataRegion(countryCode: String, currencies: Seq[CurrencyDataRegionCurrency]) {
+  def scalaSafeName: String = s"${countryCode}DataRegion"
+}
 
 case class CurrencyDataRegionCurrency(currencyCode: String,
     from: Option[String], to: Option[String], tender: Option[Boolean])
