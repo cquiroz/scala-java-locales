@@ -88,16 +88,19 @@ object CodeGenerator {
         percent, minus, perMille, infinity, nan, exp)
     }
 
-    val currencies = ldml.currencies.map{ c =>
-      val symbols = LIST(c.symbols.map{ s =>
+    val currencie = ldml.currencies.map { c =>
+      val symbols = LIST(c.symbols.map { s =>
         Apply(ldmlCurrencySym, LIT(s.symbol), LITOPTION(s.alt))
       })
 
-      val displayNames = LIST(c.displayNames.map{ n =>
+      val displayNames = LIST(c.displayNames.map { n =>
         Apply(ldmlCurrencyDisplayName, LIT(n.name), LITOPTION(n.count))
       })
 
       Apply(ldmlNumberCurrency, LIT(c.currencyCode), symbols, displayNames)
+    }
+    val currencies = ldml.currencies.map{ c =>
+      LIT(c.currencyCode)
     }
 
     val gc = ldml.calendar.map { cs =>

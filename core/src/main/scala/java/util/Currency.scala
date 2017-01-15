@@ -3,15 +3,34 @@ package java.util
 import locales.LocaleRegistry
 import scala.collection.{Map => SMap, Set => SSet}
 import scala.collection.JavaConverters._
-import locales.cldr.{CurrencyDataFractionsInfo, CurrencyType}
+import locales.cldr._
 import locales.cldr.data.currencydata
+import locales.cldr.data.currencydata._
 
 object Currency {
-  private val countryCodeToCurrencyCodeMap: SMap[String, String] = currencydata.regions.map{ r =>
+  private def byCurrencyCode(ldml: LDML): SMap[String, NumberCurrency] =
+    ldml.currencies.groupBy{ _.currencyCode }.map{ case (code, list) => code.toUpperCase -> list.head }
+
+  // Need to lookup the symbol & description independently
+  def getNumberCurrencySymbol(ldml: LDML, currencyCode: String): Seq[CurrencySymbol] = {
+    (
+      byCurrencyCode(ldml).get(currencyCode.toUpperCase).filter{ _.symbols.nonEmpty }.map{ _.symbols } orElse
+      ldml.parent.map{ p => getNumberCurrencySymbol(p, currencyCode) }
+    ).getOrElse(IndexedSeq.empty)
+  }
+
+  def getNumberCurrencyDescription(ldml: LDML, currencyCode: String): Seq[CurrencyDisplayName] = {
+    (
+      byCurrencyCode(ldml).get(currencyCode.toUpperCase).filter{ _.displayNames.nonEmpty }.map{ _.displayNames } orElse
+      ldml.parent.map{ p => getNumberCurrencyDescription(p, currencyCode) }
+    ).getOrElse(IndexedSeq.empty)
+  }
+
+  private lazy val countryCodeToCurrencyCodeMap: SMap[String, String] = currencydata.regions.map{ r =>
     r.countryCode -> (r.currencies.find{ _.to.isEmpty } orElse r.currencies.headOption).map{ _.currencyCode }.get
   }.toMap
 
-  private val all: SSet[Currency] = currencydata.currencyTypes.map{ currencyType: CurrencyType =>
+  private lazy val all: SSet[Currency] = currencydata.currencyTypes.map{ currencyType: CurrencyType =>
     val fractions: CurrencyDataFractionsInfo = (
       currencydata.fractions.find{ _.currencyCode == currencyType.currencyCode } orElse
       currencydata.fractions.find{ _.currencyCode == "DEFAULT" }
@@ -23,9 +42,7 @@ object Currency {
     Currency(currencyType.currencyCode, numericCode, fractions.digits, currencyType.currencyName, None)
   }.toSet
 
-  require(all.nonEmpty, "No currency data?")
-
-  private val currencyCodeMap: SMap[String, Currency] = all.toSeq.groupBy{ _.getCurrencyCode }.map{
+  private lazy val currencyCodeMap: SMap[String, Currency] = all.toSeq.groupBy{ _.getCurrencyCode }.map{
     case (currencyCode: String, matches: Seq[Currency]) => currencyCode -> matches.head
   }
 
@@ -63,7 +80,7 @@ final case class Currency private (currencyCode: String,
   // Gets the name that is suitable for displaying this currency for the specified locale.
   def getDisplayName(locale: Locale): String = {
     LocaleRegistry.ldml(locale).flatMap { ldml =>
-      ldml.getNumberCurrencyDescription(currencyCode).find{ _.count.isEmpty }.map{ _.name }
+      Currency.getNumberCurrencyDescription(ldml, currencyCode).find{ _.count.isEmpty }.map{ _.name }
     }.getOrElse(currencyCode)
   }
 
@@ -76,7 +93,7 @@ final case class Currency private (currencyCode: String,
   // Gets the symbol of this currency for the specified locale.
   def getSymbol(locale: Locale): String = {
     LocaleRegistry.ldml(locale).flatMap { ldml =>
-      val symbols = ldml.getNumberCurrencySymbol(currencyCode)
+      val symbols = Currency.getNumberCurrencySymbol(ldml, currencyCode)
 
       // TODO: might need a more sophisticated symbol-matcher
       // The tests from the JVM indicate we prefer the "wide" over "narrow" symbol

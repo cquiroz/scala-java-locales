@@ -5,7 +5,7 @@ import java.util.Locale
 /**
  * Interfaces describing the digit symbols
  */
-case class NumberingSystem(id: String, digits: Seq[Char])
+case class NumberingSystem(id: String, digits: List[Char])
 
 case class Symbols(ns: NumberingSystem, aliasOf: Option[NumberingSystem],
     decimal: Option[Char], group: Option[Char], list: Option[Char],
@@ -23,15 +23,15 @@ case class CalendarPatterns(datePatterns: Map[Int, String], timePatterns: Map[In
 /** Number Currencies */
 case class CurrencyDisplayName(name: String, count: Option[String])
 case class CurrencySymbol(symbol: String, alt: Option[String])
-case class NumberCurrency(currencyCode: String, symbols: Seq[CurrencySymbol], displayNames: Seq[CurrencyDisplayName])
+case class NumberCurrency(currencyCode: String, symbols: List[CurrencySymbol], displayNames: List[CurrencyDisplayName])
 
 /**
  * Interfaces describing the supplementary currency data
  */
-case class CurrencyData(currencyTypes: Seq[CurrencyType],
-    fractions: Seq[CurrencyDataFractionsInfo],
-    regions: Seq[CurrencyDataRegion],
-    numericCodes: Seq[CurrencyNumericCode])
+case class CurrencyData(currencyTypes: List[CurrencyType],
+    fractions: List[CurrencyDataFractionsInfo],
+    regions: List[CurrencyDataRegion],
+    numericCodes: List[CurrencyNumericCode])
 
 case class CurrencyType(currencyCode: String, currencyName: String)
 
@@ -41,7 +41,7 @@ case class CurrencyNumericCode(currencyCode: String, numericCode: Int)
 case class CurrencyDataFractionsInfo(currencyCode: String, digits: Int, rounding: Int,
     cashDigits: Option[Int], cashRounding: Option[Int])
 
-case class CurrencyDataRegion(countryCode: String, currencies: Seq[CurrencyDataRegionCurrency])
+case class CurrencyDataRegion(countryCode: String, currencies: List[CurrencyDataRegionCurrency])
 
 case class CurrencyDataRegionCurrency(currencyCode: String,
     from: Option[String], to: Option[String], tender: Option[Boolean])
@@ -67,26 +67,8 @@ case class LDML(parent: Option[LDML],
     digitSymbols: List[Symbols] = Nil,
     calendarSymbols: Option[CalendarSymbols],
     calendarPatterns: Option[CalendarPatterns],
-    currencies: List[NumberCurrency],
+    currencies: List[String],
     numberPatterns: NumberPatterns) {
-
-  private val byCurrencyCode: Map[String, NumberCurrency] =
-    currencies.groupBy{ _.currencyCode }.map{ case (code, list) => code.toUpperCase -> list.head }
-
-  // Need to lookup the symbol & description independently
-  def getNumberCurrencySymbol(currencyCode: String): Seq[CurrencySymbol] = {
-    (
-      byCurrencyCode.get(currencyCode.toUpperCase).filter{ _.symbols.nonEmpty }.map{ _.symbols } orElse
-      parent.map{ _.getNumberCurrencySymbol(currencyCode) }
-    ).getOrElse(IndexedSeq.empty)
-  }
-
-  def getNumberCurrencyDescription(currencyCode: String): Seq[CurrencyDisplayName] = {
-    (
-      byCurrencyCode.get(currencyCode.toUpperCase).filter{ _.displayNames.nonEmpty }.map{ _.displayNames } orElse
-      parent.map{ _.getNumberCurrencyDescription(currencyCode) }
-    ).getOrElse(IndexedSeq.empty)
-  }
 
   def languageTag: String = toLocale.toLanguageTag
 

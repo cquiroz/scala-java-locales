@@ -43,7 +43,7 @@ object Locale {
 
   object Category {
     val DISPLAY: Category = new Category("DISPLAY", 0)
-    val FORMAT: Category = new Category("FORMAT", 1)
+    val FORMAT: Category  = new Category("FORMAT", 1)
 
     private lazy val categories = Array(DISPLAY, FORMAT)
 
