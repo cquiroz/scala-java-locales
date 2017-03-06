@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1-cldr30
+
+* Set the correct url for sourcemaps
+
 ## 0.5.0-cldr30
 
 * Added implementation of java.util.NumberFormat
