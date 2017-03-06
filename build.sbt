@@ -7,10 +7,10 @@ lazy val downloadFromZip: TaskKey[Unit] =
   taskKey[Unit]("Download the sbt zip and extract it")
 
 val commonSettings: Seq[Setting[_]] = Seq(
-  cldrVersion        := "30",
-  version            := s"0.5.1-cldr${cldrVersion.value}-SNAPSHOT",
-  organization       := "io.github.cquiroz",
-  scalaVersion       := "2.11.8",
+  cldrVersion := "30",
+  version := s"0.5.1-cldr${cldrVersion.value}-SNAPSHOT",
+  organization := "io.github.cquiroz",
+  scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.1"),
   scalacOptions      ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
   javaOptions        ++= Seq("-Dfile.encoding=UTF8"),
