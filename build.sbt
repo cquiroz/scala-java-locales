@@ -91,8 +91,7 @@ lazy val coreJS: Project = core.js
         else version.value
       (sourceDirectories in Compile).value.map { dir =>
         val a = dir.toURI.toString
-        val g = "https://raw.githubusercontent.com/cquiroz/scala-java-locales/" + tagOrHash
-
+        val g = "https://raw.githubusercontent.com/cquiroz/scala-java-locales/" + tagOrHash + "/core/src/main/scala"
         s"-P:scalajs:mapSourceURI:$a->$g/"
       }
     }
