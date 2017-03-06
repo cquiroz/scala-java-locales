@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2-cldr30
+
+* Updated to scala.js 0.6.14 and scala 2.12.1
+* Use io.github.cquiroz organization
+* Fix source map path
+
 ## 0.3.1-cldr30
 
 * Updated to scala.js 0.6.13 and scala 2.12.0
