@@ -8,10 +8,10 @@ lazy val downloadFromZip: TaskKey[Unit] =
 
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion := "30",
-  version := s"0.3.1-cldr${cldrVersion.value}",
-  organization := "com.github.cquiroz",
+  version := s"0.3.2-cldr${cldrVersion.value}",
+  organization := "io.github.cquiroz",
   scalaVersion := "2.11.8",
-  crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.0"),
+  crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.1"),
   scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
   mappings in (Compile, packageBin) ~= {
     // Exclude CLDR files...
