@@ -65,7 +65,7 @@ lazy val core: CrossProject = crossProject.crossType(CrossType.Pure).
   settings(
     name := "scala-java-locales",
     downloadFromZip := {
-      val xmlFiles = ((resourceDirectory in Compile) / "core").value
+      val xmlFiles = (resourceDirectory in Compile).value / "core"
       if (java.nio.file.Files.notExists(xmlFiles.toPath)) {
         println(s"CLDR files missing, downloading version ${cldrVersion.value} ...")
         IO.unzipURL(
@@ -75,15 +75,28 @@ lazy val core: CrossProject = crossProject.crossType(CrossType.Pure).
         println("CLDR files already available")
       }
     },
-    compile in Compile <<= (compile in Compile).dependsOn(downloadFromZip),
+    compile in Compile := (compile in Compile).dependsOn(downloadFromZip).value,
     sourceGenerators in Compile += Def.task {
       generateLocaleData((sourceManaged in Compile).value,
-        ((resourceDirectory in Compile) / "core").value)
+        (resourceDirectory in Compile).value / "core")
     }.taskValue
   ).
   jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
 
 lazy val coreJS: Project = core.js
+  .settings(
+    scalacOptions ++= {
+      val tagOrHash =
+        if(isSnapshot.value) sys.process.Process("git rev-parse HEAD").lines_!.head
+        else version.value
+      (sourceDirectories in Compile).value.map { dir =>
+        val a = dir.toURI.toString
+        val g = "https://raw.githubusercontent.com/cquiroz/scala-java-locales/" + tagOrHash + "/core/src/main/scala"
+        s"-P:scalajs:mapSourceURI:$a->$g/"
+      }
+    }
+  )
+
 lazy val coreJVM: Project = core.jvm
 
 lazy val testSuite: CrossProject = CrossProject(
@@ -102,8 +115,8 @@ lazy val testSuite: CrossProject = CrossProject(
         "-v", "-a")
   ).
   jsSettings(
-    name := "scala-java-locales testSuite on JS",
-    scalaJSUseRhino := false // Tests are too slow in rhino
+    parallelExecution in Test := false,
+    name := "scala-java-locales testSuite on JS"
   ).
   jsConfigure(_.dependsOn(coreJS)).
   jvmSettings(
