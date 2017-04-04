@@ -12,7 +12,8 @@ val commonSettings: Seq[Setting[_]] = Seq(
   organization := "io.github.cquiroz",
   scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.1"),
-  scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
+  scalacOptions ++= Seq("-deprecation", "-feature"),
+  //"-Xfatal-warnings"),
   mappings in (Compile, packageBin) ~= {
     // Exclude CLDR files...
     _.filter(!_._2.contains("core"))
