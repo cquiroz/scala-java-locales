@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.3-cldr31
+
+* Improved SimpleDateFormat with a partial implementation of format
+* Updated to scala.js 0.6.15
+* Updated CLDR to version 31
+
 ## 0.3.2-cldr30
 
 * Updated to scala.js 0.6.14 and scala 2.12.1
