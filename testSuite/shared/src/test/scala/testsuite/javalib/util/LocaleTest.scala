@@ -278,7 +278,7 @@ class LocaleTest extends LocaleTestSetup {
   @Test def test_get_iso_codes(): Unit = {
     // The data from CLDR gives a different amount of countries and
     // languages than the JVM
-    val countriesCount = if (Platform.executingInJVM) 250 else 245
+    val countriesCount = if (Platform.executingInJVM) 250 else 246
     val languagesCount = if (Platform.executingInJVM) 188 else 122
     assertEquals(countriesCount, Locale.getISOCountries.length)
     assertEquals(languagesCount, Locale.getISOLanguages.length)
