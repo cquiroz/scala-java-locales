@@ -78,8 +78,6 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     LocaleTestItem(es_CL, "es-CL") ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(it_CH, "it-CH") ->
-      List("0", ".", "'", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     LocaleTestItem(zh, "zh") ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     LocaleTestItem(zh_Hant, "zh-Hant") ->
@@ -93,6 +91,10 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
       List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JVM
     LocaleTestItem(ar, "ar") ->
       List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "؜-", "اس"), // JS
+    LocaleTestItem(it_CH, "it-CH", cldr21 = true) ->
+      List("0", ".", "'", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(it_CH, "it-CH") ->
+      List("0", ".", "’", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     // fa uses arabext
     LocaleTestItem(fa, "fa", cldr21 = true) ->
       List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "NaN", "-", "×۱۰^"), // JVM
