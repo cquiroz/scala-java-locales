@@ -7,12 +7,20 @@ lazy val downloadFromZip: TaskKey[Unit] =
   taskKey[Unit]("Download the sbt zip and extract it")
 
 val commonSettings: Seq[Setting[_]] = Seq(
-  cldrVersion        := "30",
-  version            := s"0.5.1-cldr${cldrVersion.value}-SNAPSHOT",
-  organization       := "io.github.cquiroz",
-  scalaVersion       := "2.11.8",
+  cldrVersion := "31",
+  version := s"0.5.2-cldr${cldrVersion.value}",
+  organization := "io.github.cquiroz",
+  scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.1"),
-  scalacOptions      ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
+  scalacOptions ++= Seq("-deprecation", "-feature"),
+  scalacOptions := {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+        scalacOptions.value ++ Seq("-deprecation:false", "-Xfatal-warnings")
+      case Some((2, 10)) =>
+        scalacOptions.value
+    }
+  },
   javaOptions        ++= Seq("-Dfile.encoding=UTF8"),
   mappings in (Compile, packageBin) ~= {
     // Exclude CLDR files...
@@ -107,7 +115,7 @@ lazy val coreJS: Project = core.js
     scalacOptions ++= {
       val tagOrHash =
         if(isSnapshot.value) sys.process.Process("git rev-parse HEAD").lines_!.head
-        else version.value
+        else s"v${version.value}"
       (sourceDirectories in Compile).value.map { dir =>
         val a = dir.toURI.toString
         val g = "https://raw.githubusercontent.com/cquiroz/scala-java-locales/" + tagOrHash + "/core/src/main/scala"
@@ -135,7 +143,10 @@ lazy val testSuite: CrossProject = CrossProject(
   ).
   jsSettings(
     parallelExecution in Test := false,
-    name := "scala-java-locales testSuite on JS"
+    name := "scala-java-locales testSuite on JS",
+    libraryDependencies ++= Seq(
+      "io.github.cquiroz" %% "macroutils" % "0.0.1" % "provided"
+    )
   ).
   jsConfigure(_.dependsOn(coreJS)).
   jvmSettings(
@@ -145,10 +156,34 @@ lazy val testSuite: CrossProject = CrossProject(
     // https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr
     javaOptions in Test ++= Seq("-Duser.language=en", "-Duser.country=", "-Djava.locale.providers=CLDR", "-Dfile.encoding=UTF8"),
     name := "scala-java-locales testSuite on JVM",
-    libraryDependencies +=
-      "com.novocode" % "junit-interface" % "0.9" % "test"
+    libraryDependencies ++= Seq(
+      "com.novocode" % "junit-interface" % "0.9" % "test",
+      "io.github.cquiroz" %% "macroutils" % "0.0.1" % "provided"
+    )
   ).
   jvmConfigure(_.dependsOn(coreJVM))
+
+lazy val macroUtils = project.in(file("macroUtils")).
+  settings(commonSettings).
+  settings(
+    name := "macroutils",
+    organization := "io.github.cquiroz",
+    version := "0.0.1",
+    libraryDependencies := {
+      Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value) ++ {
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          // if Scala 2.11+ is used, quasiquotes are available in the standard distribution
+          case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+            libraryDependencies.value
+          // in Scala 2.10, quasiquotes are provided by macro paradise
+          case Some((2, 10)) =>
+            libraryDependencies.value ++ Seq(
+              compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
+              "org.scalamacros" %% "quasiquotes" % "2.1.0" cross CrossVersion.binary)
+        }
+      }
+    }
+  )
 
 lazy val testSuiteJS: Project = testSuite.js
 lazy val testSuiteJVM: Project = testSuite.jvm

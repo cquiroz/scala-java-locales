@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.2-cldl31
+
++* Improved SimpleDateFormat with a partial implementation of format
++* Updated CLDR to version 31
++* Updated to scala.js 0.6.15 and scala 2.12.1
++* Use io.github.cquiroz organization
++* Fix source map path
+
 ## 0.5.1-cldr30
 
 * Set the correct url for sourcemaps
