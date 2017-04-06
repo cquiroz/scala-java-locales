@@ -27,11 +27,10 @@ class SimpleDateFormatTest {
      date.getSeconds), 3)
 
   def totalSize(num: Long, size: Int) = {
-    val base = num.toString
-    val trail = (for (_ <- 0 until (size - base.size)) yield '0').toArray
+    val s: String = num.toString
 
-    if (base.size > size) base.substring(base.size - 3, base.size)
-    else new String(trail) + base
+    if (s.size > size) s.substring(s.size - size)
+    else s.reverse.padTo(size, '0').reverse
   }
 
   @Test def test_year_format(): Unit = {
