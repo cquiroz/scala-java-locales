@@ -5,12 +5,20 @@
 
 `scala-java-locales` is a clean-room BSD-licensed implementation of the `java.util.Locale` API and related classes as defined on JDK8, mostly for Scala.js usage. It enables the locale API in Scala.js projects and supports usage requiring locales like number and dates formatting.
 
+# Important!
+
+At the moment there are 2 branches of this library the 0.5.x line and the 0.3.x line
+The main difference is that the 0.5.x line contains support for currencies which increases
+notably the compilation time and final js
+
+There is planned work to unify both lines and have a single line making more modular inclusion of metadata
+
 ## Usage
 
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "0.5.0-cldr30"
+libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "0.5.2-cldr31"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -19,7 +27,7 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   .jsSettings(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "0.5.0-cldr30"
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "0.5.2-cldr31"
   )
 ```
 
@@ -91,7 +99,7 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 `scala-java-locales` uses [Semantic Versioning](http://semver.org/) and includes the CLDR version used as a build tag, e.g.:
 
 ```
-0.5.0-cldr30 // Version 0.5.0 with CLDR version 30
+0.5.2-cldr31 // Version 0.5.2 with CLDR version 31
 ```
 
 ## Contributors
@@ -100,6 +108,7 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 + A. Alonso Dominguez [@alonsodomin](https://github.com/alonsodomin)
 + Marius B. Kotsbak [@mkotsbak](https://github.com/mkotsbak)
 + Timothy Klim [@TimothyKlim](https://github.com/TimothyKlim)
++ Andrea Peruffo [@andreaTP](https://github.com/AndreaTP)
 
 ## License
 
