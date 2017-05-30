@@ -8,11 +8,11 @@ lazy val downloadFromZip: TaskKey[Unit] =
 
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion := "31",
-  version := s"0.3.3-cldr${cldrVersion.value}",
+  version := s"0.3.4-cldr${cldrVersion.value}-SNAPSHOT",
   organization := "io.github.cquiroz",
-  scalaVersion := "2.11.8",
-  crossScalaVersions := Seq("2.10.4", "2.11.8", "2.12.1"),
-  scalacOptions ++= Seq("-deprecation", "-feature"),
+  scalaVersion := "2.11.11",
+  crossScalaVersions := Seq("2.10.4", "2.11.11", "2.12.2"),
+    scalacOptions ++= Seq("-deprecation", "-feature"),
   scalacOptions := {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
