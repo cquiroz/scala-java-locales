@@ -8,7 +8,7 @@ lazy val downloadFromZip: TaskKey[Unit] =
 
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion := "31",
-  version := s"0.5.3-cldr${cldrVersion.value}",
+  version := s"0.5.4-cldr${cldrVersion.value}",
   organization := "io.github.cquiroz",
   scalaVersion := "2.11.11",
   crossScalaVersions := Seq("2.10.4", "2.11.11", "2.12.2"),
@@ -26,6 +26,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
     // Exclude CLDR files...
     _.filter(!_._2.contains("core"))
   },
+  useGpg                  := true,
   exportJars              := true,
   publishMavenStyle       := true,
   publishArtifact in Test := false,
