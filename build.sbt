@@ -25,6 +25,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
     // Exclude CLDR files...
     _.filter(!_._2.contains("core"))
   },
+  useGpg := true,
   exportJars := true,
   publishMavenStyle := true,
   publishArtifact in Test := false,
