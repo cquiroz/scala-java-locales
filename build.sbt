@@ -130,7 +130,7 @@ lazy val testSuite: CrossProject = CrossProject(
       "io.github.cquiroz" %% "macroutils" % "0.0.1" % "provided"
     )
   ).
-  jsConfigure(_.dependsOn(coreJS)).
+  jsConfigure(_.dependsOn(coreJS, macroUtils)).
   jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
     fork in Test := true,
@@ -143,7 +143,7 @@ lazy val testSuite: CrossProject = CrossProject(
       "io.github.cquiroz" %% "macroutils" % "0.0.1" % "provided"
     )
   ).
-  jvmConfigure(_.dependsOn(coreJVM))
+  jvmConfigure(_.dependsOn(coreJVM, macroUtils))
 
 lazy val macroUtils = project.in(file("macroUtils")).
   settings(commonSettings).
