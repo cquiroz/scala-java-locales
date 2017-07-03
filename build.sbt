@@ -1,4 +1,3 @@
-import org.scalajs.sbtplugin.cross.CrossProject
 import sbt.Keys._
 import LDMLTasks._
 
@@ -11,7 +10,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
   version := s"0.3.5-cldr${cldrVersion.value}",
   organization := "io.github.cquiroz",
   scalaVersion := "2.11.11",
-  crossScalaVersions := Seq("2.10.4", "2.11.11", "2.12.2"),
+  crossScalaVersions := Seq("2.10.6", "2.11.11", "2.12.2"),
     scalacOptions ++= Seq("-deprecation", "-feature"),
   scalacOptions := {
     CrossVersion.partialVersion(scalaVersion.value) match {
@@ -69,7 +68,8 @@ lazy val scalajs_locales: Project = project.in(file("."))
   )
   .aggregate(coreJS, coreJVM, testSuiteJS, testSuiteJVM)
 
-lazy val core: CrossProject = crossProject.crossType(CrossType.Pure).
+lazy val core = crossProject.
+  crossType(CrossType.Pure).
   settings(commonSettings: _*).
   settings(
     name := "scala-java-locales",
@@ -96,7 +96,7 @@ lazy val coreJS: Project = core.js
   .settings(
     scalacOptions ++= {
       val tagOrHash =
-        if(isSnapshot.value) sys.process.Process("git rev-parse HEAD").lines_!.head
+        if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lines_!.head
         else s"v${version.value}"
       (sourceDirectories in Compile).value.map { dir =>
         val a = dir.toURI.toString
@@ -108,12 +108,7 @@ lazy val coreJS: Project = core.js
 
 lazy val coreJVM: Project = core.jvm
 
-lazy val testSuite: CrossProject = CrossProject(
-  jvmId = "testSuiteJVM",
-  jsId = "testSuite",
-  base = file("testSuite"),
-  crossType = CrossType.Full).
-  jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin)).
+lazy val testSuite = crossProject.
   settings(commonSettings: _*).
   settings(
     publish := {},
@@ -127,6 +122,7 @@ lazy val testSuite: CrossProject = CrossProject(
     parallelExecution in Test := false,
     name := "scala-java-locales testSuite on JS",
     libraryDependencies ++= Seq(
+      "com.novocode" % "junit-interface" % "0.9" % "test",
       "io.github.cquiroz" %% "macroutils" % "0.0.1" % "provided"
     )
   ).
