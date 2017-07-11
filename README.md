@@ -61,7 +61,6 @@ The Java API requires a default `Locale` though it doesn't mandate a specific on
 
 While the Java Locales use the OS default locale, on `Scala.js` platforms like browsers or node.js, there is no reliable way to identify the default locale. `scala-java-locales` sets `en (English)` as the default locale and **does not** attempt to determine the correct locale for the environment. This is a desigs decision to support the many API calls that require a default locale. It seems that `Scala.js` _de facto_ uses `en` for number formatting.
 
-
 ## CLDR
 
 `java.util.Locale` is a relatively simple class and by itself it doesn't provide too much functionality. The key for its usefulness is on providing data about the locale especially in terms of classes like `java.text.DecimalFormatSymbols`, `java.text.DateFormatSymbols`, etc. The [Unicode CLDR](http://cldr.unicode.org/) project is a large repository of locale data that can be used to build the supporting classes, e.g. to get the `DecimalFormatSymbols` for a given locale.
@@ -92,6 +91,26 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 
 ```
 0.3.3-cldr31 // Version 0.3.3 with CLDR version 31
+```
+
+## Publishing
+
+on 0.6.18
+```
+sbt
+clean
++publishSigned
+sonatyeRelease
+```
+
+Important: Remember to clean between different scala.js versions
+
+on 1.0.0-M1
+```
+SCALAJS_VERSION=1.0.0-M1 sbt
+clean
++publishSigned
+sonatyeRelease
 ```
 
 ## License
