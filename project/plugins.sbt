@@ -1,5 +1,9 @@
 val scalaJSVersion =
-  Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.18")
+  Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.19")
+
+addSbtPlugin("org.scala-native" % "sbt-crossproject" % "0.2.2")
+
+addSbtPlugin("org.scala-native" % "sbt-scalajs-crossproject" % "0.2.2")
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
 

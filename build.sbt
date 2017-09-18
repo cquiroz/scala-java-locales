@@ -1,3 +1,4 @@
+import sbtcrossproject.{crossProject, CrossType}
 import sbt.Keys._
 import LDMLTasks._
 
@@ -87,7 +88,7 @@ lazy val scalajs_locales: Project = project.in(file("."))
   )
   .aggregate(coreJS, coreJVM, testSuiteJS, testSuiteJVM)
 
-lazy val core = crossProject.
+lazy val core = crossProject(JVMPlatform, JSPlatform).
   crossType(CrossType.Pure).
   settings(commonSettings: _*).
   settings(
@@ -127,7 +128,7 @@ lazy val coreJS: Project = core.js
 
 lazy val coreJVM: Project = core.jvm
 
-lazy val testSuite = crossProject.
+lazy val testSuite = crossProject(JVMPlatform, JSPlatform).
   settings(commonSettings: _*).
   settings(
     publish := {},
