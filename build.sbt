@@ -88,7 +88,7 @@ lazy val scalajs_locales: Project = project.in(file("."))
   )
   .aggregate(coreJS, coreJVM, testSuiteJS, testSuiteJVM)
 
-lazy val core = crossProject(JVMPlatform, JSPlatform).
+lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform).
   crossType(CrossType.Pure).
   settings(commonSettings: _*).
   settings(
@@ -127,8 +127,9 @@ lazy val coreJS: Project = core.js
   )
 
 lazy val coreJVM: Project = core.jvm
+lazy val coreNative: Project = core.native
 
-lazy val testSuite = crossProject(JVMPlatform, JSPlatform).
+lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform).
   settings(commonSettings: _*).
   settings(
     publish := {},
@@ -185,3 +186,4 @@ lazy val macroUtils = project.in(file("macroUtils")).
 
 lazy val testSuiteJS: Project = testSuite.js
 lazy val testSuiteJVM: Project = testSuite.jvm
+lazy val testSuiteNative: Project = testSuite.native
