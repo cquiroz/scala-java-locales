@@ -86,6 +86,7 @@ lazy val scalajs_locales: Project = project.in(file("."))
     publish := {},
     publishLocal := {}
   )
+  // don't include scala-native by default
   .aggregate(coreJS, coreJVM, testSuiteJS, testSuiteJVM)
 
 lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform).
@@ -128,6 +129,9 @@ lazy val coreJS: Project = core.js
 
 lazy val coreJVM: Project = core.jvm
 lazy val coreNative: Project = core.native
+  .settings(
+    sources in (Compile,doc) := Seq.empty
+  )
 
 lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform).
   settings(commonSettings: _*).
@@ -143,7 +147,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform).
     parallelExecution in Test := false,
     name := "scala-java-locales testSuite on JS",
     libraryDependencies ++= Seq(
-      "com.novocode" % "junit-interface" % "0.9" % "test",
+      "com.novocode" % "junit-interface" % "0.11" % "test",
       "io.github.cquiroz" %% "macroutils" % "0.0.1" % "provided"
     )
   ).
@@ -156,7 +160,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform).
     javaOptions in Test ++= Seq("-Duser.language=en", "-Duser.country=", "-Djava.locale.providers=CLDR", "-Dfile.encoding=UTF8"),
     name := "scala-java-locales testSuite on JVM",
     libraryDependencies ++= Seq(
-      "com.novocode" % "junit-interface" % "0.9" % "test",
+      "com.novocode" % "junit-interface" % "0.11" % "test",
       "io.github.cquiroz" %% "macroutils" % "0.0.1" % "provided"
     )
   ).
