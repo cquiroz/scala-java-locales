@@ -110,6 +110,27 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 + Timothy Klim [@TimothyKlim](https://github.com/TimothyKlim)
 + Andrea Peruffo [@andreaTP](https://github.com/AndreaTP)
 
+## Publishing
+
+on 0.6.x
+```
+sbt
+clean
++publishSigned
+coreNative/publishSigned
+sonatyeRelease
+```
+
+Important: Remember to clean between different scala.js versions
+
+on 1.0.0-M1
+```
+SCALAJS_VERSION=1.0.0-M1 sbt
+clean
++publishSigned
+sonatyeRelease
+```
+
 ## License
 
 Copyright &copy; 2016 Carlos Quiroz
