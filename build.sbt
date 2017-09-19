@@ -1,3 +1,4 @@
+import sbtcrossproject.{crossProject, CrossType}
 import sbt.Keys._
 import LDMLTasks._
 
@@ -7,7 +8,7 @@ lazy val downloadFromZip: TaskKey[Unit] =
 
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion := "31",
-  version := s"0.3.7-cldr${cldrVersion.value}",
+  version := s"0.3.8-cldr${cldrVersion.value}",
   organization := "io.github.cquiroz",
   scalaVersion := "2.11.11",
   crossScalaVersions := Seq("2.10.6", "2.11.11", "2.12.3", "2.13.0-M2"),
@@ -66,9 +67,10 @@ lazy val scalajs_locales: Project = project.in(file("."))
     publish := {},
     publishLocal := {}
   )
+  // don't include scala-native by default
   .aggregate(coreJS, coreJVM, testSuiteJS, testSuiteJVM)
 
-lazy val core = crossProject.
+lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform).
   crossType(CrossType.Pure).
   settings(commonSettings: _*).
   settings(
@@ -107,8 +109,12 @@ lazy val coreJS: Project = core.js
   )
 
 lazy val coreJVM: Project = core.jvm
+lazy val coreNative: Project = core.native
+  .settings(
+    sources in (Compile,doc) := Seq.empty
+  )
 
-lazy val testSuite = crossProject.
+lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform).
   settings(commonSettings: _*).
   settings(
     publish := {},
@@ -122,7 +128,7 @@ lazy val testSuite = crossProject.
     parallelExecution in Test := false,
     name := "scala-java-locales testSuite on JS",
     libraryDependencies ++= Seq(
-      "com.novocode" % "junit-interface" % "0.9" % "test",
+      "com.novocode" % "junit-interface" % "0.11" % "test",
       "io.github.cquiroz" %% "macroutils" % "0.0.1" % "provided"
     )
   ).
@@ -135,7 +141,7 @@ lazy val testSuite = crossProject.
     javaOptions in Test ++= Seq("-Duser.language=en", "-Duser.country=", "-Djava.locale.providers=CLDR"),
     name := "scala-java-locales testSuite on JVM",
     libraryDependencies ++= Seq(
-      "com.novocode" % "junit-interface" % "0.9" % "test",
+      "com.novocode" % "junit-interface" % "0.11" % "test",
       "io.github.cquiroz" %% "macroutils" % "0.0.1" % "provided"
     )
   ).
@@ -165,3 +171,4 @@ lazy val macroUtils = project.in(file("macroUtils")).
 
 lazy val testSuiteJS: Project = testSuite.js
 lazy val testSuiteJVM: Project = testSuite.jvm
+lazy val testSuiteNative: Project = testSuite.native
