@@ -19,7 +19,8 @@ install:
   - npm install
 script:
   - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION macroUtils/publishLocal
-  - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION coreJS/scalastyle testSuiteJVM/scalastyle testSuiteJVM/test:scalastyle testSuiteJS/scalastyle testSuiteJS/test:scalastyle
+  - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION coreJS/scalastyle testSuiteJVM/scalastyle testSuiteJVM/test:scalastyle testSuiteJS/scalastyle testSuiteJS/test:scalastyle coreNative/scalastyle coreJVM/scalastyle
+  - if [[ $TRAVIS_SCALA_VERSION == "2.11.11"  || $TRAVIS_SCALA_VERSION == "2.10.6" ]]; then sbt ++$TRAVIS_SCALA_VERSION squantsNative/compile; fi;
   - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION testSuiteJVM/test
   - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION '; set scalaJSStage in Global := FullOptStage' testSuiteJS/test
   # Tricks to avoid unnecessary cache updates, from
