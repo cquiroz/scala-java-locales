@@ -100,6 +100,7 @@ on 0.6.18
 sbt
 clean
 +publishSigned
+coreNative/publishSigned
 sonatyeRelease
 ```
 
