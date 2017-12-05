@@ -1,17 +1,11 @@
 val scalaJSVersion =
   Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.21")
 
-addSbtPlugin("org.scala-native" % "sbt-crossproject" % "0.2.2")
+addSbtPlugin("org.portable-scala" % "sbt-crossproject" % "0.3.0")
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
 
-// For sbt-crossproject support even with Scala.js 0.6.x
-{
-  if (scalaJSVersion.startsWith("0.6."))
-    Seq(addSbtPlugin("org.scala-native" % "sbt-scalajs-crossproject" % "0.2.2"))
-  else
-    Nil
-}
+addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "0.3.0")
 
 addSbtPlugin("org.scala-native" % "sbt-scala-native" % "0.3.3")
 
