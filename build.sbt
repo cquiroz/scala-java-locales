@@ -8,11 +8,11 @@ lazy val downloadFromZip: TaskKey[Unit] =
 
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion := "31",
-  version := s"0.3.8-cldr${cldrVersion.value}",
+  version := s"0.3.9-cldr${cldrVersion.value}-SNAPSHOT",
   organization := "io.github.cquiroz",
   scalaVersion := "2.12.4",
   crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.4", "2.13.0-M2"),
-    scalacOptions ++= Seq("-deprecation", "-feature"),
+  scalacOptions ++= Seq("-deprecation", "-feature"),
   scalacOptions := {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
@@ -91,8 +91,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform).
       generateLocaleData((sourceManaged in Compile).value,
         (resourceDirectory in Compile).value / "core")
     }.taskValue
-  ).
-  jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
+  )
 
 lazy val coreJS: Project = core.js
   .settings(
@@ -133,6 +132,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform).
     )
   ).
   jsConfigure(_.dependsOn(coreJS, macroUtils)).
+  jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin)).
   jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
     fork in Test := true,
