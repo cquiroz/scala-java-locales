@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.3.9-cldr32
+
+* Scala.js 0.6.21 and 1.0.0-M2
+* Scala versions 2.10.7, 2.11.12, 2.12.2 and 2.13.0-M2
+* Updated to cldr32
+
+## 0.3.8-cldr31
+
+* Scala.js 0.6.20 and 1.0.0-M1
+* Scala versions 2.11.11, 2.12.3 and 2.13.0-M2
+* Support for scala-native
+
+## 0.3.7-cldr31
+
+* Updated to scala.js 0.6.18
+* Supports scala.js 1.0.0-M1
+
 ## 0.3.5-cldr31
 
 * Updated to scala.js 0.6.17
