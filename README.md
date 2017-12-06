@@ -1,7 +1,8 @@
 # scala-java-locales
 
 [![Build Status](https://api.travis-ci.org/cquiroz/scala-java-locales.svg?branch=master)](https://travis-ci.org/cquiroz/scala-java-locales)
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.8.svg)](https://www.scala-js.org/)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.cquiroz/scala-java-locales_sjs0.6_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.cquiroz/scala-java-locales_sjs0.6_2.12)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org/)
 
 `scala-java-locales` is a clean-room BSD-licensed implementation of the `java.util.Locale` API and related classes as defined on JDK8, mostly for Scala.js usage. It enables the locale API in Scala.js projects and supports usage requiring locales like number and dates formatting.
 
@@ -10,7 +11,7 @@
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.3-cldr31"
+libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.9-cldr32"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -19,7 +20,7 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   .jsSettings(
-    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.3-cldr31"
+    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.9-cldr32"
   )
 ```
 
@@ -90,24 +91,25 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 `scala-java-locales` uses [Semantic Versioning](http://semver.org/) and includes the CLDR version used as a build tag, e.g.:
 
 ```
-0.3.3-cldr31 // Version 0.3.3 with CLDR version 31
+0.3.9-cldr32 // Version 0.3.9 with CLDR version 32
 ```
 
 ## Publishing
 
-on 0.6.18
+on 0.6.21
 ```
 sbt
 clean
 +publishSigned
+coreNative/publishSigned
 sonatyeRelease
 ```
 
 Important: Remember to clean between different scala.js versions
 
-on 1.0.0-M1
+on 1.0.0-M2
 ```
-SCALAJS_VERSION=1.0.0-M1 sbt
+SCALAJS_VERSION=1.0.0-M2 sbt
 clean
 +publishSigned
 sonatyeRelease

@@ -59,8 +59,6 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     Locale.US                  ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.CANADA              ->
-      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     Locale.CANADA_FRENCH       ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
   )
@@ -131,7 +129,11 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     LocaleTestItem(ru_RU, "ru-RU", cldr21 = true) ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "не число", "-", "E"),
     LocaleTestItem(ru_RU, "ru-RU") ->
-      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "не число", "-", "E")
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "не число", "-", "E"),
+    LocaleTestItem(ca, "ca", cldr21 = true) ->
+      List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(ca, "ca") ->
+      List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
   )
 
   def test_dfs(dfs: DecimalFormatSymbols, symbols: List[String]): Unit = {
