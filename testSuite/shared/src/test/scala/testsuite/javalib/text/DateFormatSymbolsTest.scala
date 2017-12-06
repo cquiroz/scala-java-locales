@@ -63,14 +63,6 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
       List("", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
       List("", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
       List("AM", "PM"),
-      List("BC", "AD")),
-    Locale.CANADA -> LocaleTestItem(en_CA, "en_CA", cldr21 = false,
-      List("January", "February", "March", "April", "May", "June", "July", "August",
-        "September", "October", "November", "December", ""),
-      List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""),
-      List("", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
-      List("", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
-      List("AM", "PM"),
       List("BC", "AD"))
   )
 
@@ -103,7 +95,7 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
       List("Jan.", "Feb.", "März", "Apr.", "Mai", "Juni", "Juli", "Aug.", "Sep.", "Okt.", "Nov.", "Dez.", ""),
       List("", "Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"),
       List("", "So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."),
-      List("vorm.", "nachm."),
+      List("AM", "PM"),
       List("v. Chr.", "n. Chr.")),
     Locale.GERMANY -> LocaleTestItem(de_DE, "de_DE", cldr21 = true,
       List("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August",
@@ -119,7 +111,7 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
       List("Jan.", "Feb.", "März", "Apr.", "Mai", "Juni", "Juli", "Aug.", "Sep.", "Okt.", "Nov.", "Dez.", ""),
       List("", "Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"),
       List("", "So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."),
-      List("vorm.", "nachm."),
+      List("AM", "PM"),
       List("v. Chr.", "n. Chr.")),
     Locale.ITALIAN -> LocaleTestItem(it, "it", cldr21 = true,
       List("gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio",
@@ -268,7 +260,23 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
       List("", "dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"),
       List("", "dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."),
       List("a.m.", "p.m."),
-      List("av. J.-C.", "ap. J.-C."))
+      List("av. J.-C.", "ap. J.-C.")),
+    Locale.CANADA -> LocaleTestItem(en_CA, "en_CA", cldr21 = true,
+      List("January", "February", "March", "April", "May", "June", "July", "August",
+        "September", "October", "November", "December", ""),
+      List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""),
+      List("", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
+      List("", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
+      List("AM", "PM"),
+      List("BC", "AD")),
+    Locale.CANADA -> LocaleTestItem(en_CA, "en_CA", cldr21 = false,
+      List("January", "February", "March", "April", "May", "June", "July", "August",
+        "September", "October", "November", "December", ""),
+      List("Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec.", ""),
+      List("", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
+      List("", "Sun.", "Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat."),
+      List("a.m.", "p.m."),
+      List("BC", "AD"))
   )
 
   val extraLocalesData = List(
@@ -552,7 +560,7 @@ class DateFormatSymbolsTest extends LocaleTestSetup {
       List("янв.", "февр.", "мар.", "апр.", "мая", "июн.", "июл.", "авг.", "сент.", "окт.", "нояб.", "дек.", ""),
       List("", "воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"),
       List("", "вс", "пн", "вт", "ср", "чт", "пт", "сб"),
-      List("ДП", "ПП"),
+      List("AM", "PM"),
       List("до н. э.", "н. э."))
   )
 
