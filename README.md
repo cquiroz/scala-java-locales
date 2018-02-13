@@ -11,7 +11,7 @@
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.9-cldr32"
+libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.10-cldr32"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -20,11 +20,11 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   .jsSettings(
-    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.9-cldr32"
+    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.10-cldr32"
   )
 ```
 
-**Requirement**: you must use a host JDK8 to *build* your project, i.e., to
+**Requirement**: you must use a host JDK8 to _build_ your project, i.e., to
 launch sbt. `scala-java-locales` does not work on earlier JDKs.
 
 ## Work in Progress / linking errors
@@ -48,7 +48,7 @@ LocaleRegistry.installLocale(fi_FI)
 val dfs = DecimalFormatSymbols.getInstance(Locale.forLanguageTag("fi_FI"))
 ```
 
-***Note:*** that calls to `Locale.forLanguageTag("fi_FI")` will succeed regardless of the installation due to the requirements on the `Locale` API
+**_Note:_** that calls to `Locale.forLanguageTag("fi_FI")` will succeed regardless of the installation due to the requirements on the `Locale` API
 
 ## Default Locale
 
@@ -91,12 +91,13 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 `scala-java-locales` uses [Semantic Versioning](http://semver.org/) and includes the CLDR version used as a build tag, e.g.:
 
 ```
-0.3.9-cldr32 // Version 0.3.9 with CLDR version 32
+0.3.10-cldr32 // Version 0.3.10 with CLDR version 32
 ```
 
 ## Publishing
 
-on 0.6.21
+on 0.6.22
+
 ```
 sbt
 clean
@@ -107,9 +108,10 @@ sonatyeRelease
 
 Important: Remember to clean between different scala.js versions
 
-on 1.0.0-M2
+on 1.0.0-M3
+
 ```
-SCALAJS_VERSION=1.0.0-M2 sbt
+SCALAJS_VERSION=1.0.0-M3 sbt
 clean
 +publishSigned
 sonatyeRelease
