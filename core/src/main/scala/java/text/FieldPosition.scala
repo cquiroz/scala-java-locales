@@ -35,7 +35,6 @@ class FieldPosition(private[this] val attribute: Format.Field, private[this] val
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 
-
   override def toString(): String =
-    s"java.text.FieldPosition[field=$getField,attribute=$getFieldAttribute,beginIndex=$getBeginIndex,endIndex=$getEndIndex]"
+    s"java.text.FieldPosition[field=$getField,attribute=$getFieldAttribute,beginIndex=$getBeginIndex,endIndex=$getEndIndex]" //scalastyle:off
 }

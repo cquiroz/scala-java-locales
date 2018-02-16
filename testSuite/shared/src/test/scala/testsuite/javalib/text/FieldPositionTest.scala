@@ -78,6 +78,6 @@ class FieldPositionTest {
   @Test def test_to_string(): Unit = {
     val field = TestField("abc")
     val f1 = new FieldPosition(field, 1)
-    assertEquals("java.text.FieldPosition[field=1,attribute=testsuite.javalib.text.FieldPositionTest$TestField(abc),beginIndex=0,endIndex=0]", f1.toString)
+    assertEquals("java.text.FieldPosition[field=1,attribute=testsuite.javalib.text.FieldPositionTest$TestField(abc),beginIndex=0,endIndex=0]", f1.toString) // scalastyle:off
   }
 }

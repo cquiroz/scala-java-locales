@@ -26,7 +26,7 @@ class SimpleDateFormatTest {
      date.getMinutes,
      date.getSeconds), 3)
 
-  def totalSize(num: Long, size: Int) = {
+  def totalSize(num: Long, size: Int): String = {
     val s: String = num.toString
 
     if (s.size > size) s.substring(s.size - size)

@@ -103,7 +103,7 @@ lazy val coreJS: Project = core.js
   .settings(
     scalacOptions ++= {
       val tagOrHash =
-        if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lines_!.head
+        if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
         else s"v${version.value}"
       (sourceDirectories in Compile).value.map { dir =>
         val a = dir.toURI.toString
