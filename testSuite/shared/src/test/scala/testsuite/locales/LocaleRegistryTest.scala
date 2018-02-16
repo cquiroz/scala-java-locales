@@ -29,9 +29,12 @@ class LocaleRegistryTest extends LocaleTestSetup {
     // Locales with special roots
     LocaleTestCase(az_Cyrl, "az-Cyrl", "az__#Cyrl", "az-Cyrl", hasExtensions = false, Some(root)),
     LocaleTestCase(az_Cyrl_AZ, "az-AZ-Cyrl", "az_AZ", "az-AZ", hasExtensions = false, Some(az_Cyrl)),
-    LocaleTestCase(es_CL, "es-CL", "es_CL", "es-CL", hasExtensions = false, Some(es_419)), // es_CL parent is es_419 instead of es
-    LocaleTestCase(en_BS, "en-BS", "en_BS", "en-BS", hasExtensions = false, Some(en_001)), // en_BS parent is en_001 instead of en
-    LocaleTestCase(en_SI, "en-SI", "en_SI", "en-SI", hasExtensions = false, Some(en_150)), // en_SI parent is en_150 instead of en
+     // es_CL parent is es_419 instead of es
+    LocaleTestCase(es_CL, "es-CL", "es_CL", "es-CL", hasExtensions = false, Some(es_419)),
+     // en_BS parent is en_001 instead of en
+    LocaleTestCase(en_BS, "en-BS", "en_BS", "en-BS", hasExtensions = false, Some(en_001)),
+     // en_SI parent is en_150 instead of en
+    LocaleTestCase(en_SI, "en-SI", "en_SI", "en-SI", hasExtensions = false, Some(en_150)),
     LocaleTestCase(pt_MZ, "pt-MZ", "pt_MZ", "pt-MZ", hasExtensions = false, Some(pt_PT)),
     LocaleTestCase(zh_Hant_MO, "zh-Hant-MO", "zh_MO_#Hant", "zh-Hant-MO", hasExtensions = false, Some(zh_Hant_HK))
   )

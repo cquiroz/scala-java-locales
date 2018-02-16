@@ -5,7 +5,7 @@ import java.util.Locale
 import locales.LocaleRegistry
 import locales.cldr.{CalendarPatterns, LDML}
 
-abstract class DateFormat protected () extends Format {
+abstract class DateFormat protected () extends Format
   // override final def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
   // def format(date: Date, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
 
@@ -25,7 +25,6 @@ abstract class DateFormat protected () extends Format {
   // override def hashCode(): Int = ???
   // override def equals(obj: Any): Boolean = ???
   // override def clone(): Any = ???
-}
 
 object DateFormat {
   val ERA_FIELD: Int = 0
