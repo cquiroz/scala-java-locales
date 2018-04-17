@@ -88,7 +88,7 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     LocaleTestItem(ar, "ar", cldr21 = true) ->
       List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JVM
     LocaleTestItem(ar, "ar") ->
-      List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "؜-", "اس"), // JS
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "ليس رقمًا", "-", "E"), // JS
     LocaleTestItem(it_CH, "it-CH", cldr21 = true) ->
       List("0", ".", "'", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     LocaleTestItem(it_CH, "it-CH") ->
