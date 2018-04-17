@@ -7,7 +7,7 @@ lazy val downloadFromZip: TaskKey[Unit] =
   taskKey[Unit]("Download the sbt zip and extract it")
 
 val commonSettings: Seq[Setting[_]] = Seq(
-  cldrVersion := "32",
+  cldrVersion := "33",
   version := s"0.3.10-cldr${cldrVersion.value}",
   organization := "io.github.cquiroz",
   scalaVersion := "2.12.4",
