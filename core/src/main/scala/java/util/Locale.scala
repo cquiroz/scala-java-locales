@@ -246,7 +246,7 @@ object Locale {
     def extension(key: Char, value: String): Option[LocaleBuilder] =
       if (extensions.contains(key) || (value == null || value.isEmpty)) {
         // remove
-        Some(copy(extensions = extensions - key))
+        Some(copy(extensions = extensions.filter { case (k, _) => k != key }))
       } else if (key == UNICODE_LOCALE_EXTENSION) {
         // replace all unicode extensions
         Some(copy(extensions = extensions + (key -> value.toLowerCase),

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.11-cldr33
+
+* Scala.js 0.6.25 and 1.0.0-M4
+* Scala versions 2.10.7, 2.11.13, 2.12.5 and 2.13.0-M4
+* Scala native 0.3.8
+
 ## 0.3.10-cldr32
 
 * Scala.js 0.6.22 and 1.0.0-M3
