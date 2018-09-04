@@ -8,14 +8,14 @@ lazy val downloadFromZip: TaskKey[Unit] =
 
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion := "33",
-  version := s"0.3.10-cldr${cldrVersion.value}",
+  version := s"0.3.11-cldr${cldrVersion.value}",
   organization := "io.github.cquiroz",
-  scalaVersion := "2.12.4",
+  scalaVersion := "2.12.6",
   crossScalaVersions := {
     if (scalaJSVersion.startsWith("0.6")) {
-      Seq("2.10.7", "2.11.12", "2.12.4", "2.13.0-M2")
+      Seq("2.10.7", "2.11.12", "2.12.6", "2.13.0-M4")
     } else {
-      Seq("2.11.12", "2.12.4", "2.13.0-M2")
+      Seq("2.11.12", "2.12.6", "2.13.0-M4")
     }
   },
   scalacOptions ++= Seq("-deprecation", "-feature"),
@@ -74,7 +74,7 @@ lazy val scalajs_locales: Project = project.in(file("."))
     publishLocal := {}
   )
   // don't include scala-native by default
-  .aggregate(coreJS, coreJVM, testSuiteJS, testSuiteJVM)
+  .aggregate(core.js, core.jvm, testSuite.js, testSuite.jvm)
 
 lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform).
   crossType(CrossType.Pure).
@@ -98,9 +98,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform).
         (resourceDirectory in Compile).value / "core")
     }.taskValue
   )
-
-lazy val coreJS: Project = core.js
-  .settings(
+  .jsSettings(
     scalacOptions ++= {
       val tagOrHash =
         if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
@@ -112,10 +110,7 @@ lazy val coreJS: Project = core.js
       }
     }
   )
-
-lazy val coreJVM: Project = core.jvm
-lazy val coreNative: Project = core.native
-  .settings(
+  .nativeSettings(
     sources in (Compile,doc) := Seq.empty
   )
 
@@ -137,7 +132,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform).
       "io.github.cquiroz" %% "macroutils" % "0.0.1" % "provided"
     )
   ).
-  jsConfigure(_.dependsOn(coreJS, macroUtils)).
+  jsConfigure(_.dependsOn(core.js, macroUtils)).
   jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin)).
   jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
@@ -151,7 +146,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform).
       "io.github.cquiroz" %% "macroutils" % "0.0.1" % "provided"
     )
   ).
-  jvmConfigure(_.dependsOn(coreJVM, macroUtils))
+  jvmConfigure(_.dependsOn(core.jvm, macroUtils))
 
 lazy val macroUtils = project.in(file("macroUtils")).
   settings(commonSettings).
@@ -174,7 +169,3 @@ lazy val macroUtils = project.in(file("macroUtils")).
       }
     }
   )
-
-lazy val testSuiteJS: Project = testSuite.js
-lazy val testSuiteJVM: Project = testSuite.jvm
-lazy val testSuiteNative: Project = testSuite.native
