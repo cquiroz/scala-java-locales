@@ -69,9 +69,10 @@ val commonSettings: Seq[Setting[_]] = Seq(
 lazy val scalajs_locales: Project = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(
-    name := "scala-java-locales",
+    name := "root",
     publish := {},
-    publishLocal := {}
+    publishLocal := {},
+    publishArtifact := false,
   )
   // don't include scala-native by default
   .aggregate(core.js, core.jvm, testSuite.js, testSuite.jvm)
