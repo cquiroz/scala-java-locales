@@ -808,7 +808,7 @@ class DateFormatTest extends LocaleTestSetup {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-          DateFormat.FULL -> "EEEE, dd MMMM y",
+          DateFormat.FULL -> "EEEE dd MMMM y",
           DateFormat.LONG -> "dd MMMM y",
           DateFormat.MEDIUM -> "dd MMM y",
           DateFormat.SHORT -> "y-MM-dd"),
@@ -1172,10 +1172,10 @@ class DateFormatTest extends LocaleTestSetup {
           DateFormat.LONG -> "d MMMM y 'г'.",
           DateFormat.MEDIUM -> "d MMM y 'г'.",
           DateFormat.SHORT -> "dd.MM.y"),
-      Map(DateFormat.FULL -> "H:mm:ss zzzz",
-          DateFormat.LONG -> "H:mm:ss z",
-          DateFormat.MEDIUM -> "H:mm:ss",
-          DateFormat.SHORT -> "H:mm")
+      Map(DateFormat.FULL -> "HH:mm:ss zzzz",
+          DateFormat.LONG -> "HH:mm:ss z",
+          DateFormat.MEDIUM -> "HH:mm:ss",
+          DateFormat.SHORT -> "HH:mm")
     ),
     TestCase(
       nb_NO,

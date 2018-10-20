@@ -27,8 +27,6 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
     Locale.ROOT                ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     Locale.ENGLISH             -> englishSymbols,
-    Locale.FRENCH              ->
-      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     Locale.GERMAN              ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     Locale.ITALIAN             ->
@@ -41,8 +39,6 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     Locale.TRADITIONAL_CHINESE ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "非數值", "-", "E"),
-    Locale.FRANCE              ->
-      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     Locale.GERMANY             ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     Locale.ITALY               ->
@@ -89,6 +85,10 @@ class DecimalFormatSymbolsTest extends LocaleTestSetup {
       List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JVM
     LocaleTestItem(ar, "ar") ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "ليس رقمًا", "-", "E"), // JS
+    LocaleTestItem(fr, "fr", cldr21 = true) ->
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    LocaleTestItem(fr, "fr", cldr21 = false) ->
+      List("0", ",", "\u202F", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     LocaleTestItem(it_CH, "it-CH", cldr21 = true) ->
       List("0", ".", "'", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     LocaleTestItem(it_CH, "it-CH") ->
