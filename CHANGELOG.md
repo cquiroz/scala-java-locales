@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.12-cldr34
+
+* Update to cldr34
+
 ## 0.3.11-cldr33
 
 * Scala.js 0.6.25 and 1.0.0-M4
