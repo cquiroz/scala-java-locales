@@ -3,6 +3,8 @@
 ## 0.3.12-cldr34
 
 * Update to cldr34
+* Support scala 2.12.7 and 2.13.0-M5
+* Support Scala.js 1.0.0-M6
 
 ## 0.3.11-cldr33
 
