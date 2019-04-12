@@ -3,3 +3,5 @@ core/.js
 core/.jvm
 target/
 .idea
+.bloop/
+.metals/
