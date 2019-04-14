@@ -27,6 +27,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
         scalacOptions.value
     }
   },
+  scalacOptions in (Compile,doc) := Seq(),
   mappings in (Compile, packageBin) ~= {
     // Exclude CLDR files...
     _.filter(!_._2.contains("core"))
