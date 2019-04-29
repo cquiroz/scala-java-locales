@@ -49,7 +49,7 @@ object DecimalFormatUtil {
     val prefix = new StringBuilder()
     val body = new StringBuilder()
     val suffix = new StringBuilder()
-    val quoteChar = '''
+    val quoteChar = '\''
 
     // Fast parsing with mutable vars
     var prefixReady = false
