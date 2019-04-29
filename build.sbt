@@ -21,6 +21,14 @@ val commonSettings: Seq[Setting[_]] = Seq(
         scalacOptions.value
     }
   },
+  unmanagedSourceDirectories in Compile ++= {
+    (unmanagedSourceDirectories in Compile).value.map { dir =>
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, 10)) => file(dir.getPath ++ "-2.11-")
+        case _             => file(dir.getPath ++ "-2.11+")
+      }
+    }
+  },
   javaOptions        ++= Seq("-Dfile.encoding=UTF8"),
   mappings in (Compile, packageBin) ~= {
     // Exclude CLDR files...
