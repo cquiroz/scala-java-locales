@@ -11,7 +11,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
   version := s"0.5.6-cldr${cldrVersion.value}",
   organization := "io.github.cquiroz",
   scalaVersion := "2.11.11",
-  crossScalaVersions := Seq("2.10.6", "2.11.11", "2.12.3", "2.13.0-M2"),
+  crossScalaVersions := Seq("2.10.6", "2.11.11", "2.12.3", "2.13.0-RC1"),
     scalacOptions ++= Seq("-deprecation", "-feature"),
   scalacOptions := {
     CrossVersion.partialVersion(scalaVersion.value) match {
