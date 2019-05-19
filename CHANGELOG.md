@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.14-cldr35
+
+* Support scala 2.13.0-RC2
+
 ## 0.3.13-cldr35
 
 * Update to cldr35
