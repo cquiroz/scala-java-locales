@@ -3,7 +3,7 @@ language: scala
 scala:
   - 2.11.12
   - 2.12.8
-  - 2.13.0-RC1
+  - 2.13.0-RC2
 jdk:
   - oraclejdk8
 env:
@@ -24,8 +24,8 @@ script:
   - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION '; set scalaJSStage in Global := FullOptStage' testSuiteJS/test
   # Tricks to avoid unnecessary cache updates, from
   # http://www.scala-sbt.org/0.13/docs/Travis-CI-with-sbt.html
-  - find $HOME/.sbt -name "*.lock" | xargs rm
-  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+  - find $HOME/.sbt        -name "*.lock"               -print -delete
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
 cache:
   directories:
     - $HOME/.ivy2/cache
