@@ -110,18 +110,19 @@ on 0.6.27
 sbt
 clean
 +publishSigned
+++2.11.12
 coreNative/publishSigned
 sonatyeRelease
 ```
 
 Important: Remember to clean between different scala.js versions
 
-on 1.0.0-M3
+on 1.0.0-M7
 
 ```
-SCALAJS_VERSION=1.0.0-M3 sbt
+SCALAJS_VERSION=1.0.0-M7 sbt
 clean
-+publishSigned
++coreJS/publishSigned
 sonatyeRelease
 ```
 
