@@ -11,7 +11,7 @@
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.10-cldr32"
+libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.14-cldr35"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -20,7 +20,7 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   .jsSettings(
-    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.10-cldr32"
+    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.14-cldr35"
   )
 ```
 
@@ -94,9 +94,17 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 0.3.10-cldr32 // Version 0.3.10 with CLDR version 32
 ```
 
-## Publishing
+## Contributors
 
-on 0.6.22
++ Eric Peters [@er1c](https://github.com/er1c)
++ A. Alonso Dominguez [@alonsodomin](https://github.com/alonsodomin)
++ Marius B. Kotsbak [@mkotsbak](https://github.com/mkotsbak)
++ Timothy Klim [@TimothyKlim](https://github.com/TimothyKlim)
++ Andrea Peruffo [@andreaTP](https://github.com/AndreaTP)
+
+## Publishing
+=======
+on 0.6.27
 
 ```
 sbt
@@ -119,7 +127,7 @@ sonatyeRelease
 
 ## License
 
-Copyright &copy; 2016 Carlos Quiroz
+Copyright &copy; 2019 Carlos Quiroz
 
 `scala-java-locales` is distributed under the
 [BSD 3-Clause license](./LICENSE.txt).
