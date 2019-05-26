@@ -653,4 +653,23 @@ class LocaleTest extends LocaleTestSetup {
     assertLocaleFromTag(l2, "", "", "", "")
   }
 
+  @Test def test_alpha3_country_code(): Unit = {
+    assertEquals("", Locale.ROOT.getISO3Country)
+
+    assertEquals("", Locale.forLanguageTag("fi").getISO3Country)
+
+    assertEquals("", Locale.forLanguageTag("en").getISO3Country)
+
+    assertEquals("FIN", Locale.forLanguageTag("fi-FI").getISO3Country)
+
+    assertEquals("FIN", Locale.forLanguageTag("sv-FI").getISO3Country)
+
+    assertEquals("USA", Locale.forLanguageTag("en-US").getISO3Country)
+
+    assertEquals("SWE", Locale.forLanguageTag("sv-SE").getISO3Country)
+
+    assertEquals("MEX", Locale.forLanguageTag("es-MX").getISO3Country)
+
+    assertEquals("MUS", Locale.forLanguageTag("mfe-MU").getISO3Country)
+  }
 }

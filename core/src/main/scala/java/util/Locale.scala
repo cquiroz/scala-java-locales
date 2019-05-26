@@ -564,10 +564,15 @@ class Locale private[util] (private[this] val language: String,
     else s"$language$script$country$ext$variant"
   }
 
+  def getISO3Country(): String =
+    if (country.isEmpty) ""
+    else metadata.iso3Countries.getOrElse(
+      country,
+      throw new MissingResourceException("Alpha-3 country code not found", "java.util.Locale", country))
+
+
   // TODO Implement
   //def getISO3Language(): String = ???
-
-  //def getISO3Country(): String = ???
 
   //final def getDisplayLanguage(): String = ???
 
