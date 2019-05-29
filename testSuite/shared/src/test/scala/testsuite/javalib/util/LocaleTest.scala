@@ -672,4 +672,24 @@ class LocaleTest extends LocaleTestSetup {
 
     assertEquals("MUS", Locale.forLanguageTag("mfe-MU").getISO3Country)
   }
+
+  @Test def test_alpha3_language_code(): Unit = {
+    assertEquals("", Locale.ROOT.getISO3Language)
+
+    assertEquals("fin", Locale.forLanguageTag("fi").getISO3Language)
+
+    assertEquals("eng", Locale.forLanguageTag("en").getISO3Language)
+
+    assertEquals("fin", Locale.forLanguageTag("fi-FI").getISO3Language)
+
+    assertEquals("swe", Locale.forLanguageTag("sv-FI").getISO3Language)
+
+    assertEquals("eng", Locale.forLanguageTag("en-US").getISO3Language)
+
+    assertEquals("swe", Locale.forLanguageTag("sv-SE").getISO3Language)
+
+    assertEquals("spa", Locale.forLanguageTag("es-MX").getISO3Language)
+
+    assertEquals("mfe", Locale.forLanguageTag("mfe-MU").getISO3Language)
+  }
 }
