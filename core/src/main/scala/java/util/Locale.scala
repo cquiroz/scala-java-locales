@@ -570,10 +570,14 @@ class Locale private[util] (private[this] val language: String,
       country,
       throw new MissingResourceException("Alpha-3 country code not found", "java.util.Locale", country))
 
+  def getISO3Language(): String =
+    if (language.isEmpty) ""
+    else if (language.lengthCompare(3) == 0) language
+    else metadata.iso3Languages.getOrElse(
+      language,
+      throw new MissingResourceException("Alpha-3 language code not found", "java.util.Locale", language))
 
   // TODO Implement
-  //def getISO3Language(): String = ???
-
   //final def getDisplayLanguage(): String = ???
 
   //final def getDisplayLanguage(inLocale: Locale): String = ???
