@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.15-cldr35
+
+* Support scala 2.13.0-RC3
+* Support Scala.js 0.6.28 and 1.0.0-M8
+* Implement Locale#getISO3Country
+* Implement Locale#getISO3Language
+
 ## 0.3.14-cldr35
 
 * Support scala 2.13.0-RC2

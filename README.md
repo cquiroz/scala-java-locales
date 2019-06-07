@@ -11,7 +11,7 @@
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.14-cldr35"
+libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.15-cldr35"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -20,7 +20,7 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   .jsSettings(
-    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.14-cldr35"
+    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.15-cldr35"
   )
 ```
 
@@ -91,7 +91,7 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 `scala-java-locales` uses [Semantic Versioning](http://semver.org/) and includes the CLDR version used as a build tag, e.g.:
 
 ```
-0.3.10-cldr32 // Version 0.3.10 with CLDR version 32
+0.3.15-cldr35 // Version 0.3.15 with CLDR version 35
 ```
 
 ## Contributors
@@ -101,10 +101,11 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 + Marius B. Kotsbak [@mkotsbak](https://github.com/mkotsbak)
 + Timothy Klim [@TimothyKlim](https://github.com/TimothyKlim)
 + Andrea Peruffo [@andreaTP](https://github.com/AndreaTP)
++ Olli Helenius [@liff](https://github.com/liff)
 
 ## Publishing
 =======
-on 0.6.27
+on 0.6.28
 
 ```
 sbt
@@ -117,10 +118,10 @@ sonatyeRelease
 
 Important: Remember to clean between different scala.js versions
 
-on 1.0.0-M7
+on 1.0.0-M8
 
 ```
-SCALAJS_VERSION=1.0.0-M7 sbt
+SCALAJS_VERSION=1.0.0-M8 sbt
 clean
 +coreJS/publishSigned
 sonatyeRelease
