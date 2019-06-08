@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.16-cldr35
+
+* Support scala 2.13.0
+
 ## 0.3.15-cldr35
 
 * Support scala 2.13.0-RC3
