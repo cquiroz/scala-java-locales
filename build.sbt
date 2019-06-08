@@ -8,14 +8,14 @@ lazy val downloadFromZip: TaskKey[Unit] =
 
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion := "35",
-  version := s"0.3.15-cldr${cldrVersion.value}",
+  version := s"0.3.16-cldr${cldrVersion.value}",
   organization := "io.github.cquiroz",
   scalaVersion := "2.12.8",
   crossScalaVersions := {
     if (scalaJSVersion.startsWith("0.6")) {
-      Seq("2.10.7", "2.11.12", "2.12.8", "2.13.0-RC3")
+      Seq("2.10.7", "2.11.12", "2.12.8", "2.13.0")
     } else {
-      Seq("2.11.12", "2.12.8", "2.13.0-RC3")
+      Seq("2.11.12", "2.12.8", "2.13.0")
     }
   },
   scalacOptions ++= Seq("-deprecation", "-feature"),
