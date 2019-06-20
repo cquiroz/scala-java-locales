@@ -8,11 +8,11 @@ scala:
 jdk:
   - oraclejdk8
 env:
-  - TRAVIS_NODE_VERSION="5.12.0" SCALAJS_VERSION="0.6.20"
+  - TRAVIS_NODE_VERSION="5.12.0" SCALAJS_VERSION="0.6.28"
   - TRAVIS_NODE_VERSION="5.12.0" SCALAJS_VERSION="1.0.0-M1"
-  - TRAVIS_NODE_VERSION="6.10.0" SCALAJS_VERSION="0.6.20"
+  - TRAVIS_NODE_VERSION="6.10.0" SCALAJS_VERSION="0.6.28"
   - TRAVIS_NODE_VERSION="6.10.0" SCALAJS_VERSION="1.0.0-M1"
-  - TRAVIS_NODE_VERSION="7.6.0" SCALAJS_VERSION="0.6.20"
+  - TRAVIS_NODE_VERSION="7.6.0" SCALAJS_VERSION="0.6.28"
   - TRAVIS_NODE_VERSION="7.6.0" SCALAJS_VERSION="1.0.0-M1"
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
