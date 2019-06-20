@@ -13,7 +13,7 @@ addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
     Nil
 }
 
-addSbtPlugin("org.scala-native" % "sbt-scala-native" % "0.3.3")
+addSbtPlugin("org.scala-native" % "sbt-scala-native" % "0.3.9")
 
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "1.1")
 
