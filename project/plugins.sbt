@@ -34,5 +34,5 @@ libraryDependencies := {
 }
 
 libraryDependencies ++= Seq(
-  "com.eed3si9n" %% "treehugger" % "0.4.3"
+  "com.eed3si9n" %% "treehugger" % "0.4.4"
 )
