@@ -1,49 +1,98 @@
 package java.util
 
-import locales.{BCP47, LocaleRegistry}
-
-import scala.collection.{Map => SMap, Set => SSet}
+import locales.BCP47
+import scala.collection.{ Map => SMap, Set => SSet }
 import scala.collection.JavaConverters._
 import scala.util.matching.Regex
-import locales.BCP47.{GrandfatheredTag, LanguageTag, PrivateUseTag}
+import locales.BCP47.{ GrandfatheredTag, LanguageTag, PrivateUseTag }
+import locales.cldr.LocalesProvider
+import locales.cldr.CLDRMetadata
+import locales.cldr.LDML
+import locales.cldr.NumberingSystem
+import org.portablescala.reflect._
 
-import locales.cldr.data.metadata
+private[java] object LocalesDb {
+
+  val provider: LocalesProvider =
+    Reflect
+      .lookupLoadableModuleClass("locales.cldr.data.LocalesProvider$", null)
+      .getOrElse(sys.error("Needs a locale provider"))
+      .loadModule
+      .asInstanceOf[LocalesProvider]
+
+  val root: LDML = provider.root
+
+  val latn: NumberingSystem = provider.latn
+
+  val ldmls = provider.ldmls
+
+  val metadata: CLDRMetadata = provider.metadata
+
+  val currencydata = provider.currencyData
+
+  /**
+    * Attempts to give a Locale for the given tag if available
+    */
+  def localeForLanguageTag(languageTag: String): Option[Locale] =
+    // TODO Support alternative tags for the same locale
+    if (languageTag == "und") {
+      Some(Locale.ROOT)
+    } else
+      provider.ldmls.get(languageTag).map(_.toLocale)
+
+  /**
+    * Returns the ldml for the given locale
+    */
+  def ldml(locale: Locale): Option[LDML] = {
+    val tag =
+      if (locale.toLanguageTag() == "zh-CN") "zh-Hans-CN"
+      else if (locale.toLanguageTag() == "zh-TW") "zh-Hant-TW"
+      else locale.toLanguageTag()
+    provider.ldmls.get(tag)
+  }
+}
 
 object Locale {
+  import LocalesDb._
 
   // Default locales required by the specs
-  lazy val ENGLISH: Locale = LocaleRegistry.en.toLocale
-  lazy val FRENCH: Locale = LocaleRegistry.fr.toLocale
-  lazy val GERMAN: Locale = LocaleRegistry.de.toLocale
-  lazy val ITALIAN: Locale = LocaleRegistry.it.toLocale
-  lazy val JAPANESE: Locale = LocaleRegistry.ja.toLocale
-  lazy val KOREAN: Locale = LocaleRegistry.ko.toLocale
-  lazy val CHINESE: Locale = LocaleRegistry.zh.toLocale
-  lazy val SIMPLIFIED_CHINESE: Locale = LocaleRegistry.zh_Hans_CN.toLocale
-  lazy val TRADITIONAL_CHINESE: Locale = LocaleRegistry.zh_Hant_TW.toLocale
-  lazy val FRANCE: Locale = LocaleRegistry.fr_FR.toLocale
-  lazy val GERMANY: Locale = LocaleRegistry.de_DE.toLocale
-  lazy val ITALY: Locale = LocaleRegistry.it_IT.toLocale
-  lazy val JAPAN: Locale = LocaleRegistry.ja_JP.toLocale
-  lazy val KOREA: Locale = LocaleRegistry.ko_KR.toLocale
-  lazy val CHINA: Locale = LocaleRegistry.zh_Hans_CN.toLocale
-  lazy val PRC: Locale = LocaleRegistry.zh_Hans_CN.toLocale
-  lazy val TAIWAN: Locale = LocaleRegistry.zh_Hant_TW.toLocale
-  lazy val UK: Locale = LocaleRegistry.en_GB.toLocale
-  lazy val US: Locale = LocaleRegistry.en_US.toLocale
-  lazy val CANADA: Locale = LocaleRegistry.en_CA.toLocale
-  lazy val CANADA_FRENCH: Locale = LocaleRegistry.fr_CA.toLocale
-  lazy val ROOT: Locale = LocaleRegistry.root.toLocale
+  lazy val ENGLISH: Locale  = localeForLanguageTag("en").getOrElse(ROOT)
+  lazy val FRENCH: Locale   = localeForLanguageTag("fr").getOrElse(ROOT)
+  lazy val GERMAN: Locale   = localeForLanguageTag("de").getOrElse(ROOT)
+  lazy val ITALIAN: Locale  = localeForLanguageTag("it").getOrElse(ROOT)
+  lazy val JAPANESE: Locale = localeForLanguageTag("ja").getOrElse(ROOT)
+  lazy val KOREAN: Locale   = localeForLanguageTag("ko").getOrElse(ROOT)
+  lazy val CHINESE: Locale  = localeForLanguageTag("zh").getOrElse(ROOT)
+  lazy val SIMPLIFIED_CHINESE: Locale = {
+    val l = ldmls.getOrElse("zh-Hans-CN", root)
+    l.copy(locale = l.locale.copy(script = None)).toLocale
+  }
+  lazy val TRADITIONAL_CHINESE: Locale = {
+    val l = ldmls.getOrElse("zh-Hant-TW", root)
+    l.copy(locale = l.locale.copy(script = None)).toLocale
+  }
+  lazy val FRANCE: Locale        = localeForLanguageTag("fr-FR").getOrElse(ROOT)
+  lazy val GERMANY: Locale       = localeForLanguageTag("de-DE").getOrElse(ROOT)
+  lazy val ITALY: Locale         = localeForLanguageTag("it-IT").getOrElse(ROOT)
+  lazy val JAPAN: Locale         = localeForLanguageTag("ja-JP").getOrElse(ROOT)
+  lazy val KOREA: Locale         = localeForLanguageTag("ko-KR").getOrElse(ROOT)
+  lazy val CHINA: Locale         = SIMPLIFIED_CHINESE
+  lazy val PRC: Locale           = SIMPLIFIED_CHINESE
+  lazy val TAIWAN: Locale        = TRADITIONAL_CHINESE
+  lazy val UK: Locale            = localeForLanguageTag("en-GB").getOrElse(ROOT)
+  lazy val US: Locale            = localeForLanguageTag("en-US").getOrElse(ROOT)
+  lazy val CANADA: Locale        = localeForLanguageTag("en-CA").getOrElse(ROOT)
+  lazy val CANADA_FRENCH: Locale = localeForLanguageTag("fr-CA").getOrElse(ROOT)
+  lazy val ROOT: Locale          = root.toLocale
 
-  val PRIVATE_USE_EXTENSION: Char = 'x'
+  val PRIVATE_USE_EXTENSION: Char    = 'x'
   val UNICODE_LOCALE_EXTENSION: Char = 'u'
 
-  final class Category private (name: String, ordinal: Int)
-      extends Enum[Category](name, ordinal)
+  final class Category private (name: String, ordinal: Int) extends Enum[Category](name, ordinal)
 
   object Category {
     val DISPLAY: Category = new Category("DISPLAY", 0)
-    val FORMAT: Category = new Category("FORMAT", 1)
+    val FORMAT: Category  = new Category("FORMAT", 1)
 
     private lazy val categories = Array(DISPLAY, FORMAT)
 
@@ -76,10 +125,9 @@ object Locale {
   private[util] def checkAcceptableVariantSegment(l: String): Boolean =
     checkRegex("[0-9a-zA-Z]{1,8}".r, l)
 
-  private[util] def checkVariantSegment(l: String): Boolean = {
+  private[util] def checkVariantSegment(l: String): Boolean =
     checkRegex("[0-9][0-9a-zA-Z]{3}".r, l) ||
-    checkRegex("[0-9a-zA-Z]{5,8}".r, l)
-  }
+      checkRegex("[0-9a-zA-Z]{5,8}".r, l)
 
   private[util] def checkVariant(l: String): Boolean = {
     val parts = l.split("-|_")
@@ -111,41 +159,35 @@ object Locale {
     def setLanguage(language: String): Builder = {
       builder = builder
         .language(language)
-        .fold(
-            throw new IllformedLocaleException(s"Invalid language $language"))(
-            identity)
+        .fold(throw new IllformedLocaleException(s"Invalid language $language"))(identity)
       this
     }
 
     def setScript(script: String): Builder = {
       builder = builder
         .script(script)
-        .fold(throw new IllformedLocaleException(s"Invalid script $script"))(
-            identity)
+        .fold(throw new IllformedLocaleException(s"Invalid script $script"))(identity)
       this
     }
 
     def setRegion(region: String): Builder = {
       builder = builder
         .region(region)
-        .fold(throw new IllformedLocaleException(s"Invalid region $region"))(
-            identity)
+        .fold(throw new IllformedLocaleException(s"Invalid region $region"))(identity)
       this
     }
 
     def setVariant(variant: String): Builder = {
       builder = builder
         .variant(variant)
-        .fold(throw new IllformedLocaleException(s"Invalid variant $variant"))(
-            identity)
+        .fold(throw new IllformedLocaleException(s"Invalid variant $variant"))(identity)
       this
     }
 
     def setExtension(key: Char, value: String): Builder = {
       builder = builder
         .extension(key, value)
-        .fold(throw new IllformedLocaleException(
-                s"Invalid extension $key: $value"))(identity)
+        .fold(throw new IllformedLocaleException(s"Invalid extension $key: $value"))(identity)
       this
     }
 
@@ -155,8 +197,9 @@ object Locale {
       }
       builder = builder
         .unicodeLocaleKeyword(key, _type)
-        .fold(throw new IllformedLocaleException(
-                s"Invalid unicode keyword $key: ${_type}"))(identity)
+        .fold(throw new IllformedLocaleException(s"Invalid unicode keyword $key: ${_type}"))(
+          identity
+        )
       this
     }
 
@@ -166,8 +209,7 @@ object Locale {
       }
       builder = builder
         .addUnicodeLocaleAttribute(attribute)
-        .fold(throw new IllformedLocaleException(
-                s"Invalid unicode attribute $attribute"))(identity)
+        .fold(throw new IllformedLocaleException(s"Invalid unicode attribute $attribute"))(identity)
       this
     }
 
@@ -177,8 +219,7 @@ object Locale {
       }
       builder = builder
         .removeUnicodeLocaleAttribute(attribute)
-        .fold(throw new IllformedLocaleException(
-                s"Invalid unicode attribute $attribute"))(identity)
+        .fold(throw new IllformedLocaleException(s"Invalid unicode attribute $attribute"))(identity)
       this
     }
 
@@ -195,12 +236,16 @@ object Locale {
     def build(): Locale = builder.build
   }
 
-  private case class LocaleBuilder(strict: Boolean = true,
-      language: Option[String] = None, region: Option[String] = None,
-      variant: Option[String] = None, script: Option[String] = None,
-      extensions: SMap[Char, String] = SMap.empty,
-      unicodeExtensions: SMap[String, String] = SMap.empty,
-      unicodeAttributes: SSet[String] = SSet.empty) {
+  private case class LocaleBuilder(
+    strict:            Boolean              = true,
+    language:          Option[String]       = None,
+    region:            Option[String]       = None,
+    variant:           Option[String]       = None,
+    script:            Option[String]       = None,
+    extensions:        SMap[Char, String]   = SMap.empty,
+    unicodeExtensions: SMap[String, String] = SMap.empty,
+    unicodeAttributes: SSet[String]         = SSet.empty
+  ) {
 
     def language(language: String): Option[LocaleBuilder] =
       if (language == null || language.isEmpty) {
@@ -216,8 +261,7 @@ object Locale {
         Some(copy(script = None))
       } else if (!strict || checkScript(script)) {
         // Script must be canonicalized
-        Some(copy(
-            script = Some(script.charAt(0).toUpper + script.substring(1))))
+        Some(copy(script = Some(script.charAt(0).toUpper + script.substring(1))))
       } else {
         None
       }
@@ -246,65 +290,91 @@ object Locale {
     def extension(key: Char, value: String): Option[LocaleBuilder] =
       if (extensions.contains(key) || (value == null || value.isEmpty)) {
         // remove
-        Some(copy(extensions = extensions - key))
+        Some(copy(extensions = extensions.filter { case (k, _) => k != key }))
       } else if (key == UNICODE_LOCALE_EXTENSION) {
         // replace all unicode extensions
-        Some(copy(extensions = extensions + (key -> value.toLowerCase),
-            unicodeExtensions = SMap.empty))
+        Some(
+          copy(extensions = extensions + (key -> value.toLowerCase), unicodeExtensions = SMap.empty)
+        )
       } else if (!strict || checkExtKey(key) && checkExtValue(value)) {
         Some(copy(extensions = extensions + (key -> value.toLowerCase)))
       } else {
         None
       }
 
-    def unicodeLocaleKeyword(key: String,
-        _type: String): Option[LocaleBuilder] = {
+    def unicodeLocaleKeyword(key: String, _type: String): Option[LocaleBuilder] =
       if (!strict || checkUnicodeKey(key) && checkUnicodeType(_type)) {
         Some(copy(unicodeExtensions = unicodeExtensions + (key -> _type)))
       } else {
         None
       }
-    }
 
-    def addUnicodeLocaleAttribute(attribute: String): Option[LocaleBuilder] = {
+    def addUnicodeLocaleAttribute(attribute: String): Option[LocaleBuilder] =
       if (!strict || checkAttribute(attribute)) {
         Some(copy(unicodeAttributes = unicodeAttributes + attribute))
       } else {
         None
       }
-    }
 
-    def removeUnicodeLocaleAttribute(
-        attribute: String): Option[LocaleBuilder] = {
+    def removeUnicodeLocaleAttribute(attribute: String): Option[LocaleBuilder] =
       if (!strict || checkAttribute(attribute)) {
-        Some(copy(unicodeAttributes = unicodeAttributes.filterNot(
-            _.equalsIgnoreCase(attribute))))
+        Some(copy(unicodeAttributes = unicodeAttributes.filterNot(_.equalsIgnoreCase(attribute))))
       } else {
         None
       }
-    }
 
     def clearExtensions: LocaleBuilder =
       copy(extensions = SMap.empty)
 
-    def build: Locale = {
-      new Locale(language.getOrElse(""), region.getOrElse(""),
-          variant.getOrElse(""), script, extensions, unicodeExtensions,
-          unicodeAttributes)
-    }
+    def build: Locale =
+      new Locale(
+        language.getOrElse(""),
+        region.getOrElse(""),
+        variant.getOrElse(""),
+        script,
+        extensions,
+        unicodeExtensions,
+        unicodeAttributes
+      )
   }
 
-  def getDefault(): Locale = LocaleRegistry.default
+  private var defaultLocale: Locale = LocalesDb.root.toLocale
+  private var defaultPerCategory: SMap[Locale.Category, Option[Locale]] =
+    Locale.Category.values().map(_ -> Some(defaultLocale)).toMap
 
-  def getDefault(category: Category): Locale = LocaleRegistry.default(category)
+  private def default: Locale = defaultLocale
 
-  def setDefault(newLocale: Locale): Unit = LocaleRegistry.setDefault(newLocale)
+  private def default(category: Locale.Category): Locale =
+    if (category == null) {
+      throw new NullPointerException("Argument cannot be null")
+    } else {
+      defaultPerCategory
+        .get(category)
+        .flatten
+        .getOrElse(throw new IllegalStateException(s"No default locale set for category $category"))
+    }
 
-  def setDefault(category: Category, newLocale: Locale): Unit =
-    LocaleRegistry.setDefault(category, newLocale)
+  def setDefault(newLocale: Locale): Unit = {
+    if (newLocale == null) {
+      throw new NullPointerException("Argument cannot be null")
+    }
+    defaultLocale      = newLocale
+    defaultPerCategory = Locale.Category.values().map(_ -> Some(newLocale)).toMap
+  }
+
+  def setDefault(category: Locale.Category, newLocale: Locale): Unit =
+    if (category == null || newLocale == null) {
+      throw new NullPointerException("Argument cannot be null")
+    } else {
+      defaultPerCategory = defaultPerCategory + (category -> Some(newLocale))
+    }
+
+  def getDefault(): Locale = default
+
+  def getDefault(category: Category): Locale = default(category)
 
   def getAvailableLocales(): Array[Locale] =
-    LocaleRegistry.availableLocales.toArray
+    LocalesDb.provider.ldmls.map(_._2.toLocale).toArray
 
   def getISOCountries(): Array[String] = metadata.isoCountries
 
@@ -312,31 +382,51 @@ object Locale {
 
   private def parseLanguageTag(tag: String): Option[Locale] = {
     // grandfathered mapping
-    val grandfathered = SMap("art-lojban" -> "jbo", "i-ami" -> "ami",
-        "i-bnn" -> "bnn", "i-hak" -> "hak", "i-klingon" -> "tlh",
-        "i-lux" -> "lb", "i-hak" -> "hak", "i-navajo" -> "nv",
-        "i-pwn" -> "pwn", "i-tao" -> "tao", "i-tay" -> "tay", "i-tsu" -> "tsu",
-        "no-bok" -> "nb", "no-nyn" -> "nn", "sgn-BE-FR" -> "sfb",
-        "sgn-BE-NL" -> "vgt", "sgn-CH-DE" -> "sgg", "zh-guoyu" -> "cmn",
-        "zh-hakka" -> "hak", "zh-min-nan" -> "nan", "zh-xiang" -> "hsn",
-        "cel-gaulish" -> "xtg", "en-GB-oed" -> "en-GB-x-oed",
-        "i-default" -> "en-x-i-default", "i-enochian" -> "und-x-i-enochian",
-        "i-mingo" -> "see-x-i-mingo", "zh-min" -> "nan-x-zh-min")
+    val grandfathered = SMap(
+      "art-lojban" -> "jbo",
+      "i-ami" -> "ami",
+      "i-bnn" -> "bnn",
+      "i-hak" -> "hak",
+      "i-klingon" -> "tlh",
+      "i-lux" -> "lb",
+      "i-hak" -> "hak",
+      "i-navajo" -> "nv",
+      "i-pwn" -> "pwn",
+      "i-tao" -> "tao",
+      "i-tay" -> "tay",
+      "i-tsu" -> "tsu",
+      "no-bok" -> "nb",
+      "no-nyn" -> "nn",
+      "sgn-BE-FR" -> "sfb",
+      "sgn-BE-NL" -> "vgt",
+      "sgn-CH-DE" -> "sgg",
+      "zh-guoyu" -> "cmn",
+      "zh-hakka" -> "hak",
+      "zh-min-nan" -> "nan",
+      "zh-xiang" -> "hsn",
+      "cel-gaulish" -> "xtg",
+      "en-GB-oed" -> "en-GB-x-oed",
+      "i-default" -> "en-x-i-default",
+      "i-enochian" -> "und-x-i-enochian",
+      "i-mingo" -> "see-x-i-mingo",
+      "zh-min" -> "nan-x-zh-min"
+    )
 
-    def sanitizePrivateExtension(b: LocaleBuilder,
-        p: Option[String]): LocaleBuilder = {
-      val lvariantRegex = "lvariant-(.*)".r
+    def sanitizePrivateExtension(b: LocaleBuilder, p: Option[String]): LocaleBuilder = {
+      val lvariantRegex    = "lvariant-(.*)".r
       val longVariantRegex = "(.*)-lvariant-(.*)".r
       p.collect {
-        case longVariantRegex(x, y) =>
-          for {
-            b1 <- b.addVariant(y.replace("-", "_"))
-            b2 <- b1.extension('x', x)
-          } yield b2
+          case longVariantRegex(x, y) =>
+            for {
+              b1 <- b.addVariant(y.replace("-", "_"))
+              b2 <- b1.extension('x', x)
+            } yield b2
 
-        case lvariantRegex(x) => b.addVariant(x.replace("-", "_"))
-        case x                => b.extension('x', x)
-      }.flatten.getOrElse(b)
+          case lvariantRegex(x) => b.addVariant(x.replace("-", "_"))
+          case x                => b.extension('x', x)
+        }
+        .flatten
+        .getOrElse(b)
     }
 
     BCP47.parseTag(tag) match {
@@ -353,8 +443,7 @@ object Locale {
           case extRegex(c, xv) => c.charAt(0) -> xv
         }
         val b = for {
-          b1 <- builder.language(
-              e.flatMap(_.split("-").headOption).getOrElse(la))
+          b1 <- builder.language(e.flatMap(_.split("-").headOption).getOrElse(la))
           b2 <- b1.script(s.getOrElse(""))
           b3 <- b2.region(r.getOrElse(""))
           b4 <- b3.variant(v.mkString("_"))
@@ -385,8 +474,7 @@ object Locale {
   }
 
   def forLanguageTag(languageTag: String): Locale =
-    LocaleRegistry
-      .localeForLanguageTag(languageTag)
+    localeForLanguageTag(languageTag)
       .orElse(parseLanguageTag(languageTag))
       .getOrElse(ROOT)
 
@@ -405,13 +493,16 @@ object Locale {
   //def lookupTag(priorityList: List[LanguageRange], tags: Collection[String]): String = ???
 }
 
-class Locale private[util] (private[this] val language: String,
-    private[this] val country: String, private[this] val variant: String,
-    private[this] val script: Option[String],
-    private[this] val _extensions: SMap[Char, String],
-    private[this] val unicodeExtensions: SMap[String, String],
-    private[this] val unicodeAttributes: SSet[String],
-    private[this] val supportSpecialCases: Boolean = true) {
+class Locale private[util] (
+  private[this] val language:            String,
+  private[this] val country:             String,
+  private[this] val variant:             String,
+  private[this] val script:              Option[String],
+  private[this] val _extensions:         SMap[Char, String],
+  private[this] val unicodeExtensions:   SMap[String, String],
+  private[this] val unicodeAttributes:   SSet[String],
+  private[this] val supportSpecialCases: Boolean = true
+) {
 
   // Required by the javadocs
   if (language == null || country == null || variant == null)
@@ -419,11 +510,11 @@ class Locale private[util] (private[this] val language: String,
 
   // Handle 2 special cases jp_JP_JP and th_TH_TH
   private[this] val extensions = {
-    if ((language, country, variant) == ("ja", "JP", "JP") &&
+    if (((language, country, variant)) == (("ja", "JP", "JP")) &&
         supportSpecialCases) {
       _extensions + (Locale.UNICODE_LOCALE_EXTENSION -> "ca-japanese")
-    } else if ((language, country, variant) == ("th", "TH", "TH") &&
-        supportSpecialCases) {
+    } else if (((language, country, variant)) == (("th", "TH", "TH")) &&
+               supportSpecialCases) {
       _extensions + (Locale.UNICODE_LOCALE_EXTENSION -> "nu-thai")
     } else {
       _extensions
@@ -465,17 +556,17 @@ class Locale private[util] (private[this] val language: String,
     extensions.nonEmpty || unicodeExtensions.nonEmpty
 
   def stripExtensions(): Locale =
-    new Locale(language, country, variant, script, SMap.empty, SMap.empty,
-        SSet.empty, false)
+    new Locale(language, country, variant, script, SMap.empty, SMap.empty, SSet.empty, false)
 
-  def getExtension(key: Char): String = {
+  def getExtension(key: Char): String =
     if (key == Locale.UNICODE_LOCALE_EXTENSION && unicodeExtensions.nonEmpty) {
-      unicodeExtensions.collect {
-        case (k, v) if v.isEmpty => k
-        case (k, v)              => s"$k-$v"
-      }.mkString("-")
+      unicodeExtensions
+        .collect {
+          case (k, v) if v.isEmpty => k
+          case (k, v)              => s"$k-$v"
+        }
+        .mkString("-")
     } else extensions.get(key).orNull
-  }
 
   def getExtensionKeys(): Set[Char] = {
     if (unicodeExtensions.nonEmpty) {
@@ -492,10 +583,10 @@ class Locale private[util] (private[this] val language: String,
 
   override def toString(): String = {
     // Rather complex toString following the specifications
-    val hasVariant = getVariant().nonEmpty
-    val hasCountry = getCountry().nonEmpty
+    val hasVariant  = getVariant().nonEmpty
+    val hasCountry  = getCountry().nonEmpty
     val hasLanguage = getLanguage().nonEmpty
-    val hasScript = getScript().nonEmpty
+    val hasScript   = getScript().nonEmpty
 
     val countryPart =
       if (hasCountry) s"_${getCountry()}"
@@ -513,7 +604,8 @@ class Locale private[util] (private[this] val language: String,
       else if (hasExtensions()) "_#"
       else ""
 
-    val extensionsPart = extensions.map { case (x, v) => s"$x-$v" }
+    val extensionsPart = extensions
+      .map { case (x, v) => s"$x-$v" }
       .mkString("")
     if (hasLanguage || hasCountry) {
       s"${getLanguage()}$countryPart$variantPart$scriptPart$extensionsPart"
@@ -547,7 +639,7 @@ class Locale private[util] (private[this] val language: String,
           if (wellFormed.nonEmpty) wellFormed.take(1).mkString("-", "-", "-")
           else "-"
         pre + "x-lvariant" +
-        (acceptable ++ wellFormed.drop(1)).mkString("-", "-", "")
+          (acceptable ++ wellFormed.drop(1)).mkString("-", "-", "")
       } else {
         ""
       }
@@ -564,11 +656,34 @@ class Locale private[util] (private[this] val language: String,
     else s"$language$script$country$ext$variant"
   }
 
+  def getISO3Country(): String =
+    if (country.isEmpty) ""
+    else
+      LocalesDb.metadata.iso3Countries
+        .getOrElse(
+          country,
+          throw new MissingResourceException(
+            "Alpha-3 country code not found",
+            "java.util.Locale",
+            country
+          )
+        )
+
+  def getISO3Language(): String =
+    if (language.isEmpty) ""
+    else if (language.lengthCompare(3) == 0) language
+    else
+      LocalesDb.metadata.iso3Languages
+        .getOrElse(
+          language,
+          throw new MissingResourceException(
+            "Alpha-3 language code not found",
+            "java.util.Locale",
+            language
+          )
+        )
+
   // TODO Implement
-  //def getISO3Language(): String = ???
-
-  //def getISO3Country(): String = ???
-
   //final def getDisplayLanguage(): String = ???
 
   //final def getDisplayLanguage(inLocale: Locale): String = ???
@@ -591,13 +706,12 @@ class Locale private[util] (private[this] val language: String,
 
   override def clone(): AnyRef = this // Locale is immutable
 
-  private def isEqual(l: Locale): Boolean = {
+  private def isEqual(l: Locale): Boolean =
     language == l.getLanguage && country == l.getCountry &&
-    variant == l.getVariant && script.forall(_ == l.getScript) &&
-    extensions.forall { case (k, v) => l.getExtension(k) == v } &&
-    unicodeExtensions.forall { case (k, v) => l.getUnicodeLocaleType(k) == v } &&
-    unicodeAttributes == l.getUnicodeLocaleAttributes.asScala
-  }
+      variant == l.getVariant && script.forall(_ == l.getScript) &&
+      extensions.forall { case (k, v)        => l.getExtension(k) == v } &&
+      unicodeExtensions.forall { case (k, v) => l.getUnicodeLocaleType(k) == v } &&
+      unicodeAttributes == l.getUnicodeLocaleAttributes.asScala
 
   override def equals(x: Any): Boolean = x match {
     case l: Locale => isEqual(l)

@@ -1,24 +1,17 @@
 # scala-java-locales
 
 [![Build Status](https://api.travis-ci.org/cquiroz/scala-java-locales.svg?branch=master)](https://travis-ci.org/cquiroz/scala-java-locales)
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.8.svg)](https://www.scala-js.org/)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.cquiroz/scala-java-locales_sjs0.6_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.cquiroz/scala-java-locales_sjs0.6_2.12)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org/)
 
 `scala-java-locales` is a clean-room BSD-licensed implementation of the `java.util.Locale` API and related classes as defined on JDK8, mostly for Scala.js usage. It enables the locale API in Scala.js projects and supports usage requiring locales like number and dates formatting.
-
-# Important!
-
-At the moment there are 2 branches of this library the 0.5.x line and the 0.3.x line
-The main difference is that the 0.5.x line contains support for currencies which increases
-notably the compilation time and final js
-
-There is planned work to unify both lines and have a single line making more modular inclusion of metadata
 
 ## Usage
 
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "0.5.2-cldr31"
+libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.15-cldr35"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -27,11 +20,11 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   .jsSettings(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "0.5.2-cldr31"
+    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.15-cldr35"
   )
 ```
 
-**Requirement**: you must use a host JDK8 to *build* your project, i.e., to
+**Requirement**: you must use a host JDK8 to _build_ your project, i.e., to
 launch sbt. `scala-java-locales` does not work on earlier JDKs.
 
 ## Work in Progress / linking errors
@@ -55,7 +48,7 @@ LocaleRegistry.installLocale(fi_FI)
 val dfs = DecimalFormatSymbols.getInstance(Locale.forLanguageTag("fi_FI"))
 ```
 
-***Note:*** that calls to `Locale.forLanguageTag("fi_FI")` will succeed regardless of the installation due to the requirements on the `Locale` API
+**_Note:_** that calls to `Locale.forLanguageTag("fi_FI")` will succeed regardless of the installation due to the requirements on the `Locale` API
 
 ## Default Locale
 
@@ -68,7 +61,6 @@ Locale.setDefault(Locale.forLanguageTag(<my-locale>))
 The Java API requires a default `Locale` though it doesn't mandate a specific one, instead, the runtime should select it depending on the platform.
 
 While the Java Locales use the OS default locale, on `Scala.js` platforms like browsers or node.js, there is no reliable way to identify the default locale. `scala-java-locales` sets `en (English)` as the default locale and **does not** attempt to determine the correct locale for the environment. This is a desigs decision to support the many API calls that require a default locale. It seems that `Scala.js` _de facto_ uses `en` for number formatting.
-
 
 ## CLDR
 
@@ -99,7 +91,7 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 `scala-java-locales` uses [Semantic Versioning](http://semver.org/) and includes the CLDR version used as a build tag, e.g.:
 
 ```
-0.5.2-cldr31 // Version 0.5.2 with CLDR version 31
+0.3.15-cldr35 // Version 0.3.15 with CLDR version 35
 ```
 
 ## Contributors
@@ -109,31 +101,35 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 + Marius B. Kotsbak [@mkotsbak](https://github.com/mkotsbak)
 + Timothy Klim [@TimothyKlim](https://github.com/TimothyKlim)
 + Andrea Peruffo [@andreaTP](https://github.com/AndreaTP)
++ Olli Helenius [@liff](https://github.com/liff)
 
 ## Publishing
+=======
+on 0.6.28
 
-on 0.6.x
 ```
 sbt
 clean
 +publishSigned
+++2.11.12
 coreNative/publishSigned
 sonatyeRelease
 ```
 
 Important: Remember to clean between different scala.js versions
 
-on 1.0.0-M1
+on 1.0.0-M8
+
 ```
-SCALAJS_VERSION=1.0.0-M1 sbt
+SCALAJS_VERSION=1.0.0-M8 sbt
 clean
-+publishSigned
++coreJS/publishSigned
 sonatyeRelease
 ```
 
 ## License
 
-Copyright &copy; 2016 Carlos Quiroz
+Copyright &copy; 2019 Carlos Quiroz
 
 `scala-java-locales` is distributed under the
 [BSD 3-Clause license](./LICENSE.txt).

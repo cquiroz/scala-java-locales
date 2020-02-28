@@ -1,9 +1,9 @@
 package java.text
 
-import java.util.{Arrays, Locale}
+import java.util.{ Arrays, Locale }
 
-import locales.LocaleRegistry
-import locales.cldr.{CalendarSymbols, LDML}
+import java.util.LocalesDb
+import locales.cldr.{ CalendarSymbols, LDML }
 
 object DateFormatSymbols {
 
@@ -15,13 +15,11 @@ object DateFormatSymbols {
   def getInstance(locale: Locale): DateFormatSymbols =
     initialize(locale, new DateFormatSymbols(locale))
 
-  private def initialize(locale: Locale,
-                         dfs: DateFormatSymbols): DateFormatSymbols = {
-    LocaleRegistry
+  private def initialize(locale: Locale, dfs: DateFormatSymbols): DateFormatSymbols =
+    LocalesDb
       .ldml(locale)
       .map(l => toDFS(locale, dfs, l))
       .getOrElse(dfs)
-  }
 
   private def copyAndPad(m: List[String], size: Int, v: String): Array[String] = {
     val p = Arrays.copyOf[String](m.toArray[String], size)
@@ -40,45 +38,45 @@ object DateFormatSymbols {
     def parentSymbols(ldml: LDML): Option[CalendarSymbols] =
       ldml.calendarSymbols.orElse(ldml.parent.flatMap(parentSymbols))
 
-    def elementsArray(ldml: LDML, read: CalendarSymbols => Option[List[String]]): Option[List[String]] =
+    def elementsArray(
+      ldml: LDML,
+      read: CalendarSymbols => Option[List[String]]
+    ): Option[List[String]] =
       parentSymbols(ldml).flatMap { s =>
         read(s).orElse(ldml.parent.flatMap(elementsArray(_, read)))
       }
 
-    def setElements(ldml: LDML, read: CalendarSymbols => List[String],
-        set: List[String] => Unit): Unit = {
+    def setElements(
+      ldml: LDML,
+      read: CalendarSymbols => List[String],
+      set:  List[String] => Unit
+    ): Unit = {
       def readNonEmpty(c: CalendarSymbols) = read(c) match {
         case Nil => None
-        case x => Some(x)
+        case x   => Some(x)
       }
       elementsArray(ldml, readNonEmpty).orElse(Some(Nil)).foreach(set)
     }
 
-    setElements(ldml, _.months,
-      l => dfs.setMonths(copyAndPad(l, 13, "")))
-    setElements(ldml, _.shortMonths,
-      l => dfs.setShortMonths(copyAndPad(l, 13, "")))
-    setElements(ldml, _.weekdays,
-      l => dfs.setWeekdays(padAndCopyDays(l, 8, "")))
-    setElements(ldml, _.shortWeekdays,
-      l => dfs.setShortWeekdays(padAndCopyDays(l, 8, "")))
-    setElements(ldml, _.amPm,
-      l => dfs.setAmPmStrings(copyAndPad(l, 2, "")))
-    setElements(ldml, _.eras,
-      l => dfs.setEras(copyAndPad(l, 2, "")))
+    setElements(ldml, _.months, l => dfs.setMonths(copyAndPad(l, 13, "")))
+    setElements(ldml, _.shortMonths, l => dfs.setShortMonths(copyAndPad(l, 13, "")))
+    setElements(ldml, _.weekdays, l => dfs.setWeekdays(padAndCopyDays(l, 8, "")))
+    setElements(ldml, _.shortWeekdays, l => dfs.setShortWeekdays(padAndCopyDays(l, 8, "")))
+    setElements(ldml, _.amPm, l => dfs.setAmPmStrings(copyAndPad(l, 2, "")))
+    setElements(ldml, _.eras, l => dfs.setEras(copyAndPad(l, 2, "")))
     dfs
   }
 }
 
 class DateFormatSymbols(private[this] val locale: Locale) extends Cloneable {
-  private[this] var eras: Array[String] = Array()
-  private[this] var months: Array[String] = Array()
-  private[this] var shortMonths: Array[String] = Array()
-  private[this] var weekdays: Array[String] = Array()
-  private[this] var shortWeekdays: Array[String] = Array()
-  private[this] var amPmStrings: Array[String] = Array()
+  private[this] var eras: Array[String]               = Array()
+  private[this] var months: Array[String]             = Array()
+  private[this] var shortMonths: Array[String]        = Array()
+  private[this] var weekdays: Array[String]           = Array()
+  private[this] var shortWeekdays: Array[String]      = Array()
+  private[this] var amPmStrings: Array[String]        = Array()
   private[this] var zoneStrings: Array[Array[String]] = Array()
-  private[this] var localPatternChars: String = ""
+  private[this] var localPatternChars: String         = ""
 
   DateFormatSymbols.initialize(locale, this)
 
@@ -157,14 +155,16 @@ class DateFormatSymbols(private[this] val locale: Locale) extends Cloneable {
   }
 
   override def hashCode(): Int = {
-    val state = Seq(Array[AnyRef](eras: _*),
-                    Array[AnyRef](months: _*),
-                    Array[AnyRef](shortMonths: _*),
-                    Array[AnyRef](weekdays: _*),
-                    Array[AnyRef](shortWeekdays: _*),
-                    Array[AnyRef](amPmStrings: _*))
-    val s = state.map(Arrays.hashCode).foldLeft(0)((a, b) => 31 * a + b)
-    val zs = zoneStrings.map(Array[AnyRef](_: _*))
+    val state = Seq(
+      Array[AnyRef](eras: _*),
+      Array[AnyRef](months: _*),
+      Array[AnyRef](shortMonths: _*),
+      Array[AnyRef](weekdays: _*),
+      Array[AnyRef](shortWeekdays: _*),
+      Array[AnyRef](amPmStrings: _*)
+    )
+    val s   = state.map(Arrays.hashCode).foldLeft(0)((a, b) => 31 * a + b)
+    val zs  = zoneStrings.map(Array[AnyRef](_: _*))
     val zsc = Array[AnyRef](zs: _*)
 
     31 * (31 * s + Arrays.hashCode(zsc)) + localPatternChars.hashCode

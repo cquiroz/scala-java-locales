@@ -1,10 +1,10 @@
 package io.github.cquiroz.utils
 
-import scala.reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 object TreeHelper {
 
   def resetLong(c: Context)(v: c.Expr[Long]): c.Expr[Long] =
-    c.Expr[Long](c.resetAllAttrs(v.tree.duplicate))
+    c.Expr[Long](v.tree.duplicate)
 
 }

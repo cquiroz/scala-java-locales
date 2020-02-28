@@ -1,36 +1,34 @@
 package testsuite.javalib.text
 
-import java.text.{FieldPosition, Format}
+import java.text.{ FieldPosition, Format }
 
-import org.junit.Test
-import org.junit.Assert._
+final case class TestField(name: String) extends Format.Field(name)
 
-class FieldPositionTest {
-  case class TestField(name: String) extends Format.Field(name)
+class FieldPositionTest extends munit.FunSuite {
 
-  @Test def test_constructors(): Unit = {
+  test("constructors") {
     val field = TestField("abc")
 
     val f1 = new FieldPosition(field, 1)
-    assertEquals(field, f1.getFieldAttribute())
+    assertEquals(field: Format.Field, f1.getFieldAttribute())
     assertEquals(1, f1.getField())
     assertEquals(0, f1.getBeginIndex())
     assertEquals(0, f1.getEndIndex())
 
     val f2 = new FieldPosition(field)
-    assertEquals(field, f2.getFieldAttribute())
+    assertEquals(field: Format.Field, f2.getFieldAttribute())
     assertEquals(-1, f2.getField())
     assertEquals(0, f2.getBeginIndex())
     assertEquals(0, f2.getEndIndex())
 
     val f3 = new FieldPosition(1)
-    assertNull(f3.getFieldAttribute())
+    assert(null == f3.getFieldAttribute())
     assertEquals(1, f3.getField())
     assertEquals(0, f3.getBeginIndex())
     assertEquals(0, f3.getEndIndex())
   }
 
-  @Test def test_begin_end_index(): Unit = {
+  test("begin_end_index") {
     val field = TestField("abc")
 
     val f1 = new FieldPosition(field, 1)
@@ -45,7 +43,7 @@ class FieldPositionTest {
     assertEquals(-10, f1.getEndIndex())
   }
 
-  @Test def test_equals_hash_code(): Unit = {
+  test("equals_hash_code") {
     val field = TestField("abc")
 
     val f1 = new FieldPosition(field, 1)
@@ -57,27 +55,31 @@ class FieldPositionTest {
     assertEquals(f1.hashCode(), f2.hashCode())
 
     val f3 = new FieldPosition(field)
-    assertFalse(f1.equals(f3))
-    assertFalse(f1.hashCode() == f3.hashCode())
+    assert(!f1.equals(f3))
+    assert(f1.hashCode() != f3.hashCode())
 
     val f4 = new FieldPosition(1)
-    assertFalse(f1.equals(f4))
+    assert(!f1.equals(f4))
     // hashcode is broken on the JVM
     assertEquals(f1.hashCode(), f4.hashCode())
 
     f2.setBeginIndex(1)
-    assertFalse(f1.equals(f2))
-    assertFalse(f1.hashCode() == f2.hashCode())
+    assert(!f1.equals(f2))
+    assert(f1.hashCode() != f2.hashCode())
 
     val f5 = new FieldPosition(field, 1)
     f5.setEndIndex(1)
-    assertFalse(f1.equals(f5))
-    assertFalse(f1.hashCode() == f5.hashCode())
+    assert(!f1.equals(f5))
+    assert(f1.hashCode() != f5.hashCode())
   }
 
-  @Test def test_to_string(): Unit = {
+  test("to_string") {
     val field = TestField("abc")
-    val f1 = new FieldPosition(field, 1)
-    assertEquals("java.text.FieldPosition[field=1,attribute=testsuite.javalib.text.FieldPositionTest$TestField(abc),beginIndex=0,endIndex=0]", f1.toString)
+    val f1    = new FieldPosition(field, 1)
+    assertEquals(
+      "java.text.FieldPosition[field=1,attribute=testsuite.javalib.text.TestField(abc),beginIndex=0,endIndex=0]",
+      f1.toString
+    ) // scalastyle:off
   }
+
 }

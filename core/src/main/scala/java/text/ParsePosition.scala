@@ -14,7 +14,7 @@ class ParsePosition(private[this] var index: Int) {
   override def equals(other: Any): Boolean = other match {
     case that: ParsePosition =>
       getErrorIndex == that.getErrorIndex &&
-      getIndex == that.getIndex
+        getIndex == that.getIndex
     case _ => false
   }
 

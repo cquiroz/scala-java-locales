@@ -57,7 +57,8 @@ object Format {
     override def first(): Char = 0
   }
 
-  class Field protected (private[this] val name: String) extends AttributedCharacterIterator.Attribute(name) {
+  class Field protected (private[this] val name: String)
+      extends AttributedCharacterIterator.Attribute(name) {
 
     override def toString(): String = s"${getClass.getName}($name)"
   }

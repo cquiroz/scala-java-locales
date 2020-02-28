@@ -1,6 +1,6 @@
 package io.github.cquiroz.utils
 
-import scala.reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 object TreeHelper {
 
