@@ -1,9 +1,11 @@
 package java.text
 
-import java.util.{Locale, Date}
+import java.util.{ Date, Locale }
 
-class SimpleDateFormat(private[this] val pattern: String,
-   private[this] var symbols: DateFormatSymbols) extends DateFormat {
+class SimpleDateFormat(
+  private[this] val pattern: String,
+  private[this] var symbols: DateFormatSymbols
+) extends DateFormat {
   def this(pattern: String) = this(pattern, DateFormatSymbols.getInstance())
 
   def this(pattern: String, aLocale: Locale) = this(pattern, DateFormatSymbols.getInstance(aLocale))
@@ -19,20 +21,19 @@ class SimpleDateFormat(private[this] val pattern: String,
       date.getMinutes.toString.reverse,
       date.getSeconds.toString.reverse,
       (date.getTime - Date.UTC(date.getYear,
-         date.getMonth,
-         date.getDay,
-         date.getHours,
-         date.getMinutes,
-         date.getSeconds)).toString.reverse
+                               date.getMonth,
+                               date.getDay,
+                               date.getHours,
+                               date.getMinutes,
+                               date.getSeconds)).toString.reverse
     )
 
-    def pop(pos: Int): Char = {
+    def pop(pos: Int): Char =
       if (fields(pos).size > 0) {
         val res = fields(pos)(0)
         fields(pos) = fields(pos).drop(1)
         res
       } else '0'
-    }
 
     var patternPos = pattern.length
 
@@ -71,7 +72,11 @@ class SimpleDateFormat(private[this] val pattern: String,
     sb.reverse.toString
   }
 
-  override final def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
+  override final def format(
+    obj:        AnyRef,
+    toAppendTo: StringBuffer,
+    pos:        FieldPosition
+  ): StringBuffer = ???
 
   override final def parseObject(source: String, pos: ParsePosition): AnyRef = ???
 
