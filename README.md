@@ -1,6 +1,6 @@
 # scala-java-locales
 
-[![Build Status](https://api.travis-ci.org/cquiroz/scala-java-locales.svg?branch=master)](https://travis-ci.org/cquiroz/scala-java-locales)
+[![Build Status](![build](https://github.com/cquiroz/scala-java-locales/workflows/build/badge.svg)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.cquiroz/scala-java-locales_sjs0.6_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.cquiroz/scala-java-locales_sjs0.6_2.12)
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.29.svg)](https://www.scala-js.org/)
 
