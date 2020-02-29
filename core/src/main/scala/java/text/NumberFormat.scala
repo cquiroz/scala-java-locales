@@ -29,8 +29,8 @@ abstract class NumberFormat protected () extends Format {
   def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer
   def format(number: Long, toAppendTo:   StringBuffer, pos: FieldPosition): StringBuffer
 
-  // def parse(source: String, parsePosition: ParsePosition): Number = ???
-  // def parse(source: String): Number = ???
+  // def parse(source: String, parsePosition: ParsePosition): Number
+  // def parse(source: String): Number
 
   def isParseIntegerOnly(): Boolean = this.parseIntegerOnly
   def setParseIntegerOnly(value: Boolean): Unit = this.parseIntegerOnly = value

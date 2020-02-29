@@ -152,9 +152,9 @@ object Locale {
     private[this] var builder = LocaleBuilder()
 
     // TODO Implement
-    //def setLocale(locale: Locale): Builder = ???
+    //def setLocale(locale: Locale): Builder
 
-    //def setLanguageTag(languageTag: String): Builder = ???
+    //def setLanguageTag(languageTag: String): Builder
 
     def setLanguage(language: String): Builder = {
       builder = builder
@@ -482,15 +482,15 @@ object Locale {
 
   //class FilteringMode
 
-  //def filter(priorityList: List[LanguageRange], locales: Collection[Locale], mode: FilteringMode): List[Locale] = ???
+  //def filter(priorityList: List[LanguageRange], locales: Collection[Locale], mode: FilteringMode): List[Locale]
 
-  //def filter(priorityList: List[LanguageRange], locales: Collection[Locale]): List[Locale] = ???
+  //def filter(priorityList: List[LanguageRange], locales: Collection[Locale]): List[Locale]
 
-  //def filter(priorityList: List[LanguageRange], tags: Collection[String], mode: FilteringMode): List[Locale] = ???
+  //def filter(priorityList: List[LanguageRange], tags: Collection[String], mode: FilteringMode): List[Locale]
 
-  //def filter(priorityList: List[LanguageRange], tags: Collection[String]): List[Locale] = ???
+  //def filter(priorityList: List[LanguageRange], tags: Collection[String]): List[Locale]
 
-  //def lookupTag(priorityList: List[LanguageRange], tags: Collection[String]): String = ???
+  //def lookupTag(priorityList: List[LanguageRange], tags: Collection[String]): String
 }
 
 class Locale private[util] (
@@ -684,25 +684,25 @@ class Locale private[util] (
         )
 
   // TODO Implement
-  //final def getDisplayLanguage(): String = ???
+  //final def getDisplayLanguage(): String
 
-  //final def getDisplayLanguage(inLocale: Locale): String = ???
+  //final def getDisplayLanguage(inLocale: Locale): String
 
-  //final def getDisplayScript(): String = ???
+  //final def getDisplayScript(): String
 
-  //final def getDisplayScript(inLocale: Locale): String = ???
+  //final def getDisplayScript(inLocale: Locale): String
 
-  //final def getDisplayCountry(): String = ???
+  //final def getDisplayCountry(): String
 
-  //final def getDisplayCountry(inLocale: Locale): String = ???
+  //final def getDisplayCountry(inLocale: Locale): String
 
-  //final def getDisplayVariant(): String = ???
+  //final def getDisplayVariant(): String
 
-  //final def getDisplayVariant(inLocale: Locale): String = ???
+  //final def getDisplayVariant(inLocale: Locale): String
 
-  //final def getDisplayName(): String = ???
+  //final def getDisplayName(): String
 
-  //final def getDisplayName(inLocale: Locale): String = ???
+  //final def getDisplayName(inLocale: Locale): String
 
   override def clone(): AnyRef = this // Locale is immutable
 

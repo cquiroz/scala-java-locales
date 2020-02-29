@@ -5,6 +5,8 @@ import java.util.{ Currency, Locale }
 import java.util.LocalesDb
 import locales.{ DecimalFormatUtil, ParsedPattern }
 import scala.math.{ max, min }
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 
 // The constructor needs a non-localized pattern
 class DecimalFormat(
@@ -25,11 +27,13 @@ class DecimalFormat(
   }
 
   // This holds all of the specifics about the decimal pattern
-  private var parsedPattern: ParsedPattern = usePattern(pattern)
+  private val parsedPattern: AtomicReference[ParsedPattern] = new AtomicReference(
+    DecimalFormatUtil.toParsedPattern(pattern)
+  )
 
-  private var decimalSeparatorAlwaysShown: Boolean = false
-  private var parseBigDecimal: Boolean             = false
-  private def currency: Currency                   = Currency.getInstance(Locale.getDefault)
+  private val decimalSeparatorAlwaysShown: AtomicBoolean  = new AtomicBoolean(false)
+  private val parseBigDecimal: AtomicBoolean              = new AtomicBoolean(false)
+  private val currency: AtomicReference[Option[Currency]] = new AtomicReference(None)
 
   // Helpers to avoid using .compareTo, annoying have to re-import within defs
   private val bigIntegerOrdering = implicitly[Ordering[JavaBigInteger]]
@@ -38,12 +42,11 @@ class DecimalFormat(
 
   // Need to be able to update the complete pattern for this instance
   private def usePattern(p: String): ParsedPattern = {
-    this.parsedPattern = DecimalFormatUtil.toParsedPattern(p)
-
-    this.parsedPattern
+    this.parsedPattern.set(DecimalFormatUtil.toParsedPattern(p))
+    this.parsedPattern.get
   }
 
-  private def useScientificNotation: Boolean = parsedPattern.minimumExponentDigits.isDefined
+  private def useScientificNotation: Boolean = parsedPattern.get.minimumExponentDigits.isDefined
 
   override def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer =
     subFormat(JavaBigDecimal.valueOf(number), toAppendTo, pos)
@@ -271,8 +274,8 @@ class DecimalFormat(
   override def parseObject(source: String, pos: ParsePosition): AnyRef = ???
 
   // TODO implement
-  //def parse(source: String, parsePosition: ParsePosition): Number = ???
-  //def parse(source: String): Number = ???
+  //def parse(source: String, parsePosition: ParsePosition): Number
+  //def parse(source: String): Number
 
   def getDecimalFormatSymbols(): DecimalFormatSymbols = symbols
 
@@ -284,83 +287,107 @@ class DecimalFormat(
   // Swap out the percent or mile characters from the prefix/suffix localized characters set
   private def replaceLocalizedPrefixOrSuffixSymbols(s: String): String =
     if (s == null) ""
-    else
+    else if (currency.get.isDefined) {
       s.replace(DecimalFormatUtil.PatternCharPercent, symbols.getPercent)
         .replace(DecimalFormatUtil.PatternCharPerMile, symbols.getPerMill)
         .replace(DecimalFormatUtil.PatternCharCurrencySymbol.toString, getCurrency().getSymbol())
+    } else {
+      val c = safeGetCurrency()
+      c.fold {
+        s.replace(DecimalFormatUtil.PatternCharPercent, symbols.getPercent)
+          .replace(DecimalFormatUtil.PatternCharPerMile, symbols.getPerMill)
+      } { c =>
+        s.replace(DecimalFormatUtil.PatternCharPercent, symbols.getPercent)
+          .replace(DecimalFormatUtil.PatternCharPerMile, symbols.getPerMill)
+          .replace(DecimalFormatUtil.PatternCharCurrencySymbol.toString, c.getSymbol())
+      }
+    }
 
   def getPositivePrefix(): String = {
-    val p: String = parsedPattern.positivePrefix.getOrElse("")
+    val p: String = parsedPattern.get.positivePrefix.getOrElse("")
     replaceLocalizedPrefixOrSuffixSymbols(p)
   }
 
-  def setPositivePrefix(newValue: String): Unit =
-    this.parsedPattern = parsedPattern.copy(positivePrefix = Option(newValue))
+  def setPositivePrefix(newValue: String): Unit = {
+    val p = this.parsedPattern.get
+    this.parsedPattern.set(p.copy(positivePrefix = Option(newValue)))
+  }
 
   // This is slightly special, in that a - will be added to the positive prefix if the original pattern
   // did not have a negative pattern specified
   def getNegativePrefix(): String = {
     val p: String =
-      parsedPattern.negativePrefix
-        .orElse(parsedPattern.defaultNegativePrefix.map(p => s"${symbols.getMinusSign}$p"))
+      parsedPattern.get.negativePrefix
+        .orElse(parsedPattern.get.defaultNegativePrefix.map(p => s"${symbols.getMinusSign}$p"))
         .getOrElse(symbols.getMinusSign.toString)
 
     replaceLocalizedPrefixOrSuffixSymbols(p)
   }
 
-  def setNegativePrefix(newValue: String): Unit =
-    this.parsedPattern = parsedPattern.copy(negativePrefix = Option(newValue))
+  def setNegativePrefix(newValue: String): Unit = {
+    val p = parsedPattern.get
+    this.parsedPattern.set(p.copy(negativePrefix = Option(newValue)))
+  }
 
   def getPositiveSuffix(): String =
-    replaceLocalizedPrefixOrSuffixSymbols(parsedPattern.positiveSuffix.getOrElse(""))
+    replaceLocalizedPrefixOrSuffixSymbols(parsedPattern.get.positiveSuffix.getOrElse(""))
 
-  def setPositiveSuffix(newValue: String): Unit =
-    this.parsedPattern = parsedPattern.copy(positiveSuffix = Option(newValue))
+  def setPositiveSuffix(newValue: String): Unit = {
+    val p = parsedPattern.get
+    this.parsedPattern.set(p.copy(positiveSuffix = Option(newValue)))
+  }
 
   // If no explicit negative suffix, use the positive, unless we explicitly set it to blank
   def getNegativeSuffix(): String = {
     val s: String =
-      parsedPattern.negativeSuffix
-        .orElse(parsedPattern.defaultNegativeSuffix)
+      parsedPattern.get.negativeSuffix
+        .orElse(parsedPattern.get.defaultNegativeSuffix)
         .getOrElse("")
 
     replaceLocalizedPrefixOrSuffixSymbols(s)
   }
 
-  def setNegativeSuffix(newValue: String): Unit =
-    this.parsedPattern = parsedPattern.copy(negativeSuffix = Option(newValue))
+  def setNegativeSuffix(newValue: String): Unit = {
+    val p = parsedPattern.get
+    this.parsedPattern.set(p.copy(negativeSuffix = Option(newValue)))
+  }
 
-  def getMultiplier(): Int = parsedPattern.multiplier
+  def getMultiplier(): Int = parsedPattern.get.multiplier
 
-  def setMultiplier(newValue: Int): Unit =
-    this.parsedPattern = parsedPattern.copy(multiplier = newValue)
+  def setMultiplier(newValue: Int): Unit = {
+    val p = parsedPattern.get
+    this.parsedPattern.set(p.copy(multiplier = newValue))
+  }
 
-  def getGroupingSize(): Int = parsedPattern.groupingSize
+  def getGroupingSize(): Int = parsedPattern.get.groupingSize
 
-  def setGroupingSize(newValue: Int): Unit =
-    this.parsedPattern =
-      parsedPattern.copy(groupingSize = newValue, isGroupingUsed = (newValue > 0))
+  def setGroupingSize(newValue: Int): Unit = {
+    val p = parsedPattern.get
+    this.parsedPattern.set(p.copy(groupingSize = newValue, isGroupingUsed = (newValue > 0)))
+  }
 
-  override def isGroupingUsed(): Boolean = parsedPattern.isGroupingUsed
+  override def isGroupingUsed(): Boolean = parsedPattern.get.isGroupingUsed
 
-  override def setGroupingUsed(newValue: Boolean): Unit =
-    this.parsedPattern = parsedPattern.copy(isGroupingUsed = newValue)
+  override def setGroupingUsed(newValue: Boolean): Unit = {
+    val p = parsedPattern.get
+    this.parsedPattern.set(p.copy(isGroupingUsed = newValue))
+  }
 
-  def isDecimalSeparatorAlwaysShown(): Boolean = this.decimalSeparatorAlwaysShown
+  def isDecimalSeparatorAlwaysShown(): Boolean = this.decimalSeparatorAlwaysShown.get
 
   def setDecimalSeparatorAlwaysShown(newValue: Boolean): Unit =
-    this.decimalSeparatorAlwaysShown = newValue
+    this.decimalSeparatorAlwaysShown.set(newValue)
 
-  def isParseBigDecimal(): Boolean = this.parseBigDecimal
+  def isParseBigDecimal(): Boolean = this.parseBigDecimal.get
 
-  def setParseBigDecimal(newValue: Boolean): Unit = this.parseBigDecimal = newValue
+  def setParseBigDecimal(newValue: Boolean): Unit = this.parseBigDecimal.set(newValue)
 
   def toPattern(): String          = generatePattern(false)
   def toLocalizedPattern(): String = generatePattern(true)
 
   private def generatePattern(localize: Boolean): String = {
     val isExponent: Boolean =
-      parsedPattern.minimumExponentDigits.isDefined || parsedPattern.maximumExponentDigits.isDefined
+      parsedPattern.get.minimumExponentDigits.isDefined || parsedPattern.get.maximumExponentDigits.isDefined
 
     // Create the core pattern.
     val sb = new StringBuilder
@@ -414,7 +441,7 @@ class DecimalFormat(
         if (localize) symbols.getExponentSeparator else DecimalFormatUtil.PatternCharExponent
       )
 
-      val minStr: String = parsedPattern.minimumExponentDigits
+      val minStr: String = parsedPattern.get.minimumExponentDigits
         .map { len: Int =>
           repeatDigits(
             len,
@@ -426,7 +453,7 @@ class DecimalFormat(
 
       sb.append(minStr)
 
-      val maxStr = parsedPattern.maximumExponentDigits
+      val maxStr = parsedPattern.get.maximumExponentDigits
         .map { len: Int =>
           repeatDigits(
             len - minStr.size,
@@ -443,68 +470,81 @@ class DecimalFormat(
 
     val result = new StringBuilder
 
-    parsedPattern.positivePrefix.map(result.append)
+    parsedPattern.get.positivePrefix.map(result.append)
     result.append(pattern)
-    parsedPattern.positiveSuffix.map(result.append)
+    parsedPattern.get.positiveSuffix.map(result.append)
 
     // Add negative pattern
-    if (parsedPattern.negativePrefix.isDefined || parsedPattern.negativeSuffix.isDefined) {
+    if (parsedPattern.get.negativePrefix.isDefined || parsedPattern.get.negativeSuffix.isDefined) {
       // Pattern separator
       result.append(
         if (localize) symbols.getPatternSeparator else DecimalFormatUtil.PatternCharSeparator
       )
 
-      parsedPattern.negativePrefix.foreach(result.append)
+      parsedPattern.get.negativePrefix.foreach(result.append)
       result.append(pattern)
-      parsedPattern.negativeSuffix.foreach(result.append)
+      parsedPattern.get.negativeSuffix.foreach(result.append)
     }
 
     result.toString()
   }
 
   override def getMaximumIntegerDigits(): Int =
-    parsedPattern.maximumIntegerDigits.getOrElse(Int.MaxValue)
+    parsedPattern.get.maximumIntegerDigits.getOrElse(Int.MaxValue)
 
   override def setMaximumIntegerDigits(newValue: Int): Unit = {
     val newMax: Int = max(newValue, 0)
+    val p           = parsedPattern.get
 
-    this.parsedPattern = parsedPattern.copy(
-      maximumIntegerDigits = Some(newMax),
-      minimumIntegerDigits = parsedPattern.minimumIntegerDigits.map(min(_, newMax))
+    this.parsedPattern.set(
+      p.copy(
+        maximumIntegerDigits = Some(newMax),
+        minimumIntegerDigits = p.minimumIntegerDigits.map(min(_, newMax))
+      )
     )
   }
 
-  override def getMinimumIntegerDigits(): Int = parsedPattern.minimumIntegerDigits.getOrElse(0)
+  override def getMinimumIntegerDigits(): Int = parsedPattern.get.minimumIntegerDigits.getOrElse(0)
 
   override def setMinimumIntegerDigits(newValue: Int): Unit = {
     val newMin: Int = max(newValue, 0)
+    val p           = parsedPattern.get
 
-    this.parsedPattern = parsedPattern.copy(
-      maximumIntegerDigits = parsedPattern.maximumIntegerDigits.map(max(_, newMin)),
-      minimumIntegerDigits = Some(newMin)
+    this.parsedPattern.set(
+      p.copy(
+        maximumIntegerDigits = p.maximumIntegerDigits.map(max(_, newMin)),
+        minimumIntegerDigits = Some(newMin)
+      )
     )
   }
 
-  override def getMaximumFractionDigits(): Int = parsedPattern.maximumFractionDigits.getOrElse(5)
+  override def getMaximumFractionDigits(): Int =
+    parsedPattern.get.maximumFractionDigits.getOrElse(5)
 
   override def setMaximumFractionDigits(newValue: Int): Unit = {
     val newMax: Int = max(newValue, 0)
+    val p           = parsedPattern.get
 
-    this.parsedPattern = parsedPattern.copy(
-      maximumFractionDigits = Some(newMax),
-      minimumFractionDigits = parsedPattern.minimumFractionDigits.map(min(_, newMax))
+    this.parsedPattern.set(
+      p.copy(
+        maximumFractionDigits = Some(newMax),
+        minimumFractionDigits = p.minimumFractionDigits.map(min(_, newMax))
+      )
     )
   }
 
-  override def getMinimumFractionDigits(): Int = parsedPattern.minimumFractionDigits.getOrElse(0)
+  override def getMinimumFractionDigits(): Int =
+    parsedPattern.get.minimumFractionDigits.getOrElse(0)
 
   override def setMinimumFractionDigits(newValue: Int): Unit = {
     val newMin: Int = max(newValue, 0)
 
-    this.parsedPattern = parsedPattern.copy(
-      maximumFractionDigits = parsedPattern.maximumFractionDigits.map(max(_, newMin)),
+    val p = this.parsedPattern.get
+    val r = p.copy(
+      maximumFractionDigits = p.maximumFractionDigits.map(max(_, newMin)),
       minimumFractionDigits = Some(newMin)
     )
+    this.parsedPattern.set(r)
   }
 
   def applyPattern(pattern: String): Unit = usePattern(pattern)
@@ -515,9 +555,24 @@ class DecimalFormat(
     usePattern(standardPattern)
   }
 
-  override def getCurrency(): Currency = currency
+  def safeGetCurrency(): Option[Currency] =
+    try {
+      Some(Currency.getInstance(Locale.getDefault()))
+    } catch {
+      case _: Throwable => None
+    }
 
-  override def setCurrency(currency: Currency): Unit = ??? //this.currency = currency
+  override def getCurrency(): Currency =
+    currency.get() match {
+      case Some(c) => c
+      case _ =>
+        val c = Currency.getInstance(Locale.getDefault())
+        currency.set(Option(c))
+        c
+    }
+
+  override def setCurrency(currency: Currency): Unit =
+    this.currency.set(Option(currency))
 
   override def clone(): AnyRef = {
     val f = new DecimalFormat(toPattern())
@@ -534,7 +589,9 @@ class DecimalFormat(
   override def hashCode(): Int = {
     val prime  = 31
     var result = 1
-    result = prime * result + getCurrency().hashCode()
+    if (currency.get().isDefined) {
+      result = prime * result + currency.get().hashCode()
+    }
     result = prime * result + getDecimalFormatSymbols().hashCode()
     result = prime * result + getGroupingSize().hashCode()
     result = prime * result + getMaximumFractionDigits().hashCode()

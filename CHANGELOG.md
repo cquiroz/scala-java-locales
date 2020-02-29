@@ -1,18 +1,18 @@
 # Changelog
 
+## 0.6.0
 
-## 0.6.0-cldr35
-
-* Support scala 2.13.0
-* Support Scala.js 0.6.28 and 1.0.0-M8
+* Support scala 2.13.1, 2.12.10, 2.11.10
+* Dropped support for 2.10
+* Support Scala.js 0.6.32 and 1.0.1
 * Implement Locale#getISO3Country
 * Implement Locale#getISO3Language
-
-
-* Update to cldr35
-* Support scala 2.12.8 and 2.13.0-RC3
-
-* Unification of 0.3 and 0.5 branches
+* Unification of 0.3 and 0.5 branches, it includes currency support
+* Does not include the locales db, it must be built with sbt-locales
+* Across the board improvements:
+  * Format with scalafmt
+  * Uses GH actions
+  * Uses sbt-tpolecat and sbt-ci-release 
 
 ## 0.3.11-cldr33
 

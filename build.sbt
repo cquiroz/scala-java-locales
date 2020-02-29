@@ -10,7 +10,7 @@ resolvers in Global += Resolver.sonatypeRepo("public")
 
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion := "36",
-  version := s"0.6.0-cldr${cldrVersion.value}-SNAPSHOT",
+  version := s"0.6.0-SNAPSHOT",
   organization := "io.github.cquiroz",
   scalaVersion := "2.13.1",
   crossScalaVersions := Seq("2.11.12", "2.12.10", "2.13.1"),
@@ -66,9 +66,10 @@ lazy val scalajs_locales: Project = project
              testSuite.js,
              testSuite.jvm,
              localesFullDb.js,
+             localesFullCurrenciesDb.js,
              localesMinimalEnDb.js)
 
-lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
+lazy val core = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure)
   .settings(commonSettings: _*)
   .settings(
@@ -93,9 +94,6 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
         s"-P:scalajs:mapSourceURI:$a->$g/"
       }
     }
-  )
-  .nativeSettings(
-    sources in (Compile, doc) := Seq.empty
   )
 
 lazy val localesFullCurrenciesDb = crossProject(JVMPlatform, JSPlatform)
@@ -190,21 +188,7 @@ lazy val macroUtils = project
     name := "macroutils",
     organization := "io.github.cquiroz",
     version := "0.0.1",
-    libraryDependencies := {
-      Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value) ++ {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          // if Scala 2.11+ is used, quasiquotes are available in the standard distribution
-          case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-            libraryDependencies.value
-          // in Scala 2.10, quasiquotes are provided by macro paradise
-          case Some((2, 10)) =>
-            libraryDependencies.value ++ Seq(
-              compilerPlugin(("org.scalamacros" % "paradise" % "2.1.0").cross(CrossVersion.full)),
-              ("org.scalamacros" %% "quasiquotes" % "2.1.0").cross(CrossVersion.binary)
-            )
-        }
-      }
-    },
+    libraryDependencies := Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value),
     scalacOptions ~= (_.filterNot(
       Set(
         "-deprecation",

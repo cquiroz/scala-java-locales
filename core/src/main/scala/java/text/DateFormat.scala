@@ -6,25 +6,25 @@ import java.util.LocalesDb
 import locales.cldr.{ CalendarPatterns, LDML }
 
 abstract class DateFormat protected () extends Format
-// override final def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
-// def format(date: Date, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer = ???
+// override final def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer
+// def format(date: Date, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer
 
 // TODO implement
-// final def format(date: Date): String = ???
-// def parse(source: String, parsePosition: ParsePosition): Date = ???
-// def parse(source: String): Date = ???
-// override final def parseObject(source: String, pos: ParsePosition): AnyRef = ???
-// def setCalendar(newCalendar: Calendar): Unit = ???
-// def getCalendar(): Calendar = ???
-// def setNumberFormat(newNumberFormat: NumberFormat): Unit = ???
-// def getNumberFormat(): NumberFormat = ???
-// def setTimeZone(zone: TimeZone): Unit = ???
-// def getTimeZone(): TimeZone = ???
-// def setLenient(lenient: Boolean): Unit = ???
-// def isLenient(): Boolean = ???
-// override def hashCode(): Int = ???
-// override def equals(obj: Any): Boolean = ???
-// override def clone(): Any = ???
+// final def format(date: Date): String
+// def parse(source: String, parsePosition: ParsePosition): Date
+// def parse(source: String): Date
+// override final def parseObject(source: String, pos: ParsePosition): AnyRef
+// def setCalendar(newCalendar: Calendar): Unit
+// def getCalendar(): Calendar
+// def setNumberFormat(newNumberFormat: NumberFormat): Unit
+// def getNumberFormat(): NumberFormat
+// def setTimeZone(zone: TimeZone): Unit
+// def getTimeZone(): TimeZone
+// def setLenient(lenient: Boolean): Unit
+// def isLenient(): Boolean
+// override def hashCode(): Int
+// override def equals(obj: Any): Boolean
+// override def clone(): Any
 
 object DateFormat {
   val ERA_FIELD: Int                  = 0

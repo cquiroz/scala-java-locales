@@ -2,7 +2,7 @@
 
 [![Build Status](https://api.travis-ci.org/cquiroz/scala-java-locales.svg?branch=master)](https://travis-ci.org/cquiroz/scala-java-locales)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.cquiroz/scala-java-locales_sjs0.6_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.cquiroz/scala-java-locales_sjs0.6_2.12)
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org/)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.29.svg)](https://www.scala-js.org/)
 
 `scala-java-locales` is a clean-room BSD-licensed implementation of the `java.util.Locale` API and related classes as defined on JDK8, mostly for Scala.js usage. It enables the locale API in Scala.js projects and supports usage requiring locales like number and dates formatting.
 
@@ -11,7 +11,7 @@
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.15-cldr35"
+libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.6.0"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -20,7 +20,7 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   .jsSettings(
-    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.15-cldr35"
+    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.6.0"
   )
 ```
 
@@ -33,22 +33,21 @@ This library is a work in progress and there are some unimplemented methods. If 
 
 ## Usage
 
-The API follows the Java API for Locales, any major difference should be considered a bug. However, to avoid loading all the data for locales you need to explicitly install locales you want to use outside the set of standard locales
+The API follows the Java API for Locales, any major difference should be considered a bug.
 
-You can do that by, e.g. installing the Finnish locale
+The JVM includes a large locales database derived from CLDR. That includes thnigs like date
+formats, region names, etc.
+Having the full db on js is possible but expensive in terms of space and for most applications
+only a few locales are needed. thus it is simpler to have a subset of them using someof the
+provided locale dbs or even better via [sbt-locales](http://github.com/cquiroz/sbt-locales)
+`sbt-locales` lets you build a custom db with the minimal amount you need. There is a slight
+size benefit and a larger speed improvment doing so as scala.js has less code to optimize
+
+For the common cases that you just need date formatting in english you can just include
 
 ```scala
-import locales.LocaleRegistry
-import locales.cldr.data.fi_FI
-
-// Install the locale
-LocaleRegistry.installLocale(fi_FI)
-
-// Now you can use the locale
-val dfs = DecimalFormatSymbols.getInstance(Locale.forLanguageTag("fi_FI"))
+libraryDependencies += "com.github.cquiroz" %%% "locales-minimal-en-db" % "0.6.0"
 ```
-
-**_Note:_** that calls to `Locale.forLanguageTag("fi_FI")` will succeed regardless of the installation due to the requirements on the `Locale` API
 
 ## Default Locale
 
@@ -66,8 +65,6 @@ While the Java Locales use the OS default locale, on `Scala.js` platforms like b
 
 `java.util.Locale` is a relatively simple class and by itself it doesn't provide too much functionality. The key for its usefulness is on providing data about the locale especially in terms of classes like `java.text.DecimalFormatSymbols`, `java.text.DateFormatSymbols`, etc. The [Unicode CLDR](http://cldr.unicode.org/) project is a large repository of locale data that can be used to build the supporting classes, e.g. to get the `DecimalFormatSymbols` for a given locale.
 
-Most of this project is in the form of code generated from the CLDR data. While many similar projects will create compact text or binary representation, this project will generate class instances for locale. While this maybe larger at first, Scala.js code optimization should be able to remove the unused code during optimization.
-
 Starting on Java 8, [CLDR](https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr) is also used by the JVM, for comparisons the java flag `-Djava.locale.providers=CLDR` should be set.
 
 **Note:** Java 8 ships with an older CLDR version, specifically version 21. `scala-java-locales` uses the latest available version, hence there are some differences between the results and there are new available locales in `scala-java-locales`.
@@ -84,15 +81,7 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 
 ## Dependencies
 
-`scala-java-locales` explicitly doesn't have any dependencies. The `sbt` project has some dependencies for code generation, in particular [treehugger](https://github.com/eed3si9n/treehugger) but they don't carry over to the produced code
-
-## Versioning
-
-`scala-java-locales` uses [Semantic Versioning](http://semver.org/) and includes the CLDR version used as a build tag, e.g.:
-
-```
-0.3.15-cldr35 // Version 0.3.15 with CLDR version 35
-```
+`scala-java-locales` explicitly doesn't have any dependencies.
 
 ## Contributors
 
@@ -102,30 +91,6 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 + Timothy Klim [@TimothyKlim](https://github.com/TimothyKlim)
 + Andrea Peruffo [@andreaTP](https://github.com/AndreaTP)
 + Olli Helenius [@liff](https://github.com/liff)
-
-## Publishing
-=======
-on 0.6.28
-
-```
-sbt
-clean
-+publishSigned
-++2.11.12
-coreNative/publishSigned
-sonatyeRelease
-```
-
-Important: Remember to clean between different scala.js versions
-
-on 1.0.0-M8
-
-```
-SCALAJS_VERSION=1.0.0-M8 sbt
-clean
-+coreJS/publishSigned
-sonatyeRelease
-```
 
 ## License
 
