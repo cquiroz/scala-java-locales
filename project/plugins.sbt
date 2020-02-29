@@ -8,7 +8,7 @@ addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.0.0")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.3.0")
 addSbtPlugin("io.github.cquiroz" % "sbt-locales" % "0.1.1")
 addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.0")
-addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.1.10")
+addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.1.11")
 
 // Dependencies for custom tasks
 libraryDependencies := {
