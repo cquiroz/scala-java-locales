@@ -1,18 +1,15 @@
 package testsuite.javalib.text
 
-import java.text.{FieldPosition, Format, ParsePosition}
+import java.text.ParsePosition
 
-import org.junit.Assert._
-import org.junit.Test
-
-class ParsePositionTest {
-  @Test def test_constructors(): Unit = {
+class ParsePositionTest extends munit.FunSuite {
+  test("constructors") {
     val p1 = new ParsePosition(1)
     assertEquals(1, p1.getIndex())
     assertEquals(-1, p1.getErrorIndex())
   }
 
-  @Test def test_setters(): Unit = {
+  test("setters") {
     val p1 = new ParsePosition(1)
     assertEquals(1, p1.getIndex())
     assertEquals(-1, p1.getErrorIndex())
@@ -24,7 +21,7 @@ class ParsePositionTest {
     assertEquals(2, p1.getErrorIndex())
   }
 
-  @Test def test_equals_hash_code(): Unit = {
+  test("equals_hash_code") {
     val p1 = new ParsePosition(1)
     assertEquals(p1, p1)
     assertEquals(p1.hashCode(), p1.hashCode())
@@ -34,22 +31,23 @@ class ParsePositionTest {
     assertEquals(p1.hashCode(), p2.hashCode())
 
     val p3 = new ParsePosition(2)
-    assertFalse(p1.equals(p3))
-    assertFalse(p1.hashCode() == p3.hashCode())
+    assert(!p1.equals(p3))
+    assert(p1.hashCode() != p3.hashCode())
 
     p1.setIndex(4)
-    assertFalse(p1.equals(p2))
-    assertFalse(p1.hashCode() == p2.hashCode())
+    assert(!p1.equals(p2))
+    assert(p1.hashCode() != p2.hashCode())
 
     val p5 = new ParsePosition(1)
     val p6 = new ParsePosition(1)
     p5.setErrorIndex(1)
-    assertFalse(p5.equals(p6))
-    assertFalse(p5.hashCode() == p6.hashCode())
+    assert(!p5.equals(p6))
+    assert(p5.hashCode() != p6.hashCode())
   }
 
-  @Test def test_to_string(): Unit = {
+  test("to_string") {
     val p1 = new ParsePosition(1)
     assertEquals("java.text.ParsePosition[index=1,errorIndex=-1]", p1.toString)
   }
+
 }

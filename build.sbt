@@ -1,193 +1,198 @@
-import sbtcrossproject.{crossProject, CrossType}
+import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
 import sbt.Keys._
-import LDMLTasks._
+import locales._
 
 val cldrVersion = settingKey[String]("The version of CLDR used.")
-lazy val downloadFromZip: TaskKey[Unit] =
-  taskKey[Unit]("Download the sbt zip and extract it")
+
+Global / onChangedBuildSource := ReloadOnSourceChanges
+
+resolvers in Global += Resolver.sonatypeRepo("public")
 
 val commonSettings: Seq[Setting[_]] = Seq(
-  cldrVersion := "31",
-  version := s"0.5.6-cldr${cldrVersion.value}",
+  cldrVersion := "36",
+  version := s"0.6.0-SNAPSHOT",
   organization := "io.github.cquiroz",
-  scalaVersion := "2.11.11",
-  crossScalaVersions := Seq("2.10.6", "2.11.11", "2.12.3", "2.13.0-M2"),
-    scalacOptions ++= Seq("-deprecation", "-feature"),
-  scalacOptions := {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-        scalacOptions.value ++ Seq("-deprecation:false", "-Xfatal-warnings")
-      case Some((2, 10)) =>
-        scalacOptions.value
-    }
-  },
-  javaOptions        ++= Seq("-Dfile.encoding=UTF8"),
-  mappings in (Compile, packageBin) ~= {
-    // Exclude CLDR files...
-    _.filter(!_._2.contains("core"))
-  },
-  useGpg                  := true,
-  exportJars              := true,
-  publishMavenStyle       := true,
-  publishArtifact in Test := false,
-  publishTo               := {
-    val nexus = "https://oss.sonatype.org/"
-    if (isSnapshot.value)
-      Some("snapshots" at nexus + "content/repositories/snapshots")
-    else
-      Some("releases" at nexus + "service/local/staging/deploy/maven2")
-  },
-  pomExtra :=
-    <url>https://github.com/cquiroz/scala-java-locales</url>
-    <licenses>
-      <license>
-        <name>BSD-style</name>
-        <url>http://www.opensource.org/licenses/bsd-license.php</url>
-        <distribution>repo</distribution>
-      </license>
-    </licenses>
-    <scm>
-      <url>git@github.com:cquiroz/scala-java-locales.git</url>
-      <connection>scm:git:git@github.com:cquiroz/scala-java-locales.git</connection>
-    </scm>
-    <developers>
-      <developer>
-        <id>cquiroz</id>
-        <name>Carlos Quiroz</name>
-        <url>https://github.com/cquiroz/</url>
-      </developer>
-    </developers>
-    <contributors>
-      <contributor>
-        <name>Eric Peters</name>
-        <url>https://github.com/er1c</url>
-      </contributor>
-      <contributor>
-        <name>A. Alonso Dominguez</name>
-        <url>https://github.com/alonsodomin</url>
-      </contributor>
-      <contributor>
-        <name>Marius B. Kotsbak</name>
-        <url>https://github.com/mkotsbak</url>
-      </contributor>
-      <contributor>
-        <name>Timothy Klim</name>
-        <url>https://github.com/TimothyKlim</url>
-      </contributor>
-    </contributors>
-  ,
-  pomIncludeRepository := { _ => false }
+  scalaVersion := "2.13.1",
+  crossScalaVersions := Seq("2.11.12", "2.12.10", "2.13.1"),
+  scalacOptions ~= (_.filterNot(
+    Set(
+      "-Wdead-code",
+      "-Ywarn-dead-code",
+      "-Wunused:params",
+      "-Ywarn-unused:params",
+      "-Wvalue-discard",
+      "-Ywarn-value-discard"
+    )
+  )),
+  scalacOptions in (Compile, doc) := Seq()
 )
 
-lazy val scalajs_locales: Project = project.in(file("."))
+inThisBuild(
+  List(
+    organization := "io.github.cquiroz",
+    homepage := Some(url("https://github.com/cquiroz/scala-java-locales")),
+    licenses := Seq("BSD 3-Clause License" -> url("https://opensource.org/licenses/BSD-3-Clause")),
+    developers := List(
+      Developer("cquiroz",
+                "Carlos Quiroz",
+                "carlos.m.quiroz@gmail.com",
+                url("https://github.com/cquiroz")),
+      Developer("er1c", "Eric Peters", "", url("https://github.com/er1c")),
+      Developer("alonsodomin", "A. Alonso Dominguez", "", url("https://github.com/alonsodomin")),
+      Developer("mkotsbak", "Marius B. Kotsbak", "", url("https://github.com/mkotsbak")),
+      Developer("TimothyKlim", "Timothy Klim", "", url("https://github.com/TimothyKlim"))
+    ),
+    scmInfo := Some(
+      ScmInfo(
+        url("https://github.com/cquiroz/scala-java-locales"),
+        "scm:git:git@github.com:cquiroz/scala-java-locales.git"
+      )
+    )
+  )
+)
+
+lazy val scalajs_locales: Project = project
+  .in(file("."))
+  .settings(commonSettings: _*)
+  .settings(
+    name := "locales",
+    publish := {},
+    publishLocal := {},
+    publishArtifact := false
+  )
+  // don't include scala-native by default
+  .aggregate(core.js,
+             core.jvm,
+             testSuite.js,
+             testSuite.jvm,
+             localesFullDb.js,
+             localesFullCurrenciesDb.js,
+             localesMinimalEnDb.js)
+
+lazy val core = crossProject(JVMPlatform, JSPlatform)
+  .crossType(CrossType.Pure)
   .settings(commonSettings: _*)
   .settings(
     name := "scala-java-locales",
-    publish := {},
-    publishLocal := {}
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.1.1",
+    scalacOptions ~= (_.filterNot(
+      Set(
+        "-deprecation",
+        "-Xfatal-warnings"
+      )
+    ))
   )
-  // don't include scala-native by default
-  .aggregate(coreJS, coreJVM, testSuiteJS, testSuiteJVM)
-
-lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform).
-  crossType(CrossType.Pure).
-  settings(commonSettings: _*).
-  settings(
-    name := "scala-java-locales",
-    downloadFromZip := {
-      val xmlFiles = (resourceDirectory in Compile).value / "core"
-      if (java.nio.file.Files.notExists(xmlFiles.toPath)) {
-        println(s"CLDR files missing, downloading version ${cldrVersion.value} ...")
-        IO.unzipURL(
-          new URL(s"http://unicode.org/Public/cldr/${cldrVersion.value}/core.zip"),
-          xmlFiles)
-      } else {
-        println("CLDR files already available")
-      }
-    },
-    compile in Compile := (compile in Compile).dependsOn(downloadFromZip).value,
-    sourceGenerators in Compile += Def.task {
-      generateLocaleData((sourceManaged in Compile).value,
-        (resourceDirectory in Compile).value / "core")
-    }.taskValue
-  ).
-  jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
-
-lazy val coreJS: Project = core.js
-  .settings(
+  .jsSettings(
     scalacOptions ++= {
       val tagOrHash =
-        if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lines_!.head
+        if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
         else s"v${version.value}"
       (sourceDirectories in Compile).value.map { dir =>
         val a = dir.toURI.toString
-        val g = "https://raw.githubusercontent.com/cquiroz/scala-java-locales/" + tagOrHash + "/core/src/main/scala"
+        val g =
+          "https://raw.githubusercontent.com/cquiroz/scala-java-locales/" + tagOrHash + "/core/src/main/scala"
         s"-P:scalajs:mapSourceURI:$a->$g/"
       }
     }
   )
 
-lazy val coreJVM: Project = core.jvm
-lazy val coreNative: Project = core.native
+lazy val localesFullCurrenciesDb = crossProject(JVMPlatform, JSPlatform)
+  .settings(commonSettings: _*)
+  .configure(_.enablePlugins(LocalesPlugin))
   .settings(
-    sources in (Compile,doc) := Seq.empty
+    name := "locales-full-currencies-db",
+    dbVersion := CLDRVersion.Version(cldrVersion.value),
+    localesFilter := LocalesFilter.All,
+    nsFilter := NumberingSystemFilter.All,
+    calendarFilter := CalendarFilter.All,
+    currencyFilter := CurrencyFilter.All,
+    supportDateTimeFormats := true,
+    supportNumberFormats := true,
+    supportISOCodes := true,
+    libraryDependencies += "org.portable-scala" %%% "portable-scala-reflect" % "1.0.0"
   )
 
-lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform).
-  settings(commonSettings: _*).
-  settings(
+lazy val localesFullDb = crossProject(JVMPlatform, JSPlatform)
+  .settings(commonSettings: _*)
+  .configure(_.enablePlugins(LocalesPlugin))
+  .settings(
+    name := "locales-full-db",
+    dbVersion := CLDRVersion.Version(cldrVersion.value),
+    localesFilter := LocalesFilter.All,
+    nsFilter := NumberingSystemFilter.All,
+    calendarFilter := CalendarFilter.All,
+    currencyFilter := CurrencyFilter.None,
+    supportDateTimeFormats := true,
+    supportNumberFormats := true,
+    supportISOCodes := true,
+    libraryDependencies += "org.portable-scala" %%% "portable-scala-reflect" % "1.0.0"
+  )
+
+lazy val localesMinimalEnDb = crossProject(JVMPlatform, JSPlatform)
+  .settings(commonSettings: _*)
+  .configure(_.enablePlugins(LocalesPlugin))
+  .settings(
+    name := "locales-minimal-en-db",
+    dbVersion := CLDRVersion.Version(cldrVersion.value),
+    localesFilter := LocalesFilter.Minimal,
+    nsFilter := NumberingSystemFilter.Minimal,
+    calendarFilter := CalendarFilter.Minimal,
+    currencyFilter := CurrencyFilter.None,
+    supportDateTimeFormats := true,
+    supportNumberFormats := true,
+    supportISOCodes := false,
+    libraryDependencies += "org.portable-scala" %%% "portable-scala-reflect" % "1.0.0"
+  )
+
+lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
+  .settings(commonSettings: _*)
+  .settings(
     publish := {},
     publishLocal := {},
     publishArtifact := false,
-    testOptions +=
-      Tests.Argument(TestFramework("com.novocode.junit.JUnitFramework"),
-        "-v", "-a")
-  ).
-  jsSettings(
-    parallelExecution in Test := false,
-    name := "scala-java-locales testSuite on JS",
-    libraryDependencies ++= Seq(
-      "com.novocode" % "junit-interface" % "0.11" % "test",
-      "io.github.cquiroz" %% "macroutils" % "0.0.1" % "provided"
-    )
-  ).
-  jsConfigure(_.dependsOn(coreJS, macroUtils)).
-  jvmSettings(
+    name := "scala-java-locales test",
+    libraryDependencies += "org.scalameta" %%% "munit" % "0.5.2",
+    testFrameworks += new TestFramework("munit.Framework"),
+    scalacOptions ~= (_.filterNot(
+      Set(
+        "-deprecation",
+        "-Xfatal-warnings"
+      )
+    ))
+  )
+  .jsSettings(parallelExecution in Test := false,
+              name := "scala-java-locales testSuite on JS",
+              scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule)))
+  .jsConfigure(_.dependsOn(core.js, macroUtils, localesFullCurrenciesDb.js))
+  .jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
+  .jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
     fork in Test := true,
     // Use CLDR provider for locales
     // https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr
-    javaOptions in Test ++= Seq("-Duser.language=en", "-Duser.country=", "-Djava.locale.providers=CLDR", "-Dfile.encoding=UTF8"),
+    javaOptions in Test ++= Seq(
+      "-Duser.language=en",
+      "-Duser.country=",
+      "-Djava.locale.providers=CLDR",
+      "-Dfile.encoding=UTF8"
+    ),
     name := "scala-java-locales testSuite on JVM",
-    libraryDependencies ++= Seq(
-      "com.novocode" % "junit-interface" % "0.11" % "test",
-      "io.github.cquiroz" %% "macroutils" % "0.0.1" % "provided"
-    )
-  ).
-  jvmConfigure(_.dependsOn(coreJVM, macroUtils))
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.1.1"
+  )
+  .jvmConfigure(_.dependsOn(macroUtils))
 
-lazy val macroUtils = project.in(file("macroUtils")).
-  settings(commonSettings).
-  settings(
+lazy val macroUtils = project
+  .in(file("macroUtils"))
+  .settings(commonSettings)
+  .settings(
     name := "macroutils",
     organization := "io.github.cquiroz",
     version := "0.0.1",
-    libraryDependencies := {
-      Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value) ++ {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          // if Scala 2.11+ is used, quasiquotes are available in the standard distribution
-          case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-            libraryDependencies.value
-          // in Scala 2.10, quasiquotes are provided by macro paradise
-          case Some((2, 10)) =>
-            libraryDependencies.value ++ Seq(
-              compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
-              "org.scalamacros" %% "quasiquotes" % "2.1.0" cross CrossVersion.binary)
-        }
-      }
-    }
+    libraryDependencies := Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value),
+    scalacOptions ~= (_.filterNot(
+      Set(
+        "-deprecation",
+        "-Xfatal-warnings"
+      )
+    ))
   )
-
-lazy val testSuiteJS: Project = testSuite.js
-lazy val testSuiteJVM: Project = testSuite.jvm
-lazy val testSuiteNative: Project = testSuite.native
