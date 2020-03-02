@@ -94,7 +94,7 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 
 ## License
 
-Copyright &copy; 2019 Carlos Quiroz
+Copyright &copy; 2020 Carlos Quiroz
 
 `scala-java-locales` is distributed under the
 [BSD 3-Clause license](./LICENSE.txt).
