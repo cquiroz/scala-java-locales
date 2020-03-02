@@ -16,9 +16,11 @@ private[java] object LocalesDb {
   val provider: LocalesProvider =
     Reflect
       .lookupLoadableModuleClass("locales.cldr.data.LocalesProvider$", null)
-      .getOrElse(sys.error("Needs a locale provider"))
-      .loadModule
-      .asInstanceOf[LocalesProvider]
+      .map { m =>
+        m.loadModule
+          .asInstanceOf[LocalesProvider]
+      }
+      .getOrElse(locales.cldr.fallback.LocalesProvider)
 
   val root: LDML = provider.root
 
