@@ -10,7 +10,6 @@ resolvers in Global += Resolver.sonatypeRepo("public")
 
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion := "36",
-  version := s"0.6.0-SNAPSHOT",
   organization := "io.github.cquiroz",
   scalaVersion := "2.13.1",
   crossScalaVersions := Seq("2.11.12", "2.12.10", "2.13.1"),
