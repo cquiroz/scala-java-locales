@@ -2,14 +2,14 @@ import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
 import sbt.Keys._
 import locales._
 
-val cldrVersion = settingKey[String]("The version of CLDR used.")
+val cldrDbVersion = settingKey[String]("The version of CLDR used.")
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 resolvers in Global += Resolver.sonatypeRepo("public")
 
 val commonSettings: Seq[Setting[_]] = Seq(
-  cldrVersion := "36",
+  cldrDbVersion := "36",
   organization := "io.github.cquiroz",
   scalaVersion := "2.13.1",
   crossScalaVersions := Seq("2.11.12", "2.12.10", "2.13.1"),
@@ -73,7 +73,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scala-java-locales",
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.2.0",
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.3.0",
     scalacOptions ~= (_.filterNot(
       Set(
         "-deprecation",
@@ -100,7 +100,7 @@ lazy val localesFullCurrenciesDb = crossProject(JVMPlatform, JSPlatform)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
     name := "locales-full-currencies-db",
-    dbVersion := CLDRVersion.Version(cldrVersion.value),
+    cldrVersion := CLDRVersion.Version(cldrDbVersion.value),
     localesFilter := LocalesFilter.All,
     nsFilter := NumberingSystemFilter.All,
     calendarFilter := CalendarFilter.All,
@@ -116,7 +116,7 @@ lazy val localesFullDb = crossProject(JVMPlatform, JSPlatform)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
     name := "locales-full-db",
-    dbVersion := CLDRVersion.Version(cldrVersion.value),
+    cldrVersion := CLDRVersion.Version(cldrDbVersion.value),
     localesFilter := LocalesFilter.All,
     nsFilter := NumberingSystemFilter.All,
     calendarFilter := CalendarFilter.All,
@@ -132,7 +132,7 @@ lazy val localesMinimalEnDb = crossProject(JVMPlatform, JSPlatform)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
     name := "locales-minimal-en-db",
-    dbVersion := CLDRVersion.Version(cldrVersion.value),
+    cldrVersion := CLDRVersion.Version(cldrDbVersion.value),
     localesFilter := LocalesFilter.Minimal,
     nsFilter := NumberingSystemFilter.Minimal,
     calendarFilter := CalendarFilter.Minimal,
@@ -176,7 +176,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
       "-Dfile.encoding=UTF8"
     ),
     name := "scala-java-locales testSuite on JVM",
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.2.0"
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.3.0"
   )
   .jvmConfigure(_.dependsOn(macroUtils))
 
