@@ -27,3 +27,4 @@ jobs:
       - name: Run tests
         run: |
           csbt +macroUtils/publishLocal +testSuiteJS/test +testSuiteJVM/test
+          SCALAJS_VERSION=0.6.32 csbt clean +macroUtils/publishLocal +testSuiteJS/test +testSuiteJVM/test

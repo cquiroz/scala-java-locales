@@ -2,6 +2,7 @@
 
 ![build](https://github.com/cquiroz/scala-java-locales/workflows/build/badge.svg)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.cquiroz/scala-java-locales_sjs0.6_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.cquiroz/scala-java-locales_sjs0.6_2.12)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0.svg)](https://www.scala-js.org/)
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.29.svg)](https://www.scala-js.org/)
 
 `scala-java-locales` is a clean-room BSD-licensed implementation of the `java.util.Locale` API and related classes as defined on JDK8, mostly for Scala.js usage. It enables the locale API in Scala.js projects and supports usage requiring locales like number and dates formatting.
@@ -51,8 +52,14 @@ libraryDependencies += "com.github.cquiroz" %%% "locales-minimal-en-db" % "0.6.0
 
 ## Default Locale
 
-It is **highly** recommended that you set a default locale for your application with, e.g.
+Starting on 0.6.0 it is no longer necessary to register locales but only a minimal locale based on english is
+provided. You may want to use [sbt-locales](https://github.com/cquiroz/sbt-locales) to generate
+a custom locale database.
 
+For example see:
+[gemini-locales](https://github.com/gemini-hlsw/gemini-locales/)
+
+It is probably a good idea to set your default Locale
 ```
 Locale.setDefault(Locale.forLanguageTag(<my-locale>))
 ```
@@ -76,7 +83,6 @@ Locales and the CLDR specifications are vast subjects. The locales in this proje
 In general the API attempts to behave be as close as possible to what happens on the JVM, e.g. the numeric system in Java seems to default to `latn` unless explicitly requested on the locale name.
 
 ## Demo
-
 A very simple `Scala.js` project is available at [scalajs-locales-demo](https://github.com/cquiroz/scalajs-locales-demo)
 
 ## Dependencies

@@ -8,6 +8,8 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 resolvers in Global += Resolver.sonatypeRepo("public")
 
+val scalaJSVersion06 = Option(System.getenv("SCALAJS_VERSION")).exists(_.startsWith("0.6"))
+
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrDbVersion := "36",
   organization := "io.github.cquiroz",
@@ -94,6 +96,9 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
       }
     }
   )
+  .jvmSettings(
+    skip.in(publish) := scalaJSVersion06
+  )
 
 lazy val localesFullCurrenciesDb = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings: _*)
@@ -110,6 +115,9 @@ lazy val localesFullCurrenciesDb = crossProject(JVMPlatform, JSPlatform)
     supportISOCodes := true,
     libraryDependencies += "org.portable-scala" %%% "portable-scala-reflect" % "1.0.0"
   )
+  .jvmSettings(
+    skip.in(publish) := scalaJSVersion06
+  )
 
 lazy val localesFullDb = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings: _*)
@@ -125,6 +133,9 @@ lazy val localesFullDb = crossProject(JVMPlatform, JSPlatform)
     supportNumberFormats := true,
     supportISOCodes := true,
     libraryDependencies += "org.portable-scala" %%% "portable-scala-reflect" % "1.0.0"
+  )
+  .jvmSettings(
+    skip.in(publish) := scalaJSVersion06
   )
 
 lazy val localesMinimalEnDb = crossProject(JVMPlatform, JSPlatform)
@@ -150,6 +161,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
     publishLocal := {},
     publishArtifact := false,
     name := "scala-java-locales test",
+    crossScalaVersions := Seq("2.12.10", "2.13.1"), // munit isn't working properly on tests
     libraryDependencies += "org.scalameta" %%% "munit" % "0.5.2",
     testFrameworks += new TestFramework("munit.Framework"),
     scalacOptions ~= (_.filterNot(
