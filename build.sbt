@@ -14,7 +14,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
   cldrDbVersion := "36",
   organization := "io.github.cquiroz",
   scalaVersion := "2.13.1",
-  crossScalaVersions := Seq("2.11.12", "2.12.10", "2.13.1"),
+  crossScalaVersions := Seq("2.11.12", "2.12.11", "2.13.1"),
   scalacOptions ~= (_.filterNot(
     Set(
       "-Wdead-code",
@@ -161,7 +161,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
     publishLocal := {},
     publishArtifact := false,
     name := "scala-java-locales test",
-    crossScalaVersions := Seq("2.12.10", "2.13.1"), // munit isn't working properly on tests
+    crossScalaVersions := Seq("2.12.11", "2.13.1"), // munit isn't working properly on 2.11
     libraryDependencies += "org.scalameta" %%% "munit" % "0.5.2",
     testFrameworks += new TestFramework("munit.Framework"),
     scalacOptions ~= (_.filterNot(
