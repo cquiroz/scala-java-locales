@@ -524,4 +524,30 @@ class NumberFormatTest extends munit.FunSuite {
     assertEquals("\u22122,147,483,648", nf.format(Int.MinValue))
     assertEquals("\u22129,223,372,036,854,775,808", nf.format(Long.MinValue))
   }
+
+  // This works with JAVA_OPTS="-Djava.locale.providers=CLDR"
+  @Test def test_non_latin(): Unit = {
+    // Arabic-Indic
+    if (!Platform.executingInJVM) {
+      LocaleRegistry.installLocale(ar_JO)
+    }
+
+    val locale = Locale.forLanguageTag("ar-JO")
+    assertTrue(locale != null)
+    Locale.setDefault(locale) // Override the US default
+
+    val df = NumberFormat.getInstance(locale)
+    assertEquals("Decimal Format", "١٬٢٣٤٬٥٦٧٬٨٩٠٫١٢٣", df.format(1234567890.123))
+
+    val pf = NumberFormat.getPercentInstance(locale)
+    assertEquals("Percent Format", "١٢٣٬٤٥٦٬٧٨٩٬٠٠٠٪", pf.format(1234567890))
+
+    val nf = NumberFormat.getNumberInstance(locale)
+    println(s"number: ${nf.format(1234567890)}")
+    assertEquals("Number Format", "١٬٢٣٤٬٥٦٧٬٨٩٠", nf.format(1234567890))
+
+    val cf = NumberFormat.getCurrencyInstance(locale)
+    println(s"currencyFormat: ${cf.format(123456789.01)}")
+    assertEquals("Currency Format", "د.أ.‏ ١٢٣٬٤٥٦٬٧٨٩٫٠١٠", cf.format(123456789.01))
+  }
 }

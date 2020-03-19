@@ -80,7 +80,10 @@ class DecimalFormat(
 
       val curr: JavaBigInteger = n.remainder(JavaBigInteger.TEN)
       n = n.divide(JavaBigInteger.TEN)
-      builder.append(curr.intValue)
+
+      // Assume non-latin characters 1-9 are at the same offset from the zero digit character
+      val localizedDigit = (symbols.getZeroDigit - DecimalFormatUtil.PatternCharZeroDigit) + curr.intValue
+      builder.append(localizedDigit)
       digitsWritten += 1
     }
 
