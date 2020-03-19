@@ -2,8 +2,8 @@ package java.text
 
 import java.math.RoundingMode
 import java.util.{ Currency, Locale }
-import java.util.LocalesDb
 import locales.cldr.{ LDML, NumberPatterns }
+import locales.LocalesDb
 
 abstract class NumberFormat protected () extends Format {
   private[this] var parseIntegerOnly: Boolean  = false

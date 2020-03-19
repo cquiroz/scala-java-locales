@@ -1,8 +1,8 @@
 package java.text
 
 import java.util.Locale
-import java.util.LocalesDb
 import locales.cldr.{ LDML, NumberingSystem, Symbols }
+import locales.LocalesDb
 
 object DecimalFormatSymbols {
 

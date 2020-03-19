@@ -2,75 +2,13 @@ package java.util
 
 import locales.BCP47
 import locales.BCP47.{ GrandfatheredTag, LanguageTag, PrivateUseTag }
-import locales.cldr.CLDRMetadata
-import locales.cldr.LDML
-import locales.cldr.LocalesProvider
-import locales.cldr.NumberingSystem
-import org.portablescala.reflect._
+import locales.DefaultLocale
+import locales.LocalesDb
 import scala.collection.JavaConverters._
 import scala.collection.{ Map => SMap, Set => SSet }
-import scala.scalajs.js
-import scala.scalajs.js.annotation._
 import scala.util.matching.Regex
 
-private[java] object LocalesDb {
-
-  val provider: LocalesProvider =
-    Reflect
-      .lookupLoadableModuleClass("locales.cldr.data.LocalesProvider$", null)
-      .map { m =>
-        m.loadModule
-          .asInstanceOf[LocalesProvider]
-      }
-      .getOrElse(locales.cldr.fallback.LocalesProvider)
-
-  val root: LDML = provider.root
-
-  val latn: NumberingSystem = provider.latn
-
-  val ldmls = provider.ldmls
-
-  val metadata: CLDRMetadata = provider.metadata
-
-  val currencydata = provider.currencyData
-
-  /**
-    * Attempts to give a Locale for the given tag if available
-    */
-  def localeForLanguageTag(languageTag: String): Option[Locale] =
-    // TODO Support alternative tags for the same locale
-    if (languageTag == "und") {
-      Some(Locale.ROOT)
-    } else
-      provider.ldmls.get(languageTag).map(_.toLocale)
-
-  /**
-    * Returns the ldml for the given locale
-    */
-  def ldml(locale: Locale): Option[LDML] = {
-    val tag =
-      if (locale.toLanguageTag() == "zh-CN") "zh-Hans-CN"
-      else if (locale.toLanguageTag() == "zh-TW") "zh-Hant-TW"
-      else locale.toLanguageTag()
-    provider.ldmls.get(tag)
-  }
-}
-
-@js.native
-@JSGlobal
-private[util] class Navigator extends js.Any {
-  def language: String = js.native
-}
-
-@js.native
-@JSGlobal
-private[util] class Window extends js.Any {
-  def navigator: Navigator = js.native
-}
-
 object Locale {
-  lazy val window: Window = js.Dynamic.global.window.asInstanceOf[Window]
-
   import LocalesDb._
 
   // Default locales required by the specs
@@ -356,20 +294,8 @@ object Locale {
       )
   }
 
-  private def platformLocale: Locale = {
-    val lang =
-      try {
-        // Attempt to read locale from the platform
-        Some(window.navigator.language)
-      } catch {
-        case _: Throwable => None
-      }
-    val l = lang.filter(LocalesDb.ldmls.contains).getOrElse("en")
-    LocalesDb.localeForLanguageTag(l).getOrElse(LocalesDb.root.toLocale)
-  }
-
-  var defaultLocale: Locale =
-    platformLocale
+  private var defaultLocale: Locale =
+    DefaultLocale.platformLocale
 
   private var defaultPerCategory: SMap[Locale.Category, Option[Locale]] =
     Locale.Category.values().map(_ -> Some(defaultLocale)).toMap

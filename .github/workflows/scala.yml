@@ -27,5 +27,5 @@ jobs:
       - name: Run tests
         run: |
           npm install jsdom
-          csbt +macroUtils/publishLocal +testSuiteJS/test +testSuiteJVM/test demo/run
+          csbt +macroUtils/publishLocal +testSuiteJS/test +testSuiteJVM/test demo/run +publishLocal
           SCALAJS_VERSION=0.6.32 csbt clean +macroUtils/publishLocal +testSuiteJS/test +testSuiteJVM/test

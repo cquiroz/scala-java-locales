@@ -1,8 +1,7 @@
 package java.text
 
 import java.util.{ Arrays, Locale }
-
-import java.util.LocalesDb
+import locales.LocalesDb
 import locales.cldr.{ CalendarSymbols, LDML }
 
 object DateFormatSymbols {

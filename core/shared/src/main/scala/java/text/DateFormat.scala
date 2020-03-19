@@ -2,7 +2,7 @@ package java.text
 
 import java.util.Locale
 
-import java.util.LocalesDb
+import locales.LocalesDb
 import locales.cldr.{ CalendarPatterns, LDML }
 
 abstract class DateFormat protected () extends Format
