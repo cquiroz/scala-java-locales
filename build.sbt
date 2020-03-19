@@ -218,6 +218,7 @@ lazy val demo = project
     publishLocal := {},
     publishArtifact := false,
     scalaJSUseMainModuleInitializer := true,
-    name := "scala-java-locales demo"
+    name := "scala-java-locales demo",
+    jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv()
   )
   .dependsOn(core.js)
