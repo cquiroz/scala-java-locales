@@ -1,15 +1,17 @@
 package java.util
 
 import locales.BCP47
-import scala.collection.{ Map => SMap, Set => SSet }
-import scala.collection.JavaConverters._
-import scala.util.matching.Regex
 import locales.BCP47.{ GrandfatheredTag, LanguageTag, PrivateUseTag }
-import locales.cldr.LocalesProvider
 import locales.cldr.CLDRMetadata
 import locales.cldr.LDML
+import locales.cldr.LocalesProvider
 import locales.cldr.NumberingSystem
 import org.portablescala.reflect._
+import scala.collection.JavaConverters._
+import scala.collection.{ Map => SMap, Set => SSet }
+import scala.scalajs.js
+import scala.scalajs.js.annotation._
+import scala.util.matching.Regex
 
 private[java] object LocalesDb {
 
@@ -54,7 +56,21 @@ private[java] object LocalesDb {
   }
 }
 
+@js.native
+@JSGlobal
+private[util] class Navigator extends js.Any {
+  def language: String = js.native
+}
+
+@js.native
+@JSGlobal
+private[util] class Window extends js.Any {
+  def navigator: Navigator = js.native
+}
+
 object Locale {
+  lazy val window: Window = js.Dynamic.global.window.asInstanceOf[Window]
+
   import LocalesDb._
 
   // Default locales required by the specs
@@ -340,7 +356,21 @@ object Locale {
       )
   }
 
-  private var defaultLocale: Locale = LocalesDb.root.toLocale
+  private def platformLocale: Locale = {
+    val lang =
+      try {
+        // Attempt to read locale from the platform
+        Some(window.navigator.language)
+      } catch {
+        case _: Throwable => None
+      }
+    val l = lang.filter(LocalesDb.ldmls.contains).getOrElse("en")
+    LocalesDb.localeForLanguageTag(l).getOrElse(LocalesDb.root.toLocale)
+  }
+
+  var defaultLocale: Locale =
+    platformLocale
+
   private var defaultPerCategory: SMap[Locale.Category, Option[Locale]] =
     Locale.Category.values().map(_ -> Some(defaultLocale)).toMap
 

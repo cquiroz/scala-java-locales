@@ -26,5 +26,6 @@ jobs:
         run: csbt scalafmtCheckAll
       - name: Run tests
         run: |
-          csbt +macroUtils/publishLocal +testSuiteJS/test +testSuiteJVM/test
+          npm install jsdom
+          csbt +macroUtils/publishLocal +testSuiteJS/test +testSuiteJVM/test demo/run
           SCALAJS_VERSION=0.6.32 csbt clean +macroUtils/publishLocal +testSuiteJS/test +testSuiteJVM/test
