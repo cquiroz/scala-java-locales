@@ -68,7 +68,8 @@ lazy val scalajs_locales: Project = project
              testSuite.jvm,
              localesFullDb.js,
              localesFullCurrenciesDb.js,
-             localesMinimalEnDb.js)
+             localesMinimalEnDb.js,
+             demo)
 
 lazy val core = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure)
@@ -207,3 +208,16 @@ lazy val macroUtils = project
       )
     ))
   )
+
+lazy val demo = project
+  .in(file("demo"))
+  .configure(_.enablePlugins(ScalaJSPlugin))
+  .settings(commonSettings: _*)
+  .settings(
+    publish := {},
+    publishLocal := {},
+    publishArtifact := false,
+    scalaJSUseMainModuleInitializer := true,
+    name := "scala-java-locales demo"
+  )
+  .dependsOn(core.js)
