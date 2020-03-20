@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.1
+
+* Update scala to 2.12.11
+* Fix the default locale logic
+
 ## 0.6.0
 
 * Support scala 2.13.1, 2.12.10, 2.11.10
