@@ -59,14 +59,13 @@ a custom locale database.
 For example see:
 [gemini-locales](https://github.com/gemini-hlsw/gemini-locales/)
 
-It is probably a good idea to set your default Locale
+It is highly recommended to set your default Locale at the start of your application
 ```
 Locale.setDefault(Locale.forLanguageTag(<my-locale>))
 ```
-
 The Java API requires a default `Locale` though it doesn't mandate a specific one, instead, the runtime should select it depending on the platform.
 
-While the Java Locales use the OS default locale, on `Scala.js` platforms like browsers or node.js, there is no reliable way to identify the default locale. `scala-java-locales` sets `en (English)` as the default locale and **does not** attempt to determine the correct locale for the environment. This is a desigs decision to support the many API calls that require a default locale. It seems that `Scala.js` _de facto_ uses `en` for number formatting.
+While the Java Locales use the OS default locale, on `Scala.js` platforms like browsers or node.js, it is harder to identify the default locale . `scala-java-locales` will try to guess the locale but if it can't or it is not notthe locales db it sets `en (English)` as the default locale. This is a desigs decision to support the many API calls that require a default locale. It seems that `Scala.js` _de facto_ uses `en` for number formatting.
 
 ## CLDR
 

@@ -72,7 +72,7 @@ lazy val scalajs_locales: Project = project
              demo)
 
 lazy val core = crossProject(JVMPlatform, JSPlatform)
-  .crossType(CrossType.Pure)
+  .crossType(CrossType.Full)
   .settings(commonSettings: _*)
   .settings(
     name := "scala-java-locales",

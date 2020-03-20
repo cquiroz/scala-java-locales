@@ -3,6 +3,7 @@ package java.util
 import scala.collection.{ Map => SMap, Set => SSet }
 import scala.collection.JavaConverters._
 import locales.cldr.{ CurrencyDataFractionsInfo, CurrencyType }
+import locales.LocalesDb
 
 object Currency {
   private val countryCodeToCurrencyCodeMap: SMap[String, String] =
