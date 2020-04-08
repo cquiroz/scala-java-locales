@@ -162,9 +162,9 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
     publishLocal := {},
     publishArtifact := false,
     name := "scala-java-locales test",
-    crossScalaVersions := Seq("2.12.11",
-                              "2.13.1"), // munit isn't working properly on 2.11
-    libraryDependencies += "org.scalameta" %%% "munit" % "0.7.1" % Test,
+    // crossScalaVersions := Seq("2.12.11",
+    //                           "2.13.1"), // munit isn't working properly on 2.11
+    libraryDependencies += "org.scalameta" %%% "munit" % "0.7.2" % Test,
     testFrameworks += new TestFramework("munit.Framework"),
     scalacOptions ~= (_.filterNot(
       Set(
@@ -177,7 +177,6 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
               name := "scala-java-locales testSuite on JS",
               scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule)))
   .jsConfigure(_.dependsOn(core.js, macroUtils, localesFullCurrenciesDb.js))
-  .jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
   .jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
     fork in Test := true,

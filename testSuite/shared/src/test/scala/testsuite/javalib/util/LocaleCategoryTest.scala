@@ -2,8 +2,6 @@ package testsuite.javalib.util
 
 import java.util.Locale
 
-import testsuite.utils.AssertThrows.expectThrows
-
 class LocaleCategoryTest extends munit.FunSuite {
   import Locale.Category
 
@@ -22,8 +20,8 @@ class LocaleCategoryTest extends munit.FunSuite {
     assertEquals(Category.DISPLAY, Category.valueOf("DISPLAY"))
     assertEquals(Category.FORMAT, Category.valueOf("FORMAT"))
 
-    expectThrows(classOf[IllegalArgumentException], Category.valueOf(""))
-    expectThrows(classOf[NullPointerException], Category.valueOf(null))
+    intercept[IllegalArgumentException](Category.valueOf(""))
+    intercept[NullPointerException](Category.valueOf(null))
   }
 
 }

@@ -2,16 +2,15 @@ package testsuite.javalib.util
 
 import java.util.Locale
 import testsuite.utils.Platform
-import testsuite.utils.AssertThrows.expectThrows
 
 class LocaleTest extends munit.FunSuite {
 
   Locale.setDefault(Locale.ENGLISH)
 
   test("null_constructor") {
-    expectThrows(classOf[NullPointerException], new Locale(null))
-    expectThrows(classOf[NullPointerException], new Locale("", null))
-    expectThrows(classOf[NullPointerException], new Locale("", "", null))
+    intercept[NullPointerException](new Locale(null))
+    intercept[NullPointerException](new Locale("", null))
+    intercept[NullPointerException](new Locale("", "", null))
   }
 
   test("constructor") {
@@ -243,7 +242,7 @@ class LocaleTest extends munit.FunSuite {
   test("default_locale_per_category") {
     assertEquals(Locale.ENGLISH, Locale.getDefault(Locale.Category.DISPLAY))
     assertEquals(Locale.ENGLISH, Locale.getDefault(Locale.Category.FORMAT))
-    expectThrows(classOf[NullPointerException], Locale.getDefault(null))
+    intercept[NullPointerException](Locale.getDefault(null))
   }
 
   test("set_default_locale") {
@@ -257,7 +256,7 @@ class LocaleTest extends munit.FunSuite {
     assertEquals(Locale.CANADA_FRENCH, Locale.getDefault)
     assertEquals(Locale.CHINESE, Locale.getDefault(Locale.Category.DISPLAY))
 
-    expectThrows(classOf[NullPointerException], Locale.setDefault(null))
+    intercept[NullPointerException](Locale.setDefault(null))
   }
 
   test("get_available_locales") {

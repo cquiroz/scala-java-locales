@@ -3,7 +3,6 @@ package testsuite.javalib.text
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 import testsuite.utils.Platform
-import testsuite.utils.AssertThrows.expectThrows
 
 class DecimalFormatSymbolsTest extends munit.FunSuite {
 
@@ -209,7 +208,7 @@ class DecimalFormatSymbolsTest extends munit.FunSuite {
     dfs.setNaN("nan")
     assertEquals("nan", dfs.getNaN)
 
-    expectThrows(classOf[NullPointerException], dfs.setExponentSeparator(null))
+    intercept[NullPointerException](dfs.setExponentSeparator(null))
     dfs.setExponentSeparator("exp")
     assertEquals("exp", dfs.getExponentSeparator)
   }
