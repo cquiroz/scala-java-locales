@@ -6,7 +6,6 @@ import java.math.RoundingMode
 
 import locales.DecimalFormatUtil
 import testsuite.utils.Platform
-import testsuite.utils.AssertThrows._
 
 final case class TestCase(
   tag:    String,
@@ -365,7 +364,7 @@ class NumberFormatTest extends munit.FunSuite {
 
   test("format_not_allowed") {
     val nf = NumberFormat.getNumberInstance
-    expectThrows(classOf[IllegalArgumentException], nf.format("Abc"))
+    intercept[IllegalArgumentException](nf.format("Abc"))
   }
 
   test("format_integer") {

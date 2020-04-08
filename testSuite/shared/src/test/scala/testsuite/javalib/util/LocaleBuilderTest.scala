@@ -3,7 +3,6 @@ package testsuite.javalib.util
 import java.util.{ IllformedLocaleException, Locale }
 
 import testsuite.utils.Platform
-import testsuite.utils.AssertThrows.expectThrows
 
 class LocaleBuilderTest extends munit.FunSuite {
   test("build_with_language") {
@@ -21,8 +20,7 @@ class LocaleBuilderTest extends munit.FunSuite {
     assertEquals("", locale3.getLanguage)
 
     // Check for compliance
-    expectThrows(
-      classOf[IllformedLocaleException],
+    intercept[IllformedLocaleException](
       new Locale.Builder().setLanguage("toolongtobevalid")
     )
   }
@@ -48,13 +46,12 @@ class LocaleBuilderTest extends munit.FunSuite {
     assertEquals("", locale3.getScript)
 
     // Check for compliance, too long
-    expectThrows(
-      classOf[IllformedLocaleException],
+    intercept[IllformedLocaleException](
       new Locale.Builder().setScript("toolongtobevalid")
     )
 
     // Check for compliance, too short
-    expectThrows(classOf[IllformedLocaleException], new Locale.Builder().setScript("ts"))
+    intercept[IllformedLocaleException](new Locale.Builder().setScript("ts"))
   }
 
   test("build_script_canonicalization") {
@@ -82,15 +79,14 @@ class LocaleBuilderTest extends munit.FunSuite {
     assertEquals("029", locale4.getCountry)
 
     // Check for compliance, too long
-    expectThrows(
-      classOf[IllformedLocaleException],
+    intercept[IllformedLocaleException](
       new Locale.Builder().setRegion("toolongtobevalid")
     )
-    expectThrows(classOf[IllformedLocaleException], new Locale.Builder().setRegion("1234"))
+    intercept[IllformedLocaleException](new Locale.Builder().setRegion("1234"))
 
     // Check for compliance, too short
-    expectThrows(classOf[IllformedLocaleException], new Locale.Builder().setRegion("t"))
-    expectThrows(classOf[IllformedLocaleException], new Locale.Builder().setRegion("1"))
+    intercept[IllformedLocaleException](new Locale.Builder().setRegion("t"))
+    intercept[IllformedLocaleException](new Locale.Builder().setRegion("1"))
   }
 
   test("build_with_variant") {
@@ -127,12 +123,12 @@ class LocaleBuilderTest extends munit.FunSuite {
     assertEquals("VALENCIA", locale4.getVariant)
 
     // Check for compliance, too long
-    expectThrows(classOf[IllformedLocaleException], new Locale.Builder().setVariant("four"))
-    expectThrows(classOf[IllformedLocaleException], new Locale.Builder().setVariant("abcde!"))
+    intercept[IllformedLocaleException](new Locale.Builder().setVariant("four"))
+    intercept[IllformedLocaleException](new Locale.Builder().setVariant("abcde!"))
 
     // Check for compliance, too short
-    expectThrows(classOf[IllformedLocaleException], new Locale.Builder().setVariant("t"))
-    expectThrows(classOf[IllformedLocaleException], new Locale.Builder().setVariant("1"))
+    intercept[IllformedLocaleException](new Locale.Builder().setVariant("t"))
+    intercept[IllformedLocaleException](new Locale.Builder().setVariant("1"))
   }
 
   test("build_with_extensions") {
@@ -147,12 +143,11 @@ class LocaleBuilderTest extends munit.FunSuite {
     assert(null == locale2.getExtension('a'))
 
     // Check for compliance on the keys
-    expectThrows(classOf[IllformedLocaleException], new Locale.Builder().setExtension('!', "abc"))
+    intercept[IllformedLocaleException](new Locale.Builder().setExtension('!', "abc"))
 
     // Check for compliance on the value
-    expectThrows(classOf[IllformedLocaleException], new Locale.Builder().setExtension('a', "a"))
-    expectThrows(
-      classOf[IllformedLocaleException],
+    intercept[IllformedLocaleException](new Locale.Builder().setExtension('a', "a"))
+    intercept[IllformedLocaleException](
       new Locale.Builder().setExtension('a', "abcdefghi")
     )
   }
@@ -180,23 +175,19 @@ class LocaleBuilderTest extends munit.FunSuite {
     assertEquals("nu-thai-ok", locale.getExtension(Locale.UNICODE_LOCALE_EXTENSION))
 
     // Check for compliance on the keys
-    expectThrows(
-      classOf[NullPointerException],
+    intercept[NullPointerException](
       new Locale.Builder().setUnicodeLocaleKeyword(null, "thai")
     )
     // key too short
-    expectThrows(
-      classOf[IllformedLocaleException],
+    intercept[IllformedLocaleException](
       new Locale.Builder().setUnicodeLocaleKeyword("a", "thai")
     )
     // value too short
-    expectThrows(
-      classOf[IllformedLocaleException],
+    intercept[IllformedLocaleException](
       new Locale.Builder().setUnicodeLocaleKeyword("nu", "th")
     )
     // value too long
-    expectThrows(
-      classOf[IllformedLocaleException],
+    intercept[IllformedLocaleException](
       new Locale.Builder().setUnicodeLocaleKeyword("nu", "toolongvalue")
     )
   }
@@ -224,12 +215,8 @@ class LocaleBuilderTest extends munit.FunSuite {
     assert(locale1.getUnicodeLocaleAttributes.contains("attr"))
 
     // Check for compliance on the attribute
-    expectThrows(
-      classOf[NullPointerException],
-      new Locale.Builder().addUnicodeLocaleAttribute(null)
-    )
-    expectThrows(
-      classOf[IllformedLocaleException],
+    intercept[NullPointerException](new Locale.Builder().addUnicodeLocaleAttribute(null))
+    intercept[IllformedLocaleException](
       new Locale.Builder().addUnicodeLocaleAttribute("toolongvalue")
     )
   }
@@ -245,19 +232,14 @@ class LocaleBuilderTest extends munit.FunSuite {
     // Check for compliance on the attribute
     if (Platform.executingInJVM) {
       // Against the javadocs the JVM throws an IllformedLocaleException
-      expectThrows(
-        classOf[IllformedLocaleException],
+      intercept[IllformedLocaleException](
         new Locale.Builder().removeUnicodeLocaleAttribute(null)
       )
     } else {
       // Scala.js follows the spec
-      expectThrows(
-        classOf[NullPointerException],
-        new Locale.Builder().removeUnicodeLocaleAttribute(null)
-      )
+      intercept[NullPointerException](new Locale.Builder().removeUnicodeLocaleAttribute(null))
     }
-    expectThrows(
-      classOf[IllformedLocaleException],
+    intercept[IllformedLocaleException](
       new Locale.Builder().removeUnicodeLocaleAttribute("toolongvalue")
     )
   }

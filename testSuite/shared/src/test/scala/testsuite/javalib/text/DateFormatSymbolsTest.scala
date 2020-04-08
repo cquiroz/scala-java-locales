@@ -4,7 +4,6 @@ import java.text.DateFormatSymbols
 import java.util.Locale
 import locales.CalendarConstants
 import testsuite.utils.Platform
-import testsuite.utils.AssertThrows.expectThrows
 
 class DateFormatSymbolsTest extends munit.FunSuite {
   Locale.setDefault(Locale.US)
@@ -1721,7 +1720,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
     set: (DateFormatSymbols, Array[String]) => Unit
   ): Unit = {
     val dfs = new DateFormatSymbols()
-    expectThrows(classOf[NullPointerException], set(dfs, null))
+    intercept[NullPointerException](set(dfs, null))
     val value = Array("a", "b")
     set(dfs, value)
     // Check that the passed array is copied
@@ -1731,9 +1730,9 @@ class DateFormatSymbolsTest extends munit.FunSuite {
 
   test("zone_strings") {
     val dfs = new DateFormatSymbols()
-    expectThrows(classOf[NullPointerException], dfs.setZoneStrings(null))
+    intercept[NullPointerException](dfs.setZoneStrings(null))
     val zonesTooFew = Array(Array("a", "b"), Array("c", "d"))
-    expectThrows(classOf[IllegalArgumentException], dfs.setZoneStrings(zonesTooFew))
+    intercept[IllegalArgumentException](dfs.setZoneStrings(zonesTooFew))
     val zones =
       Array(Array("a", "b", "c", "d", "e"), Array("f", "g", "h", "i", "j"))
     dfs.setZoneStrings(zones)
@@ -1753,7 +1752,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
     val dfs = new DateFormatSymbols()
     dfs.setLocalPatternChars("abc")
     assertEquals("abc", dfs.getLocalPatternChars())
-    expectThrows(classOf[NullPointerException], dfs.setLocalPatternChars(null))
+    intercept[NullPointerException](dfs.setLocalPatternChars(null))
   }
 
   test("equals") {
