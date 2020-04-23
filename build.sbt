@@ -76,7 +76,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scala-java-locales",
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.3.3",
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "1.0.0",
     scalacOptions ~= (_.filterNot(
       Set(
         "-deprecation",
@@ -187,7 +187,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
       "-Dfile.encoding=UTF8"
     ),
     name := "scala-java-locales testSuite on JVM",
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.3.3"
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "1.0.0"
   )
   .jvmConfigure(_.dependsOn(macroUtils))
 
