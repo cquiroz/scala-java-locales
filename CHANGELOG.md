@@ -1,8 +1,10 @@
 # Changelog
 
-## 0.6.1
+## 1.0.0
 
 * Update scala to 2.12.11
+* Update scala to 2.13.2
+* Update sbt-locales to 1.0.0
 * Fix the default locale logic
 
 ## 0.6.0

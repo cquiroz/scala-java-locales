@@ -1,7 +1,7 @@
 # scala-java-locales
 
 ![build](https://github.com/cquiroz/scala-java-locales/workflows/build/badge.svg)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.cquiroz/scala-java-locales_sjs0.6_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.cquiroz/scala-java-locales_sjs0.6_2.12)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.cquiroz/scala-java-locales_sjs1_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.cquiroz/scala-java-locales_sjs1_2.13)
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0.svg)](https://www.scala-js.org/)
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.29.svg)](https://www.scala-js.org/)
 
@@ -12,7 +12,7 @@
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.6.0"
+libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "1.0.0"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -21,7 +21,7 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   .jsSettings(
-    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.6.0"
+    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "1.0.0"
   )
 ```
 
@@ -47,7 +47,7 @@ size benefit and a larger speed improvment doing so as scala.js has less code to
 For the common cases that you just need date formatting in english you can just include
 
 ```scala
-libraryDependencies += "com.github.cquiroz" %%% "locales-minimal-en-db" % "0.6.0"
+libraryDependencies += "com.github.cquiroz" %%% "locales-minimal-en-db" % "1.0.0"
 ```
 
 ## Default Locale
@@ -82,7 +82,7 @@ Locales and the CLDR specifications are vast subjects. The locales in this proje
 In general the API attempts to behave be as close as possible to what happens on the JVM, e.g. the numeric system in Java seems to default to `latn` unless explicitly requested on the locale name.
 
 ## Demo
-A very simple `Scala.js` project is available at [scalajs-locales-demo](https://github.com/cquiroz/scalajs-locales-demo)
+A very simple `Scala.js` project is available at [demo](demo)
 
 ## Dependencies
 

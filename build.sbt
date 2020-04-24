@@ -13,8 +13,8 @@ val scalaJSVersion06 = Option(System.getenv("SCALAJS_VERSION")).exists(_.startsW
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrDbVersion := "36",
   organization := "io.github.cquiroz",
-  scalaVersion := "2.13.1",
-  crossScalaVersions := Seq("2.11.12", "2.12.11", "2.13.1"),
+  scalaVersion := "2.13.2",
+  crossScalaVersions := Seq("2.11.12", "2.12.11", "2.13.2"),
   scalacOptions ~= (_.filterNot(
     Set(
       "-Wdead-code",
