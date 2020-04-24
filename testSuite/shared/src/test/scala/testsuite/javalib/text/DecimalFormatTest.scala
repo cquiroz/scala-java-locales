@@ -671,4 +671,14 @@ class DecimalFormatTest extends munit.FunSuite {
         assertEquals(out, f.toPattern)
     }
   }
+  test("supress negative".ignore) {
+    val uut2 = new DecimalFormat("0.00; 0.00")
+    assertEquals("7.65", uut2.format(7.65))
+    assertEquals(" 7.65", uut2.format(-7.65))
+    assertEquals("98765.23", uut2.format(98765.234))
+    assertEquals(" 98765.23", uut2.format(-98765.234))
+
+    val uut0 = new DecimalFormat("000")
+    assertEquals("001", uut0.format(1))
+  }
 }
