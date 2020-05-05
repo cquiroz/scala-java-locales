@@ -18,7 +18,8 @@ object _en
                            Some('‰'),
                            Some("∞"),
                            Some("NaN"),
-                           Some("E"))
+                           Some("E")
+                   )
                  ),
                  Some(
                    CalendarSymbols(
@@ -33,7 +34,8 @@ object _en
                           "September",
                           "October",
                           "November",
-                          "December"),
+                          "December"
+                     ),
                      List("Jan",
                           "Feb",
                           "Mar",
@@ -45,14 +47,16 @@ object _en
                           "Sep",
                           "Oct",
                           "Nov",
-                          "Dec"),
+                          "Dec"
+                     ),
                      List("Sunday",
                           "Monday",
                           "Tuesday",
                           "Wednesday",
                           "Thursday",
                           "Friday",
-                          "Saturday"),
+                          "Saturday"
+                     ),
                      List("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
                      List("AM", "PM"),
                      List("BC", "AD")
@@ -65,7 +69,8 @@ object _en
                    )
                  ),
                  List(),
-                 NumberPatterns(Some("#,##0.###"), Some("#,##0%"), Some("¤#,##0.00;(¤#,##0.00)")))
+                 NumberPatterns(Some("#,##0.###"), Some("#,##0%"), Some("¤#,##0.00;(¤#,##0.00)"))
+    )
 
 object _root
     extends LDML(None,
@@ -82,7 +87,8 @@ object _root
                            Some('‰'),
                            Some("∞"),
                            Some("NaN"),
-                           Some("E"))
+                           Some("E")
+                   )
                  ),
                  Some(
                    CalendarSymbols(
@@ -97,7 +103,8 @@ object _root
                           "M09",
                           "M10",
                           "M11",
-                          "M12"),
+                          "M12"
+                     ),
                      List(),
                      List("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
                      List(),
@@ -112,7 +119,8 @@ object _root
                    )
                  ),
                  List(),
-                 NumberPatterns(Some("#,##0.###"), Some("#,##0%"), Some("¤ #,##0.00")))
+                 NumberPatterns(Some("#,##0.###"), Some("#,##0%"), Some("¤ #,##0.00"))
+    )
 
 object _all_ {
   lazy val all: Array[LDML] = // Auto-generated code from CLDR definitions, don't edit

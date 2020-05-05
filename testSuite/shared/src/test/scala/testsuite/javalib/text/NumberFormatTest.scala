@@ -20,13 +20,13 @@ class NumberFormatTest extends munit.FunSuite {
   Locale.setDefault(Locale.US) // For Currency support
 
   val stdLocales = List(
-    TestCase("und", Locale.ROOT, cldr21              = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("en", Locale.ENGLISH, cldr21            = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("fr", Locale.FRENCH, cldr21             = true, "#,##0.###", "#,##0", "#,##0\u00A0%"),
-    TestCase("de", Locale.GERMAN, cldr21             = true, "#,##0.###", "#,##0", "#,##0\u00A0%"),
-    TestCase("it", Locale.ITALIAN, cldr21            = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("ko", Locale.KOREAN, cldr21             = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("zh", Locale.CHINESE, cldr21            = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("und", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("en", Locale.ENGLISH, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("fr", Locale.FRENCH, cldr21 = true, "#,##0.###", "#,##0", "#,##0\u00A0%"),
+    TestCase("de", Locale.GERMAN, cldr21 = true, "#,##0.###", "#,##0", "#,##0\u00A0%"),
+    TestCase("it", Locale.ITALIAN, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("ko", Locale.KOREAN, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("zh", Locale.CHINESE, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
     TestCase("zh", Locale.SIMPLIFIED_CHINESE, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
     TestCase(
       "zh-TW",
@@ -36,16 +36,16 @@ class NumberFormatTest extends munit.FunSuite {
       "#,##0",
       "#,##0%"
     ),
-    TestCase("fr-FR", Locale.FRANCE, cldr21  = true, "#,##0.###", "#,##0", "#,##0\u00A0%"),
+    TestCase("fr-FR", Locale.FRANCE, cldr21 = true, "#,##0.###", "#,##0", "#,##0\u00A0%"),
     TestCase("de-DE", Locale.GERMANY, cldr21 = true, "#,##0.###", "#,##0", "#,##0\u00A0%"),
-    TestCase("it-IT", Locale.ITALY, cldr21   = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("ko-KO", Locale.KOREA, cldr21   = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("zh-CH", Locale.CHINA, cldr21   = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("zh-CH", Locale.PRC, cldr21     = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("zh-TW", Locale.TAIWAN, cldr21  = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("en-GB", Locale.UK, cldr21      = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("en-US", Locale.US, cldr21      = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("en-CA", Locale.CANADA, cldr21  = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("it-IT", Locale.ITALY, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("ko-KO", Locale.KOREA, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("zh-CH", Locale.CHINA, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("zh-CH", Locale.PRC, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("zh-TW", Locale.TAIWAN, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("en-GB", Locale.UK, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("en-US", Locale.US, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("en-CA", Locale.CANADA, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
     TestCase(
       "fr-CA",
       Locale.CANADA_FRENCH,
@@ -57,18 +57,18 @@ class NumberFormatTest extends munit.FunSuite {
   )
 
   val extraLocales = List(
-    TestCase("af", Locale.ROOT, cldr21      = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("az", Locale.ROOT, cldr21      = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("af", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("az", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
     TestCase("az-Cyrl", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("it-CH", Locale.ROOT, cldr21   = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("zh", Locale.ROOT, cldr21      = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("it-CH", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("zh", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
     TestCase("zh-Hant", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("fa", Locale.ROOT, cldr21      = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("fi-FI", Locale.ROOT, cldr21   = true, "#,##0.###", "#,##0", "#,##0\u00A0%"),
-    TestCase("ja", Locale.ROOT, cldr21      = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("lv", Locale.ROOT, cldr21      = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("my", Locale.ROOT, cldr21      = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("ru-RU", Locale.ROOT, cldr21   = true, "#,##0.###", "#,##0", "#,##0\u00A0%")
+    TestCase("fa", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("fi-FI", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0\u00A0%"),
+    TestCase("ja", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("lv", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("my", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("ru-RU", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0\u00A0%")
   )
 
   val extraLocalesDiff = List(
@@ -87,11 +87,11 @@ class NumberFormatTest extends munit.FunSuite {
     // TODO: there is something weird about #,##,##0.###, the JVM corrects it to
     // @ val f = new DecimalFormat("#,##,##0.###"); f.toPattern => "#,##0.###"
     // TestCase("bn", Locale.ROOT, cldr21 = false, "#,##,##0.###", "#,##,##0", "#,##,##0%"),
-    TestCase("es-CL", Locale.ROOT, cldr21  = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("es-CL", Locale.ROOT, cldr21  = false, "#,##0.###", "#,##0", "#,##0 %"),
-    TestCase("smn", Locale.ROOT, cldr21    = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("es-CL", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
+    TestCase("es-CL", Locale.ROOT, cldr21 = false, "#,##0.###", "#,##0", "#,##0 %"),
+    TestCase("smn", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
     TestCase("smn-FI", Locale.ROOT, cldr21 = true, "#,##0.###", "#,##0", "#,##0%"),
-    TestCase("smn", Locale.ROOT, cldr21    = false, "#,##0.###", "#,##0", "#,##0\u00A0%"),
+    TestCase("smn", Locale.ROOT, cldr21 = false, "#,##0.###", "#,##0", "#,##0\u00A0%"),
     TestCase("smn-FI", Locale.ROOT, cldr21 = false, "#,##0.###", "#,##0", "#,##0\u00A0%")
   )
 

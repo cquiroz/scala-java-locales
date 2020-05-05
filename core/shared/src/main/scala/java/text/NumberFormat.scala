@@ -15,15 +15,15 @@ abstract class NumberFormat protected () extends Format {
     obj match {
       case n: Number if n.doubleValue() == n.longValue() =>
         format(n.longValue(), toAppendTo, pos)
-      case n: Number =>
+      case n: Number                                     =>
         format(n.doubleValue(), toAppendTo, pos)
-      case _ =>
+      case _                                             =>
         throw new IllegalArgumentException("Cannot format given Object as a Number")
     }
 
   final def format(number: Double): String =
     format(number, new StringBuffer, IgnoreFieldPosition).toString
-  final def format(number: Long): String =
+  final def format(number: Long): String   =
     format(number, new StringBuffer, IgnoreFieldPosition).toString
 
   def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer

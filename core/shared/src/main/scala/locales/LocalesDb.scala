@@ -33,15 +33,15 @@ object LocalesDb {
     */
   def localeForLanguageTag(languageTag: String): Option[Locale] =
     // TODO Support alternative tags for the same locale
-    if (languageTag == "und") {
+    if (languageTag == "und")
       Some(Locale.ROOT)
-    } else
+    else
       provider.ldmls.get(languageTag).map(_.toLocale)
 
   /**
     * Returns the ldml for the given locale
     */
-  def ldml(locale: Locale): Option[LDML] = {
+  def ldml(locale:                      Locale): Option[LDML]   = {
     val tag =
       if (locale.toLanguageTag() == "zh-CN") "zh-Hans-CN"
       else if (locale.toLanguageTag() == "zh-TW") "zh-Hant-TW"

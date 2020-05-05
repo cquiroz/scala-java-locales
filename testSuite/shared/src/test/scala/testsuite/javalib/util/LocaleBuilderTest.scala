@@ -32,8 +32,8 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("build_with_script") {
-    val b1     = new Locale.Builder()
-    val locale = b1.setScript("Cyrl").build
+    val b1      = new Locale.Builder()
+    val locale  = b1.setScript("Cyrl").build
     assertEquals("Cyrl", locale.getScript)
 
     // null resets
@@ -61,8 +61,8 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("build_with_region") {
-    val b1     = new Locale.Builder()
-    val locale = b1.setRegion("US").build
+    val b1      = new Locale.Builder()
+    val locale  = b1.setRegion("US").build
     assertEquals("US", locale.getCountry)
 
     // null resets
@@ -90,8 +90,8 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("build_with_variant") {
-    val b1     = new Locale.Builder()
-    val locale = b1.setVariant("polyton").build
+    val b1      = new Locale.Builder()
+    val locale  = b1.setVariant("polyton").build
     assertEquals("polyton", locale.getVariant)
 
     // null resets
@@ -100,7 +100,7 @@ class LocaleBuilderTest extends munit.FunSuite {
     assertEquals("", locale2.getVariant)
 
     // Some examples taken from IANA Subtag registry
-    val cases = List("1606nict", "1901", "baku1926", "fonxsamp", "luna1918")
+    val cases   = List("1606nict", "1901", "baku1926", "fonxsamp", "luna1918")
     cases.foreach { v =>
       val b      = new Locale.Builder()
       val locale = b.setVariant(v).build
@@ -132,12 +132,12 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("build_with_extensions") {
-    val b1     = new Locale.Builder()
-    val locale = b1.setExtension('a', "ca-japanese").build
+    val b1      = new Locale.Builder()
+    val locale  = b1.setExtension('a', "ca-japanese").build
     assertEquals("ca-japanese", locale.getExtension('a'))
 
     // null resets
-    val b2 = new Locale.Builder()
+    val b2      = new Locale.Builder()
     val locale2 =
       b2.setExtension('a', "ca-japanese").setExtension('a', "").build
     assert(null == locale2.getExtension('a'))
@@ -159,7 +159,7 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("build_with_unicode_extensions") {
-    val b1 = new Locale.Builder()
+    val b1     = new Locale.Builder()
     val locale = b1
       .setUnicodeLocaleKeyword("nu", "thai")
       .setUnicodeLocaleKeyword("ok", "")
@@ -193,7 +193,7 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("replace_unicode_extensions") {
-    val b1 = new Locale.Builder()
+    val b1      = new Locale.Builder()
     val locale1 = b1
       .setUnicodeLocaleKeyword("nu", "thai")
       .setUnicodeLocaleKeyword("ok", "")
@@ -222,7 +222,7 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("remove_unicode_attribute") {
-    val b1 = new Locale.Builder()
+    val b1      = new Locale.Builder()
     val locale1 = b1
       .addUnicodeLocaleAttribute("attr")
       .removeUnicodeLocaleAttribute("attr")
@@ -230,15 +230,14 @@ class LocaleBuilderTest extends munit.FunSuite {
     assert(locale1.getUnicodeLocaleAttributes.isEmpty)
 
     // Check for compliance on the attribute
-    if (Platform.executingInJVM) {
+    if (Platform.executingInJVM)
       // Against the javadocs the JVM throws an IllformedLocaleException
       intercept[IllformedLocaleException](
         new Locale.Builder().removeUnicodeLocaleAttribute(null)
       )
-    } else {
+    else
       // Scala.js follows the spec
       intercept[NullPointerException](new Locale.Builder().removeUnicodeLocaleAttribute(null))
-    }
     intercept[IllformedLocaleException](
       new Locale.Builder().removeUnicodeLocaleAttribute("toolongvalue")
     )
@@ -258,7 +257,7 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("clear_extensions") {
-    val b = new Locale.Builder()
+    val b       = new Locale.Builder()
     val locale1 = b
       .setLanguage("es")
       .setRegion("CL")

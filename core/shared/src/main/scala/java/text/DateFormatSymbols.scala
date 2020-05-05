@@ -50,10 +50,11 @@ object DateFormatSymbols {
       read: CalendarSymbols => List[String],
       set:  List[String] => Unit
     ): Unit = {
-      def readNonEmpty(c: CalendarSymbols) = read(c) match {
-        case Nil => None
-        case x   => Some(x)
-      }
+      def readNonEmpty(c: CalendarSymbols) =
+        read(c) match {
+          case Nil => None
+          case x   => Some(x)
+        }
       elementsArray(ldml, readNonEmpty).orElse(Some(Nil)).foreach(set)
     }
 
@@ -162,23 +163,24 @@ class DateFormatSymbols(private[this] val locale: Locale) extends Cloneable {
       Array[AnyRef](shortWeekdays: _*),
       Array[AnyRef](amPmStrings: _*)
     )
-    val s   = state.map(Arrays.hashCode).foldLeft(0)((a, b) => 31 * a + b)
-    val zs  = zoneStrings.map(Array[AnyRef](_: _*))
-    val zsc = Array[AnyRef](zs: _*)
+    val s     = state.map(Arrays.hashCode).foldLeft(0)((a, b) => 31 * a + b)
+    val zs    = zoneStrings.map(Array[AnyRef](_: _*))
+    val zsc   = Array[AnyRef](zs: _*)
 
     31 * (31 * s + Arrays.hashCode(zsc)) + localPatternChars.hashCode
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case that: DateFormatSymbols =>
-      eras.sameElements(that.getEras) &&
-        months.sameElements(that.getMonths) &&
-        shortMonths.sameElements(that.getShortMonths) &&
-        weekdays.sameElements(that.getWeekdays) &&
-        shortWeekdays.sameElements(that.getShortWeekdays) &&
-        amPmStrings.sameElements(that.getAmPmStrings) &&
-        zoneStrings.sameElements(that.getZoneStrings) &&
-        localPatternChars == that.getLocalPatternChars
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: DateFormatSymbols =>
+        eras.sameElements(that.getEras) &&
+          months.sameElements(that.getMonths) &&
+          shortMonths.sameElements(that.getShortMonths) &&
+          weekdays.sameElements(that.getWeekdays) &&
+          shortWeekdays.sameElements(that.getShortWeekdays) &&
+          amPmStrings.sameElements(that.getAmPmStrings) &&
+          zoneStrings.sameElements(that.getZoneStrings) &&
+          localPatternChars == that.getLocalPatternChars
+      case _                       => false
+    }
 }

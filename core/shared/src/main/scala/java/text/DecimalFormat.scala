@@ -55,27 +55,30 @@ class DecimalFormat(
     subFormat(JavaBigDecimal.valueOf(number), toAppendTo, pos)
 
   private def handleGroupSeparator(builder: StringBuilder, idx: Int) =
-    if ((isGroupingUsed) &&
-        (getGroupingSize > 0) &&
-        (idx > 0) &&
-        (idx % getGroupingSize == 0)) {
+    if (
+      isGroupingUsed &&
+      (getGroupingSize > 0) &&
+      (idx > 0) &&
+      (idx % getGroupingSize == 0)
+    )
       builder.append(symbols.getGroupingSeparator)
-    }
 
   /* Write number to strBuilder, return Digits Written */
   private def formatNumber(
-    number:        JavaBigInteger,
-    builder:       StringBuilder,
-    isIntegerPart: Boolean
-  ): Int = {
+    number:                                 JavaBigInteger,
+    builder:                                StringBuilder,
+    isIntegerPart:                          Boolean
+  ): Int                                         = {
     import bigIntegerOrdering.mkOrderingOps
 
     var digitsWritten: Int = 0
 
     var n: JavaBigInteger = number
-    while (n > JavaBigInteger.ZERO &&
-           (if (isIntegerPart) (totalDigitsWritten(digitsWritten) <= getMaximumIntegerDigits)
-            else true)) {
+    while (
+      n > JavaBigInteger.ZERO &&
+      (if (isIntegerPart) (totalDigitsWritten(digitsWritten) <= getMaximumIntegerDigits)
+       else true)
+    ) {
       if (isIntegerPart && !useScientificNotation) handleGroupSeparator(builder, digitsWritten)
 
       val curr: JavaBigInteger = n.remainder(JavaBigInteger.TEN)
@@ -95,7 +98,7 @@ class DecimalFormat(
   // JavaDocs: The number of significant digits in the mantissa is the sum of the minimum integer and maximum
   // fraction digits, and is unaffected by the maximum integer digits.
   // Experimental/JVM note: if (isIntegerMultiple) then precision is maxIntegerDigits + max fraction digits
-  private def totalExponentPrecision(): Int =
+  private def totalExponentPrecision(): Int      =
     if (isExponentPowerMultiple) (getMaximumIntegerDigits + getMaximumFractionDigits)
     else (getMinimumIntegerDigits + getMaximumFractionDigits)
 
@@ -106,22 +109,21 @@ class DecimalFormat(
     // zero shortcut
     if (n.compareTo(JavaBigDecimal.ZERO) == 0) (JavaBigDecimal.ZERO, 0)
     else {
-      val isJustFraction: Boolean      = (n.abs < JavaBigDecimal.ONE)
-      val originalDecimalPosition: Int = (n.precision - n.scale)
+      val isJustFraction: Boolean      = n.abs < JavaBigDecimal.ONE
+      val originalDecimalPosition: Int = n.precision - n.scale
       val newPrecision: Int            = min(n.precision, totalExponentPrecision)
 
       val newIntegerSize = if (isExponentPowerMultiple) {
         def matchesMultiple(idx: Int): Boolean =
-          (((originalDecimalPosition - (getMaximumIntegerDigits - idx)) % getMaximumIntegerDigits) == 0)
+          ((originalDecimalPosition - (getMaximumIntegerDigits - idx)) % getMaximumIntegerDigits) == 0
 
         (0 until getMaximumIntegerDigits)
           .collectFirst {
             case idx: Int if matchesMultiple(idx) => (getMaximumIntegerDigits - idx)
           }
           .getOrElse(1)
-      } else {
+      } else
         max(min(newPrecision, getMaximumIntegerDigits), 1)
-      }
 
       val scalePrecision = {
         val unscaled = new JavaBigDecimal(n.unscaledValue, newPrecision - newIntegerSize)
@@ -142,9 +144,9 @@ class DecimalFormat(
 
   // Based upon number count, add in the number of group separators
   private def totalDigitsWritten(count: Int): Int =
-    if (isGroupingUsed && getGroupingSize > 0 && count > 0) {
+    if (isGroupingUsed && getGroupingSize > 0 && count > 0)
       count + (count / getGroupingSize)
-    } else count
+    else count
 
   private def repeatDigits(count: Int, c: Char): String =
     (0 until count).map(_ => c).mkString
@@ -153,9 +155,9 @@ class DecimalFormat(
   // ...Trying to get a mostly correct/easier to read/understand implementation first
   // TODO: Currently ignoring FieldPosition argument
   private def subFormat(
-    number:     JavaBigDecimal,
-    toAppendTo: StringBuffer,
-    pos:        FieldPosition
+    number:                       JavaBigDecimal,
+    toAppendTo:                   StringBuffer,
+    pos:                          FieldPosition
   ): StringBuffer = {
     import bigDecimalOrdering.mkOrderingOps
 
@@ -165,14 +167,14 @@ class DecimalFormat(
     val prefix: String = if (isNegative) getNegativePrefix() else getPositivePrefix()
     toAppendTo.append(prefix)
 
-    val multiplied: JavaBigDecimal =
+    val multiplied: JavaBigDecimal                    =
       number.multiply(JavaBigDecimal.valueOf(getMultiplier.toLong)).abs
 
     // Round the target number based upon expected fractions, so we can compare it to the integer
     val (targetNumber: JavaBigDecimal, expPower: Int) =
-      if (useScientificNotation) {
+      if (useScientificNotation)
         getExponentNumberAndPower(multiplied)
-      } else {
+      else
         (
           multiplied.setScale(
             max(getMaximumFractionDigits(), getMinimumFractionDigits()),
@@ -180,7 +182,6 @@ class DecimalFormat(
           ),
           0
         )
-      }
 
     val integerStrBuilder           = new StringBuilder()
     val integerPart: JavaBigDecimal = new JavaBigDecimal(targetNumber.toBigInteger, 0)
@@ -189,19 +190,17 @@ class DecimalFormat(
     if ((integerPart.compareTo(JavaBigDecimal.ZERO) == 0) || (getMaximumIntegerDigits == 0)) {
       integerStrBuilder.append(symbols.getZeroDigit)
       integerDigitsWritten += 1
-    } else {
+    } else
       integerDigitsWritten += formatNumber(integerPart.toBigInteger, integerStrBuilder, true)
-    }
 
     // Add integer digit padding if needed
-    if (integerDigitsWritten < getMinimumIntegerDigits) {
+    if (integerDigitsWritten < getMinimumIntegerDigits)
       (integerDigitsWritten until getMinimumIntegerDigits).foreach { _ =>
         handleGroupSeparator(integerStrBuilder, integerDigitsWritten)
 
         integerStrBuilder.append(symbols.getZeroDigit)
         integerDigitsWritten += 1
       }
-    }
 
     // We have the integer portion ready, append it to the builder
     toAppendTo.append(integerStrBuilder.result.reverse)
@@ -213,9 +212,10 @@ class DecimalFormat(
       val fractionStrBuilder = new StringBuilder()
 
       // Special case for exponents
-      val fractionMaxDigits: Int = if (useScientificNotation) {
-        totalExponentPrecision - integerDigitsWritten
-      } else getMaximumFractionDigits
+      val fractionMaxDigits: Int       =
+        if (useScientificNotation)
+          totalExponentPrecision - integerDigitsWritten
+        else getMaximumFractionDigits
 
       // Set scale to max fraction digits, subtract integer part, & get
       // 12.0123 -> (set scale 5) 12.01230 -> (minus 12) 0.01230) -> unscaled value 1230
@@ -229,7 +229,7 @@ class DecimalFormat(
       formatNumber(fractionPart, fractionStrBuilder, false)
 
       // 0321
-      val unscaledString = fractionStrBuilder.result
+      val unscaledString               = fractionStrBuilder.result
 
       // Drop extra zero's at the end, then add significant '0's to end, then reverse it
       // 0321 => 321 => 3210 => 0123
@@ -246,18 +246,16 @@ class DecimalFormat(
       toAppendTo.append(fractionStr)
 
       // Add zero-end padding minimum fraction digits
-      if (fractionStr.length < getMinimumFractionDigits) {
+      if (fractionStr.length < getMinimumFractionDigits)
         toAppendTo.append(
           repeatDigits(getMinimumFractionDigits - fractionStr.length, symbols.getZeroDigit)
         )
-      }
       // No fraction value, but we have a minimum fraction digits to set...
       // 0.00 equals (0) returns false :/, so can't use ordering
-    } else if (targetNumber.compareTo(integerPart) == 0 && getMinimumFractionDigits > 0) {
+    } else if (targetNumber.compareTo(integerPart) == 0 && getMinimumFractionDigits > 0)
       toAppendTo.append(
         s"${symbols.getDecimalSeparator}${repeatDigits(getMinimumFractionDigits, symbols.getZeroDigit)}"
       )
-    }
 
     if (useScientificNotation) {
       toAppendTo.append(symbols.getExponentSeparator)
@@ -279,19 +277,19 @@ class DecimalFormat(
 
   def getDecimalFormatSymbols(): DecimalFormatSymbols = symbols
 
-  def setDecimalFormatSymbols(symbols: DecimalFormatSymbols): Unit = {
+  def setDecimalFormatSymbols(symbols:                 DecimalFormatSymbols): Unit = {
     this.symbols = symbols
     usePattern(this.pattern)
   }
 
   // Swap out the percent or mile characters from the prefix/suffix localized characters set
-  private def replaceLocalizedPrefixOrSuffixSymbols(s: String): String =
+  private def replaceLocalizedPrefixOrSuffixSymbols(s: String): String             =
     if (s == null) ""
-    else if (currency.get.isDefined) {
+    else if (currency.get.isDefined)
       s.replace(DecimalFormatUtil.PatternCharPercent, symbols.getPercent)
         .replace(DecimalFormatUtil.PatternCharPerMile, symbols.getPerMill)
         .replace(DecimalFormatUtil.PatternCharCurrencySymbol.toString, getCurrency().getSymbol())
-    } else {
+    else {
       val c = safeGetCurrency()
       c.fold {
         s.replace(DecimalFormatUtil.PatternCharPercent, symbols.getPercent)
@@ -390,7 +388,7 @@ class DecimalFormat(
       parsedPattern.get.minimumExponentDigits.isDefined || parsedPattern.get.maximumExponentDigits.isDefined
 
     // Create the core pattern.
-    val sb = new StringBuilder
+    val sb                  = new StringBuilder
 
     val requiredIntegersStr: String = repeatDigits(
       getMinimumIntegerDigits(),
@@ -405,7 +403,7 @@ class DecimalFormat(
 
     if (isGroupingUsed() && getGroupingSize() > 0) {
       val integerStr = requiredIntegersStr + optionalIntegersStr
-      val c: Char =
+      val c: Char    =
         if (localize) symbols.getGroupingSeparator
         else DecimalFormatUtil.PatternCharGroupingSeparator
       sb.append(integerStr.grouped(getGroupingSize()).mkString(c.toString).reverse)
@@ -556,16 +554,15 @@ class DecimalFormat(
   }
 
   def safeGetCurrency(): Option[Currency] =
-    try {
-      Some(Currency.getInstance(Locale.getDefault()))
-    } catch {
+    try Some(Currency.getInstance(Locale.getDefault()))
+    catch {
       case _: Throwable => None
     }
 
   override def getCurrency(): Currency =
     currency.get() match {
       case Some(c) => c
-      case _ =>
+      case _       =>
         val c = Currency.getInstance(Locale.getDefault())
         currency.set(Option(c))
         c
@@ -589,9 +586,8 @@ class DecimalFormat(
   override def hashCode(): Int = {
     val prime  = 31
     var result = 1
-    if (currency.get().isDefined) {
+    if (currency.get().isDefined)
       result = prime * result + currency.get().hashCode()
-    }
     result = prime * result + getDecimalFormatSymbols().hashCode()
     result = prime * result + getGroupingSize().hashCode()
     result = prime * result + getMaximumFractionDigits().hashCode()

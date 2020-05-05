@@ -23,14 +23,15 @@ class FieldPosition(private[this] val attribute: Format.Field, private[this] val
 
   def setEndIndex(ei: Int): Unit = endIndex = ei
 
-  override def equals(other: Any): Boolean = other match {
-    case that: FieldPosition =>
-      getBeginIndex == that.getBeginIndex &&
-        getEndIndex == that.getEndIndex &&
-        getFieldAttribute == that.getFieldAttribute &&
-        getField == that.getField
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: FieldPosition =>
+        getBeginIndex == that.getBeginIndex &&
+          getEndIndex == that.getEndIndex &&
+          getFieldAttribute == that.getFieldAttribute &&
+          getField == that.getField
+      case _                   => false
+    }
 
   override def hashCode(): Int = {
     // NOTE, the JVM doesn't use field attribute on hash but it uses on equal

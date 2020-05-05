@@ -11,12 +11,13 @@ class ParsePosition(private[this] var index: Int) {
 
   def getErrorIndex(): Int = errorIndex
 
-  override def equals(other: Any): Boolean = other match {
-    case that: ParsePosition =>
-      getErrorIndex == that.getErrorIndex &&
-        getIndex == that.getIndex
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: ParsePosition =>
+        getErrorIndex == that.getErrorIndex &&
+          getIndex == that.getIndex
+      case _                   => false
+    }
 
   override def hashCode(): Int = {
     val state = Seq(getErrorIndex, getIndex)

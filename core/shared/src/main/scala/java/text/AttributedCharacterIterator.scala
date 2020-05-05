@@ -22,10 +22,11 @@ trait AttributedCharacterIterator extends CharacterIterator {
 
 object AttributedCharacterIterator {
   class Attribute protected (private[this] val name: String) {
-    override final def equals(that: Any): Boolean = that match {
-      case t: Attribute => this.eq(t) // As per javadocs
-      case _            => false
-    }
+    override final def equals(that: Any): Boolean =
+      that match {
+        case t: Attribute => this.eq(t) // As per javadocs
+        case _            => false
+      }
 
     override final def hashCode(): Int = name.hashCode
 

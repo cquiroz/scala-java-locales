@@ -48,7 +48,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("AM", "PM"),
       List("BC", "AD")
     ),
-    Locale.FRENCH -> LocaleTestItem(
+    Locale.FRENCH  -> LocaleTestItem(
       "fr",
       cldr21 = false,
       List(
@@ -86,7 +86,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("AM", "PM"),
       List("av. J.-C.", "ap. J.-C.")
     ),
-    Locale.FRANCE -> LocaleTestItem(
+    Locale.FRANCE  -> LocaleTestItem(
       "fr_FR",
       cldr21 = false,
       List(
@@ -124,7 +124,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("AM", "PM"),
       List("av. J.-C.", "ap. J.-C.")
     ),
-    Locale.TAIWAN -> LocaleTestItem(
+    Locale.TAIWAN  -> LocaleTestItem(
       "zh_Hant_TW",
       cldr21 = true,
       List("1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月", ""),
@@ -134,7 +134,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("上午", "下午"),
       List("西元前", "西元")
     ),
-    Locale.US -> LocaleTestItem(
+    Locale.US      -> LocaleTestItem(
       "en_US",
       cldr21 = false,
       List(
@@ -161,7 +161,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
   )
 
   val standardLocalesDataDiff = List(
-    Locale.ROOT -> LocaleTestItem(
+    Locale.ROOT          -> LocaleTestItem(
       "",
       cldr21 = true,
       List("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", ""),
@@ -171,7 +171,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("AM", "PM"),
       List("BCE", "CE")
     ),
-    Locale.ROOT -> LocaleTestItem(
+    Locale.ROOT          -> LocaleTestItem(
       "",
       cldr21 = false,
       List("M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "M09", "M10", "M11", "M12", ""),
@@ -181,7 +181,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("", ""),
       List("BCE", "CE")
     ),
-    Locale.GERMAN -> LocaleTestItem(
+    Locale.GERMAN        -> LocaleTestItem(
       "de",
       cldr21 = true,
       List(
@@ -205,7 +205,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("vorm.", "nachm."),
       List("v. Chr.", "n. Chr.")
     ),
-    Locale.GERMAN -> LocaleTestItem(
+    Locale.GERMAN        -> LocaleTestItem(
       "de",
       cldr21 = false,
       List(
@@ -243,7 +243,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("", ""),
       List("v. Chr.", "n. Chr.")
     ),
-    Locale.GERMANY -> LocaleTestItem(
+    Locale.GERMANY       -> LocaleTestItem(
       "de_DE",
       cldr21 = true,
       List(
@@ -267,7 +267,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("vorm.", "nachm."),
       List("v. Chr.", "n. Chr.")
     ),
-    Locale.GERMANY -> LocaleTestItem(
+    Locale.GERMANY       -> LocaleTestItem(
       "de_DE",
       cldr21 = false,
       List(
@@ -305,7 +305,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("", ""),
       List("v. Chr.", "n. Chr.")
     ),
-    Locale.ITALIAN -> LocaleTestItem(
+    Locale.ITALIAN       -> LocaleTestItem(
       "it",
       cldr21 = true,
       List(
@@ -329,7 +329,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("m.", "p."),
       List("aC", "dC")
     ),
-    Locale.ITALIAN -> LocaleTestItem(
+    Locale.ITALIAN       -> LocaleTestItem(
       "it",
       cldr21 = false,
       List(
@@ -353,7 +353,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("AM", "PM"),
       List("a.C.", "d.C.")
     ),
-    Locale.ITALY -> LocaleTestItem(
+    Locale.ITALY         -> LocaleTestItem(
       "it_IT",
       cldr21 = true,
       List(
@@ -377,7 +377,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("m.", "p."),
       List("aC", "dC")
     ),
-    Locale.ITALY -> LocaleTestItem(
+    Locale.ITALY         -> LocaleTestItem(
       "it_IT",
       cldr21 = false,
       List(
@@ -401,7 +401,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("AM", "PM"),
       List("a.C.", "d.C.")
     ),
-    Locale.JAPAN -> LocaleTestItem(
+    Locale.JAPAN         -> LocaleTestItem(
       "ja",
       cldr21 = true,
       List("1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月", ""),
@@ -411,7 +411,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("午前", "午後"),
       List("BC", "AD")
     ),
-    Locale.JAPAN -> LocaleTestItem(
+    Locale.JAPAN         -> LocaleTestItem(
       "ja",
       cldr21 = false,
       List("1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月", ""),
@@ -421,7 +421,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("午前", "午後"),
       List("紀元前", "西暦")
     ),
-    Locale.KOREA -> LocaleTestItem(
+    Locale.KOREA         -> LocaleTestItem(
       "ko_KR",
       cldr21 = true,
       List("1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월", ""),
@@ -431,7 +431,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("오전", "오후"),
       List("기원전", "서기")
     ),
-    Locale.KOREA -> LocaleTestItem(
+    Locale.KOREA         -> LocaleTestItem(
       "ko_KR",
       cldr21 = false,
       List("1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월", ""),
@@ -441,7 +441,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("오전", "오후"),
       List("BC", "AD")
     ),
-    Locale.KOREAN -> LocaleTestItem(
+    Locale.KOREAN        -> LocaleTestItem(
       "ko",
       cldr21 = true,
       List("1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월", ""),
@@ -451,7 +451,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("오전", "오후"),
       List("기원전", "서기")
     ),
-    Locale.KOREAN -> LocaleTestItem(
+    Locale.KOREAN        -> LocaleTestItem(
       "ko",
       cldr21 = false,
       List("1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월", ""),
@@ -461,7 +461,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("오전", "오후"),
       List("BC", "AD")
     ),
-    Locale.CHINESE -> LocaleTestItem(
+    Locale.CHINESE       -> LocaleTestItem(
       "zh",
       cldr21 = true,
       List("1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月", ""),
@@ -471,7 +471,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("上午", "下午"),
       List("公元前", "公元")
     ),
-    Locale.CHINESE -> LocaleTestItem(
+    Locale.CHINESE       -> LocaleTestItem(
       "zh",
       cldr21 = false,
       List("一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月", ""),
@@ -481,7 +481,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("上午", "下午"),
       List("公元前", "公元")
     ),
-    Locale.CHINA -> LocaleTestItem(
+    Locale.CHINA         -> LocaleTestItem(
       "zh_Hans_CN",
       cldr21 = true,
       List("1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月", ""),
@@ -491,7 +491,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("上午", "下午"),
       List("公元前", "公元")
     ),
-    Locale.CHINA -> LocaleTestItem(
+    Locale.CHINA         -> LocaleTestItem(
       "zh_Hans_CN",
       cldr21 = false,
       List("一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月", ""),
@@ -501,7 +501,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("上午", "下午"),
       List("公元前", "公元")
     ),
-    Locale.PRC -> LocaleTestItem(
+    Locale.PRC           -> LocaleTestItem(
       "zh_Hans_CN",
       cldr21 = true,
       List("1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月", ""),
@@ -511,7 +511,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("上午", "下午"),
       List("公元前", "公元")
     ),
-    Locale.PRC -> LocaleTestItem(
+    Locale.PRC           -> LocaleTestItem(
       "zh_Hans_CN",
       cldr21 = false,
       List("一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月", ""),
@@ -521,7 +521,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("上午", "下午"),
       List("公元前", "公元")
     ),
-    Locale.UK -> LocaleTestItem(
+    Locale.UK            -> LocaleTestItem(
       "en_GB",
       cldr21 = true,
       List(
@@ -545,7 +545,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("AM", "PM"),
       List("BC", "AD")
     ),
-    Locale.UK -> LocaleTestItem(
+    Locale.UK            -> LocaleTestItem(
       "en_GB",
       cldr21 = false,
       List(
@@ -645,7 +645,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("a.m.", "p.m."),
       List("av. J.-C.", "ap. J.-C.")
     ),
-    Locale.CANADA -> LocaleTestItem(
+    Locale.CANADA        -> LocaleTestItem(
       "en_CA",
       cldr21 = true,
       List(
@@ -669,7 +669,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       List("AM", "PM"),
       List("BC", "AD")
     ),
-    Locale.CANADA -> LocaleTestItem(
+    Locale.CANADA        -> LocaleTestItem(
       "en_CA",
       cldr21 = false,
       List(
@@ -1692,12 +1692,10 @@ class DateFormatSymbolsTest extends munit.FunSuite {
     standardLocalesDataDiff.foreach {
       case (l, t @ LocaleTestItem(_, cldr21, _, _, _, _, _, _)) =>
         val dfs = DateFormatSymbols.getInstance(l)
-        if (Platform.executingInJVM && cldr21) {
+        if (Platform.executingInJVM && cldr21)
           test_dfs(dfs, t)
-        }
-        if (!Platform.executingInJVM && !cldr21) {
+        if (!Platform.executingInJVM && !cldr21)
           test_dfs(dfs, t)
-        }
     }
   }
 
@@ -1719,7 +1717,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
     get: DateFormatSymbols => Array[String],
     set: (DateFormatSymbols, Array[String]) => Unit
   ): Unit = {
-    val dfs = new DateFormatSymbols()
+    val dfs   = new DateFormatSymbols()
     intercept[NullPointerException](set(dfs, null))
     val value = Array("a", "b")
     set(dfs, value)
@@ -1729,11 +1727,11 @@ class DateFormatSymbolsTest extends munit.FunSuite {
   }
 
   test("zone_strings") {
-    val dfs = new DateFormatSymbols()
+    val dfs         = new DateFormatSymbols()
     intercept[NullPointerException](dfs.setZoneStrings(null))
     val zonesTooFew = Array(Array("a", "b"), Array("c", "d"))
     intercept[IllegalArgumentException](dfs.setZoneStrings(zonesTooFew))
-    val zones =
+    val zones       =
       Array(Array("a", "b", "c", "d", "e"), Array("f", "g", "h", "i", "j"))
     dfs.setZoneStrings(zones)
     // Check that the passed array is copied
@@ -1785,13 +1783,11 @@ class DateFormatSymbolsTest extends munit.FunSuite {
     val dfs = DateFormatSymbols.getInstance(l)
     standardLocalesDataDiff.foreach {
       case (_, t @ LocaleTestItem(r, cldr21, _, _, _, _, _, _)) if r == root =>
-        if (Platform.executingInJVM && cldr21) {
+        if (Platform.executingInJVM && cldr21)
           test_dfs(dfs, t)
-        }
-        if (!Platform.executingInJVM && !cldr21) {
+        if (!Platform.executingInJVM && !cldr21)
           test_dfs(dfs, t)
-        }
-      case (_, _) =>
+      case (_, _)                                                            =>
     }
   }
 

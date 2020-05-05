@@ -12,7 +12,7 @@ class Navigator extends js.Any {
 
 @js.native
 @JSGlobal
-class Window extends js.Any {
+class Window    extends js.Any {
   def navigator: Navigator = js.native
 }
 
@@ -21,13 +21,13 @@ object DefaultLocale {
 
   def platformLocale: Locale = {
     val lang =
-      try {
-        // Attempt to read locale from the platform
-        Some(window.navigator.language)
-      } catch {
+      try
+      // Attempt to read locale from the platform
+      Some(window.navigator.language)
+      catch {
         case _: Throwable => None
       }
-    val l = lang.filter(LocalesDb.ldmls.contains).getOrElse("en")
+    val l    = lang.filter(LocalesDb.ldmls.contains).getOrElse("en")
     LocalesDb.localeForLanguageTag(l).getOrElse(LocalesDb.root.toLocale)
   }
 

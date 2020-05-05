@@ -25,7 +25,8 @@ class SimpleDateFormat(
                                date.getDay,
                                date.getHours,
                                date.getMinutes,
-                               date.getSeconds)).toString.reverse
+                               date.getSeconds
+      )).toString.reverse
     )
 
     def pop(pos: Int): Char =
@@ -42,28 +43,28 @@ class SimpleDateFormat(
       patternPos -= 1
 
       pattern(patternPos) match {
-        case 'G' => ???
-        case 'y' => sb.append(pop(0))
-        case 'Y' => ???
-        case 'M' => sb.append(pop(1))
-        case 'w' => ???
-        case 'W' => ???
-        case 'D' => ???
-        case 'd' => sb.append(pop(2))
-        case 'F' => ???
-        case 'E' => ???
-        case 'u' => ???
-        case 'a' => ???
-        case 'H' => sb.append(pop(3))
-        case 'k' => ???
-        case 'K' => ???
-        case 'h' => ???
-        case 'm' => sb.append(pop(4))
-        case 's' => sb.append(pop(5))
-        case 'S' => sb.append(pop(6))
-        case 'z' => ???
-        case 'Z' => ???
-        case 'X' => ???
+        case 'G'   => ???
+        case 'y'   => sb.append(pop(0))
+        case 'Y'   => ???
+        case 'M'   => sb.append(pop(1))
+        case 'w'   => ???
+        case 'W'   => ???
+        case 'D'   => ???
+        case 'd'   => sb.append(pop(2))
+        case 'F'   => ???
+        case 'E'   => ???
+        case 'u'   => ???
+        case 'a'   => ???
+        case 'H'   => sb.append(pop(3))
+        case 'k'   => ???
+        case 'K'   => ???
+        case 'h'   => ???
+        case 'm'   => sb.append(pop(4))
+        case 's'   => sb.append(pop(5))
+        case 'S'   => sb.append(pop(6))
+        case 'z'   => ???
+        case 'Z'   => ???
+        case 'X'   => ???
         case other =>
           sb.append(other)
       }
@@ -85,7 +86,7 @@ class SimpleDateFormat(
   // override final def format(date: Date, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer
   // def formatToCharacterIterator(obj: AnyRef): AttributedCharacterIterator
   // def parse(text: String, pos: ParsePosition): Date
-  def toPattern(): String = pattern
+  def toPattern(): String                       = pattern
   // def toLocalizedPattern(): String = pattern
   // def applyPattern(pattern: String): Unit
   // def applyLocalizedPattern(pattern: String): Unit
