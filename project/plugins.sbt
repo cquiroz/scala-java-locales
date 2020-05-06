@@ -12,6 +12,6 @@ addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.1.11")
 
 libraryDependencies ++= {
   if (scalaJSVersion.startsWith("1.0"))
-    Seq("org.scala-js" %% "scalajs-env-jsdom-nodejs" % "1.0.0")
+    Seq("org.scala-js" %% "scalajs-env-jsdom-nodejs" % "1.1.0")
   else Seq.empty
 }
