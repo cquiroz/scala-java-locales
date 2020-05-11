@@ -53,7 +53,7 @@ object DecimalFormatSymbols {
         case Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) =>
           parentSymbolR(ldml, alias, contains)
 
-        case s @ Symbols(_, _, _, _, _, _, _, _, _, _, _) =>
+        case s @ Symbols(_, _, _, _, _, _, _, _, _, _, _)       =>
           contains(s)
             .orElse(ldml.parent.flatMap(parentSymbolR(_, ns, contains)))
       }
@@ -188,7 +188,7 @@ class DecimalFormatSymbols(private[this] val locale: Locale) extends Cloneable {
           d.getMinusSign == getMinusSign &&
           d.getExponentSeparator == getExponentSeparator
 
-      case _ => false
+      case _                       => false
     }
 
   // Oddly the JVM seems to always return the same value

@@ -32,8 +32,8 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("build_with_script") {
-    val b1      = new Locale.Builder()
-    val locale  = b1.setScript("Cyrl").build
+    val b1     = new Locale.Builder()
+    val locale = b1.setScript("Cyrl").build
     assertEquals("Cyrl", locale.getScript)
 
     // null resets
@@ -61,8 +61,8 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("build_with_region") {
-    val b1      = new Locale.Builder()
-    val locale  = b1.setRegion("US").build
+    val b1     = new Locale.Builder()
+    val locale = b1.setRegion("US").build
     assertEquals("US", locale.getCountry)
 
     // null resets
@@ -90,8 +90,8 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("build_with_variant") {
-    val b1      = new Locale.Builder()
-    val locale  = b1.setVariant("polyton").build
+    val b1     = new Locale.Builder()
+    val locale = b1.setVariant("polyton").build
     assertEquals("polyton", locale.getVariant)
 
     // null resets
@@ -100,7 +100,7 @@ class LocaleBuilderTest extends munit.FunSuite {
     assertEquals("", locale2.getVariant)
 
     // Some examples taken from IANA Subtag registry
-    val cases   = List("1606nict", "1901", "baku1926", "fonxsamp", "luna1918")
+    val cases = List("1606nict", "1901", "baku1926", "fonxsamp", "luna1918")
     cases.foreach { v =>
       val b      = new Locale.Builder()
       val locale = b.setVariant(v).build
@@ -132,8 +132,8 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("build_with_extensions") {
-    val b1      = new Locale.Builder()
-    val locale  = b1.setExtension('a', "ca-japanese").build
+    val b1     = new Locale.Builder()
+    val locale = b1.setExtension('a', "ca-japanese").build
     assertEquals("ca-japanese", locale.getExtension('a'))
 
     // null resets

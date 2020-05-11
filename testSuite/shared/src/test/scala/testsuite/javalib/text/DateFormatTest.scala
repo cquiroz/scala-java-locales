@@ -257,7 +257,7 @@ class DateFormatTest extends munit.FunSuite {
     )
   )
 
-  val stdLocalesDiff   = List(
+  val stdLocalesDiff = List(
     TestCase(
       "und",
       Locale.ROOT,
@@ -890,7 +890,7 @@ class DateFormatTest extends munit.FunSuite {
   )
 
   // Test cases by language tag where the JVM gives the same as JS
-  val localesByTag     = List(
+  val localesByTag = List(
     TestCase(
       "bn",
       Locale.ROOT,
@@ -1581,7 +1581,7 @@ class DateFormatTest extends munit.FunSuite {
                 .asInstanceOf[SimpleDateFormat]
                 .toPattern()
             )
-      case _                                                                                                     =>
+      case _ =>
     }
   }
 

@@ -10,7 +10,7 @@ class BCP47Test extends munit.FunSuite {
       case (Some(LanguageTag(lang, None, None, None, Nil, Nil, None)), l) =>
         assertEquals(lang, l)
 
-      case _ =>
+      case _                                                              =>
         fail("Shouldn't happen")
     }
   }
@@ -25,7 +25,7 @@ class BCP47Test extends munit.FunSuite {
         assertEquals(l, lang)
         assertEquals(Some(r): Option[String], region)
 
-      case _ =>
+      case _                                                                   =>
         fail("Shouldn't happen")
     }
   }
@@ -42,7 +42,7 @@ class BCP47Test extends munit.FunSuite {
         assertEquals(Some(r): Option[String], region)
         assertEquals(Some(s): Option[String], script)
 
-      case _ =>
+      case _                                                                        =>
         fail("Shouldn't happen")
     }
   }

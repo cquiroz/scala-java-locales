@@ -66,7 +66,7 @@ class DecimalFormatSymbolsTest extends munit.FunSuite {
   )
 
   // These locales show differences with Java due to a different CLDR version
-  val localesDiff      = List(
+  val localesDiff = List(
     // ar has a default arab set of symbols
     LocaleTestItem("ar", cldr21 = true)     ->
       List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JVM

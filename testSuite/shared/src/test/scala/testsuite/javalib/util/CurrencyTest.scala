@@ -33,7 +33,7 @@ trait CurrencyTest extends munit.FunSuite {
   case class DefaultLocaleCurrencyTest(defaultLocale: Locale, tests: Seq[CodeCurrencyTest])
 
   // Given a locale, lookup a currency code for it & test values
-  private val localeCurrencyTests: Seq[LocaleCurrencyTest]               = Seq(
+  private val localeCurrencyTests: Seq[LocaleCurrencyTest] = Seq(
     LocaleCurrencyTest(
       Locale.CANADA,
       jsResults = CurrencyTestResults("CAD", 124, 2, "$", "Canadian Dollar"),

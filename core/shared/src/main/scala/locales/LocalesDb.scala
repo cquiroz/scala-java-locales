@@ -41,7 +41,7 @@ object LocalesDb {
   /**
     * Returns the ldml for the given locale
     */
-  def ldml(locale:                      Locale): Option[LDML]   = {
+  def ldml(locale: Locale): Option[LDML] = {
     val tag =
       if (locale.toLanguageTag() == "zh-CN") "zh-Hans-CN"
       else if (locale.toLanguageTag() == "zh-TW") "zh-Hant-TW"

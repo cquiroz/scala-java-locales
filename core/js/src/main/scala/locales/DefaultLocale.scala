@@ -12,7 +12,7 @@ class Navigator extends js.Any {
 
 @js.native
 @JSGlobal
-class Window    extends js.Any {
+class Window extends js.Any {
   def navigator: Navigator = js.native
 }
 

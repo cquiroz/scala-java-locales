@@ -350,32 +350,32 @@ class LocaleTest extends munit.FunSuite {
   }
 
   test("to_language_tag") {
-    val l1  = new Locale.Builder().setLanguage("en").build
+    val l1 = new Locale.Builder().setLanguage("en").build
     assertEquals("en", l1.toLanguageTag)
-    val l2  = new Locale.Builder().setLanguage("de").setRegion("DE").build
+    val l2 = new Locale.Builder().setLanguage("de").setRegion("DE").build
     assertEquals("de-DE", l2.toLanguageTag)
-    val l3  = new Locale.Builder().setRegion("GB").build
+    val l3 = new Locale.Builder().setRegion("GB").build
     assertEquals("und-GB", l3.toLanguageTag)
-    val l4  = new Locale("en", "US", "WIN")
+    val l4 = new Locale("en", "US", "WIN")
     assertEquals("en-US-x-lvariant-WIN", l4.toLanguageTag)
-    val l5  = new Locale.Builder().setLanguage("de").setVariant("POSIX").build
+    val l5 = new Locale.Builder().setLanguage("de").setVariant("POSIX").build
     assertEquals("de-POSIX", l5.toLanguageTag)
-    val l6  = new Locale.Builder()
+    val l6 = new Locale.Builder()
       .setLanguage("zh")
       .setRegion("CN")
       .setScript("Hans")
       .build
     assertEquals("zh-Hans-CN", l6.toLanguageTag)
-    val l7  = new Locale.Builder()
+    val l7 = new Locale.Builder()
       .setLanguage("zh")
       .setRegion("TW")
       .setScript("Hant")
       .setExtension('x', "java")
       .build
     assertEquals("zh-Hant-TW-x-java", l7.toLanguageTag)
-    val l8  = new Locale("th", "TH", "TH")
+    val l8 = new Locale("th", "TH", "TH")
     assertEquals("th-TH-u-nu-thai-x-lvariant-TH", l8.toLanguageTag)
-    val l9  = new Locale("en", "US", "Oracle_JDK_Standard_Edition")
+    val l9 = new Locale("en", "US", "Oracle_JDK_Standard_Edition")
     assertEquals("en-US-Oracle-x-lvariant-JDK-Standard-Edition", l9.toLanguageTag)
 
     // Special cases

@@ -65,10 +65,10 @@ class DecimalFormat(
 
   /* Write number to strBuilder, return Digits Written */
   private def formatNumber(
-    number:                                 JavaBigInteger,
-    builder:                                StringBuilder,
-    isIntegerPart:                          Boolean
-  ): Int                                         = {
+    number:        JavaBigInteger,
+    builder:       StringBuilder,
+    isIntegerPart: Boolean
+  ): Int = {
     import bigIntegerOrdering.mkOrderingOps
 
     var digitsWritten: Int = 0
@@ -98,7 +98,7 @@ class DecimalFormat(
   // JavaDocs: The number of significant digits in the mantissa is the sum of the minimum integer and maximum
   // fraction digits, and is unaffected by the maximum integer digits.
   // Experimental/JVM note: if (isIntegerMultiple) then precision is maxIntegerDigits + max fraction digits
-  private def totalExponentPrecision(): Int      =
+  private def totalExponentPrecision(): Int =
     if (isExponentPowerMultiple) (getMaximumIntegerDigits + getMaximumFractionDigits)
     else (getMinimumIntegerDigits + getMaximumFractionDigits)
 
@@ -155,9 +155,9 @@ class DecimalFormat(
   // ...Trying to get a mostly correct/easier to read/understand implementation first
   // TODO: Currently ignoring FieldPosition argument
   private def subFormat(
-    number:                       JavaBigDecimal,
-    toAppendTo:                   StringBuffer,
-    pos:                          FieldPosition
+    number:     JavaBigDecimal,
+    toAppendTo: StringBuffer,
+    pos:        FieldPosition
   ): StringBuffer = {
     import bigDecimalOrdering.mkOrderingOps
 
@@ -167,7 +167,7 @@ class DecimalFormat(
     val prefix: String = if (isNegative) getNegativePrefix() else getPositivePrefix()
     toAppendTo.append(prefix)
 
-    val multiplied: JavaBigDecimal                    =
+    val multiplied: JavaBigDecimal =
       number.multiply(JavaBigDecimal.valueOf(getMultiplier.toLong)).abs
 
     // Round the target number based upon expected fractions, so we can compare it to the integer
@@ -212,7 +212,7 @@ class DecimalFormat(
       val fractionStrBuilder = new StringBuilder()
 
       // Special case for exponents
-      val fractionMaxDigits: Int       =
+      val fractionMaxDigits: Int =
         if (useScientificNotation)
           totalExponentPrecision - integerDigitsWritten
         else getMaximumFractionDigits
@@ -229,7 +229,7 @@ class DecimalFormat(
       formatNumber(fractionPart, fractionStrBuilder, false)
 
       // 0321
-      val unscaledString               = fractionStrBuilder.result
+      val unscaledString = fractionStrBuilder.result
 
       // Drop extra zero's at the end, then add significant '0's to end, then reverse it
       // 0321 => 321 => 3210 => 0123
@@ -277,13 +277,13 @@ class DecimalFormat(
 
   def getDecimalFormatSymbols(): DecimalFormatSymbols = symbols
 
-  def setDecimalFormatSymbols(symbols:                 DecimalFormatSymbols): Unit = {
+  def setDecimalFormatSymbols(symbols: DecimalFormatSymbols): Unit = {
     this.symbols = symbols
     usePattern(this.pattern)
   }
 
   // Swap out the percent or mile characters from the prefix/suffix localized characters set
-  private def replaceLocalizedPrefixOrSuffixSymbols(s: String): String             =
+  private def replaceLocalizedPrefixOrSuffixSymbols(s: String): String =
     if (s == null) ""
     else if (currency.get.isDefined)
       s.replace(DecimalFormatUtil.PatternCharPercent, symbols.getPercent)
@@ -388,7 +388,7 @@ class DecimalFormat(
       parsedPattern.get.minimumExponentDigits.isDefined || parsedPattern.get.maximumExponentDigits.isDefined
 
     // Create the core pattern.
-    val sb                  = new StringBuilder
+    val sb = new StringBuilder
 
     val requiredIntegersStr: String = repeatDigits(
       getMinimumIntegerDigits(),
@@ -624,6 +624,6 @@ class DecimalFormat(
           f.isDecimalSeparatorAlwaysShown() == isDecimalSeparatorAlwaysShown() &&
           f.isParseBigDecimal() == isParseBigDecimal()
 
-      case _ => false
+      case _                => false
     }
 }
