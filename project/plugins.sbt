@@ -8,7 +8,7 @@ addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.0.0")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.0")
 addSbtPlugin("io.github.cquiroz" % "sbt-locales" % "1.0.0")
 addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.3")
-addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.1.11")
+addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.1.12")
 
 libraryDependencies ++= {
   if (scalaJSVersion.startsWith("1.0"))
