@@ -360,16 +360,15 @@ object Locale {
       val lvariantRegex    = "lvariant-(.*)".r
       val longVariantRegex = "(.*)-lvariant-(.*)".r
       p.collect {
-          case longVariantRegex(x, y) =>
-            for {
-              b1 <- b.addVariant(y.replace("-", "_"))
-              b2 <- b1.extension('x', x)
-            } yield b2
+        case longVariantRegex(x, y) =>
+          for {
+            b1 <- b.addVariant(y.replace("-", "_"))
+            b2 <- b1.extension('x', x)
+          } yield b2
 
-          case lvariantRegex(x)       => b.addVariant(x.replace("-", "_"))
-          case x                      => b.extension('x', x)
-        }
-        .flatten
+        case lvariantRegex(x)       => b.addVariant(x.replace("-", "_"))
+        case x                      => b.extension('x', x)
+      }.flatten
         .getOrElse(b)
     }
 

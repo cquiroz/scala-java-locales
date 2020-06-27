@@ -104,6 +104,7 @@ class DecimalFormat(
 
   // Return the scaled big decimal + power unit
   def getExponentNumberAndPower(n: JavaBigDecimal): (JavaBigDecimal, Int) = {
+    // format: off
     import bigDecimalOrdering.mkOrderingOps
 
     // zero shortcut
@@ -139,6 +140,7 @@ class DecimalFormat(
         scalePrecision,
         originalDecimalPosition - newIntegerSize
       )
+    // format: on
     }
   }
 
@@ -171,6 +173,7 @@ class DecimalFormat(
       number.multiply(JavaBigDecimal.valueOf(getMultiplier.toLong)).abs
 
     // Round the target number based upon expected fractions, so we can compare it to the integer
+    // format: off
     val (targetNumber: JavaBigDecimal, expPower: Int) =
       if (useScientificNotation)
         getExponentNumberAndPower(multiplied)
@@ -182,6 +185,7 @@ class DecimalFormat(
           ),
           0
         )
+    // format: on
 
     val integerStrBuilder           = new StringBuilder()
     val integerPart: JavaBigDecimal = new JavaBigDecimal(targetNumber.toBigInteger, 0)
