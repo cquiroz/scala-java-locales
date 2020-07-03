@@ -14,7 +14,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
   cldrDbVersion := "36",
   organization := "io.github.cquiroz",
   scalaVersion := "2.13.3",
-  crossScalaVersions := Seq("2.11.12", "2.12.11", "2.13.2"),
+  crossScalaVersions := Seq("2.11.12", "2.12.11", "2.13.3"),
   scalacOptions ~= (_.filterNot(
     Set(
       "-Wdead-code",
