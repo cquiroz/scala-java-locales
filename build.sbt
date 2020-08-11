@@ -162,7 +162,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
     publishLocal := {},
     publishArtifact := false,
     name := "scala-java-locales test",
-    libraryDependencies += "org.scalameta" %%% "munit" % "0.7.10" % Test,
+    libraryDependencies += "org.scalameta" %%% "munit" % "0.7.11" % Test,
     testFrameworks += new TestFramework("munit.Framework"),
     scalacOptions ~= (_.filterNot(
       Set(
