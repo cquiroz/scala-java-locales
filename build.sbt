@@ -64,6 +64,8 @@ lazy val scalajs_locales: Project = project
   // don't include scala-native by default
   .aggregate(core.js,
              core.jvm,
+             implicits.js,
+             implicits.jvm,
              testSuite.js,
              testSuite.jvm,
              localesFullDb.js,
@@ -100,6 +102,23 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   .jvmSettings(
     skip.in(publish) := scalaJSVersion06
   )
+
+lazy val implicits = crossProject(JVMPlatform, JSPlatform)
+  .crossType(CrossType.Full)
+  .settings(commonSettings: _*)
+  .settings(
+    publish := {},
+    publishLocal := {},
+    publishArtifact := false,
+    name := "scala-java-locales-implicits"
+//    scalacOptions ~= (_.filterNot(
+//      Set(
+//        "-deprecation",
+//        "-Xfatal-warnings"
+//      )
+//    ))
+  )
+  .jsConfigure(_.dependsOn(core.js))
 
 lazy val localesFullCurrenciesDb = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings: _*)
@@ -171,6 +190,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
       )
     ))
   )
+  .dependsOn(implicits)
   .jsSettings(parallelExecution in Test := false,
               name := "scala-java-locales testSuite on JS",
               scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule)))
