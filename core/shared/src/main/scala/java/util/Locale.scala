@@ -467,7 +467,7 @@ class Locale private[util] (
       _extensions
   }
 
-  private def updateSpecialLanguages(l: String) =
+  private def updateSpecialLanguages(l: String): String =
     l match {
       case "iw" => "he"
       case "ji" => "yi"
@@ -475,7 +475,7 @@ class Locale private[util] (
       case _    => l
     }
 
-  private def translateSpecialLanguages(l: String) =
+  private def translateSpecialLanguages(l: String): String =
     l match {
       case "he" => "iw"
       case "yi" => "ji"
