@@ -630,17 +630,16 @@ class DecimalFormatTest extends munit.FunSuite {
       ("##0.##E00", "##0.##E00")
     )
 
-    patternTests.foreach {
-      case (in: String, out: String) =>
-        val f = new DecimalFormat(in)
-        val p = new DecimalFormat("foo" + in)
-        val s = new DecimalFormat(in + "bar")
-        val b = new DecimalFormat("foo" + in + "bar")
+    patternTests.foreach { case (in: String, out: String) =>
+      val f = new DecimalFormat(in)
+      val p = new DecimalFormat("foo" + in)
+      val s = new DecimalFormat(in + "bar")
+      val b = new DecimalFormat("foo" + in + "bar")
 
-        assertEquals(out, f.toPattern)
-        assertEquals("foo" + out, p.toPattern)
-        assertEquals(out + "bar", s.toPattern)
-        assertEquals("foo" + out + "bar", b.toPattern)
+      assertEquals(out, f.toPattern)
+      assertEquals("foo" + out, p.toPattern)
+      assertEquals(out + "bar", s.toPattern)
+      assertEquals("foo" + out + "bar", b.toPattern)
     }
   }
 
@@ -664,11 +663,10 @@ class DecimalFormatTest extends munit.FunSuite {
       ("foo##0.##E0bar;(##0.##E0)", "foo##0.##E0bar;(##0.##E0)"),
       ("foo##0.##E00bar;(##0.##E00)", "foo##0.##E00bar;(##0.##E00)")
     )
-    patternTests.foreach {
-      case (in: String, out: String) =>
-        val f = new DecimalFormat(in)
+    patternTests.foreach { case (in: String, out: String) =>
+      val f = new DecimalFormat(in)
 
-        assertEquals(out, f.toPattern)
+      assertEquals(out, f.toPattern)
     }
   }
   test("supress negative".ignore) {

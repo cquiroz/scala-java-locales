@@ -366,8 +366,8 @@ object Locale {
             b2 <- b1.extension('x', x)
           } yield b2
 
-        case lvariantRegex(x)       => b.addVariant(x.replace("-", "_"))
-        case x                      => b.extension('x', x)
+        case lvariantRegex(x) => b.addVariant(x.replace("-", "_"))
+        case x                => b.extension('x', x)
       }.flatten
         .getOrElse(b)
     }
@@ -382,30 +382,30 @@ object Locale {
 
         // Spilt the extensions
         val extRegex = "([0-9A-WY-Za-wy-z])-([A-Za-z0-9]{2,8})+".r
-        val exts     = x.collect {
-          case extRegex(c, xv) => c.charAt(0) -> xv
+        val exts     = x.collect { case extRegex(c, xv) =>
+          c.charAt(0) -> xv
         }
         val b        = for {
           b1 <- builder.language(e.flatMap(_.split("-").headOption).getOrElse(la))
           b2 <- b1.script(s.getOrElse(""))
           b3 <- b2.region(r.getOrElse(""))
           b4 <- b3.variant(v.mkString("_"))
-          b5 <- exts.foldLeft(Option(b4)) {
-                  case (bu, (c, xv)) => bu.flatMap(_.extension(c, xv))
+          b5 <- exts.foldLeft(Option(b4)) { case (bu, (c, xv)) =>
+                  bu.flatMap(_.extension(c, xv))
                 }
         } yield sanitizePrivateExtension(b5, p)
         b.map(_.build)
 
-      case Some(GrandfatheredTag(g))              =>
+      case Some(GrandfatheredTag(g)) =>
         val default = new Locale(g)
         grandfathered.get(g).fold(Option(default))(parseLanguageTag)
 
-      case Some(PrivateUseTag(p))                 =>
+      case Some(PrivateUseTag(p)) =>
         val default =
           LocaleBuilder(strict = false).extension('x', p).fold(ROOT)(_.build)
         grandfathered.get(p).fold(Option(default))(parseLanguageTag)
 
-      case None                                   =>
+      case None =>
         // Last ditch attempt to parse, Javadocs don't define this case well
         val split = tag.split("-").toList
         split match {

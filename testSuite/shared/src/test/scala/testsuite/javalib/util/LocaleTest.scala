@@ -401,8 +401,8 @@ class LocaleTest extends munit.FunSuite {
     assertEquals(c, l.getCountry)
     assertEquals(s, l.getScript)
     assertEquals(v, l.getVariant)
-    assert(ext.forall {
-      case (x, v) => l.getExtensionKeys().contains(x) && l.getExtension(x) == v
+    assert(ext.forall { case (x, v) =>
+      l.getExtensionKeys().contains(x) && l.getExtension(x) == v
     })
 
   }
@@ -501,10 +501,9 @@ class LocaleTest extends munit.FunSuite {
       "cel-gaulish" -> "xtg"
     ) /* In javadocs cel-gaulish is xtg-x-cel-gaulish */
 
-    mapping.foreach {
-      case (g, e) =>
-        val l = Locale.forLanguageTag(g)
-        assertLocaleFromTag(l, e, "", "", "")
+    mapping.foreach { case (g, e) =>
+      val l = Locale.forLanguageTag(g)
+      assertLocaleFromTag(l, e, "", "", "")
     }
 
     val l1 = Locale.forLanguageTag("en-GB-oed")
