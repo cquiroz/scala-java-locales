@@ -108,14 +108,13 @@ class LocaleBuilderTest extends munit.FunSuite {
     }
 
     // Multiple variants are allowed
-    cases.zip(cases).foreach {
-      case (c1, c2) =>
-        val b       = new Locale.Builder()
-        val locale1 = b.setVariant(s"$c1-$c2").build
-        assertEquals(s"${c1}_$c2", locale1.getVariant)
+    cases.zip(cases).foreach { case (c1, c2) =>
+      val b       = new Locale.Builder()
+      val locale1 = b.setVariant(s"$c1-$c2").build
+      assertEquals(s"${c1}_$c2", locale1.getVariant)
 
-        val locale2 = b.setVariant(s"${c1}_$c2").build
-        assertEquals(s"${c1}_$c2", locale2.getVariant)
+      val locale2 = b.setVariant(s"${c1}_$c2").build
+      assertEquals(s"${c1}_$c2", locale2.getVariant)
     }
 
     val b4      = new Locale.Builder()

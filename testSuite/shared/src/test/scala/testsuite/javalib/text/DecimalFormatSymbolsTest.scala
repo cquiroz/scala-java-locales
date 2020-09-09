@@ -138,32 +138,29 @@ class DecimalFormatSymbolsTest extends munit.FunSuite {
   }
 
   test("default_locales_decimal_format_symbol") {
-    standardLocalesData.foreach {
-      case (l, symbols) =>
-        val dfs = DecimalFormatSymbols.getInstance(l)
-        test_dfs(dfs, symbols)
+    standardLocalesData.foreach { case (l, symbols) =>
+      val dfs = DecimalFormatSymbols.getInstance(l)
+      test_dfs(dfs, symbols)
     }
   }
 
   test("extra_locales_decimal_format_symbol") {
-    extraLocalesData.foreach {
-      case (LocaleTestItem(tag, _), symbols) =>
-        val l   = Locale.forLanguageTag(tag)
-        val dfs = DecimalFormatSymbols.getInstance(l)
-        test_dfs(dfs, symbols)
+    extraLocalesData.foreach { case (LocaleTestItem(tag, _), symbols) =>
+      val l   = Locale.forLanguageTag(tag)
+      val dfs = DecimalFormatSymbols.getInstance(l)
+      test_dfs(dfs, symbols)
     }
   }
 
   // These tests give the same data on CLDR 21
   test("extra_locales_not_agreeing_decimal_format_symbol") {
-    localesDiff.foreach {
-      case (LocaleTestItem(tag, cldr21), symbols) =>
-        val l   = Locale.forLanguageTag(tag)
-        val dfs = DecimalFormatSymbols.getInstance(l)
-        if (Platform.executingInJVM && cldr21)
-          test_dfs(dfs, symbols)
-        if (!Platform.executingInJVM && !cldr21)
-          test_dfs(dfs, symbols)
+    localesDiff.foreach { case (LocaleTestItem(tag, cldr21), symbols) =>
+      val l   = Locale.forLanguageTag(tag)
+      val dfs = DecimalFormatSymbols.getInstance(l)
+      if (Platform.executingInJVM && cldr21)
+        test_dfs(dfs, symbols)
+      if (!Platform.executingInJVM && !cldr21)
+        test_dfs(dfs, symbols)
     }
   }
 

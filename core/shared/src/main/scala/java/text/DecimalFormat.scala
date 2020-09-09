@@ -628,6 +628,6 @@ class DecimalFormat(
           f.isDecimalSeparatorAlwaysShown() == isDecimalSeparatorAlwaysShown() &&
           f.isParseBigDecimal() == isParseBigDecimal()
 
-      case _                => false
+      case _ => false
     }
 }

@@ -1681,35 +1681,32 @@ class DateFormatSymbolsTest extends munit.FunSuite {
   //assertArrayEquals(Array[AnyRef](t.eras: _*), Array[AnyRef](s.getEras(): _*))
 
   test("default_locales_date_format_symbol") {
-    standardLocalesData.foreach {
-      case (l, t @ LocaleTestItem(_, _, _, _, _, _, _, _)) =>
-        val dfs = DateFormatSymbols.getInstance(l)
-        test_dfs(dfs, t)
+    standardLocalesData.foreach { case (l, t @ LocaleTestItem(_, _, _, _, _, _, _, _)) =>
+      val dfs = DateFormatSymbols.getInstance(l)
+      test_dfs(dfs, t)
     }
   }
 
   test("default_locales_date_format_symbol_with_cldr21") {
-    standardLocalesDataDiff.foreach {
-      case (l, t @ LocaleTestItem(_, cldr21, _, _, _, _, _, _)) =>
-        val dfs = DateFormatSymbols.getInstance(l)
-        if (Platform.executingInJVM && cldr21)
-          test_dfs(dfs, t)
-        if (!Platform.executingInJVM && !cldr21)
-          test_dfs(dfs, t)
+    standardLocalesDataDiff.foreach { case (l, t @ LocaleTestItem(_, cldr21, _, _, _, _, _, _)) =>
+      val dfs = DateFormatSymbols.getInstance(l)
+      if (Platform.executingInJVM && cldr21)
+        test_dfs(dfs, t)
+      if (!Platform.executingInJVM && !cldr21)
+        test_dfs(dfs, t)
     }
   }
 
   test("extra_locales_date_format_symbols") {
-    extraLocalesData.foreach {
-      case t @ LocaleTestItem(m, cldr21, _, _, _, _, _, _) =>
-        if (Platform.executingInJVM && cldr21) {
-          val dfs = DateFormatSymbols.getInstance(Locale.forLanguageTag(m))
-          test_dfs(dfs, t)
-        }
-        if (!Platform.executingInJVM && !cldr21) {
-          val dfs = DateFormatSymbols.getInstance(Locale.forLanguageTag(m))
-          test_dfs(dfs, t)
-        }
+    extraLocalesData.foreach { case t @ LocaleTestItem(m, cldr21, _, _, _, _, _, _) =>
+      if (Platform.executingInJVM && cldr21) {
+        val dfs = DateFormatSymbols.getInstance(Locale.forLanguageTag(m))
+        test_dfs(dfs, t)
+      }
+      if (!Platform.executingInJVM && !cldr21) {
+        val dfs = DateFormatSymbols.getInstance(Locale.forLanguageTag(m))
+        test_dfs(dfs, t)
+      }
     }
   }
 
