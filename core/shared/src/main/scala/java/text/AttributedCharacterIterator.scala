@@ -30,7 +30,8 @@ object AttributedCharacterIterator {
 
     override final def hashCode(): Int = name.hashCode
 
-    override def toString: String = s"java.text.AttributedCharacterIterator$$Attribute($getName)"
+    override def toString: String =
+      s"java.text.AttributedCharacterIterator$$Attribute(${getName()})"
 
     protected def getName(): String = name
   }

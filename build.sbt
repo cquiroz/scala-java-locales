@@ -11,10 +11,9 @@ resolvers in Global += Resolver.sonatypeRepo("public")
 val scalaJSVersion06 = Option(System.getenv("SCALAJS_VERSION")).exists(_.startsWith("0.6"))
 
 val commonSettings: Seq[Setting[_]] = Seq(
-  cldrDbVersion := "36",
   organization := "io.github.cquiroz",
-  scalaVersion := "2.13.2",
-  crossScalaVersions := Seq("2.11.12", "2.12.11", "2.13.2"),
+  scalaVersion := "2.13.3",
+  crossScalaVersions := Seq("2.11.12", "2.12.11", "2.13.3"),
   scalacOptions ~= (_.filterNot(
     Set(
       "-Wdead-code",
@@ -37,7 +36,8 @@ inThisBuild(
       Developer("cquiroz",
                 "Carlos Quiroz",
                 "carlos.m.quiroz@gmail.com",
-                url("https://github.com/cquiroz")),
+                url("https://github.com/cquiroz")
+      ),
       Developer("er1c", "Eric Peters", "", url("https://github.com/er1c")),
       Developer("alonsodomin", "A. Alonso Dominguez", "", url("https://github.com/alonsodomin")),
       Developer("mkotsbak", "Marius B. Kotsbak", "", url("https://github.com/mkotsbak")),
@@ -69,14 +69,18 @@ lazy val scalajs_locales: Project = project
              localesFullDb.js,
              localesFullCurrenciesDb.js,
              localesMinimalEnDb.js,
-             demo)
+             demo
+  )
 
 lazy val core = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Full)
   .settings(commonSettings: _*)
   .settings(
     name := "scala-java-locales",
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "1.0.0",
+    libraryDependencies ++= Seq(
+      "io.github.cquiroz"     %%% "cldr-api"                % "1.0.0",
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.2.0"
+    ),
     scalacOptions ~= (_.filterNot(
       Set(
         "-deprecation",
@@ -105,6 +109,7 @@ lazy val localesFullCurrenciesDb = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
+    cldrDbVersion := "36",
     name := "locales-full-currencies-db",
     cldrVersion := CLDRVersion.Version(cldrDbVersion.value),
     localesFilter := LocalesFilter.All,
@@ -124,6 +129,7 @@ lazy val localesFullDb = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
+    cldrDbVersion := "36",
     name := "locales-full-db",
     cldrVersion := CLDRVersion.Version(cldrDbVersion.value),
     localesFilter := LocalesFilter.All,
@@ -143,6 +149,7 @@ lazy val localesMinimalEnDb = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
+    cldrDbVersion := "36",
     name := "locales-minimal-en-db",
     cldrVersion := CLDRVersion.Version(cldrDbVersion.value),
     localesFilter := LocalesFilter.Minimal,
@@ -173,7 +180,8 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
   )
   .jsSettings(parallelExecution in Test := false,
               name := "scala-java-locales testSuite on JS",
-              scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule)))
+              scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
+  )
   .jsConfigure(_.dependsOn(core.js, macroUtils, localesFullCurrenciesDb.js))
   .jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set

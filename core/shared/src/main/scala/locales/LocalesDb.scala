@@ -13,7 +13,7 @@ object LocalesDb {
     Reflect
       .lookupLoadableModuleClass("locales.cldr.data.LocalesProvider$", null)
       .map { m =>
-        m.loadModule
+        m.loadModule()
           .asInstanceOf[LocalesProvider]
       }
       .getOrElse(locales.cldr.fallback.LocalesProvider)

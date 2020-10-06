@@ -14,18 +14,18 @@ class SimpleDateFormat(
 
   def format(date: Date): String = {
     val fields = Array(
-      (date.getYear + 1900).toString.reverse,
-      (date.getMonth + 1).toString.reverse,
-      date.getDate.toString.reverse,
-      date.getHours.toString.reverse,
-      date.getMinutes.toString.reverse,
-      date.getSeconds.toString.reverse,
-      (date.getTime - Date.UTC(date.getYear,
-                               date.getMonth,
-                               date.getDay,
-                               date.getHours,
-                               date.getMinutes,
-                               date.getSeconds
+      (date.getYear() + 1900).toString.reverse,
+      (date.getMonth() + 1).toString.reverse,
+      date.getDate().toString.reverse,
+      date.getHours().toString.reverse,
+      date.getMinutes().toString.reverse,
+      date.getSeconds().toString.reverse,
+      (date.getTime - Date.UTC(date.getYear(),
+                               date.getMonth(),
+                               date.getDay(),
+                               date.getHours(),
+                               date.getMinutes(),
+                               date.getSeconds()
       )).toString.reverse
     )
 

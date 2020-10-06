@@ -14,16 +14,16 @@ class ParsePosition(private[this] var index: Int) {
   override def equals(other: Any): Boolean =
     other match {
       case that: ParsePosition =>
-        getErrorIndex == that.getErrorIndex &&
-          getIndex == that.getIndex
+        getErrorIndex() == that.getErrorIndex() &&
+          getIndex() == that.getIndex()
       case _                   => false
     }
 
   override def hashCode(): Int = {
-    val state = Seq(getErrorIndex, getIndex)
+    val state = Seq(getErrorIndex(), getIndex())
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 
   override def toString(): String =
-    s"java.text.ParsePosition[index=$getIndex,errorIndex=$getErrorIndex]"
+    s"java.text.ParsePosition[index=${getIndex()},errorIndex=${getErrorIndex()}]"
 }

@@ -18,21 +18,21 @@ abstract class Format protected () extends Cloneable {
 
 object Format {
   private class EmptyAttributedCharacterIterator extends AttributedCharacterIterator {
-    override def getAttributes: java.util.Map[Attribute, AnyRef] =
+    override def getAttributes(): java.util.Map[Attribute, AnyRef] =
       new java.util.HashMap()
 
     override def getAttribute(attribute: Attribute): AnyRef = null
 
-    override def getAllAttributeKeys: java.util.Set[Attribute] =
+    override def getAllAttributeKeys(): java.util.Set[Attribute] =
       new java.util.TreeSet()
 
-    override def getRunLimit: Int = 0
+    override def getRunLimit(): Int = 0
 
     override def getRunLimit(attribute: Attribute): Int = 0
 
     override def getRunLimit(attributes: java.util.Set[_ <: Attribute]): Int = 0
 
-    override def getRunStart: Int = 0
+    override def getRunStart(): Int = 0
 
     override def getRunStart(attribute: Attribute): Int = 0
 
@@ -42,13 +42,13 @@ object Format {
 
     override def setIndex(position: Int): Char = 0
 
-    override def getIndex: Int = 0
+    override def getIndex(): Int = 0
 
     override def last(): Char = 0
 
-    override def getBeginIndex: Int = 0
+    override def getBeginIndex(): Int = 0
 
-    override def getEndIndex: Int = 0
+    override def getEndIndex(): Int = 0
 
     override def current(): Char = 0
 

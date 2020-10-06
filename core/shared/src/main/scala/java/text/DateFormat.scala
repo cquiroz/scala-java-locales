@@ -106,5 +106,5 @@ object DateFormat {
   final def getInstance(): DateFormat =
     getDateTimeInstance(SHORT, SHORT)
 
-  def getAvailableLocales(): Array[Locale] = Locale.getAvailableLocales
+  def getAvailableLocales(): Array[Locale] = Locale.getAvailableLocales()
 }

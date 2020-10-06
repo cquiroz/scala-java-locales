@@ -4,7 +4,7 @@ import locales.BCP47
 import locales.BCP47.{ GrandfatheredTag, LanguageTag, PrivateUseTag }
 import locales.DefaultLocale
 import locales.LocalesDb
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.collection.{ Map => SMap, Set => SSet }
 import scala.util.matching.Regex
 
@@ -213,7 +213,7 @@ object Locale {
         Some(copy(script = None))
       else if (!strict || checkScript(script))
         // Script must be canonicalized
-        Some(copy(script = Some(script.charAt(0).toUpper + script.substring(1))))
+        Some(copy(script = Some(s"${script.charAt(0).toUpper}${script.substring(1)}")))
       else
         None
 
@@ -243,22 +243,24 @@ object Locale {
       else if (key == UNICODE_LOCALE_EXTENSION)
         // replace all unicode extensions
         Some(
-          copy(extensions = extensions + (key -> value.toLowerCase), unicodeExtensions = SMap.empty)
+          copy(extensions = extensions ++ SMap(key -> value.toLowerCase),
+               unicodeExtensions = SMap.empty
+          )
         )
       else if (!strict || checkExtKey(key) && checkExtValue(value))
-        Some(copy(extensions = extensions + (key -> value.toLowerCase)))
+        Some(copy(extensions = extensions ++ SMap(key -> value.toLowerCase)))
       else
         None
 
     def unicodeLocaleKeyword(key: String, _type: String): Option[LocaleBuilder] =
       if (!strict || checkUnicodeKey(key) && checkUnicodeType(_type))
-        Some(copy(unicodeExtensions = unicodeExtensions + (key -> _type)))
+        Some(copy(unicodeExtensions = unicodeExtensions ++ SMap(key -> _type)))
       else
         None
 
     def addUnicodeLocaleAttribute(attribute: String): Option[LocaleBuilder] =
       if (!strict || checkAttribute(attribute))
-        Some(copy(unicodeAttributes = unicodeAttributes + attribute))
+        Some(copy(unicodeAttributes = unicodeAttributes.union(SSet(attribute))))
       else
         None
 
@@ -311,7 +313,7 @@ object Locale {
     if (category == null || newLocale == null)
       throw new NullPointerException("Argument cannot be null")
     else
-      defaultPerCategory = defaultPerCategory + (category -> Some(newLocale))
+      defaultPerCategory = defaultPerCategory ++ SMap(category -> Some(newLocale))
 
   def getDefault(): Locale = default
 
@@ -457,12 +459,12 @@ class Locale private[util] (
       ((language, country, variant)) == (("ja", "JP", "JP")) &&
       supportSpecialCases
     )
-      _extensions + (Locale.UNICODE_LOCALE_EXTENSION -> "ca-japanese")
+      _extensions ++ SMap(Locale.UNICODE_LOCALE_EXTENSION -> "ca-japanese")
     else if (
       ((language, country, variant)) == (("th", "TH", "TH")) &&
       supportSpecialCases
     )
-      _extensions + (Locale.UNICODE_LOCALE_EXTENSION -> "nu-thai")
+      _extensions ++ SMap(Locale.UNICODE_LOCALE_EXTENSION -> "nu-thai")
     else
       _extensions
   }
@@ -518,7 +520,7 @@ class Locale private[util] (
 
   def getExtensionKeys(): Set[Char] = {
     if (unicodeExtensions.nonEmpty)
-      extensions.keySet + Locale.UNICODE_LOCALE_EXTENSION
+      extensions.keySet.union(SSet(Locale.UNICODE_LOCALE_EXTENSION))
     else extensions.keySet
   }.asJava
 
@@ -563,7 +565,7 @@ class Locale private[util] (
 
   def toLanguageTag(): String = {
     val language = {
-      if (getLanguage().nonEmpty && Locale.checkLanguage(getLanguage))
+      if (getLanguage().nonEmpty && Locale.checkLanguage(getLanguage()))
         updateSpecialLanguages(getLanguage())
       else
         "und"
@@ -598,7 +600,7 @@ class Locale private[util] (
     }
     val script                = this.script.map(_ => s"-${getScript()}").getOrElse("")
 
-    if (getLanguage == "no" && getCountry == "NO" && getVariant == "NY") "nn-NO"
+    if (getLanguage() == "no" && getCountry() == "NO" && getVariant() == "NY") "nn-NO"
     else s"$language$script$country$ext$variant"
   }
 
@@ -653,11 +655,11 @@ class Locale private[util] (
   override def clone(): AnyRef = this // Locale is immutable
 
   private def isEqual(l: Locale): Boolean =
-    language == l.getLanguage && country == l.getCountry &&
-      variant == l.getVariant && script.forall(_ == l.getScript) &&
+    language == l.getLanguage() && country == l.getCountry() &&
+      variant == l.getVariant() && script.forall(_ == l.getScript()) &&
       extensions.forall { case (k, v) => l.getExtension(k) == v } &&
       unicodeExtensions.forall { case (k, v) => l.getUnicodeLocaleType(k) == v } &&
-      unicodeAttributes == l.getUnicodeLocaleAttributes.asScala
+      unicodeAttributes == l.getUnicodeLocaleAttributes().asScala
 
   override def equals(x: Any): Boolean =
     x match {
@@ -665,5 +667,5 @@ class Locale private[util] (
       case _         => false
     }
 
-  override def hashCode(): Int = toLanguageTag.hashCode
+  override def hashCode(): Int = toLanguageTag().hashCode
 }
