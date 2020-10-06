@@ -90,6 +90,9 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   )
   .jsSettings(
     scalacOptions ++= {
+      if (scalaJSVersion06) Seq.empty else Seq("-P:scalajs:genStaticForwardersForNonTopLevelObjects")
+    },
+    scalacOptions ++= {
       val tagOrHash =
         if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
         else s"v${version.value}"
@@ -224,7 +227,6 @@ lazy val demo = project
     publishLocal := {},
     publishArtifact := false,
     scalaJSUseMainModuleInitializer := true,
-    name := "scala-java-locales demo",
-    jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv()
+    name := "scala-java-locales demo"
   )
   .dependsOn(core.js)
