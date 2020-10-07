@@ -6,7 +6,7 @@ import locales.LocalesDb
 
 object DecimalFormatSymbols {
 
-  def getAvailableLocales(): Array[Locale] = Locale.getAvailableLocales
+  def getAvailableLocales(): Array[Locale] = Locale.getAvailableLocales()
 
   def getInstance(): DecimalFormatSymbols =
     getInstance(Locale.getDefault(Locale.Category.FORMAT))
@@ -28,15 +28,14 @@ object DecimalFormatSymbols {
 
     LocalesDb
       .ldml(locale)
-      .map(l => toDFS(locale, dfs, l, ns(l)))
+      .map(l => toDFS(dfs, l, ns(l)))
       .getOrElse(dfs)
   }
 
   private def toDFS(
-    locale: Locale,
-    dfs:    DecimalFormatSymbols,
-    ldml:   LDML,
-    ns:     NumberingSystem
+    dfs:  DecimalFormatSymbols,
+    ldml: LDML,
+    ns:   NumberingSystem
   ): DecimalFormatSymbols = {
 
     def parentSymbols(ldml: LDML, ns: NumberingSystem): Option[Symbols] =
@@ -176,17 +175,17 @@ class DecimalFormatSymbols(private[this] val locale: Locale) extends Cloneable {
   override def equals(obj: Any): Boolean =
     obj match {
       case d: DecimalFormatSymbols =>
-        d.getZeroDigit == getZeroDigit &&
-          d.getGroupingSeparator == getGroupingSeparator &&
-          d.getDecimalSeparator == getDecimalSeparator &&
-          d.getPerMill == getPerMill &&
-          d.getPercent == getPercent &&
-          d.getDigit == getDigit &&
-          d.getPatternSeparator == getPatternSeparator &&
-          d.getInfinity == getInfinity &&
-          d.getNaN == getNaN &&
-          d.getMinusSign == getMinusSign &&
-          d.getExponentSeparator == getExponentSeparator
+        d.getZeroDigit() == getZeroDigit() &&
+          d.getGroupingSeparator() == getGroupingSeparator() &&
+          d.getDecimalSeparator() == getDecimalSeparator() &&
+          d.getPerMill() == getPerMill() &&
+          d.getPercent() == getPercent() &&
+          d.getDigit() == getDigit() &&
+          d.getPatternSeparator() == getPatternSeparator() &&
+          d.getInfinity() == getInfinity() &&
+          d.getNaN() == getNaN() &&
+          d.getMinusSign() == getMinusSign() &&
+          d.getExponentSeparator() == getExponentSeparator()
 
       case _ => false
     }

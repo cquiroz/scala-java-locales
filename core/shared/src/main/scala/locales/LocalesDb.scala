@@ -13,7 +13,7 @@ object LocalesDb {
     Reflect
       .lookupLoadableModuleClass("locales.cldr.data.LocalesProvider$", null)
       .map { m =>
-        m.loadModule
+        m.loadModule()
           .asInstanceOf[LocalesProvider]
       }
       .getOrElse(locales.cldr.fallback.LocalesProvider)
@@ -28,8 +28,7 @@ object LocalesDb {
 
   val currencydata = provider.currencyData
 
-  /**
-    * Attempts to give a Locale for the given tag if available
+  /** Attempts to give a Locale for the given tag if available
     */
   def localeForLanguageTag(languageTag: String): Option[Locale] =
     // TODO Support alternative tags for the same locale
@@ -38,8 +37,7 @@ object LocalesDb {
     else
       provider.ldmls.get(languageTag).map(_.toLocale)
 
-  /**
-    * Returns the ldml for the given locale
+  /** Returns the ldml for the given locale
     */
   def ldml(locale: Locale): Option[LDML] = {
     val tag =

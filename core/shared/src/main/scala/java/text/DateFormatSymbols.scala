@@ -6,7 +6,7 @@ import locales.cldr.{ CalendarSymbols, LDML }
 
 object DateFormatSymbols {
 
-  def getAvailableLocales(): Array[Locale] = Locale.getAvailableLocales
+  def getAvailableLocales(): Array[Locale] = Locale.getAvailableLocales()
 
   def getInstance(): DateFormatSymbols =
     getInstance(Locale.getDefault(Locale.Category.FORMAT))
@@ -173,14 +173,14 @@ class DateFormatSymbols(private[this] val locale: Locale) extends Cloneable {
   override def equals(other: Any): Boolean =
     other match {
       case that: DateFormatSymbols =>
-        eras.sameElements(that.getEras) &&
-          months.sameElements(that.getMonths) &&
-          shortMonths.sameElements(that.getShortMonths) &&
-          weekdays.sameElements(that.getWeekdays) &&
-          shortWeekdays.sameElements(that.getShortWeekdays) &&
-          amPmStrings.sameElements(that.getAmPmStrings) &&
-          zoneStrings.sameElements(that.getZoneStrings) &&
-          localPatternChars == that.getLocalPatternChars
+        eras.sameElements(that.getEras()) &&
+          months.sameElements(that.getMonths()) &&
+          shortMonths.sameElements(that.getShortMonths()) &&
+          weekdays.sameElements(that.getWeekdays()) &&
+          shortWeekdays.sameElements(that.getShortWeekdays()) &&
+          amPmStrings.sameElements(that.getAmPmStrings()) &&
+          zoneStrings.sameElements(that.getZoneStrings()) &&
+          localPatternChars == that.getLocalPatternChars()
       case _                       => false
     }
 }

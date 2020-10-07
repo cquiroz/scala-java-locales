@@ -1,9 +1,9 @@
 package java.util
 
 import scala.collection.{ Map => SMap, Set => SSet }
-import scala.collection.JavaConverters._
 import locales.cldr.{ CurrencyDataFractionsInfo, CurrencyType }
 import locales.LocalesDb
+import scala.jdk.CollectionConverters._
 
 object Currency {
   private val countryCodeToCurrencyCodeMap: SMap[String, String] =
@@ -39,7 +39,7 @@ object Currency {
   }.toSet
 
   private val currencyCodeMap: SMap[String, Currency] =
-    all.toSeq.groupBy(_.getCurrencyCode).map {
+    all.toSeq.groupBy(_.getCurrencyCode()).map {
       case (currencyCode: String, matches: Seq[Currency]) => currencyCode -> matches.head
     }
 
@@ -48,13 +48,13 @@ object Currency {
   // NullPointerException - if locale or its country code is null
   // IllegalArgumentException - if the country of the given locale is not a supported ISO 3166 country code.
   def getInstance(locale: Locale): Currency = {
-    if (locale.getCountry == null || locale.getCountry.isEmpty) throw new NullPointerException
+    if (locale.getCountry() == null || locale.getCountry().isEmpty) throw new NullPointerException
 
     countryCodeToCurrencyCodeMap
-      .get(locale.getCountry)
+      .get(locale.getCountry())
       .flatMap(currencyCodeMap.get)
       .getOrElse(
-        throw new IllegalArgumentException(s"No currency available for ${locale.toLanguageTag}")
+        throw new IllegalArgumentException(s"No currency available for ${locale.toLanguageTag()}")
       )
   }
 
@@ -69,7 +69,7 @@ final case class Currency private (
   currencyLocale: Option[Locale]
 ) {
 
-  def defaultLocale: Locale = currencyLocale.getOrElse(Locale.getDefault)
+  def defaultLocale: Locale = currencyLocale.getOrElse(Locale.getDefault())
 
   // Gets the ISO 4217 currency code of this currency.
   def getCurrencyCode(): String = currencyCode

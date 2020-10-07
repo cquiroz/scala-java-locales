@@ -146,5 +146,5 @@ object NumberFormat {
       }
       .getOrElse(new DecimalFormat("", DecimalFormatSymbols.getInstance(inLocale)))
 
-  def getAvailableLocales(): Array[Locale] = Locale.getAvailableLocales
+  def getAvailableLocales(): Array[Locale] = Locale.getAvailableLocales()
 }
