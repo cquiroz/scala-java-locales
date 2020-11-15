@@ -16,7 +16,7 @@ object Currency {
     }.toMap
 
   private val all: SSet[Currency] = LocalesDb.currencydata.currencyTypes.map {
-    currencyType: CurrencyType =>
+    (currencyType: CurrencyType) =>
       val fractions: CurrencyDataFractionsInfo =
         LocalesDb.currencydata.fractions
           .find(_.currencyCode == currencyType.currencyCode)

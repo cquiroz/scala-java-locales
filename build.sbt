@@ -13,7 +13,7 @@ val scalaJSVersion06 = Option(System.getenv("SCALAJS_VERSION")).exists(_.startsW
 val commonSettings: Seq[Setting[_]] = Seq(
   organization := "io.github.cquiroz",
   scalaVersion := "2.13.3",
-  crossScalaVersions := Seq("2.11.12", "2.12.11", "2.13.3"),
+  crossScalaVersions := Seq("2.11.12", "2.12.12", "2.13.3", "3.0.0-M1"),
   scalacOptions ~= (_.filterNot(
     Set(
       "-Wdead-code",
@@ -78,8 +78,9 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "scala-java-locales",
     libraryDependencies ++= Seq(
-      "io.github.cquiroz"     %%% "cldr-api"                % "1.0.0",
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.2.0"
+      "io.github.cquiroz"       %%% "cldr-api"                % "0.0.0+1-1fe1c606-SNAPSHOT",
+      ("org.scala-lang.modules" %%% "scala-collection-compat" % "2.2.0")
+        .withDottyCompat(scalaVersion.value)
     ),
     scalacOptions ~= (_.filterNot(
       Set(
@@ -90,17 +91,22 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   )
   .jsSettings(
     scalacOptions ++= {
-      if (scalaJSVersion06) Seq.empty else Seq("-P:scalajs:genStaticForwardersForNonTopLevelObjects")
+      if (scalaJSVersion06) Seq.empty
+      else if (isDotty.value) Seq("-scalajs-genStaticForwardersForNonTopLevelObjects")
+      else Seq("-P:scalajs:genStaticForwardersForNonTopLevelObjects")
     },
     scalacOptions ++= {
-      val tagOrHash =
-        if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
-        else s"v${version.value}"
-      (sourceDirectories in Compile).value.map { dir =>
-        val a = dir.toURI.toString
-        val g =
-          "https://raw.githubusercontent.com/cquiroz/scala-java-locales/" + tagOrHash + "/core/src/main/scala"
-        s"-P:scalajs:mapSourceURI:$a->$g/"
+      if (isDotty.value) Seq.empty
+      else {
+        val tagOrHash =
+          if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
+          else s"v${version.value}"
+        (sourceDirectories in Compile).value.map { dir =>
+          val a = dir.toURI.toString
+          val g =
+            "https://raw.githubusercontent.com/cquiroz/scala-java-locales/" + tagOrHash + "/core/src/main/scala"
+          s"-P:scalajs:mapSourceURI:$a->$g/"
+        }
       }
     }
   )
@@ -122,7 +128,8 @@ lazy val localesFullCurrenciesDb = crossProject(JVMPlatform, JSPlatform)
     supportDateTimeFormats := true,
     supportNumberFormats := true,
     supportISOCodes := true,
-    libraryDependencies += "org.portable-scala" %%% "portable-scala-reflect" % "1.0.0"
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.0.0")
+      .withDottyCompat(scalaVersion.value)
   )
   .jvmSettings(
     skip.in(publish) := scalaJSVersion06
@@ -142,7 +149,8 @@ lazy val localesFullDb = crossProject(JVMPlatform, JSPlatform)
     supportDateTimeFormats := true,
     supportNumberFormats := true,
     supportISOCodes := true,
-    libraryDependencies += "org.portable-scala" %%% "portable-scala-reflect" % "1.0.0"
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.0.0")
+      .withDottyCompat(scalaVersion.value)
   )
   .jvmSettings(
     skip.in(publish) := scalaJSVersion06
@@ -162,7 +170,8 @@ lazy val localesMinimalEnDb = crossProject(JVMPlatform, JSPlatform)
     supportDateTimeFormats := true,
     supportNumberFormats := true,
     supportISOCodes := false,
-    libraryDependencies += "org.portable-scala" %%% "portable-scala-reflect" % "1.0.0"
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.0.0")
+      .withDottyCompat(scalaVersion.value)
   )
 
 lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
@@ -172,7 +181,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
     publishLocal := {},
     publishArtifact := false,
     name := "scala-java-locales test",
-    libraryDependencies += "org.scalameta" %%% "munit" % "0.7.16" % Test,
+    libraryDependencies += "org.scalameta" %%% "munit" % "0.7.17" % Test,
     testFrameworks += new TestFramework("munit.Framework"),
     scalacOptions ~= (_.filterNot(
       Set(
@@ -198,7 +207,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
       "-Dfile.encoding=UTF8"
     ),
     name := "scala-java-locales testSuite on JVM",
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "1.0.0"
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.0.0+1-1fe1c606-SNAPSHOT"
   )
   .jvmConfigure(_.dependsOn(macroUtils))
 
@@ -209,7 +218,9 @@ lazy val macroUtils = project
     name := "macroutils",
     organization := "io.github.cquiroz",
     version := "0.0.1",
-    libraryDependencies := Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value),
+    libraryDependencies := {
+      if (isDotty.value) Seq.empty else Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value)
+    },
     scalacOptions ~= (_.filterNot(
       Set(
         "-deprecation",

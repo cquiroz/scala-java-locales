@@ -444,7 +444,7 @@ class DecimalFormat(
       )
 
       val minStr: String = parsedPattern.get.minimumExponentDigits
-        .map { len: Int =>
+        .map { (len: Int) =>
           repeatDigits(
             len,
             if (localize) symbols.getZeroDigit()
@@ -456,7 +456,7 @@ class DecimalFormat(
       sb.append(minStr)
 
       val maxStr = parsedPattern.get.maximumExponentDigits
-        .map { len: Int =>
+        .map { (len: Int) =>
           repeatDigits(
             len - minStr.size,
             if (localize) symbols.getDigit()
