@@ -11,7 +11,7 @@ resolvers in Global += Resolver.sonatypeRepo("public")
 val commonSettings: Seq[Setting[_]] = Seq(
   organization := "io.github.cquiroz",
   scalaVersion := "2.13.3",
-  crossScalaVersions := Seq("2.11.12", "2.12.12", "2.13.3", "3.0.0-M1"),
+  crossScalaVersions := Seq("2.11.12", "2.12.12", "2.13.3", "3.0.0-M1", "3.0.0-M2"),
   scalacOptions ~= (_.filterNot(
     Set(
       "-Wdead-code",
@@ -46,7 +46,7 @@ inThisBuild(
         url("https://github.com/cquiroz/scala-java-locales"),
         "scm:git:git@github.com:cquiroz/scala-java-locales.git"
       )
-    )
+    ),
   )
 )
 
@@ -76,7 +76,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "scala-java-locales",
     libraryDependencies ++= Seq(
-      "io.github.cquiroz"       %%% "cldr-api"                % "0.0.0+1-1fe1c606-SNAPSHOT",
+      "io.github.cquiroz"       %%% "cldr-api"                % "0.0.0+1-b3130a63-SNAPSHOT",
       ("org.scala-lang.modules" %%% "scala-collection-compat" % "2.2.0")
         .withDottyCompat(scalaVersion.value)
     ),
@@ -169,7 +169,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
     publishLocal := {},
     publishArtifact := false,
     name := "scala-java-locales test",
-    libraryDependencies += "org.scalameta" %%% "munit" % "0.7.17" % Test,
+    libraryDependencies += "org.scalameta" %%% "munit" % "0.7.19" % Test,
     testFrameworks += new TestFramework("munit.Framework"),
     scalacOptions ~= (_.filterNot(
       Set(
@@ -195,7 +195,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
       "-Dfile.encoding=UTF8"
     ),
     name := "scala-java-locales testSuite on JVM",
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.0.0+1-1fe1c606-SNAPSHOT"
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.0.0+1-b3130a63-SNAPSHOT"
   )
   .jvmConfigure(_.dependsOn(macroUtils))
 
@@ -204,9 +204,7 @@ lazy val macroUtils = project
   .settings(commonSettings)
   .settings(
     name := "macroutils",
-    organization := "io.github.cquiroz",
-    version := "0.0.1",
-    libraryDependencies := {
+    libraryDependencies ++= {
       if (isDotty.value) Seq.empty else Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value)
     },
     scalacOptions ~= (_.filterNot(
@@ -214,7 +212,8 @@ lazy val macroUtils = project
         "-deprecation",
         "-Xfatal-warnings"
       )
-    ))
+    )),
+    Compile / doc / sources := { if (isDotty.value) Seq() else (Compile / doc / sources).value }
   )
 
 lazy val demo = project

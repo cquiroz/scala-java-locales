@@ -1779,12 +1779,12 @@ class DateFormatSymbolsTest extends munit.FunSuite {
     val l   = Locale.forLanguageTag("no_NO")
     val dfs = DateFormatSymbols.getInstance(l)
     standardLocalesDataDiff.foreach {
-      case (_, t @ LocaleTestItem(r, cldr21, _, _, _, _, _, _)) if r == root =>
+      case (_, t @ LocaleTestItem(r, cldr21, _, _, _, _, _, _)) if r == root.getVariant =>
         if (Platform.executingInJVM && cldr21)
           test_dfs(dfs, t)
         if (!Platform.executingInJVM && !cldr21)
           test_dfs(dfs, t)
-      case (_, _)                                                            =>
+      case (_, _)                                                                       =>
     }
   }
 
