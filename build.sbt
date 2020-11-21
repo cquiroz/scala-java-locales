@@ -79,7 +79,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
     name := "scala-java-locales",
     libraryDependencies ++= Seq(
       "io.github.cquiroz"     %%% "cldr-api"                % "1.0.0",
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.2.0"
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.3.0"
     ),
     scalacOptions ~= (_.filterNot(
       Set(
