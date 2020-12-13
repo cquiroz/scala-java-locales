@@ -17,18 +17,8 @@ ThisBuild / githubWorkflowPublishTargetBranches +=
 
 ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("ci-release")))
 
-def withoutTargetPredicate(step: WorkflowStep): Boolean = step match {
-  case step: WorkflowStep.Use =>
-    step.params.get("path").exists(_.startsWith("withoutTarget"))
-  case _                      => false
-}
-
-ThisBuild / githubWorkflowGeneratedUploadSteps :=
-  (ThisBuild / githubWorkflowGeneratedUploadSteps).value.filterNot(withoutTargetPredicate)
-
-ThisBuild / githubWorkflowGeneratedDownloadSteps :=
-  (ThisBuild / githubWorkflowGeneratedDownloadSteps).value.filterNot(withoutTargetPredicate)
-
+// ThisBuild / githubWorkflowAddedJobs += WorkflowJob("format", "format", List(WorkflowStep.Run(List("sbt scalafmtCheckAll"))))
+//
 val commonSettings: Seq[Setting[_]] = Seq(
   organization := "io.github.cquiroz",
   scalacOptions ~= (_.filterNot(
@@ -88,25 +78,25 @@ def scalaVersionSpecificFolders(srcName: String, srcBaseDir: java.io.File, scala
   }
 }
 
-lazy val scalajs_locales: Project = project
-  .in(file("."))
-  .settings(commonSettings: _*)
-  .settings(
-    name := "locales",
-    publish := {},
-    publishLocal := {},
-    publishArtifact := false
-  )
-  // don't include scala-native by default
-  .aggregate(core.js,
-             core.jvm,
-             testSuite.js,
-             testSuite.jvm,
-             localesFullDb.js,
-             localesFullCurrenciesDb.js,
-             localesMinimalEnDb.js,
-             demo
-  )
+// lazy val scalajs_locales: Project = project
+//   .in(file("."))
+//   .settings(commonSettings: _*)
+//   .settings(
+//     name := "locales",
+//     publish := {},
+//     publishLocal := {},
+//     publishArtifact := false
+//   )
+//   // don't include scala-native by default
+//   .aggregate(core.js,
+//              core.jvm,
+//              testSuite.js,
+//              testSuite.jvm,
+//              localesFullDb.js,
+//              localesFullCurrenciesDb.js,
+//              localesMinimalEnDb.js,
+//              demo
+//   )
 
 lazy val core = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Full)
@@ -147,10 +137,11 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   }
 )
 
-lazy val localesFullCurrenciesDb = crossProject(JVMPlatform, JSPlatform)
+lazy val localesFullCurrenciesDb = project
   .in(file("localesFullCurrenciesDb"))
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
+  .configure(_.enablePlugins(ScalaJSPlugin))
   .settings(
     cldrDbVersion := "36",
     name := "locales-full-currencies-db",
@@ -166,10 +157,11 @@ lazy val localesFullCurrenciesDb = crossProject(JVMPlatform, JSPlatform)
       .withDottyCompat(scalaVersion.value)
   )
 
-lazy val localesFullDb = crossProject(JVMPlatform, JSPlatform)
+lazy val localesFullDb = project
   .in(file("localesFullDb"))
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
+  .configure(_.enablePlugins(ScalaJSPlugin))
   .settings(
     cldrDbVersion := "36",
     name := "locales-full-db",
@@ -185,10 +177,11 @@ lazy val localesFullDb = crossProject(JVMPlatform, JSPlatform)
       .withDottyCompat(scalaVersion.value)
   )
 
-lazy val localesMinimalEnDb = crossProject(JVMPlatform, JSPlatform)
+lazy val localesMinimalEnDb = project
   .in(file("localesMinimalEnDb"))
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
+  .configure(_.enablePlugins(ScalaJSPlugin))
   .settings(
     cldrDbVersion := "36",
     name := "locales-minimal-en-db",
@@ -225,7 +218,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
               name := "scala-java-locales testSuite on JS",
               scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
-  .jsConfigure(_.dependsOn(core.js, macroUtils, localesFullCurrenciesDb.js))
+  .jsConfigure(_.dependsOn(core.js, macroUtils, localesFullCurrenciesDb))
   .jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
     fork in Test := true,

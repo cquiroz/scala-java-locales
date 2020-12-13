@@ -1,1 +1,3 @@
-package io.github.cquiroz.db
+package locales
+
+object LocalesDB {}
