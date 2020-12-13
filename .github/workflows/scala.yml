@@ -18,4 +18,4 @@ jobs:
       - name: Run tests
         run: |
           npm install jsdom
-          sbt +macroUtils/publishLocal +testSuiteJS/test +testSuiteJVM/test demo/run +publishLocal
+          sbt +macroUtils/publishLocal +testSuiteJS/test +testSuiteJVM/test demo/run 

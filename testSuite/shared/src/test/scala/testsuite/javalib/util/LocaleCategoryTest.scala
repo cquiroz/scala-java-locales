@@ -21,7 +21,7 @@ class LocaleCategoryTest extends munit.FunSuite {
     assertEquals(Category.FORMAT, Category.valueOf("FORMAT"))
 
     intercept[IllegalArgumentException](Category.valueOf(""))
-    intercept[NullPointerException](Category.valueOf(null))
+    intercept[RuntimeException](Category.valueOf(null))
   }
 
 }

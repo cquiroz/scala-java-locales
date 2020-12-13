@@ -44,24 +44,9 @@ object Locale {
   val PRIVATE_USE_EXTENSION: Char    = 'x'
   val UNICODE_LOCALE_EXTENSION: Char = 'u'
 
-  final class Category private (name: String, ordinal: Int) extends Enum[Category](name, ordinal)
-
-  object Category {
-    val DISPLAY: Category = new Category("DISPLAY", 0)
-    val FORMAT: Category  = new Category("FORMAT", 1)
-
-    private lazy val categories = Array(DISPLAY, FORMAT)
-
-    def values(): Array[Category] = categories
-
-    def valueOf(name: String): Category =
-      categories.find(_.name == name).getOrElse {
-        if (name == null)
-          throw new NullPointerException("Argument cannot be null")
-        else
-          throw new IllegalArgumentException(s"No such category: $name")
-      }
-  }
+  enum Category private (name: String, ordinal: Int) extends java.lang.Enum[Category]:
+    case DISPLAY extends Category("DISPLAY", 0)
+    case FORMAT  extends Category("FORMAT", 1)
 
   private[util] def checkRegex(regex: Regex, s: String): Boolean =
     s match {
@@ -289,7 +274,7 @@ object Locale {
     DefaultLocale.platformLocale
 
   private var defaultPerCategory: SMap[Locale.Category, Option[Locale]] =
-    Locale.Category.values().map(_ -> Some(defaultLocale)).toMap
+    Locale.Category.values.map(_ -> Some(defaultLocale)).toMap
 
   private def default: Locale                                           = defaultLocale
 
@@ -306,7 +291,7 @@ object Locale {
     if (newLocale == null)
       throw new NullPointerException("Argument cannot be null")
     defaultLocale = newLocale
-    defaultPerCategory = Locale.Category.values().map(_ -> Some(newLocale)).toMap
+    defaultPerCategory = Locale.Category.values.map(_ -> Some(newLocale)).toMap
   }
 
   def setDefault(category: Locale.Category, newLocale: Locale): Unit =
@@ -563,13 +548,13 @@ class Locale private[util] (
       ""
   }
 
-  def toLanguageTag(): String = {
-    val language = {
+  def toLanguageTag(): String =
+    val language =
       if (getLanguage().nonEmpty && Locale.checkLanguage(getLanguage()))
         updateSpecialLanguages(getLanguage())
       else
         "und"
-    }
+
     val country               =
       if (Locale.checkRegion(getCountry())) s"-${getCountry()}"
       else ""
@@ -578,7 +563,7 @@ class Locale private[util] (
       variantSegments.forall(Locale.checkVariantSegment)
     val allAcceptableSegments =
       variantSegments.forall(Locale.checkAcceptableVariantSegment)
-    val variant = {
+    val variant =
       if (allSegmentsWellFormed)
         variantSegments.mkString("-", "-", "")
       else if (allAcceptableSegments) {
@@ -591,18 +576,18 @@ class Locale private[util] (
           (acceptable ++ wellFormed.drop(1)).mkString("-", "-", "")
       } else
         ""
-    }
-    val ext = {
+
+    val ext =
       if (extensions.nonEmpty)
         extensions.map { case (x, v) => s"$x-$v" }.mkString("-", "-", "")
       else
         ""
-    }
+
     val script                = this.script.map(_ => s"-${getScript()}").getOrElse("")
 
     if (getLanguage() == "no" && getCountry() == "NO" && getVariant() == "NY") "nn-NO"
     else s"$language$script$country$ext$variant"
-  }
+  end toLanguageTag
 
   def getISO3Country(): String =
     if (country.isEmpty) ""
@@ -662,10 +647,9 @@ class Locale private[util] (
       unicodeAttributes == l.getUnicodeLocaleAttributes().asScala
 
   override def equals(x: Any): Boolean =
-    x match {
+    x match
       case l: Locale => isEqual(l)
       case _         => false
-    }
 
   override def hashCode(): Int = toLanguageTag().hashCode
 }

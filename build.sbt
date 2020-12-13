@@ -8,10 +8,29 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 resolvers in Global += Resolver.sonatypeRepo("public")
 
+ThisBuild / scalaVersion := "2.13.3"
+ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.12", "2.13.3", "3.0.0-M1", "3.0.0-M2")
+
+ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
+ThisBuild / githubWorkflowPublishTargetBranches +=
+  RefPredicate.StartsWith(Ref.Tag("v"))
+
+ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("ci-release")))
+
+def withoutTargetPredicate(step: WorkflowStep): Boolean = step match {
+  case step: WorkflowStep.Use =>
+    step.params.get("path").exists(_.startsWith("withoutTarget"))
+  case _                      => false
+}
+
+ThisBuild / githubWorkflowGeneratedUploadSteps :=
+  (ThisBuild / githubWorkflowGeneratedUploadSteps).value.filterNot(withoutTargetPredicate)
+
+ThisBuild / githubWorkflowGeneratedDownloadSteps :=
+  (ThisBuild / githubWorkflowGeneratedDownloadSteps).value.filterNot(withoutTargetPredicate)
+
 val commonSettings: Seq[Setting[_]] = Seq(
   organization := "io.github.cquiroz",
-  scalaVersion := "2.13.3",
-  crossScalaVersions := Seq("2.11.12", "2.12.12", "2.13.3", "3.0.0-M1", "3.0.0-M2"),
   scalacOptions ~= (_.filterNot(
     Set(
       "-Wdead-code",
@@ -22,7 +41,15 @@ val commonSettings: Seq[Setting[_]] = Seq(
       "-Ywarn-value-discard"
     )
   )),
-  scalacOptions in (Compile, doc) := Seq()
+  scalacOptions in (Compile, doc) := Seq(),
+  Compile / unmanagedSourceDirectories ++= scalaVersionSpecificFolders("main",
+                                                                       baseDirectory.value,
+                                                                       scalaVersion.value
+  ),
+  Test / unmanagedSourceDirectories ++= scalaVersionSpecificFolders("test",
+                                                                    baseDirectory.value,
+                                                                    scalaVersion.value
+  )
 )
 
 inThisBuild(
@@ -46,9 +73,20 @@ inThisBuild(
         url("https://github.com/cquiroz/scala-java-locales"),
         "scm:git:git@github.com:cquiroz/scala-java-locales.git"
       )
-    ),
+    )
   )
 )
+
+def scalaVersionSpecificFolders(srcName: String, srcBaseDir: java.io.File, scalaVersion: String) = {
+  def extraDirs(suffix: String) =
+    List(CrossType.Pure, CrossType.Full)
+      .flatMap(_.sharedSrcDir(srcBaseDir, srcName).toList.map(f => file(f.getPath + suffix)))
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, y))     => extraDirs("-2.x") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+    case Some((0 | 3, _)) => extraDirs("-2.13+") ++ extraDirs("-3.x")
+    case _                => Nil
+  }
+}
 
 lazy val scalajs_locales: Project = project
   .in(file("."))
@@ -72,6 +110,7 @@ lazy val scalajs_locales: Project = project
 
 lazy val core = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Full)
+  .in(file("core"))
   .settings(commonSettings: _*)
   .settings(
     name := "scala-java-locales",
@@ -98,17 +137,18 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
         val tagOrHash =
           if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
           else s"v${version.value}"
-        (sourceDirectories in Compile).value.map { dir =>
-          val a = dir.toURI.toString
-          val g =
-            "https://raw.githubusercontent.com/cquiroz/scala-java-locales/" + tagOrHash + "/core/src/main/scala"
-          s"-P:scalajs:mapSourceURI:$a->$g/"
-        }
+      (sourceDirectories in Compile).value.map { dir =>
+        val a = dir.toURI.toString
+        val g =
+          "https://raw.githubusercontent.com/cquiroz/scala-java-locales/" + tagOrHash + "/core/src/main/scala"
+        s"-P:scalajs:mapSourceURI:$a->$g/"
       }
     }
-  )
+  }
+)
 
 lazy val localesFullCurrenciesDb = crossProject(JVMPlatform, JSPlatform)
+  .in(file("localesFullCurrenciesDb"))
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
@@ -127,6 +167,7 @@ lazy val localesFullCurrenciesDb = crossProject(JVMPlatform, JSPlatform)
   )
 
 lazy val localesFullDb = crossProject(JVMPlatform, JSPlatform)
+  .in(file("localesFullDb"))
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
@@ -145,6 +186,7 @@ lazy val localesFullDb = crossProject(JVMPlatform, JSPlatform)
   )
 
 lazy val localesMinimalEnDb = crossProject(JVMPlatform, JSPlatform)
+  .in(file("localesMinimalEnDb"))
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
@@ -163,6 +205,7 @@ lazy val localesMinimalEnDb = crossProject(JVMPlatform, JSPlatform)
   )
 
 lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
+  .in(file("testSuite"))
   .settings(commonSettings: _*)
   .settings(
     publish := {},
