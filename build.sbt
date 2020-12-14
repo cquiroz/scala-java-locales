@@ -11,13 +11,13 @@ resolvers in Global += Resolver.sonatypeRepo("public")
 ThisBuild / scalaVersion := "2.13.3"
 ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.12", "2.13.3", "3.0.0-M1", "3.0.0-M2")
 
-ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
-ThisBuild / githubWorkflowPublishTargetBranches +=
-  RefPredicate.StartsWith(Ref.Tag("v"))
-
-ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("ci-release")))
-
-ThisBuild / githubWorkflowAddedJobs += WorkflowJob("format", "format", List(WorkflowStep.Run(List("sbt scalafmtCheckAll"))))
+// ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
+// ThisBuild / githubWorkflowPublishTargetBranches +=
+//   RefPredicate.StartsWith(Ref.Tag("v"))
+//
+// ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("ci-release")))
+//
+// ThisBuild / githubWorkflowAddedJobs += WorkflowJob("format", "format", List(WorkflowStep.Run(List("sbt scalafmtCheckAll"))))
 
 val commonSettings: Seq[Setting[_]] = Seq(
   organization := "io.github.cquiroz",
@@ -105,8 +105,8 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "scala-java-locales",
     libraryDependencies ++= Seq(
-      "io.github.cquiroz"       %%% "cldr-api"                % "0.0.0+1-b3130a63-SNAPSHOT",
-      ("org.scala-lang.modules" %%% "scala-collection-compat" % "2.2.0")
+      "io.github.cquiroz"       %%% "cldr-api"                % "1.1.0",
+      ("org.scala-lang.modules" %%% "scala-collection-compat" % "2.3.1")
         .withDottyCompat(scalaVersion.value)
     ),
     scalacOptions ~= (_.filterNot(
@@ -231,7 +231,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
       "-Dfile.encoding=UTF8"
     ),
     name := "scala-java-locales testSuite on JVM",
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.0.0+1-b3130a63-SNAPSHOT"
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "1.1.0"
   )
   .jvmConfigure(_.dependsOn(macroUtils))
 
