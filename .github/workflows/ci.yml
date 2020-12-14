@@ -148,3 +148,14 @@ jobs:
           rm targets.tar
 
       - run: sbt ++${{ matrix.scala }} ci-release
+
+  format:
+    name: format
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        scala: [2.13.1]
+        java: [adopt@1.8]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - run: sbt scalafmtCheckAll
