@@ -1,0 +1,3 @@
+package locales
+
+object LocalesDB {}

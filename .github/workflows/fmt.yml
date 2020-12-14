@@ -1,4 +1,4 @@
-name: build
+name: scalafmt
 
 on: [push, pull_request]
 
@@ -15,8 +15,3 @@ jobs:
           java-version: 1.8
       - name: Checking your code format
         run: sbt scalafmtCheckAll
-      - name: Run tests
-        run: |
-          npm install jsdom
-          sbt +macroUtils/publishLocal +testSuiteJS/test +testSuiteJVM/test demo/run +publishLocal
-          SCALAJS_VERSION=0.6.33 sbt clean +macroUtils/publishLocal +testSuiteJS/test +testSuiteJVM/test

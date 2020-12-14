@@ -249,7 +249,7 @@ trait CurrencyTest extends munit.FunSuite {
     f: CombinedCurrencyTestResults => CurrencyTestResults
   ): Unit = {
     // Basic test, get a locale's currency, and test results
-    localeCurrencyTests.foreach { test: LocaleCurrencyTest =>
+    localeCurrencyTests.foreach { (test: LocaleCurrencyTest) =>
       // Even when you get a currency for a specific locale, description calls (getSymbol and getDisplayName)
       // return strings will be based upon the default locale, so lets set the default locale to the test locale
       Locale.setDefault(test.locale)
@@ -258,9 +258,9 @@ trait CurrencyTest extends munit.FunSuite {
     }
 
     // Set a default locale, then lookup multiple currencies by code and test results
-    defaultLocaleCurrencyTests.foreach { defaultTest: DefaultLocaleCurrencyTest =>
+    defaultLocaleCurrencyTests.foreach { (defaultTest: DefaultLocaleCurrencyTest) =>
       Locale.setDefault(defaultTest.defaultLocale)
-      defaultTest.tests.foreach { test: CodeCurrencyTest =>
+      defaultTest.tests.foreach { (test: CodeCurrencyTest) =>
         val codeCurrency = Currency.getInstance(test.currencyCode)
         testCurrency(codeCurrency, f(test))
       }

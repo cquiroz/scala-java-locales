@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+
+* Drop support for scala.js 0.6
+* Add support for scala 3.0.0-M2
+* Multiple library update
+
 ## 1.0.0
 
 * Update scala to 2.12.11

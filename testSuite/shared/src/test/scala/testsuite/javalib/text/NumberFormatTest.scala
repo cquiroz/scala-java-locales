@@ -119,7 +119,7 @@ class NumberFormatTest extends munit.FunSuite {
   }
 
   test("default_locales") {
-    stdLocales.foreach { t: TestCase =>
+    stdLocales.foreach { (t: TestCase) =>
       val nf = NumberFormat.getNumberInstance(t.l).asInstanceOf[DecimalFormat]
       assertEquals(t.nf, nf.toPattern)
       assert(!nf.isParseIntegerOnly)
