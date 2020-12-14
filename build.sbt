@@ -9,16 +9,16 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 resolvers in Global += Resolver.sonatypeRepo("public")
 
 ThisBuild / scalaVersion := "2.13.3"
-ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.12", "2.13.3", "3.0.0-M1", "3.0.0-M2")
+ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.12", "2.13.3", "3.0.0-M2")
 
-// ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
-// ThisBuild / githubWorkflowPublishTargetBranches +=
-//   RefPredicate.StartsWith(Ref.Tag("v"))
-//
-// ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("ci-release")))
-//
+ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
+ThisBuild / githubWorkflowPublishTargetBranches +=
+  RefPredicate.StartsWith(Ref.Tag("v"))
+
+ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("ci-release")))
+
 // ThisBuild / githubWorkflowAddedJobs += WorkflowJob("format", "format", List(WorkflowStep.Run(List("sbt scalafmtCheckAll"))))
-
+//
 val commonSettings: Seq[Setting[_]] = Seq(
   organization := "io.github.cquiroz",
   scalacOptions ~= (_.filterNot(
@@ -78,25 +78,25 @@ def scalaVersionSpecificFolders(srcName: String, srcBaseDir: java.io.File, scala
   }
 }
 
-// lazy val scalajs_locales: Project = project
-//   .in(file("."))
-//   .settings(commonSettings: _*)
-//   .settings(
-//     name := "locales",
-//     publish := {},
-//     publishLocal := {},
-//     publishArtifact := false
-//   )
-//   // don't include scala-native by default
-//   .aggregate(core.js,
-//              core.jvm,
-//              testSuite.js,
-//              testSuite.jvm,
-//              localesFullDb.js,
-//              localesFullCurrenciesDb.js,
-//              localesMinimalEnDb.js,
-//              demo
-//   )
+lazy val scalajs_locales: Project = project
+  .in(file("."))
+  .settings(commonSettings: _*)
+  .settings(
+    name := "locales",
+    publish := {},
+    publishLocal := {},
+    publishArtifact := false
+  )
+  // don't include scala-native by default
+  .aggregate(core.js,
+             core.jvm,
+             testSuite.js,
+             testSuite.jvm,
+             localesFullDb,
+             localesFullCurrenciesDb,
+             localesMinimalEnDb,
+             demo
+  )
 
 lazy val core = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Full)
@@ -105,9 +105,8 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "scala-java-locales",
     libraryDependencies ++= Seq(
-      "io.github.cquiroz"       %%% "cldr-api"                % "1.1.0",
-      ("org.scala-lang.modules" %%% "scala-collection-compat" % "2.3.1")
-        .withDottyCompat(scalaVersion.value)
+      "io.github.cquiroz"      %%% "cldr-api"                % "1.1.0",
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.3.1"
     ),
     scalacOptions ~= (_.filterNot(
       Set(
