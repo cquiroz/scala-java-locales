@@ -32,6 +32,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
     )
   )),
   scalacOptions in (Compile, doc) := Seq(),
+  Compile / doc / sources := { if (isDotty.value) Seq() else (Compile / doc / sources).value },
   Compile / unmanagedSourceDirectories ++= scalaVersionSpecificFolders("main",
                                                                        baseDirectory.value,
                                                                        scalaVersion.value
