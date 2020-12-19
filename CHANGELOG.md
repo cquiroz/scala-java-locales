@@ -3,8 +3,9 @@
 ## 1.1.0
 
 * Drop support for scala.js 0.6
-* Add support for scala 3.0.0-M2
+* Add support for scala 3.0.0-M2 and 3.0.0-M3
 * Multiple library update
+* Intern scala-collection-compat
 
 ## 1.0.0
 

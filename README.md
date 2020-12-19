@@ -12,7 +12,7 @@
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "1.0.0"
+libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "1.1.0"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -21,7 +21,7 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   .jsSettings(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "1.0.0"
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "1.1.0"
   )
 ```
 
@@ -36,23 +36,23 @@ This library is a work in progress and there are some unimplemented methods. If 
 
 The API follows the Java API for Locales, any major difference should be considered a bug.
 
-The JVM includes a large locales database derived from CLDR. That includes thnigs like date
+The JVM includes a large locales database derived from CLDR. That includes things like date
 formats, region names, etc.
 Having the full db on js is possible but expensive in terms of space and for most applications
-only a few locales are needed. thus it is simpler to have a subset of them using someof the
+only a few locales are needed, thus it is simpler to have a subset of them using some of the
 provided locale dbs or even better via [sbt-locales](http://github.com/cquiroz/sbt-locales)
 `sbt-locales` lets you build a custom db with the minimal amount you need. There is a slight
-size benefit and a larger speed improvment doing so as scala.js has less code to optimize
+size benefit and a larger speed improvement doing so as scala.js has less code to optimize
 
-For the common cases that you just need date formatting in english you can just include
+For the common cases that you just need date formatting in angling you can just include
 
 ```scala
-libraryDependencies += "io.github.cquiroz" %%% "locales-minimal-en-db" % "1.0.0"
+libraryDependencies += "io.github.cquiroz" %%% "locales-minimal-en-db" % "1.1.0"
 ```
 
 ## Default Locale
 
-Starting on 0.6.0 it is no longer necessary to register locales but only a minimal locale based on english is
+Starting on 0.6.0 it is no longer necessary to register locales but only a minimal locale based on English is
 provided. You may want to use [sbt-locales](https://github.com/cquiroz/sbt-locales) to generate
 a custom locale database.
 
@@ -65,7 +65,7 @@ Locale.setDefault(Locale.forLanguageTag(<my-locale>))
 ```
 The Java API requires a default `Locale` though it doesn't mandate a specific one, instead, the runtime should select it depending on the platform.
 
-While the Java Locales use the OS default locale, on `Scala.js` platforms like browsers or node.js, it is harder to identify the default locale . `scala-java-locales` will try to guess the locale but if it can't or it is not notthe locales db it sets `en (English)` as the default locale. This is a desigs decision to support the many API calls that require a default locale. It seems that `Scala.js` _de facto_ uses `en` for number formatting.
+While the Java Locales use the OS default locale, on `Scala.js` platforms like browsers or node.js, it is harder to identify the default locale . `scala-java-locales` will try to guess the locale but if it can't or it is not not the locales db it sets `en (English)` as the default locale. This is a design decision to support the many API calls that require a default locale. It seems that `Scala.js` _de facto_ uses `en` for number formatting.
 
 ## CLDR
 
