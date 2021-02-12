@@ -168,7 +168,7 @@ lazy val localesFullCurrenciesDb = project
     supportDateTimeFormats := true,
     supportNumberFormats := true,
     supportISOCodes := true,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.0.0")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.0")
       .withDottyCompat(scalaVersion.value)
   )
 
@@ -187,7 +187,7 @@ lazy val localesFullDb = project
     supportDateTimeFormats := true,
     supportNumberFormats := true,
     supportISOCodes := true,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.0.0")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.0")
       .withDottyCompat(scalaVersion.value)
   )
 
@@ -206,7 +206,7 @@ lazy val localesMinimalEnDb = project
     supportDateTimeFormats := true,
     supportNumberFormats := true,
     supportISOCodes := false,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.0.0")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.0")
       .withDottyCompat(scalaVersion.value)
   )
 
