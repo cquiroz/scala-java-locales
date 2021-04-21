@@ -2,14 +2,14 @@ import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
 import sbt.Keys._
 import locales._
 
-lazy val cldrApiVersion = "2.4.0"
+lazy val cldrApiVersion = "2.5.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 resolvers in Global += Resolver.sonatypeRepo("public")
 
 ThisBuild / scalaVersion := "2.13.3"
-ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.12", "2.13.3", "3.0.0-RC1", "3.0.0-RC2")
+ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.12", "2.13.3", "3.0.0-RC2", "3.0.0-RC3")
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches +=
@@ -32,8 +32,6 @@ ThisBuild / githubWorkflowPublish := Seq(
   )
 )
 
-// ThisBuild / githubWorkflowAddedJobs += WorkflowJob("format", "format", List(WorkflowStep.Run(List("sbt scalafmtCheckAll"))))
-//
 val commonSettings: Seq[Setting[_]] = Seq(
   organization := "io.github.cquiroz",
   scalacOptions ~= (_.filterNot(
@@ -46,7 +44,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
       "-Ywarn-value-discard"
     )
   )),
-  scalacOptions in (Compile, doc) := Seq(),
+  Compile / doc / scalacOptions := Seq(),
   Compile / doc / sources := { if (isDotty.value) Seq() else (Compile / doc / sources).value },
   Compile / unmanagedSourceDirectories ++= scalaVersionSpecificFolders("main",
                                                                        baseDirectory.value,
@@ -141,7 +139,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
         val tagOrHash =
           if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
           else s"v${version.value}"
-      (sourceDirectories in Compile).value.map { dir =>
+      (Compile / sourceDirectories).value.map { dir =>
         val a = dir.toURI.toString
         val g =
           "https://raw.githubusercontent.com/cquiroz/scala-java-locales/" + tagOrHash + "/core/src/main/scala"
@@ -218,7 +216,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
     publishLocal := {},
     publishArtifact := false,
     name := "scala-java-locales test",
-    libraryDependencies += "org.scalameta" %%% "munit" % "0.7.23" % Test,
+    libraryDependencies += "org.scalameta" %%% "munit" % "0.7.25" % Test,
     testFrameworks += new TestFramework("munit.Framework"),
     scalacOptions ~= (_.filterNot(
       Set(
@@ -227,17 +225,17 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
       )
     ))
   )
-  .jsSettings(parallelExecution in Test := false,
+  .jsSettings(Test / parallelExecution := false,
               name := "scala-java-locales testSuite on JS",
               scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
   .jsConfigure(_.dependsOn(core.js, macroUtils, localesFullCurrenciesDb))
   .jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
-    fork in Test := true,
+    Test / fork := true,
     // Use CLDR provider for locales
     // https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr
-    javaOptions in Test ++= Seq(
+    Test / javaOptions ++= Seq(
       "-Duser.language=en",
       "-Duser.country=",
       "-Djava.locale.providers=CLDR",
