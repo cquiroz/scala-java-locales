@@ -12,7 +12,7 @@
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "1.1.2"
+libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "1.1.3"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -21,7 +21,7 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   .jsSettings(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "1.1.2"
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "1.1.3"
   )
 ```
 
@@ -47,7 +47,7 @@ size benefit and a larger speed improvement doing so as scala.js has less code t
 For the common cases that you just need date formatting in angling you can just include
 
 ```scala
-libraryDependencies += "io.github.cquiroz" %%% "locales-minimal-en-db" % "1.1.2"
+libraryDependencies += "io.github.cquiroz" %%% "locales-minimal-en-db" % "1.1.3"
 ```
 
 ## Default Locale
