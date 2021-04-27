@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
 import sbt.Keys._
 import locales._
 
-lazy val cldrApiVersion = "2.5.0"
+lazy val cldrApiVersion = "2.6.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
