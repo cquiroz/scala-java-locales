@@ -2,14 +2,14 @@ import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
 import sbt.Keys._
 import locales._
 
-lazy val cldrApiVersion = "2.5.0"
+lazy val cldrApiVersion = "2.7.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 resolvers in Global += Resolver.sonatypeRepo("public")
 
 ThisBuild / scalaVersion := "2.13.3"
-ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.12", "2.13.3", "3.0.0-RC2", "3.0.0-RC3")
+ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.12", "2.13.3", "3.0.0-RC3", "3.0.0")
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches +=
@@ -167,7 +167,7 @@ lazy val localesFullCurrenciesDb = project
     supportNumberFormats := true,
     supportISOCodes := true,
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
-      .withDottyCompat(scalaVersion.value)
+      .cross(CrossVersion.for3Use2_13)
   )
 
 lazy val localesFullDb = project
@@ -186,7 +186,7 @@ lazy val localesFullDb = project
     supportNumberFormats := true,
     supportISOCodes := true,
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
-      .withDottyCompat(scalaVersion.value)
+      .cross(CrossVersion.for3Use2_13)
   )
 
 lazy val localesMinimalEnDb = project
@@ -205,7 +205,7 @@ lazy val localesMinimalEnDb = project
     supportNumberFormats := true,
     supportISOCodes := false,
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
-      .withDottyCompat(scalaVersion.value)
+      .cross(CrossVersion.for3Use2_13)
   )
 
 lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
@@ -216,7 +216,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
     publishLocal := {},
     publishArtifact := false,
     name := "scala-java-locales test",
-    libraryDependencies += "org.scalameta" %%% "munit" % "0.7.25" % Test,
+    libraryDependencies += "org.scalameta" %%% "munit" % "0.7.26" % Test,
     testFrameworks += new TestFramework("munit.Framework"),
     scalacOptions ~= (_.filterNot(
       Set(
