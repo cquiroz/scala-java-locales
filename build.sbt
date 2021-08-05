@@ -109,6 +109,7 @@ lazy val scalajs_locales: Project = project
              localesFullDb,
              localesFullCurrenciesDb,
              localesMinimalEnDb,
+             localesMinimalEnUSDb,
              demo
   )
 
@@ -198,6 +199,25 @@ lazy val localesMinimalEnDb = project
     name := "locales-minimal-en-db",
     cldrVersion := CLDRVersion.Version(cldrDbVersion),
     localesFilter := LocalesFilter.Minimal,
+    nsFilter := NumberingSystemFilter.Minimal,
+    calendarFilter := CalendarFilter.Minimal,
+    currencyFilter := CurrencyFilter.None,
+    supportDateTimeFormats := true,
+    supportNumberFormats := true,
+    supportISOCodes := false,
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
+      .cross(CrossVersion.for3Use2_13)
+  )
+
+lazy val localesMinimalEnUSDb = project
+  .in(file("localesMinimalEnUSDb"))
+  .settings(commonSettings: _*)
+  .configure(_.enablePlugins(LocalesPlugin))
+  .configure(_.enablePlugins(ScalaJSPlugin))
+  .settings(
+    name := "locales-minimal-en_US-db",
+    cldrVersion := CLDRVersion.Version(cldrDbVersion),
+    localesFilter := LocalesFilter.Selection(List("en_US")),
     nsFilter := NumberingSystemFilter.Minimal,
     calendarFilter := CalendarFilter.Minimal,
     currencyFilter := CurrencyFilter.None,
