@@ -109,6 +109,7 @@ lazy val scalajs_locales: Project = project
              localesFullDb,
              localesFullCurrenciesDb,
              localesMinimalEnDb,
+             localesMinimalEnUSDb,
              demo
   )
 
