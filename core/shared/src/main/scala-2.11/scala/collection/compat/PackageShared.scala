@@ -24,96 +24,106 @@ import scala.collection.{
   immutable => i,
   mutable => m
 }
-import scala.runtime.{Tuple2Zipped, Tuple3Zipped}
-import scala.{collection => c}
+import scala.runtime.{ Tuple2Zipped, Tuple3Zipped }
+import scala.{ collection => c }
 
 /** The collection compatibility API */
 private[compat] trait PackageShared {
   import CompatImpl._
 
-  /**
-   * A factory that builds a collection of type `C` with elements of type `A`.
-   *
-   * @tparam A Type of elements (e.g. `Int`, `Boolean`, etc.)
-   * @tparam C Type of collection (e.g. `List[Int]`, `TreeMap[Int, String]`, etc.)
-   */
+  /** A factory that builds a collection of type `C` with elements of type `A`.
+    *
+    * @tparam A
+    *   Type of elements (e.g. `Int`, `Boolean`, etc.)
+    * @tparam C
+    *   Type of collection (e.g. `List[Int]`, `TreeMap[Int, String]`, etc.)
+    */
   type Factory[-A, +C] = CanBuildFrom[Nothing, A, C]
 
   implicit class FactoryOps[-A, +C](private val factory: Factory[A, C]) {
 
-    /**
-     * @return A collection of type `C` containing the same elements
-     *         as the source collection `it`.
-     * @param it Source collection
-     */
+    /** @return
+      *   A collection of type `C` containing the same elements as the source collection `it`.
+      * @param it
+      *   Source collection
+      */
     def fromSpecific(it: TraversableOnce[A]): C = (factory() ++= it).result()
 
-    /** Get a Builder for the collection. For non-strict collection types this will use an intermediate buffer.
-     * Building collections with `fromSpecific` is preferred because it can be lazy for lazy collections. */
+    /** Get a Builder for the collection. For non-strict collection types this will use an
+      * intermediate buffer. Building collections with `fromSpecific` is preferred because it can be
+      * lazy for lazy collections.
+      */
     def newBuilder: m.Builder[A, C] = factory()
   }
 
   implicit def genericCompanionToCBF[A, CC[X] <: GenTraversable[X]](
-      fact: GenericCompanion[CC]): CanBuildFrom[Any, A, CC[A]] = {
+    fact: GenericCompanion[CC]
+  ): CanBuildFrom[Any, A, CC[A]] = {
     /* see https://github.com/scala/scala-collection-compat/issues/337
        `simpleCBF.apply` takes a by-name parameter and relies on
        repeated references generating new builders, thus this expression
        must be non-strict
      */
     def builder: m.Builder[A, CC[A]] = fact match {
-      case c.Seq | i.Seq => new IdentityPreservingBuilder[A, i.Seq](i.Seq.newBuilder[A])
+      case c.Seq | i.Seq             => new IdentityPreservingBuilder[A, i.Seq](i.Seq.newBuilder[A])
       case c.LinearSeq | i.LinearSeq =>
         new IdentityPreservingBuilder[A, i.LinearSeq](i.LinearSeq.newBuilder[A])
-      case _ => fact.newBuilder[A]
+      case _                         => fact.newBuilder[A]
     }
     simpleCBF(builder)
   }
 
-  implicit def sortedSetCompanionToCBF[A: Ordering,
-                                       CC[X] <: c.SortedSet[X] with c.SortedSetLike[X, CC[X]]](
-      fact: SortedSetFactory[CC]): CanBuildFrom[Any, A, CC[A]] =
+  implicit def sortedSetCompanionToCBF[
+    A: Ordering,
+    CC[X] <: c.SortedSet[X] with c.SortedSetLike[X, CC[X]]
+  ](fact: SortedSetFactory[CC]): CanBuildFrom[Any, A, CC[A]] =
     simpleCBF(fact.newBuilder[A])
 
   implicit def arrayCompanionToCBF[A: ClassTag](fact: Array.type): CanBuildFrom[Any, A, Array[A]] =
     simpleCBF(Array.newBuilder[A])
 
   implicit def mapFactoryToCBF[K, V, CC[A, B] <: Map[A, B] with MapLike[A, B, CC[A, B]]](
-      fact: MapFactory[CC]): CanBuildFrom[Any, (K, V), CC[K, V]] =
+    fact: MapFactory[CC]
+  ): CanBuildFrom[Any, (K, V), CC[K, V]] =
     simpleCBF(fact.newBuilder[K, V])
 
   implicit def sortedMapFactoryToCBF[
-      K: Ordering,
-      V,
-      CC[A, B] <: c.SortedMap[A, B] with c.SortedMapLike[A, B, CC[A, B]]](
-      fact: SortedMapFactory[CC]): CanBuildFrom[Any, (K, V), CC[K, V]] =
+    K: Ordering,
+    V,
+    CC[A, B] <: c.SortedMap[A, B] with c.SortedMapLike[A, B, CC[A, B]]
+  ](fact: SortedMapFactory[CC]): CanBuildFrom[Any, (K, V), CC[K, V]] =
     simpleCBF(fact.newBuilder[K, V])
 
   implicit def bitSetFactoryToCBF(fact: BitSetFactory[BitSet]): CanBuildFrom[Any, Int, BitSet] =
     simpleCBF(fact.newBuilder)
 
   implicit def immutableBitSetFactoryToCBF(
-      fact: BitSetFactory[i.BitSet]): CanBuildFrom[Any, Int, ImmutableBitSetCC[Int]] =
+    fact: BitSetFactory[i.BitSet]
+  ): CanBuildFrom[Any, Int, ImmutableBitSetCC[Int]] =
     simpleCBF(fact.newBuilder)
 
   implicit def mutableBitSetFactoryToCBF(
-      fact: BitSetFactory[m.BitSet]): CanBuildFrom[Any, Int, MutableBitSetCC[Int]] =
+    fact: BitSetFactory[m.BitSet]
+  ): CanBuildFrom[Any, Int, MutableBitSetCC[Int]] =
     simpleCBF(fact.newBuilder)
 
   implicit class IterableFactoryExtensionMethods[CC[X] <: GenTraversable[X]](
-      private val fact: GenericCompanion[CC]) {
+    private val fact: GenericCompanion[CC]
+  ) {
     def from[A](source: TraversableOnce[A]): CC[A] =
       fact.apply(source.toSeq: _*)
   }
 
   implicit class MapFactoryExtensionMethods[CC[A, B] <: Map[A, B] with MapLike[A, B, CC[A, B]]](
-      private val fact: MapFactory[CC]) {
+    private val fact: MapFactory[CC]
+  ) {
     def from[K, V](source: TraversableOnce[(K, V)]): CC[K, V] =
       fact.apply(source.toSeq: _*)
   }
 
   implicit class BitSetFactoryExtensionMethods[
-      C <: scala.collection.BitSet with scala.collection.BitSetLike[C]](
-      private val fact: BitSetFactory[C]) {
+    C <: scala.collection.BitSet with scala.collection.BitSetLike[C]
+  ](private val fact: BitSetFactory[C]) {
     def fromSpecific(source: TraversableOnce[Int]): C =
       fact.apply(source.toSeq: _*)
   }
@@ -124,7 +134,8 @@ private[compat] trait PackageShared {
   }
 
   implicit def toImmutableSortedMapExtensions(
-      fact: i.SortedMap.type): ImmutableSortedMapExtensions =
+    fact: i.SortedMap.type
+  ): ImmutableSortedMapExtensions =
     new ImmutableSortedMapExtensions(fact)
 
   implicit def toImmutableListMapExtensions(fact: i.ListMap.type): ImmutableListMapExtensions =
@@ -158,18 +169,21 @@ private[compat] trait PackageShared {
     new StreamExtensionMethods[A](stream)
 
   implicit def toSortedExtensionMethods[K, V <: Sorted[K, V]](
-      fact: Sorted[K, V]): SortedExtensionMethods[K, V] =
+    fact: Sorted[K, V]
+  ): SortedExtensionMethods[K, V] =
     new SortedExtensionMethods[K, V](fact)
 
   implicit def toIteratorExtensionMethods[A](self: Iterator[A]): IteratorExtensionMethods[A] =
     new IteratorExtensionMethods[A](self)
 
   implicit def toTraversableExtensionMethods[A](
-      self: Traversable[A]): TraversableExtensionMethods[A] =
+    self: Traversable[A]
+  ): TraversableExtensionMethods[A] =
     new TraversableExtensionMethods[A](self)
 
   implicit def toTraversableOnceExtensionMethods[A](
-      self: TraversableOnce[A]): TraversableOnceExtensionMethods[A] =
+    self: TraversableOnce[A]
+  ): TraversableOnceExtensionMethods[A] =
     new TraversableOnceExtensionMethods[A](self)
 
   // This really belongs into scala.collection but there's already a package object
@@ -178,11 +192,13 @@ private[compat] trait PackageShared {
   val IterableOnce = c.TraversableOnce
 
   implicit def toMapExtensionMethods[K, V](
-      self: scala.collection.Map[K, V]): MapExtensionMethods[K, V] =
+    self: scala.collection.Map[K, V]
+  ): MapExtensionMethods[K, V] =
     new MapExtensionMethods[K, V](self)
 
   implicit def toMapViewExtensionMethods[K, V, C <: scala.collection.Map[K, V]](
-      self: IterableView[(K, V), C]): MapViewExtensionMethods[K, V, C] =
+    self: IterableView[(K, V), C]
+  ): MapViewExtensionMethods[K, V, C] =
     new MapViewExtensionMethods[K, V, C](self)
 }
 
@@ -241,56 +257,51 @@ class StreamExtensionMethods[A](private val stream: Stream[A]) extends AnyVal {
 }
 
 class SortedExtensionMethods[K, T <: Sorted[K, T]](private val fact: Sorted[K, T]) {
-  def rangeFrom(from: K): T   = fact.from(from)
-  def rangeTo(to: K): T       = fact.to(to)
+  def rangeFrom(from:   K): T = fact.from(from)
+  def rangeTo(to:       K): T = fact.to(to)
   def rangeUntil(until: K): T = fact.until(until)
 }
 
 class IteratorExtensionMethods[A](private val self: c.Iterator[A]) extends AnyVal {
-  def sameElements[B >: A](that: c.TraversableOnce[B]): Boolean = {
+  def sameElements[B >: A](that: c.TraversableOnce[B]): Boolean =
     self.sameElements(that.iterator)
-  }
   def concat[B >: A](that: c.TraversableOnce[B]): c.TraversableOnce[B] = self ++ that
-  def tapEach[U](f: A => U): c.Iterator[A]                             = self.map(a => { f(a); a })
+  def tapEach[U](f:        A => U): c.Iterator[A]                      = self.map { a => f(a); a }
 }
 
 class TraversableOnceExtensionMethods[A](private val self: c.TraversableOnce[A]) extends AnyVal {
   def iterator: Iterator[A] = self.toIterator
 
-  def minOption[B >: A](implicit ord: Ordering[B]): Option[A] = {
+  def minOption[B >: A](implicit ord: Ordering[B]): Option[A] =
     if (self.isEmpty)
       None
     else
       Some(self.min(ord))
-  }
 
-  def maxOption[B >: A](implicit ord: Ordering[B]): Option[A] = {
+  def maxOption[B >: A](implicit ord: Ordering[B]): Option[A] =
     if (self.isEmpty)
       None
     else
       Some(self.max(ord))
-  }
 
-  def minByOption[B](f: A => B)(implicit cmp: Ordering[B]): Option[A] = {
+  def minByOption[B](f: A => B)(implicit cmp: Ordering[B]): Option[A] =
     if (self.isEmpty)
       None
     else
       Some(self.minBy(f)(cmp))
-  }
 
-  def maxByOption[B](f: A => B)(implicit cmp: Ordering[B]): Option[A] = {
+  def maxByOption[B](f: A => B)(implicit cmp: Ordering[B]): Option[A] =
     if (self.isEmpty)
       None
     else
       Some(self.maxBy(f)(cmp))
-  }
 }
 
 class TraversableExtensionMethods[A](private val self: c.Traversable[A]) extends AnyVal {
   def iterableFactory: GenericCompanion[Traversable] = self.companion
 
-  def sizeCompare(otherSize: Int): Int         = SizeCompareImpl.sizeCompareInt(self)(otherSize)
-  def sizeIs: SizeCompareOps                   = new SizeCompareOps(self)
+  def sizeCompare(otherSize: Int): Int = SizeCompareImpl.sizeCompareInt(self)(otherSize)
+  def sizeIs: SizeCompareOps = new SizeCompareOps(self)
   def sizeCompare(that: c.Traversable[_]): Int = SizeCompareImpl.sizeCompareColl(self)(that)
 
 }
@@ -325,7 +336,7 @@ private object SizeCompareImpl {
   def sizeCompareInt(self: c.Traversable[_])(otherSize: Int): Int =
     self match {
       case self: c.SeqLike[_, _] => self.lengthCompare(otherSize)
-      case _ =>
+      case _                     =>
         if (otherSize < 0) 1
         else {
           var i  = 0
@@ -343,13 +354,13 @@ private object SizeCompareImpl {
   def sizeCompareColl(self: c.Traversable[_])(that: c.Traversable[_]): Int =
     that match {
       case that: c.IndexedSeq[_] => sizeCompareInt(self)(that.length)
-      case _ =>
+      case _                     =>
         self match {
           case self: c.IndexedSeq[_] =>
             val res = sizeCompareInt(that)(self.length)
             // can't just invert the result, because `-Int.MinValue == Int.MinValue`
             if (res == Int.MinValue) 1 else -res
-          case _ =>
+          case _                     =>
             val thisIt = self.toIterator
             val thatIt = that.toIterator
             while (thisIt.hasNext && thatIt.hasNext) {
@@ -364,11 +375,11 @@ private object SizeCompareImpl {
 class TraversableLikeExtensionMethods[A, Repr](private val self: c.GenTraversableLike[A, Repr])
     extends AnyVal {
   def tapEach[U](f: A => U)(implicit bf: CanBuildFrom[Repr, A, Repr]): Repr =
-    self.map(a => { f(a); a })
+    self.map { a => f(a); a }
 
-  def partitionMap[A1, A2, That, Repr1, Repr2](f: A => Either[A1, A2])(
-      implicit bf1: CanBuildFrom[Repr, A1, Repr1],
-      bf2: CanBuildFrom[Repr, A2, Repr2]
+  def partitionMap[A1, A2, That, Repr1, Repr2](f: A => Either[A1, A2])(implicit
+    bf1:                                          CanBuildFrom[Repr, A1, Repr1],
+    bf2:                                          CanBuildFrom[Repr, A2, Repr2]
   ): (Repr1, Repr2) = {
     val l = bf1()
     val r = bf2()
@@ -381,10 +392,11 @@ class TraversableLikeExtensionMethods[A, Repr](private val self: c.GenTraversabl
     (l.result(), r.result())
   }
 
-  def groupMap[K, B, That](key: A => K)(f: A => B)(
-      implicit bf: CanBuildFrom[Repr, B, That]): Map[K, That] = {
+  def groupMap[K, B, That](
+    key: A => K
+  )(f:   A => B)(implicit bf: CanBuildFrom[Repr, B, That]): Map[K, That] = {
     val map = m.Map.empty[K, m.Builder[B, That]]
-    for (elem <- self) {
+    for (elem      <- self) {
       val k    = key(elem)
       val bldr = map.getOrElseUpdate(k, bf(self.repr))
       bldr += f(elem)
@@ -409,36 +421,38 @@ class TraversableLikeExtensionMethods[A, Repr](private val self: c.GenTraversabl
 }
 
 class TrulyTraversableLikeExtensionMethods[El1, Repr1](
-    private val self: TraversableLike[El1, Repr1])
-    extends AnyVal {
+  private val self: TraversableLike[El1, Repr1]
+) extends AnyVal {
 
-  def lazyZip[El2, Repr2, T2](t2: T2)(
-      implicit w2: T2 => IterableLike[El2, Repr2]
+  def lazyZip[El2, Repr2, T2](t2: T2)(implicit
+    w2:                           T2 => IterableLike[El2, Repr2]
   ): Tuple2Zipped[El1, Repr1, El2, Repr2] = new Tuple2Zipped((self, t2))
 }
 
 class Tuple2ZippedExtensionMethods[El1, Repr1, El2, Repr2](
-    private val self: Tuple2Zipped[El1, Repr1, El2, Repr2]) {
+  private val self: Tuple2Zipped[El1, Repr1, El2, Repr2]
+) {
 
-  def lazyZip[El3, Repr3, T3](t3: T3)(implicit w3: T3 => IterableLike[El3, Repr3])
-    : Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3] =
+  def lazyZip[El3, Repr3, T3](t3: T3)(implicit
+    w3:                           T3 => IterableLike[El3, Repr3]
+  ): Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3] =
     new Tuple3Zipped((self.colls._1, self.colls._2, t3))
 }
 
 class MapExtensionMethods[K, V](private val self: scala.collection.Map[K, V]) extends AnyVal {
 
-  def foreachEntry[U](f: (K, V) => U): Unit = {
+  def foreachEntry[U](f: (K, V) => U): Unit =
     self.foreach { case (k, v) => f(k, v) }
-  }
 
 }
 
 class MapViewExtensionMethods[K, V, C <: scala.collection.Map[K, V]](
-    private val self: IterableView[(K, V), C])
-    extends AnyVal {
+  private val self: IterableView[(K, V), C]
+) extends AnyVal {
 
-  def mapValues[W, That](f: V => W)(
-      implicit bf: CanBuildFrom[IterableView[(K, V), C], (K, W), That]): That =
+  def mapValues[W, That](f: V => W)(implicit
+    bf:                     CanBuildFrom[IterableView[(K, V), C], (K, W), That]
+  ): That =
     self.map[(K, W), That] { case (k, v) => (k, f(v)) }
 
   // TODO: Replace the current implementation of `mapValues` with this

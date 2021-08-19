@@ -1,7 +1,7 @@
 package testsuite.locales
 
 import locales.BCP47
-import locales.BCP47.{ LanguageTag }
+import locales.BCP47.LanguageTag
 import locales.cldr.data.metadata._
 
 class BCP47Test extends munit.FunSuite {
