@@ -14,13 +14,14 @@ package scala.collection.compat
 
 import scala.reflect.ClassTag
 import scala.collection.generic.CanBuildFrom
-import scala.collection.{immutable => i, mutable => m}
+import scala.collection.{ immutable => i, mutable => m }
 
 /* builder optimized for a single ++= call, which returns identity on result if possible
  * and defers to the underlying builder if not.
  */
 private final class IdentityPreservingBuilder[A, CC[X] <: TraversableOnce[X]](
-    that: m.Builder[A, CC[A]])(implicit ct: ClassTag[CC[A]])
+  that:        m.Builder[A, CC[A]]
+)(implicit ct: ClassTag[CC[A]])
     extends m.Builder[A, CC[A]] {
 
   //invariant: ruined => (collection == null)
@@ -35,15 +36,13 @@ private final class IdentityPreservingBuilder[A, CC[X] <: TraversableOnce[X]](
 
   override def ++=(elems: TraversableOnce[A]): this.type =
     elems match {
-      case ct(ca) if collection == null && !ruined => {
+      case ct(ca) if collection == null && !ruined =>
         collection = ca
         this
-      }
-      case _ => {
+      case _                                       =>
         ruin()
         that ++= elems
         this
-      }
     }
 
   def +=(elem: A): this.type = {
@@ -65,7 +64,7 @@ private[compat] object CompatImpl {
   def simpleCBF[A, C](f: => m.Builder[A, C]): CanBuildFrom[Any, A, C] =
     new CanBuildFrom[Any, A, C] {
       def apply(from: Any): m.Builder[A, C] = apply()
-      def apply(): m.Builder[A, C]          = f
+      def apply(): m.Builder[A, C] = f
     }
 
   type ImmutableBitSetCC[X] = ({ type L[_] = i.BitSet })#L[X]
