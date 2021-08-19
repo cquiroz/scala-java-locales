@@ -263,16 +263,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE, y MMMM dd",
-           DateFormat.LONG   -> "y MMMM d",
-           DateFormat.MEDIUM -> "y MMM d",
-           DateFormat.SHORT  -> "yyyy-MM-dd"
+        DateFormat.FULL   -> "EEEE, y MMMM dd",
+        DateFormat.LONG   -> "y MMMM d",
+        DateFormat.MEDIUM -> "y MMM d",
+        DateFormat.SHORT  -> "yyyy-MM-dd"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -280,16 +280,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "y MMMM d, EEEE",
-           DateFormat.LONG   -> "y MMMM d",
-           DateFormat.MEDIUM -> "y MMM d",
-           DateFormat.SHORT  -> "y-MM-dd"
+        DateFormat.FULL   -> "y MMMM d, EEEE",
+        DateFormat.LONG   -> "y MMMM d",
+        DateFormat.MEDIUM -> "y MMM d",
+        DateFormat.SHORT  -> "y-MM-dd"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -297,16 +297,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.FRENCH,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE d MMMM y",
-           DateFormat.LONG   -> "d MMMM y",
-           DateFormat.MEDIUM -> "d MMM y",
-           DateFormat.SHORT  -> "dd/MM/yy"
+        DateFormat.FULL   -> "EEEE d MMMM y",
+        DateFormat.LONG   -> "d MMMM y",
+        DateFormat.MEDIUM -> "d MMM y",
+        DateFormat.SHORT  -> "dd/MM/yy"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -314,16 +314,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.FRENCH,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "EEEE d MMMM y",
-           DateFormat.LONG   -> "d MMMM y",
-           DateFormat.MEDIUM -> "d MMM y",
-           DateFormat.SHORT  -> "dd/MM/y"
+        DateFormat.FULL   -> "EEEE d MMMM y",
+        DateFormat.LONG   -> "d MMMM y",
+        DateFormat.MEDIUM -> "d MMM y",
+        DateFormat.SHORT  -> "dd/MM/y"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -552,16 +552,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.FRANCE,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE d MMMM y",
-           DateFormat.LONG   -> "d MMMM y",
-           DateFormat.MEDIUM -> "d MMM y",
-           DateFormat.SHORT  -> "dd/MM/yy"
+        DateFormat.FULL   -> "EEEE d MMMM y",
+        DateFormat.LONG   -> "d MMMM y",
+        DateFormat.MEDIUM -> "d MMM y",
+        DateFormat.SHORT  -> "dd/MM/yy"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -569,16 +569,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.FRANCE,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "EEEE d MMMM y",
-           DateFormat.LONG   -> "d MMMM y",
-           DateFormat.MEDIUM -> "d MMM y",
-           DateFormat.SHORT  -> "dd/MM/y"
+        DateFormat.FULL   -> "EEEE d MMMM y",
+        DateFormat.LONG   -> "d MMMM y",
+        DateFormat.MEDIUM -> "d MMM y",
+        DateFormat.SHORT  -> "dd/MM/y"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -858,16 +858,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.CANADA_FRENCH,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE d MMMM y",
-           DateFormat.LONG   -> "d MMMM y",
-           DateFormat.MEDIUM -> "yyyy-MM-dd",
-           DateFormat.SHORT  -> "yy-MM-dd"
+        DateFormat.FULL   -> "EEEE d MMMM y",
+        DateFormat.LONG   -> "d MMMM y",
+        DateFormat.MEDIUM -> "yyyy-MM-dd",
+        DateFormat.SHORT  -> "yy-MM-dd"
       ),
       Map(
-        DateFormat.FULL      -> "HH 'h' mm 'min' ss 's' zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH 'h' mm 'min' ss 's' zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -875,16 +875,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.CANADA_FRENCH,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "EEEE d MMMM y",
-           DateFormat.LONG   -> "d MMMM y",
-           DateFormat.MEDIUM -> "d MMM y",
-           DateFormat.SHORT  -> "y-MM-dd"
+        DateFormat.FULL   -> "EEEE d MMMM y",
+        DateFormat.LONG   -> "d MMMM y",
+        DateFormat.MEDIUM -> "d MMM y",
+        DateFormat.SHORT  -> "y-MM-dd"
       ),
       Map(
-        DateFormat.FULL      -> "HH 'h' mm 'min' ss 's' zzzz",
-        DateFormat.LONG      -> "HH 'h' mm 'min' ss 's' z",
-        DateFormat.MEDIUM    -> "HH 'h' mm 'min' ss 's'",
-        DateFormat.SHORT     -> "HH 'h' mm"
+        DateFormat.FULL   -> "HH 'h' mm 'min' ss 's' zzzz",
+        DateFormat.LONG   -> "HH 'h' mm 'min' ss 's' z",
+        DateFormat.MEDIUM -> "HH 'h' mm 'min' ss 's'",
+        DateFormat.SHORT  -> "HH 'h' mm"
       )
     )
   )
@@ -896,16 +896,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE, d MMMM, y",
-           DateFormat.LONG   -> "d MMMM, y",
-           DateFormat.MEDIUM -> "d MMM, y",
-           DateFormat.SHORT  -> "d/M/yy"
+        DateFormat.FULL   -> "EEEE, d MMMM, y",
+        DateFormat.LONG   -> "d MMMM, y",
+        DateFormat.MEDIUM -> "d MMM, y",
+        DateFormat.SHORT  -> "d/M/yy"
       ),
       Map(
-        DateFormat.FULL      -> "h:mm:ss a zzzz",
-        DateFormat.LONG      -> "h:mm:ss a z",
-        DateFormat.MEDIUM    -> "h:mm:ss a",
-        DateFormat.SHORT     -> "h:mm a"
+        DateFormat.FULL   -> "h:mm:ss a zzzz",
+        DateFormat.LONG   -> "h:mm:ss a z",
+        DateFormat.MEDIUM -> "h:mm:ss a",
+        DateFormat.SHORT  -> "h:mm a"
       )
     ),
     TestCase(
@@ -934,16 +934,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE dd MMMM y",
-           DateFormat.LONG   -> "dd MMMM y",
-           DateFormat.MEDIUM -> "dd MMM y",
-           DateFormat.SHORT  -> "yyyy-MM-dd"
+        DateFormat.FULL   -> "EEEE dd MMMM y",
+        DateFormat.LONG   -> "dd MMMM y",
+        DateFormat.MEDIUM -> "dd MMM y",
+        DateFormat.SHORT  -> "yyyy-MM-dd"
       ),
       Map(
-        DateFormat.FULL      -> "h:mm:ss a zzzz",
-        DateFormat.LONG      -> "h:mm:ss a z",
-        DateFormat.MEDIUM    -> "h:mm:ss a",
-        DateFormat.SHORT     -> "h:mm a"
+        DateFormat.FULL   -> "h:mm:ss a zzzz",
+        DateFormat.LONG   -> "h:mm:ss a z",
+        DateFormat.MEDIUM -> "h:mm:ss a",
+        DateFormat.SHORT  -> "h:mm a"
       )
     ),
     TestCase(
@@ -951,16 +951,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "EEEE dd MMMM y",
-           DateFormat.LONG   -> "dd MMMM y",
-           DateFormat.MEDIUM -> "dd MMM y",
-           DateFormat.SHORT  -> "y-MM-dd"
+        DateFormat.FULL   -> "EEEE dd MMMM y",
+        DateFormat.LONG   -> "dd MMMM y",
+        DateFormat.MEDIUM -> "dd MMM y",
+        DateFormat.SHORT  -> "y-MM-dd"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -968,16 +968,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE, d, MMMM, y",
-           DateFormat.LONG   -> "d MMMM , y",
-           DateFormat.MEDIUM -> "d MMM, y",
-           DateFormat.SHORT  -> "yyyy-MM-dd"
+        DateFormat.FULL   -> "EEEE, d, MMMM, y",
+        DateFormat.LONG   -> "d MMMM , y",
+        DateFormat.MEDIUM -> "d MMM, y",
+        DateFormat.SHORT  -> "yyyy-MM-dd"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -985,16 +985,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "d MMMM y, EEEE",
-           DateFormat.LONG   -> "d MMMM y",
-           DateFormat.MEDIUM -> "d MMM y",
-           DateFormat.SHORT  -> "dd.MM.yy"
+        DateFormat.FULL   -> "d MMMM y, EEEE",
+        DateFormat.LONG   -> "d MMMM y",
+        DateFormat.MEDIUM -> "d MMM y",
+        DateFormat.SHORT  -> "dd.MM.yy"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -1002,16 +1002,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE, d, MMMM, y",
-           DateFormat.LONG   -> "d MMMM , y",
-           DateFormat.MEDIUM -> "d MMM, y",
-           DateFormat.SHORT  -> "yyyy-MM-dd"
+        DateFormat.FULL   -> "EEEE, d, MMMM, y",
+        DateFormat.LONG   -> "d MMMM , y",
+        DateFormat.MEDIUM -> "d MMM, y",
+        DateFormat.SHORT  -> "yyyy-MM-dd"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -1019,16 +1019,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "d MMMM y, EEEE",
-           DateFormat.LONG   -> "d MMMM y",
-           DateFormat.MEDIUM -> "d MMM y",
-           DateFormat.SHORT  -> "dd.MM.yy"
+        DateFormat.FULL   -> "d MMMM y, EEEE",
+        DateFormat.LONG   -> "d MMMM y",
+        DateFormat.MEDIUM -> "d MMM y",
+        DateFormat.SHORT  -> "dd.MM.yy"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -1036,16 +1036,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE, d 'de' MMMM 'de' y",
-           DateFormat.LONG   -> "d 'de' MMMM 'de' y",
-           DateFormat.MEDIUM -> "dd-MM-yyyy",
-           DateFormat.SHORT  -> "dd-MM-yy"
+        DateFormat.FULL   -> "EEEE, d 'de' MMMM 'de' y",
+        DateFormat.LONG   -> "d 'de' MMMM 'de' y",
+        DateFormat.MEDIUM -> "dd-MM-yyyy",
+        DateFormat.SHORT  -> "dd-MM-yy"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "H:mm:ss z",
-        DateFormat.MEDIUM    -> "H:mm:ss",
-        DateFormat.SHORT     -> "H:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "H:mm:ss z",
+        DateFormat.MEDIUM -> "H:mm:ss",
+        DateFormat.SHORT  -> "H:mm"
       )
     ),
     TestCase(
@@ -1053,16 +1053,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "EEEE, d 'de' MMMM 'de' y",
-           DateFormat.LONG   -> "d 'de' MMMM 'de' y",
-           DateFormat.MEDIUM -> "dd-MM-y",
-           DateFormat.SHORT  -> "dd-MM-yy"
+        DateFormat.FULL   -> "EEEE, d 'de' MMMM 'de' y",
+        DateFormat.LONG   -> "d 'de' MMMM 'de' y",
+        DateFormat.MEDIUM -> "dd-MM-y",
+        DateFormat.SHORT  -> "dd-MM-yy"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -1070,16 +1070,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE, d MMMM y",
-           DateFormat.LONG   -> "d MMMM y",
-           DateFormat.MEDIUM -> "d-MMM-y",
-           DateFormat.SHORT  -> "dd.MM.yy"
+        DateFormat.FULL   -> "EEEE, d MMMM y",
+        DateFormat.LONG   -> "d MMMM y",
+        DateFormat.MEDIUM -> "d-MMM-y",
+        DateFormat.SHORT  -> "dd.MM.yy"
       ),
       Map(
-        DateFormat.FULL      -> "HH.mm:ss 'h' zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH.mm:ss 'h' zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -1087,16 +1087,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "EEEE, d MMMM y",
-           DateFormat.LONG   -> "d MMMM y",
-           DateFormat.MEDIUM -> "d MMM y",
-           DateFormat.SHORT  -> "dd.MM.yy"
+        DateFormat.FULL   -> "EEEE, d MMMM y",
+        DateFormat.LONG   -> "d MMMM y",
+        DateFormat.MEDIUM -> "d MMM y",
+        DateFormat.SHORT  -> "dd.MM.yy"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -1104,16 +1104,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "y年M月d日EEEE",
-           DateFormat.LONG   -> "y年M月d日",
-           DateFormat.MEDIUM -> "yyyy-M-d",
-           DateFormat.SHORT  -> "yy-M-d"
+        DateFormat.FULL   -> "y年M月d日EEEE",
+        DateFormat.LONG   -> "y年M月d日",
+        DateFormat.MEDIUM -> "yyyy-M-d",
+        DateFormat.SHORT  -> "yy-M-d"
       ),
       Map(
-        DateFormat.FULL      -> "zzzzah时mm分ss秒",
-        DateFormat.LONG      -> "zah时mm分ss秒",
-        DateFormat.MEDIUM    -> "ah:mm:ss",
-        DateFormat.SHORT     -> "ah:mm"
+        DateFormat.FULL   -> "zzzzah时mm分ss秒",
+        DateFormat.LONG   -> "zah时mm分ss秒",
+        DateFormat.MEDIUM -> "ah:mm:ss",
+        DateFormat.SHORT  -> "ah:mm"
       )
     ),
     TestCase(
@@ -1121,16 +1121,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "y年M月d日EEEE",
-           DateFormat.LONG   -> "y年M月d日",
-           DateFormat.MEDIUM -> "y年M月d日",
-           DateFormat.SHORT  -> "y/M/d"
+        DateFormat.FULL   -> "y年M月d日EEEE",
+        DateFormat.LONG   -> "y年M月d日",
+        DateFormat.MEDIUM -> "y年M月d日",
+        DateFormat.SHORT  -> "y/M/d"
       ),
       Map(
-        DateFormat.FULL      -> "zzzz ah:mm:ss",
-        DateFormat.LONG      -> "z ah:mm:ss",
-        DateFormat.MEDIUM    -> "ah:mm:ss",
-        DateFormat.SHORT     -> "ah:mm"
+        DateFormat.FULL   -> "zzzz ah:mm:ss",
+        DateFormat.LONG   -> "z ah:mm:ss",
+        DateFormat.MEDIUM -> "ah:mm:ss",
+        DateFormat.SHORT  -> "ah:mm"
       )
     ),
     TestCase(
@@ -1138,16 +1138,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "y年M月d日EEEE",
-           DateFormat.LONG   -> "y年M月d日",
-           DateFormat.MEDIUM -> "yyyy/M/d",
-           DateFormat.SHORT  -> "y/M/d"
+        DateFormat.FULL   -> "y年M月d日EEEE",
+        DateFormat.LONG   -> "y年M月d日",
+        DateFormat.MEDIUM -> "yyyy/M/d",
+        DateFormat.SHORT  -> "y/M/d"
       ),
       Map(
-        DateFormat.FULL      -> "zzzzah時mm分ss秒",
-        DateFormat.LONG      -> "zah時mm分ss秒",
-        DateFormat.MEDIUM    -> "ah:mm:ss",
-        DateFormat.SHORT     -> "ah:mm"
+        DateFormat.FULL   -> "zzzzah時mm分ss秒",
+        DateFormat.LONG   -> "zah時mm分ss秒",
+        DateFormat.MEDIUM -> "ah:mm:ss",
+        DateFormat.SHORT  -> "ah:mm"
       )
     ),
     TestCase(
@@ -1155,16 +1155,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "y年M月d日 EEEE",
-           DateFormat.LONG   -> "y年M月d日",
-           DateFormat.MEDIUM -> "y年M月d日",
-           DateFormat.SHORT  -> "y/M/d"
+        DateFormat.FULL   -> "y年M月d日 EEEE",
+        DateFormat.LONG   -> "y年M月d日",
+        DateFormat.MEDIUM -> "y年M月d日",
+        DateFormat.SHORT  -> "y/M/d"
       ),
       Map(
-        DateFormat.FULL      -> "ah:mm:ss [zzzz]",
-        DateFormat.LONG      -> "ah:mm:ss [z]",
-        DateFormat.MEDIUM    -> "ah:mm:ss",
-        DateFormat.SHORT     -> "ah:mm"
+        DateFormat.FULL   -> "ah:mm:ss [zzzz]",
+        DateFormat.LONG   -> "ah:mm:ss [z]",
+        DateFormat.MEDIUM -> "ah:mm:ss",
+        DateFormat.SHORT  -> "ah:mm"
       )
     ),
     TestCase(
@@ -1172,16 +1172,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE، d MMMM، y",
-           DateFormat.LONG   -> "d MMMM، y",
-           DateFormat.MEDIUM -> "dd‏/MM‏/yyyy",
-           DateFormat.SHORT  -> "d‏/M‏/yyyy"
+        DateFormat.FULL   -> "EEEE، d MMMM، y",
+        DateFormat.LONG   -> "d MMMM، y",
+        DateFormat.MEDIUM -> "dd‏/MM‏/yyyy",
+        DateFormat.SHORT  -> "d‏/M‏/yyyy"
       ),
       Map(
-        DateFormat.FULL      -> "zzzz h:mm:ss a",
-        DateFormat.LONG      -> "z h:mm:ss a",
-        DateFormat.MEDIUM    -> "h:mm:ss a",
-        DateFormat.SHORT     -> "h:mm a"
+        DateFormat.FULL   -> "zzzz h:mm:ss a",
+        DateFormat.LONG   -> "z h:mm:ss a",
+        DateFormat.MEDIUM -> "h:mm:ss a",
+        DateFormat.SHORT  -> "h:mm a"
       )
     ),
     TestCase(
@@ -1189,16 +1189,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "EEEE، d MMMM y",
-           DateFormat.LONG   -> "d MMMM y",
-           DateFormat.MEDIUM -> "dd‏/MM‏/y",
-           DateFormat.SHORT  -> "d‏/M‏/y"
+        DateFormat.FULL   -> "EEEE، d MMMM y",
+        DateFormat.LONG   -> "d MMMM y",
+        DateFormat.MEDIUM -> "dd‏/MM‏/y",
+        DateFormat.SHORT  -> "d‏/M‏/y"
       ),
       Map(
-        DateFormat.FULL      -> "h:mm:ss a zzzz",
-        DateFormat.LONG      -> "h:mm:ss a z",
-        DateFormat.MEDIUM    -> "h:mm:ss a",
-        DateFormat.SHORT     -> "h:mm a"
+        DateFormat.FULL   -> "h:mm:ss a zzzz",
+        DateFormat.LONG   -> "h:mm:ss a z",
+        DateFormat.MEDIUM -> "h:mm:ss a",
+        DateFormat.SHORT  -> "h:mm a"
       )
     ),
     TestCase(
@@ -1206,16 +1206,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE d MMMM y",
-           DateFormat.LONG   -> "d MMMM y",
-           DateFormat.MEDIUM -> "d MMM y",
-           DateFormat.SHORT  -> "yyyy/M/d"
+        DateFormat.FULL   -> "EEEE d MMMM y",
+        DateFormat.LONG   -> "d MMMM y",
+        DateFormat.MEDIUM -> "d MMM y",
+        DateFormat.SHORT  -> "yyyy/M/d"
       ),
       Map(
-        DateFormat.FULL      -> "H:mm:ss (zzzz)",
-        DateFormat.LONG      -> "H:mm:ss (z)",
-        DateFormat.MEDIUM    -> "H:mm:ss",
-        DateFormat.SHORT     -> "H:mm"
+        DateFormat.FULL   -> "H:mm:ss (zzzz)",
+        DateFormat.LONG   -> "H:mm:ss (z)",
+        DateFormat.MEDIUM -> "H:mm:ss",
+        DateFormat.SHORT  -> "H:mm"
       )
     ),
     TestCase(
@@ -1223,16 +1223,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "EEEE d MMMM y",
-           DateFormat.LONG   -> "d MMMM y",
-           DateFormat.MEDIUM -> "d MMM y",
-           DateFormat.SHORT  -> "y/M/d"
+        DateFormat.FULL   -> "EEEE d MMMM y",
+        DateFormat.LONG   -> "d MMMM y",
+        DateFormat.MEDIUM -> "d MMM y",
+        DateFormat.SHORT  -> "y/M/d"
       ),
       Map(
-        DateFormat.FULL      -> "H:mm:ss (zzzz)",
-        DateFormat.LONG      -> "H:mm:ss (z)",
-        DateFormat.MEDIUM    -> "H:mm:ss",
-        DateFormat.SHORT     -> "H:mm"
+        DateFormat.FULL   -> "H:mm:ss (zzzz)",
+        DateFormat.LONG   -> "H:mm:ss (z)",
+        DateFormat.MEDIUM -> "H:mm:ss",
+        DateFormat.SHORT  -> "H:mm"
       )
     ),
     TestCase(
@@ -1240,16 +1240,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE, d. MMMM y",
-           DateFormat.LONG   -> "d. MMMM y",
-           DateFormat.MEDIUM -> "d.M.yyyy",
-           DateFormat.SHORT  -> "d.M.yyyy"
+        DateFormat.FULL   -> "EEEE, d. MMMM y",
+        DateFormat.LONG   -> "d. MMMM y",
+        DateFormat.MEDIUM -> "d.M.yyyy",
+        DateFormat.SHORT  -> "d.M.yyyy"
       ),
       Map(
-        DateFormat.FULL      -> "H.mm.ss zzzz",
-        DateFormat.LONG      -> "H.mm.ss z",
-        DateFormat.MEDIUM    -> "H.mm.ss",
-        DateFormat.SHORT     -> "H.mm"
+        DateFormat.FULL   -> "H.mm.ss zzzz",
+        DateFormat.LONG   -> "H.mm.ss z",
+        DateFormat.MEDIUM -> "H.mm.ss",
+        DateFormat.SHORT  -> "H.mm"
       )
     ),
     TestCase(
@@ -1257,16 +1257,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "cccc d. MMMM y",
-           DateFormat.LONG   -> "d. MMMM y",
-           DateFormat.MEDIUM -> "d.M.y",
-           DateFormat.SHORT  -> "d.M.y"
+        DateFormat.FULL   -> "cccc d. MMMM y",
+        DateFormat.LONG   -> "d. MMMM y",
+        DateFormat.MEDIUM -> "d.M.y",
+        DateFormat.SHORT  -> "d.M.y"
       ),
       Map(
-        DateFormat.FULL      -> "H.mm.ss zzzz",
-        DateFormat.LONG      -> "H.mm.ss z",
-        DateFormat.MEDIUM    -> "H.mm.ss",
-        DateFormat.SHORT     -> "H.mm"
+        DateFormat.FULL   -> "H.mm.ss zzzz",
+        DateFormat.LONG   -> "H.mm.ss z",
+        DateFormat.MEDIUM -> "H.mm.ss",
+        DateFormat.SHORT  -> "H.mm"
       )
     ),
     TestCase(
@@ -1274,16 +1274,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE, y MMMM dd",
-           DateFormat.LONG   -> "y MMMM d",
-           DateFormat.MEDIUM -> "y MMM d",
-           DateFormat.SHORT  -> "yyyy-MM-dd"
+        DateFormat.FULL   -> "EEEE, y MMMM dd",
+        DateFormat.LONG   -> "y MMMM d",
+        DateFormat.MEDIUM -> "y MMM d",
+        DateFormat.SHORT  -> "yyyy-MM-dd"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -1291,16 +1291,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "EEEE, dd MMMM, y",
-           DateFormat.LONG   -> "d MMMM, y",
-           DateFormat.MEDIUM -> "d MMM. y",
-           DateFormat.SHORT  -> "dd.MM.yy"
+        DateFormat.FULL   -> "EEEE, dd MMMM, y",
+        DateFormat.LONG   -> "d MMMM, y",
+        DateFormat.MEDIUM -> "d MMM. y",
+        DateFormat.SHORT  -> "dd.MM.yy"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -1308,16 +1308,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE, y MMMM dd",
-           DateFormat.LONG   -> "y MMMM d",
-           DateFormat.MEDIUM -> "y MMM d",
-           DateFormat.SHORT  -> "yy/MM/dd"
+        DateFormat.FULL   -> "EEEE, y MMMM dd",
+        DateFormat.LONG   -> "y MMMM d",
+        DateFormat.MEDIUM -> "y MMM d",
+        DateFormat.SHORT  -> "yy/MM/dd"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -1325,16 +1325,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "y၊ MMMM d၊ EEEE",
-           DateFormat.LONG   -> "y၊ d MMMM",
-           DateFormat.MEDIUM -> "y၊ MMM d",
-           DateFormat.SHORT  -> "dd-MM-yy"
+        DateFormat.FULL   -> "y၊ MMMM d၊ EEEE",
+        DateFormat.LONG   -> "y၊ d MMMM",
+        DateFormat.MEDIUM -> "y၊ MMM d",
+        DateFormat.SHORT  -> "dd-MM-yy"
       ),
       Map(
-        DateFormat.FULL      -> "zzzz HH:mm:ss",
-        DateFormat.LONG      -> "z HH:mm:ss",
-        DateFormat.MEDIUM    -> "B HH:mm:ss",
-        DateFormat.SHORT     -> "B H:mm"
+        DateFormat.FULL   -> "zzzz HH:mm:ss",
+        DateFormat.LONG   -> "z HH:mm:ss",
+        DateFormat.MEDIUM -> "B HH:mm:ss",
+        DateFormat.SHORT  -> "B H:mm"
       )
     ),
     TestCase(
@@ -1342,16 +1342,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = true,
       Map( // JVM
-           DateFormat.FULL   -> "EEEE, d MMMM y\u00A0'г'.",
-           DateFormat.LONG   -> "d MMMM y\u00A0'г'.",
-           DateFormat.MEDIUM -> "dd.MM.yyyy",
-           DateFormat.SHORT  -> "dd.MM.yy"
+        DateFormat.FULL   -> "EEEE, d MMMM y\u00A0'г'.",
+        DateFormat.LONG   -> "d MMMM y\u00A0'г'.",
+        DateFormat.MEDIUM -> "dd.MM.yyyy",
+        DateFormat.SHORT  -> "dd.MM.yy"
       ),
       Map(
-        DateFormat.FULL      -> "H:mm:ss zzzz",
-        DateFormat.LONG      -> "H:mm:ss z",
-        DateFormat.MEDIUM    -> "H:mm:ss",
-        DateFormat.SHORT     -> "H:mm"
+        DateFormat.FULL   -> "H:mm:ss zzzz",
+        DateFormat.LONG   -> "H:mm:ss z",
+        DateFormat.MEDIUM -> "H:mm:ss",
+        DateFormat.SHORT  -> "H:mm"
       )
     ),
     TestCase(
@@ -1359,16 +1359,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "EEEE, d MMMM y 'г'.",
-           DateFormat.LONG   -> "d MMMM y 'г'.",
-           DateFormat.MEDIUM -> "d MMM y 'г'.",
-           DateFormat.SHORT  -> "dd.MM.y"
+        DateFormat.FULL   -> "EEEE, d MMMM y 'г'.",
+        DateFormat.LONG   -> "d MMMM y 'г'.",
+        DateFormat.MEDIUM -> "d MMM y 'г'.",
+        DateFormat.SHORT  -> "dd.MM.y"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     ),
     TestCase(
@@ -1376,16 +1376,16 @@ class DateFormatTest extends munit.FunSuite {
       Locale.ROOT,
       cldr21 = false,
       Map( // JS
-           DateFormat.FULL   -> "EEEE d. MMMM y",
-           DateFormat.LONG   -> "d. MMMM y",
-           DateFormat.MEDIUM -> "d. MMM y",
-           DateFormat.SHORT  -> "dd.MM.y"
+        DateFormat.FULL   -> "EEEE d. MMMM y",
+        DateFormat.LONG   -> "d. MMMM y",
+        DateFormat.MEDIUM -> "d. MMM y",
+        DateFormat.SHORT  -> "dd.MM.y"
       ),
       Map(
-        DateFormat.FULL      -> "HH:mm:ss zzzz",
-        DateFormat.LONG      -> "HH:mm:ss z",
-        DateFormat.MEDIUM    -> "HH:mm:ss",
-        DateFormat.SHORT     -> "HH:mm"
+        DateFormat.FULL   -> "HH:mm:ss zzzz",
+        DateFormat.LONG   -> "HH:mm:ss z",
+        DateFormat.MEDIUM -> "HH:mm:ss",
+        DateFormat.SHORT  -> "HH:mm"
       )
     )
   )

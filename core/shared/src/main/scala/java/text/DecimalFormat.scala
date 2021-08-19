@@ -1,6 +1,6 @@
 package java.text
 
-import java.math.{ RoundingMode, BigDecimal => JavaBigDecimal, BigInteger => JavaBigInteger }
+import java.math.{ BigDecimal => JavaBigDecimal, BigInteger => JavaBigInteger, RoundingMode }
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 import java.util.{ Currency, Locale }
@@ -365,7 +365,7 @@ class DecimalFormat(
 
   def setGroupingSize(newValue: Int): Unit = {
     val p = parsedPattern.get
-    this.parsedPattern.set(p.copy(groupingSize = newValue, isGroupingUsed = (newValue > 0)))
+    this.parsedPattern.set(p.copy(groupingSize = newValue, isGroupingUsed = newValue > 0))
   }
 
   override def isGroupingUsed(): Boolean = parsedPattern.get.isGroupingUsed
