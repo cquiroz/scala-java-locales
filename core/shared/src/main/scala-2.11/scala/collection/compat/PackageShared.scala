@@ -263,10 +263,10 @@ class SortedExtensionMethods[K, T <: Sorted[K, T]](private val fact: Sorted[K, T
 }
 
 class IteratorExtensionMethods[A](private val self: c.Iterator[A]) extends AnyVal {
-  def sameElements[B >: A](that: c.TraversableOnce[B]): Boolean =
+  def sameElements[B >: A](that: c.TraversableOnce[B]): Boolean              =
     self.sameElements(that.iterator)
-  def concat[B >: A](that: c.TraversableOnce[B]): c.TraversableOnce[B] = self ++ that
-  def tapEach[U](f:        A => U): c.Iterator[A]                      = self.map { a => f(a); a }
+  def concat[B >: A](that:       c.TraversableOnce[B]): c.TraversableOnce[B] = self ++ that
+  def tapEach[U](f:              A => U): c.Iterator[A]                      = self.map { a => f(a); a }
 }
 
 class TraversableOnceExtensionMethods[A](private val self: c.TraversableOnce[A]) extends AnyVal {
