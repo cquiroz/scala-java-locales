@@ -18,7 +18,7 @@ import scala.runtime.Tuple2Zipped
 import scala.collection.{ immutable => i, mutable => m }
 
 package object compat extends compat.PackageShared {
-  implicit class MutableTreeMapExtensions2(private val fact: m.TreeMap.type) extends AnyVal {
+  implicit class MutableTreeMapExtensions2(private val fact: m.TreeMap.type)    extends AnyVal {
     def from[K: Ordering, V](source: TraversableOnce[(K, V)]): m.TreeMap[K, V] =
       build(m.TreeMap.newBuilder[K, V], source)
   }
@@ -42,7 +42,7 @@ package object compat extends compat.PackageShared {
       // `CanBuildFrom` parameters are used as type constraints, they are not used
       // at run-time, hence the dummy builder implementations
       def apply(from: IterableView[(K, V), CC[K, V]]) = new TraversableView.NoBuilder
-      def apply() = new TraversableView.NoBuilder
+      def apply()                                     = new TraversableView.NoBuilder
     }
 
   implicit def toTraversableLikeExtensionMethods[Repr](self: Repr)(implicit

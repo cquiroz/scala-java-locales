@@ -92,7 +92,7 @@ def scalaVersionSpecificFolders(srcName: String, srcBaseDir: java.io.File, scala
   }
 }
 
-lazy val scalajs_locales: Project = project
+lazy val scalajs_locales: Project                                                                = project
   .in(file("."))
   .settings(commonSettings: _*)
   .settings(
@@ -113,7 +113,7 @@ lazy val scalajs_locales: Project = project
              demo
   )
 
-lazy val core = crossProject(JVMPlatform, JSPlatform)
+lazy val core                                                                                    = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Full)
   .in(file("core"))
   .settings(commonSettings: _*)
@@ -150,7 +150,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
     }
   )
 
-lazy val cldrDbVersion = "36.0"
+lazy val cldrDbVersion                                                                           = "36.0"
 
 lazy val localesFullCurrenciesDb = project
   .in(file("localesFullCurrenciesDb"))
@@ -171,7 +171,7 @@ lazy val localesFullCurrenciesDb = project
       .cross(CrossVersion.for3Use2_13)
   )
 
-lazy val localesFullDb = project
+lazy val localesFullDb           = project
   .in(file("localesFullDb"))
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
@@ -190,7 +190,7 @@ lazy val localesFullDb = project
       .cross(CrossVersion.for3Use2_13)
   )
 
-lazy val localesMinimalEnDb = project
+lazy val localesMinimalEnDb      = project
   .in(file("localesMinimalEnDb"))
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
@@ -209,7 +209,7 @@ lazy val localesMinimalEnDb = project
       .cross(CrossVersion.for3Use2_13)
   )
 
-lazy val localesMinimalEnUSDb = project
+lazy val localesMinimalEnUSDb    = project
   .in(file("localesMinimalEnUSDb"))
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
@@ -228,7 +228,7 @@ lazy val localesMinimalEnUSDb = project
       .cross(CrossVersion.for3Use2_13)
   )
 
-lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
+lazy val testSuite               = crossProject(JVMPlatform, JSPlatform)
   .in(file("testSuite"))
   .settings(commonSettings: _*)
   .settings(
@@ -266,7 +266,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
   )
   .jvmConfigure(_.dependsOn(macroUtils))
 
-lazy val macroUtils = project
+lazy val macroUtils              = project
   .in(file("macroUtils"))
   .settings(commonSettings)
   .settings(
@@ -283,7 +283,7 @@ lazy val macroUtils = project
     Compile / doc / sources := { if (isDotty.value) Seq() else (Compile / doc / sources).value }
   )
 
-lazy val demo = project
+lazy val demo                    = project
   .in(file("demo"))
   .configure(_.enablePlugins(ScalaJSPlugin))
   .settings(commonSettings: _*)

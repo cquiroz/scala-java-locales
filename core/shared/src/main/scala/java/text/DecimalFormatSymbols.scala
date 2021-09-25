@@ -11,7 +11,7 @@ object DecimalFormatSymbols {
   def getInstance(): DecimalFormatSymbols =
     getInstance(Locale.getDefault(Locale.Category.FORMAT))
 
-  def getInstance(locale: Locale): DecimalFormatSymbols =
+  def getInstance(locale: Locale): DecimalFormatSymbols                                   =
     initialize(locale, new DecimalFormatSymbols(locale))
 
   private def initialize(locale: Locale, dfs: DecimalFormatSymbols): DecimalFormatSymbols = {
@@ -169,10 +169,10 @@ class DecimalFormatSymbols(private[this] val locale: Locale) extends Cloneable {
     this.exp = sep
   }
 
-  override def clone(): AnyRef =
+  override def clone(): AnyRef                =
     new DecimalFormatSymbols(locale)
 
-  override def equals(obj: Any): Boolean =
+  override def equals(obj: Any): Boolean      =
     obj match {
       case d: DecimalFormatSymbols =>
         d.getZeroDigit() == getZeroDigit() &&

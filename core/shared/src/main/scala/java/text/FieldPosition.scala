@@ -33,12 +33,12 @@ class FieldPosition(private[this] val attribute: Format.Field, private[this] val
       case _                   => false
     }
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int             = {
     // NOTE, the JVM doesn't use field attribute on hash but it uses on equal
     val state = Seq(getBeginIndex(), getEndIndex(), /* getFieldAttribute,*/ getField())
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 
-  override def toString(): String =
+  override def toString(): String          =
     s"java.text.FieldPosition[field=${getField()},attribute=${getFieldAttribute()},beginIndex=${getBeginIndex()},endIndex=${getEndIndex()}]" //scalastyle:off
 }

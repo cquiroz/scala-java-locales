@@ -97,7 +97,7 @@ trait CurrencyTest extends munit.FunSuite {
   )
 
   // Given a default locale, lookup other currencies by code & compare values
-  private val defaultLocaleCurrencyTests: Seq[DefaultLocaleCurrencyTest] = Seq(
+  private val defaultLocaleCurrencyTests: Seq[DefaultLocaleCurrencyTest]                   = Seq(
     DefaultLocaleCurrencyTest(
       defaultLocale = Locale.US,
       tests = Seq(

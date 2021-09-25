@@ -12,7 +12,7 @@ class SimpleDateFormat(
 
   //def this() = this("???", DecimalFormatSymbols.getInstance())
 
-  def format(date: Date): String = {
+  def format(date: Date): String                                             = {
     val fields = Array(
       (date.getYear() + 1900).toString.reverse,
       (date.getMonth() + 1).toString.reverse,
