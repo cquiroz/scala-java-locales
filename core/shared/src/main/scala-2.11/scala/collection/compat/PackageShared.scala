@@ -94,7 +94,7 @@ private[compat] trait PackageShared {
   ](fact: SortedMapFactory[CC]): CanBuildFrom[Any, (K, V), CC[K, V]] =
     simpleCBF(fact.newBuilder[K, V])
 
-  implicit def bitSetFactoryToCBF(fact: BitSetFactory[BitSet]): CanBuildFrom[Any, Int, BitSet] =
+  implicit def bitSetFactoryToCBF(fact: BitSetFactory[BitSet]): CanBuildFrom[Any, Int, BitSet]    =
     simpleCBF(fact.newBuilder)
 
   implicit def immutableBitSetFactoryToCBF(
@@ -128,7 +128,7 @@ private[compat] trait PackageShared {
       fact.apply(source.toSeq: _*)
   }
 
-  private[compat] def build[T, CC](builder: m.Builder[T, CC], source: TraversableOnce[T]): CC = {
+  private[compat] def build[T, CC](builder: m.Builder[T, CC], source: TraversableOnce[T]): CC     = {
     builder ++= source
     builder.result()
   }
@@ -138,34 +138,34 @@ private[compat] trait PackageShared {
   ): ImmutableSortedMapExtensions =
     new ImmutableSortedMapExtensions(fact)
 
-  implicit def toImmutableListMapExtensions(fact: i.ListMap.type): ImmutableListMapExtensions =
+  implicit def toImmutableListMapExtensions(fact: i.ListMap.type): ImmutableListMapExtensions     =
     new ImmutableListMapExtensions(fact)
 
-  implicit def toImmutableHashMapExtensions(fact: i.HashMap.type): ImmutableHashMapExtensions =
+  implicit def toImmutableHashMapExtensions(fact: i.HashMap.type): ImmutableHashMapExtensions     =
     new ImmutableHashMapExtensions(fact)
 
-  implicit def toImmutableTreeMapExtensions(fact: i.TreeMap.type): ImmutableTreeMapExtensions =
+  implicit def toImmutableTreeMapExtensions(fact: i.TreeMap.type): ImmutableTreeMapExtensions     =
     new ImmutableTreeMapExtensions(fact)
 
-  implicit def toImmutableIntMapExtensions(fact: i.IntMap.type): ImmutableIntMapExtensions =
+  implicit def toImmutableIntMapExtensions(fact: i.IntMap.type): ImmutableIntMapExtensions        =
     new ImmutableIntMapExtensions(fact)
 
-  implicit def toImmutableLongMapExtensions(fact: i.LongMap.type): ImmutableLongMapExtensions =
+  implicit def toImmutableLongMapExtensions(fact: i.LongMap.type): ImmutableLongMapExtensions     =
     new ImmutableLongMapExtensions(fact)
 
-  implicit def toMutableLongMapExtensions(fact: m.LongMap.type): MutableLongMapExtensions =
+  implicit def toMutableLongMapExtensions(fact: m.LongMap.type): MutableLongMapExtensions         =
     new MutableLongMapExtensions(fact)
 
-  implicit def toMutableHashMapExtensions(fact: m.HashMap.type): MutableHashMapExtensions =
+  implicit def toMutableHashMapExtensions(fact: m.HashMap.type): MutableHashMapExtensions         =
     new MutableHashMapExtensions(fact)
 
-  implicit def toMutableListMapExtensions(fact: m.ListMap.type): MutableListMapExtensions =
+  implicit def toMutableListMapExtensions(fact: m.ListMap.type): MutableListMapExtensions         =
     new MutableListMapExtensions(fact)
 
-  implicit def toMutableMapExtensions(fact: m.Map.type): MutableMapExtensions =
+  implicit def toMutableMapExtensions(fact: m.Map.type): MutableMapExtensions                     =
     new MutableMapExtensions(fact)
 
-  implicit def toStreamExtensionMethods[A](stream: Stream[A]): StreamExtensionMethods[A] =
+  implicit def toStreamExtensionMethods[A](stream: Stream[A]): StreamExtensionMethods[A]          =
     new StreamExtensionMethods[A](stream)
 
   implicit def toSortedExtensionMethods[K, V <: Sorted[K, V]](
@@ -173,7 +173,7 @@ private[compat] trait PackageShared {
   ): SortedExtensionMethods[K, V] =
     new SortedExtensionMethods[K, V](fact)
 
-  implicit def toIteratorExtensionMethods[A](self: Iterator[A]): IteratorExtensionMethods[A] =
+  implicit def toIteratorExtensionMethods[A](self: Iterator[A]): IteratorExtensionMethods[A]      =
     new IteratorExtensionMethods[A](self)
 
   implicit def toTraversableExtensionMethods[A](
@@ -257,16 +257,16 @@ class StreamExtensionMethods[A](private val stream: Stream[A]) extends AnyVal {
 }
 
 class SortedExtensionMethods[K, T <: Sorted[K, T]](private val fact: Sorted[K, T]) {
-  def rangeFrom(from:   K): T = fact.from(from)
-  def rangeTo(to:       K): T = fact.to(to)
+  def rangeFrom(from: K): T   = fact.from(from)
+  def rangeTo(to: K): T       = fact.to(to)
   def rangeUntil(until: K): T = fact.until(until)
 }
 
 class IteratorExtensionMethods[A](private val self: c.Iterator[A]) extends AnyVal {
-  def sameElements[B >: A](that: c.TraversableOnce[B]): Boolean              =
+  def sameElements[B >: A](that: c.TraversableOnce[B]): Boolean        =
     self.sameElements(that.iterator)
-  def concat[B >: A](that:       c.TraversableOnce[B]): c.TraversableOnce[B] = self ++ that
-  def tapEach[U](f:              A => U): c.Iterator[A]                      = self.map { a => f(a); a }
+  def concat[B >: A](that: c.TraversableOnce[B]): c.TraversableOnce[B] = self ++ that
+  def tapEach[U](f: A => U): c.Iterator[A]                             = self.map { a => f(a); a }
 }
 
 class TraversableOnceExtensionMethods[A](private val self: c.TraversableOnce[A]) extends AnyVal {
@@ -300,8 +300,8 @@ class TraversableOnceExtensionMethods[A](private val self: c.TraversableOnce[A])
 class TraversableExtensionMethods[A](private val self: c.Traversable[A]) extends AnyVal {
   def iterableFactory: GenericCompanion[Traversable] = self.companion
 
-  def sizeCompare(otherSize: Int): Int = SizeCompareImpl.sizeCompareInt(self)(otherSize)
-  def sizeIs: SizeCompareOps = new SizeCompareOps(self)
+  def sizeCompare(otherSize: Int): Int         = SizeCompareImpl.sizeCompareInt(self)(otherSize)
+  def sizeIs: SizeCompareOps                   = new SizeCompareOps(self)
   def sizeCompare(that: c.Traversable[_]): Int = SizeCompareImpl.sizeCompareColl(self)(that)
 
 }

@@ -31,9 +31,9 @@ class DecimalFormat(
     DecimalFormatUtil.toParsedPattern(pattern)
   )
 
-  private val decimalSeparatorAlwaysShown: AtomicBoolean  = new AtomicBoolean(false)
-  private val parseBigDecimal: AtomicBoolean              = new AtomicBoolean(false)
-  private val currency: AtomicReference[Option[Currency]] = new AtomicReference(None)
+  private val decimalSeparatorAlwaysShown: AtomicBoolean    = new AtomicBoolean(false)
+  private val parseBigDecimal: AtomicBoolean                = new AtomicBoolean(false)
+  private val currency: AtomicReference[Option[Currency]]   = new AtomicReference(None)
 
   // Helpers to avoid using .compareTo, annoying have to re-import within defs
   private val bigIntegerOrdering = implicitly[Ordering[JavaBigInteger]]
@@ -46,15 +46,15 @@ class DecimalFormat(
     this.parsedPattern.get
   }
 
-  private def useScientificNotation: Boolean = parsedPattern.get.minimumExponentDigits.isDefined
+  private def useScientificNotation: Boolean       = parsedPattern.get.minimumExponentDigits.isDefined
 
   override def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer =
     subFormat(JavaBigDecimal.valueOf(number), toAppendTo, pos)
 
-  override def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer =
+  override def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer   =
     subFormat(JavaBigDecimal.valueOf(number), toAppendTo, pos)
 
-  private def handleGroupSeparator(builder: StringBuilder, idx: Int) =
+  private def handleGroupSeparator(builder: StringBuilder, idx: Int)                              =
     if (
       isGroupingUsed() &&
       (getGroupingSize() > 0) &&
@@ -145,7 +145,7 @@ class DecimalFormat(
   }
 
   // Based upon number count, add in the number of group separators
-  private def totalDigitsWritten(count: Int): Int =
+  private def totalDigitsWritten(count: Int): Int       =
     if (isGroupingUsed() && getGroupingSize() > 0 && count > 0)
       count + (count / getGroupingSize())
     else count
@@ -368,7 +368,7 @@ class DecimalFormat(
     this.parsedPattern.set(p.copy(groupingSize = newValue, isGroupingUsed = newValue > 0))
   }
 
-  override def isGroupingUsed(): Boolean = parsedPattern.get.isGroupingUsed
+  override def isGroupingUsed(): Boolean   = parsedPattern.get.isGroupingUsed
 
   override def setGroupingUsed(newValue: Boolean): Unit = {
     val p = parsedPattern.get
@@ -387,7 +387,7 @@ class DecimalFormat(
   def toPattern(): String          = generatePattern(false)
   def toLocalizedPattern(): String = generatePattern(true)
 
-  private def generatePattern(localize: Boolean): String = {
+  private def generatePattern(localize: Boolean): String    = {
     val isExponent: Boolean =
       parsedPattern.get.minimumExponentDigits.isDefined || parsedPattern.get.maximumExponentDigits.isDefined
 
@@ -491,7 +491,7 @@ class DecimalFormat(
     result.toString()
   }
 
-  override def getMaximumIntegerDigits(): Int =
+  override def getMaximumIntegerDigits(): Int               =
     parsedPattern.get.maximumIntegerDigits.getOrElse(Int.MaxValue)
 
   override def setMaximumIntegerDigits(newValue: Int): Unit = {
@@ -506,9 +506,9 @@ class DecimalFormat(
     )
   }
 
-  override def getMinimumIntegerDigits(): Int = parsedPattern.get.minimumIntegerDigits.getOrElse(0)
+  override def getMinimumIntegerDigits(): Int               = parsedPattern.get.minimumIntegerDigits.getOrElse(0)
 
-  override def setMinimumIntegerDigits(newValue: Int): Unit = {
+  override def setMinimumIntegerDigits(newValue: Int): Unit  = {
     val newMin: Int = max(newValue, 0)
     val p           = parsedPattern.get
 
@@ -520,7 +520,7 @@ class DecimalFormat(
     )
   }
 
-  override def getMaximumFractionDigits(): Int =
+  override def getMaximumFractionDigits(): Int               =
     parsedPattern.get.maximumFractionDigits.getOrElse(5)
 
   override def setMaximumFractionDigits(newValue: Int): Unit = {
@@ -535,7 +535,7 @@ class DecimalFormat(
     )
   }
 
-  override def getMinimumFractionDigits(): Int =
+  override def getMinimumFractionDigits(): Int               =
     parsedPattern.get.minimumFractionDigits.getOrElse(0)
 
   override def setMinimumFractionDigits(newValue: Int): Unit = {
@@ -557,13 +557,13 @@ class DecimalFormat(
     usePattern(standardPattern)
   }
 
-  def safeGetCurrency(): Option[Currency] =
+  def safeGetCurrency(): Option[Currency]            =
     try Some(Currency.getInstance(Locale.getDefault()))
     catch {
       case _: Throwable => None
     }
 
-  override def getCurrency(): Currency =
+  override def getCurrency(): Currency               =
     currency.get() match {
       case Some(c) => c
       case _       =>
@@ -575,7 +575,7 @@ class DecimalFormat(
   override def setCurrency(currency: Currency): Unit =
     this.currency.set(Option(currency))
 
-  override def clone(): AnyRef = {
+  override def clone(): AnyRef                       = {
     val f = new DecimalFormat(toPattern())
 
     // Non pattern-based settings to propogate
@@ -587,7 +587,7 @@ class DecimalFormat(
     f
   }
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int                       = {
     val prime  = 31
     var result = 1
     if (currency.get().isDefined)
@@ -609,7 +609,7 @@ class DecimalFormat(
     result
   }
 
-  override def equals(obj: Any): Boolean =
+  override def equals(obj: Any): Boolean             =
     obj match {
       case f: DecimalFormat =>
         f.getCurrency() == getCurrency() &&

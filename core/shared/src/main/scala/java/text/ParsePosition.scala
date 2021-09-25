@@ -19,11 +19,11 @@ class ParsePosition(private[this] var index: Int) {
       case _                   => false
     }
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int             = {
     val state = Seq(getErrorIndex(), getIndex())
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 
-  override def toString(): String =
+  override def toString(): String          =
     s"java.text.ParsePosition[index=${getIndex()},errorIndex=${getErrorIndex()}]"
 }

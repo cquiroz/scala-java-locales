@@ -28,7 +28,7 @@ private final class IdentityPreservingBuilder[A, CC[X] <: TraversableOnce[X]](
   var collection: CC[A] = null.asInstanceOf[CC[A]]
   var ruined            = false
 
-  private[this] def ruin(): Unit = {
+  private[this] def ruin(): Unit                         = {
     if (collection != null) that ++= collection
     collection = null.asInstanceOf[CC[A]]
     ruined = true
@@ -64,7 +64,7 @@ private[compat] object CompatImpl {
   def simpleCBF[A, C](f: => m.Builder[A, C]): CanBuildFrom[Any, A, C] =
     new CanBuildFrom[Any, A, C] {
       def apply(from: Any): m.Builder[A, C] = apply()
-      def apply(): m.Builder[A, C] = f
+      def apply(): m.Builder[A, C]          = f
     }
 
   type ImmutableBitSetCC[X] = ({ type L[_] = i.BitSet })#L[X]

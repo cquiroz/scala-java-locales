@@ -55,9 +55,9 @@ object DateFormat {
   private def patternsR(ldml: LDML, get: CalendarPatterns => Option[String]): Option[String] =
     ldml.calendarPatterns.flatMap(get).orElse(ldml.parent.flatMap(patternsR(_, get)))
 
-  final def getTimeInstance(): DateFormat = getTimeInstance(DEFAULT)
+  final def getTimeInstance(): DateFormat                                                    = getTimeInstance(DEFAULT)
 
-  final def getTimeInstance(style: Int): DateFormat =
+  final def getTimeInstance(style: Int): DateFormat                  =
     getTimeInstance(style, Locale.getDefault(Locale.Category.FORMAT))
 
   final def getTimeInstance(style: Int, aLocale: Locale): DateFormat =
@@ -69,9 +69,9 @@ object DateFormat {
       }
       .getOrElse(new SimpleDateFormat("", aLocale))
 
-  final def getDateInstance(): DateFormat = getDateInstance(DEFAULT)
+  final def getDateInstance(): DateFormat                            = getDateInstance(DEFAULT)
 
-  final def getDateInstance(style: Int): DateFormat =
+  final def getDateInstance(style: Int): DateFormat                  =
     getDateInstance(style, Locale.getDefault(Locale.Category.FORMAT))
 
   final def getDateInstance(style: Int, aLocale: Locale): DateFormat =
@@ -83,9 +83,9 @@ object DateFormat {
       }
       .getOrElse(new SimpleDateFormat("", aLocale))
 
-  final def getDateTimeInstance(): DateFormat = getDateInstance(DEFAULT)
+  final def getDateTimeInstance(): DateFormat                        = getDateInstance(DEFAULT)
 
-  final def getDateTimeInstance(dateStyle: Int, timeStyle: Int): DateFormat =
+  final def getDateTimeInstance(dateStyle: Int, timeStyle: Int): DateFormat                  =
     getDateTimeInstance(dateStyle, timeStyle, Locale.getDefault(Locale.Category.FORMAT))
 
   final def getDateTimeInstance(dateStyle: Int, timeStyle: Int, aLocale: Locale): DateFormat =
@@ -103,7 +103,7 @@ object DateFormat {
       }
       .getOrElse(new SimpleDateFormat("", aLocale))
 
-  final def getInstance(): DateFormat =
+  final def getInstance(): DateFormat                                                        =
     getDateTimeInstance(SHORT, SHORT)
 
   def getAvailableLocales(): Array[Locale] = Locale.getAvailableLocales()
