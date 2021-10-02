@@ -94,7 +94,7 @@ private[compat] trait PackageShared {
   ](fact: SortedMapFactory[CC]): CanBuildFrom[Any, (K, V), CC[K, V]] =
     simpleCBF(fact.newBuilder[K, V])
 
-  implicit def bitSetFactoryToCBF(fact: BitSetFactory[BitSet]): CanBuildFrom[Any, Int, BitSet]    =
+  implicit def bitSetFactoryToCBF(fact: BitSetFactory[BitSet]): CanBuildFrom[Any, Int, BitSet] =
     simpleCBF(fact.newBuilder)
 
   implicit def immutableBitSetFactoryToCBF(
@@ -128,7 +128,7 @@ private[compat] trait PackageShared {
       fact.apply(source.toSeq: _*)
   }
 
-  private[compat] def build[T, CC](builder: m.Builder[T, CC], source: TraversableOnce[T]): CC     = {
+  private[compat] def build[T, CC](builder: m.Builder[T, CC], source: TraversableOnce[T]): CC = {
     builder ++= source
     builder.result()
   }
@@ -138,34 +138,34 @@ private[compat] trait PackageShared {
   ): ImmutableSortedMapExtensions =
     new ImmutableSortedMapExtensions(fact)
 
-  implicit def toImmutableListMapExtensions(fact: i.ListMap.type): ImmutableListMapExtensions     =
+  implicit def toImmutableListMapExtensions(fact: i.ListMap.type): ImmutableListMapExtensions =
     new ImmutableListMapExtensions(fact)
 
-  implicit def toImmutableHashMapExtensions(fact: i.HashMap.type): ImmutableHashMapExtensions     =
+  implicit def toImmutableHashMapExtensions(fact: i.HashMap.type): ImmutableHashMapExtensions =
     new ImmutableHashMapExtensions(fact)
 
-  implicit def toImmutableTreeMapExtensions(fact: i.TreeMap.type): ImmutableTreeMapExtensions     =
+  implicit def toImmutableTreeMapExtensions(fact: i.TreeMap.type): ImmutableTreeMapExtensions =
     new ImmutableTreeMapExtensions(fact)
 
-  implicit def toImmutableIntMapExtensions(fact: i.IntMap.type): ImmutableIntMapExtensions        =
+  implicit def toImmutableIntMapExtensions(fact: i.IntMap.type): ImmutableIntMapExtensions =
     new ImmutableIntMapExtensions(fact)
 
-  implicit def toImmutableLongMapExtensions(fact: i.LongMap.type): ImmutableLongMapExtensions     =
+  implicit def toImmutableLongMapExtensions(fact: i.LongMap.type): ImmutableLongMapExtensions =
     new ImmutableLongMapExtensions(fact)
 
-  implicit def toMutableLongMapExtensions(fact: m.LongMap.type): MutableLongMapExtensions         =
+  implicit def toMutableLongMapExtensions(fact: m.LongMap.type): MutableLongMapExtensions =
     new MutableLongMapExtensions(fact)
 
-  implicit def toMutableHashMapExtensions(fact: m.HashMap.type): MutableHashMapExtensions         =
+  implicit def toMutableHashMapExtensions(fact: m.HashMap.type): MutableHashMapExtensions =
     new MutableHashMapExtensions(fact)
 
-  implicit def toMutableListMapExtensions(fact: m.ListMap.type): MutableListMapExtensions         =
+  implicit def toMutableListMapExtensions(fact: m.ListMap.type): MutableListMapExtensions =
     new MutableListMapExtensions(fact)
 
-  implicit def toMutableMapExtensions(fact: m.Map.type): MutableMapExtensions                     =
+  implicit def toMutableMapExtensions(fact: m.Map.type): MutableMapExtensions =
     new MutableMapExtensions(fact)
 
-  implicit def toStreamExtensionMethods[A](stream: Stream[A]): StreamExtensionMethods[A]          =
+  implicit def toStreamExtensionMethods[A](stream: Stream[A]): StreamExtensionMethods[A] =
     new StreamExtensionMethods[A](stream)
 
   implicit def toSortedExtensionMethods[K, V <: Sorted[K, V]](
@@ -173,7 +173,7 @@ private[compat] trait PackageShared {
   ): SortedExtensionMethods[K, V] =
     new SortedExtensionMethods[K, V](fact)
 
-  implicit def toIteratorExtensionMethods[A](self: Iterator[A]): IteratorExtensionMethods[A]      =
+  implicit def toIteratorExtensionMethods[A](self: Iterator[A]): IteratorExtensionMethods[A] =
     new IteratorExtensionMethods[A](self)
 
   implicit def toTraversableExtensionMethods[A](

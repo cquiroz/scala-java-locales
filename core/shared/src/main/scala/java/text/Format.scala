@@ -21,12 +21,12 @@ object Format {
     override def getAttributes(): java.util.Map[Attribute, AnyRef] =
       new java.util.HashMap()
 
-    override def getAttribute(attribute: Attribute): AnyRef        = null
+    override def getAttribute(attribute: Attribute): AnyRef = null
 
     override def getAllAttributeKeys(): java.util.Set[Attribute] =
       new java.util.TreeSet()
 
-    override def getRunLimit(): Int                              = 0
+    override def getRunLimit(): Int = 0
 
     override def getRunLimit(attribute: Attribute): Int = 0
 

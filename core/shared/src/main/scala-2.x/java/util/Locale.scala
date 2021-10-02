@@ -72,36 +72,36 @@ object Locale {
   private[util] def checkLanguage(l: String): Boolean =
     checkRegex("[a-zA-Z]{2,8}".r, l)
 
-  private[util] def checkScript(l: String): Boolean                   =
+  private[util] def checkScript(l: String): Boolean =
     checkRegex("[a-zA-Z]{4}".r, l)
 
-  private[util] def checkRegion(l: String): Boolean                   =
+  private[util] def checkRegion(l: String): Boolean =
     checkRegex("[a-zA-Z]{2}".r, l) || checkRegex("[0-9]{3}".r, l)
 
   private[util] def checkAcceptableVariantSegment(l: String): Boolean =
     checkRegex("[0-9a-zA-Z]{1,8}".r, l)
 
-  private[util] def checkVariantSegment(l: String): Boolean           =
+  private[util] def checkVariantSegment(l: String): Boolean =
     checkRegex("[0-9][0-9a-zA-Z]{3}".r, l) ||
       checkRegex("[0-9a-zA-Z]{5,8}".r, l)
 
-  private[util] def checkVariant(l: String): Boolean                  = {
+  private[util] def checkVariant(l: String): Boolean = {
     val parts = l.split("-|_")
     parts.forall(checkVariantSegment)
   }
 
-  private[util] def checkExtKey(key: Char): Boolean                   = key.isLetterOrDigit
+  private[util] def checkExtKey(key: Char): Boolean = key.isLetterOrDigit
 
   private[util] def checkExtValue(value: String): Boolean =
     value.split("-").forall(checkRegex("[0-9a-zA-Z]{2,8}".r, _))
 
-  private[util] def checkUnicodeKey(l: String): Boolean   =
+  private[util] def checkUnicodeKey(l: String): Boolean =
     checkRegex("[a-zA-Z]{2}".r, l)
 
-  private[util] def checkUnicodeType(l: String): Boolean  =
+  private[util] def checkUnicodeType(l: String): Boolean =
     l.isEmpty || l.split("-").forall(checkRegex("[0-9a-zA-Z]{3,8}".r, _))
 
-  private[util] def checkAttribute(l: String): Boolean    =
+  private[util] def checkAttribute(l: String): Boolean =
     checkRegex("[0-9a-zA-Z]{3,8}".r, l)
 
   class Builder() {
@@ -291,7 +291,7 @@ object Locale {
   private var defaultPerCategory: SMap[Locale.Category, Option[Locale]] =
     Locale.Category.values().map(_ -> Some(defaultLocale)).toMap
 
-  private def default: Locale                                           = defaultLocale
+  private def default: Locale = defaultLocale
 
   private def default(category: Locale.Category): Locale =
     if (category == null)
@@ -454,7 +454,7 @@ class Locale private[util] (
     throw new NullPointerException("Null argument to constructor not allowed")
 
   // Handle 2 special cases jp_JP_JP and th_TH_TH
-  private[this] val extensions                     = {
+  private[this] val extensions = {
     if (
       ((language, country, variant)) == (("ja", "JP", "JP")) &&
       supportSpecialCases
@@ -469,7 +469,7 @@ class Locale private[util] (
       _extensions
   }
 
-  private def updateSpecialLanguages(l: String)    =
+  private def updateSpecialLanguages(l: String) =
     l match {
       case "iw" => "he"
       case "ji" => "yi"
@@ -661,11 +661,11 @@ class Locale private[util] (
       unicodeExtensions.forall { case (k, v) => l.getUnicodeLocaleType(k) == v } &&
       unicodeAttributes == l.getUnicodeLocaleAttributes().asScala
 
-  override def equals(x: Any): Boolean    =
+  override def equals(x: Any): Boolean =
     x match {
       case l: Locale => isEqual(l)
       case _         => false
     }
 
-  override def hashCode(): Int            = toLanguageTag().hashCode
+  override def hashCode(): Int = toLanguageTag().hashCode
 }
