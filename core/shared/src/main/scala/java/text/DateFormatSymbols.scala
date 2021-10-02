@@ -11,22 +11,22 @@ object DateFormatSymbols {
   def getInstance(): DateFormatSymbols =
     getInstance(Locale.getDefault(Locale.Category.FORMAT))
 
-  def getInstance(locale: Locale): DateFormatSymbols                                       =
+  def getInstance(locale: Locale): DateFormatSymbols =
     initialize(locale, new DateFormatSymbols(locale))
 
-  private def initialize(locale: Locale, dfs: DateFormatSymbols): DateFormatSymbols        =
+  private def initialize(locale: Locale, dfs: DateFormatSymbols): DateFormatSymbols =
     LocalesDb
       .ldml(locale)
       .map(l => toDFS(locale, dfs, l))
       .getOrElse(dfs)
 
-  private def copyAndPad(m: List[String], size: Int, v: String): Array[String]             = {
+  private def copyAndPad(m: List[String], size: Int, v: String): Array[String] = {
     val p = Arrays.copyOf[String](m.toArray[String], size)
     (m.length until size).foreach(p(_) = v)
     p
   }
 
-  private def padAndCopyDays(m: List[String], size: Int, v: String): Array[String]         = {
+  private def padAndCopyDays(m: List[String], size: Int, v: String): Array[String] = {
     // Days in the JVM are stored starting on index 1, and 0 is empty
     val v = new Array[String](size)
     (0 until size).foreach(i => if (i == 0 || i > m.length) v(i) = "" else v(i) = m(i - 1))
@@ -141,7 +141,7 @@ class DateFormatSymbols(private[this] val locale: Locale) extends Cloneable {
     this.localPatternChars = localPatternChars
   }
 
-  override def clone(): AnyRef                              = {
+  override def clone(): AnyRef = {
     val dfs = new DateFormatSymbols()
     dfs.setEras(getEras())
     dfs.setMonths(getMonths())
@@ -154,7 +154,7 @@ class DateFormatSymbols(private[this] val locale: Locale) extends Cloneable {
     dfs
   }
 
-  override def hashCode(): Int                              = {
+  override def hashCode(): Int = {
     val state = Seq(
       Array[AnyRef](eras: _*),
       Array[AnyRef](months: _*),
@@ -170,7 +170,7 @@ class DateFormatSymbols(private[this] val locale: Locale) extends Cloneable {
     31 * (31 * s + Arrays.hashCode(zsc)) + localPatternChars.hashCode
   }
 
-  override def equals(other: Any): Boolean                  =
+  override def equals(other: Any): Boolean =
     other match {
       case that: DateFormatSymbols =>
         eras.sameElements(that.getEras()) &&

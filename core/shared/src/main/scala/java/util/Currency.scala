@@ -15,7 +15,7 @@ object Currency {
         .get
     }.toMap
 
-  private val all: SSet[Currency]                                = LocalesDb.currencydata.currencyTypes.map {
+  private val all: SSet[Currency] = LocalesDb.currencydata.currencyTypes.map {
     (currencyType: CurrencyType) =>
       val fractions: CurrencyDataFractionsInfo =
         LocalesDb.currencydata.fractions
@@ -38,7 +38,7 @@ object Currency {
       )
   }.toSet
 
-  private val currencyCodeMap: SMap[String, Currency]            =
+  private val currencyCodeMap: SMap[String, Currency] =
     all.toSeq.groupBy(_.getCurrencyCode()).map {
       case (currencyCode: String, matches: Seq[Currency]) => currencyCode -> matches.head
     }

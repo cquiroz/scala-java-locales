@@ -28,7 +28,7 @@ private final class IdentityPreservingBuilder[A, CC[X] <: TraversableOnce[X]](
   var collection: CC[A] = null.asInstanceOf[CC[A]]
   var ruined            = false
 
-  private[this] def ruin(): Unit                         = {
+  private[this] def ruin(): Unit = {
     if (collection != null) that ++= collection
     collection = null.asInstanceOf[CC[A]]
     ruined = true
