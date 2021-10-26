@@ -1,9 +1,9 @@
 package testsuite.javalib.util
 
 import java.util.{ Currency, Locale }
+import testsuite.utils.Platform
 
-// Shared test data for JVM/JS so it's not duplicated
-trait CurrencyTest extends munit.FunSuite {
+class CurrencyTest extends munit.FunSuite {
   case class CurrencyTestResults(
     expectedCurrencyCode:   String,
     expectedNumericCode:    Int,
@@ -14,21 +14,29 @@ trait CurrencyTest extends munit.FunSuite {
 
   // Have separate js vs jvm results to allow for CLDR differences
   trait CombinedCurrencyTestResults {
-    def jsResults: CurrencyTestResults
+    def jsNativeResults: CurrencyTestResults
     def jvmResults: CurrencyTestResults
   }
 
   case class LocaleCurrencyTest(
-    locale:     Locale,
-    jsResults:  CurrencyTestResults,
-    jvmResults: CurrencyTestResults
+    locale:          Locale,
+    jsNativeResults: CurrencyTestResults,
+    jvmResults:      CurrencyTestResults
   ) extends CombinedCurrencyTestResults
+  object LocaleCurrencyTest         {
+    def apply(locale: Locale, results: CurrencyTestResults): LocaleCurrencyTest =
+      LocaleCurrencyTest(locale, results, results)
+  }
 
   case class CodeCurrencyTest(
-    currencyCode: String,
-    jsResults:    CurrencyTestResults,
-    jvmResults:   CurrencyTestResults
+    currencyCode:    String,
+    jsNativeResults: CurrencyTestResults,
+    jvmResults:      CurrencyTestResults
   ) extends CombinedCurrencyTestResults
+  object CodeCurrencyTest           {
+    def apply(currencyCode: String, results: CurrencyTestResults): CodeCurrencyTest =
+      CodeCurrencyTest(currencyCode, results, results)
+  }
 
   case class DefaultLocaleCurrencyTest(defaultLocale: Locale, tests: Seq[CodeCurrencyTest])
 
@@ -36,62 +44,57 @@ trait CurrencyTest extends munit.FunSuite {
   private val localeCurrencyTests: Seq[LocaleCurrencyTest] = Seq(
     LocaleCurrencyTest(
       Locale.CANADA,
-      jsResults = CurrencyTestResults("CAD", 124, 2, "$", "Canadian Dollar"),
-      jvmResults = CurrencyTestResults("CAD", 124, 2, "$", "Canadian Dollar")
+      results = CurrencyTestResults("CAD", 124, 2, "$", "Canadian Dollar")
     ),
     LocaleCurrencyTest(
       Locale.CANADA_FRENCH,
-      jsResults = CurrencyTestResults("CAD", 124, 2, "$", "dollar canadien"),
+      jsNativeResults = CurrencyTestResults("CAD", 124, 2, "$", "dollar canadien"),
       jvmResults = CurrencyTestResults("CAD", 124, 2, "$", "dollar canadien")
     ),
     LocaleCurrencyTest(
       Locale.CHINA,
-      jsResults = CurrencyTestResults("CNY", 156, 2, "¥", "人民币"),
+      jsNativeResults = CurrencyTestResults("CNY", 156, 2, "¥", "人民币"),
       jvmResults = CurrencyTestResults("CNY", 156, 2, "￥", "人民币")
     ),
     LocaleCurrencyTest(
       Locale.FRANCE,
-      jsResults = CurrencyTestResults("EUR", 978, 2, "€", "euro"),
-      jvmResults = CurrencyTestResults("EUR", 978, 2, "€", "euro")
+      results = CurrencyTestResults("EUR", 978, 2, "€", "euro")
     ),
     LocaleCurrencyTest(
       Locale.GERMANY,
-      jsResults = CurrencyTestResults("EUR", 978, 2, "€", "Euro"),
-      jvmResults = CurrencyTestResults("EUR", 978, 2, "€", "Euro")
+      results = CurrencyTestResults("EUR", 978, 2, "€", "Euro")
     ),
     LocaleCurrencyTest(
       Locale.ITALY,
-      jsResults = CurrencyTestResults("EUR", 978, 2, "€", "euro"),
+      jsNativeResults = CurrencyTestResults("EUR", 978, 2, "€", "euro"),
       jvmResults = CurrencyTestResults("EUR", 978, 2, "€", "Euro")
     ),
     LocaleCurrencyTest(
       Locale.JAPAN,
-      jsResults = CurrencyTestResults("JPY", 392, 0, "￥", "日本円"),
-      jvmResults = CurrencyTestResults("JPY", 392, 0, "￥", "日本円")
+      results = CurrencyTestResults("JPY", 392, 0, "￥", "日本円")
     ),
     LocaleCurrencyTest(
       Locale.KOREA,
-      jsResults = CurrencyTestResults("KRW", 410, 0, "₩", "대한민국 원"),
-      jvmResults = CurrencyTestResults("KRW", 410, 0, "₩", "대한민국 원")
+      results = CurrencyTestResults("KRW", 410, 0, "₩", "대한민국 원")
     ),
     LocaleCurrencyTest(
       Locale.PRC,
-      jsResults = CurrencyTestResults("CNY", 156, 2, "¥", "人民币"),
+      jsNativeResults = CurrencyTestResults("CNY", 156, 2, "¥", "人民币"),
       jvmResults = CurrencyTestResults("CNY", 156, 2, "￥", "人民币")
     ),
     LocaleCurrencyTest(
       Locale.TAIWAN,
-      jsResults = CurrencyTestResults("TWD", 901, 2, "$", "新台幣"),
+      jsNativeResults = CurrencyTestResults("TWD", 901, 2, "$", "新台幣"),
       jvmResults = CurrencyTestResults("TWD", 901, 2, "NT$", "新臺幣")
     ),
     LocaleCurrencyTest(
       Locale.UK,
-      jsResults = CurrencyTestResults("GBP", 826, 2, "£", "British Pound"),
+      jsNativeResults = CurrencyTestResults("GBP", 826, 2, "£", "British Pound"),
       jvmResults = CurrencyTestResults("GBP", 826, 2, "£", "British Pound Sterling")
     ),
     LocaleCurrencyTest(
       Locale.US,
-      jsResults = CurrencyTestResults("USD", 840, 2, "$", "US Dollar"),
+      jsNativeResults = CurrencyTestResults("USD", 840, 2, "$", "US Dollar"),
       jvmResults = CurrencyTestResults("USD", 840, 2, "$", "US Dollar")
     )
   )
@@ -103,42 +106,42 @@ trait CurrencyTest extends munit.FunSuite {
       tests = Seq(
         CodeCurrencyTest(
           currencyCode = "CAD",
-          jsResults = CurrencyTestResults("CAD", 124, 2, "CA$", "Canadian Dollar"),
+          jsNativeResults = CurrencyTestResults("CAD", 124, 2, "CA$", "Canadian Dollar"),
           jvmResults = CurrencyTestResults("CAD", 124, 2, "CA$", "Canadian Dollar")
         ),
         CodeCurrencyTest(
           currencyCode = "EUR",
-          jsResults = CurrencyTestResults("EUR", 978, 2, "€", "Euro"),
+          jsNativeResults = CurrencyTestResults("EUR", 978, 2, "€", "Euro"),
           jvmResults = CurrencyTestResults("EUR", 978, 2, "€", "Euro")
         ),
         CodeCurrencyTest(
           currencyCode = "JPY",
-          jsResults = CurrencyTestResults("JPY", 392, 0, "¥", "Japanese Yen"),
+          jsNativeResults = CurrencyTestResults("JPY", 392, 0, "¥", "Japanese Yen"),
           jvmResults = CurrencyTestResults("JPY", 392, 0, "¥", "Japanese Yen")
         ),
         CodeCurrencyTest(
           currencyCode = "KRW",
-          jsResults = CurrencyTestResults("KRW", 410, 0, "₩", "South Korean Won"),
+          jsNativeResults = CurrencyTestResults("KRW", 410, 0, "₩", "South Korean Won"),
           jvmResults = CurrencyTestResults("KRW", 410, 0, "₩", "South Korean Won")
         ),
         CodeCurrencyTest(
           currencyCode = "CNY",
-          jsResults = CurrencyTestResults("CNY", 156, 2, "CN¥", "Chinese Yuan"),
+          jsNativeResults = CurrencyTestResults("CNY", 156, 2, "CN¥", "Chinese Yuan"),
           jvmResults = CurrencyTestResults("CNY", 156, 2, "CN¥", "Chinese Yuan")
         ),
         CodeCurrencyTest(
           currencyCode = "TWD",
-          jsResults = CurrencyTestResults("TWD", 901, 2, "NT$", "New Taiwan Dollar"),
+          jsNativeResults = CurrencyTestResults("TWD", 901, 2, "NT$", "New Taiwan Dollar"),
           jvmResults = CurrencyTestResults("TWD", 901, 2, "NT$", "New Taiwan Dollar")
         ),
         CodeCurrencyTest(
           currencyCode = "GBP",
-          jsResults = CurrencyTestResults("GBP", 826, 2, "£", "British Pound"),
+          jsNativeResults = CurrencyTestResults("GBP", 826, 2, "£", "British Pound"),
           jvmResults = CurrencyTestResults("GBP", 826, 2, "£", "British Pound Sterling")
         ),
         CodeCurrencyTest(
           currencyCode = "USD",
-          jsResults = CurrencyTestResults("USD", 840, 2, "$", "US Dollar"),
+          jsNativeResults = CurrencyTestResults("USD", 840, 2, "$", "US Dollar"),
           jvmResults = CurrencyTestResults("USD", 840, 2, "$", "US Dollar")
         )
       )
@@ -148,43 +151,37 @@ trait CurrencyTest extends munit.FunSuite {
       tests = Seq(
         CodeCurrencyTest(
           currencyCode = "CAD",
-          jsResults = CurrencyTestResults("CAD", 124, 2, "CA$", "Kanadischer Dollar"),
-          jvmResults = CurrencyTestResults("CAD", 124, 2, "CA$", "Kanadischer Dollar")
+          results = CurrencyTestResults("CAD", 124, 2, "CA$", "Kanadischer Dollar")
         ),
         CodeCurrencyTest(
           currencyCode = "EUR",
-          jsResults = CurrencyTestResults("EUR", 978, 2, "€", "Euro"),
-          jvmResults = CurrencyTestResults("EUR", 978, 2, "€", "Euro")
+          results = CurrencyTestResults("EUR", 978, 2, "€", "Euro")
         ),
         CodeCurrencyTest(
           currencyCode = "JPY",
-          jsResults = CurrencyTestResults("JPY", 392, 0, "¥", "Japanischer Yen"),
+          jsNativeResults = CurrencyTestResults("JPY", 392, 0, "¥", "Japanischer Yen"),
           jvmResults = CurrencyTestResults("JPY", 392, 0, "¥", "Japanische Yen")
         ),
         CodeCurrencyTest(
           currencyCode = "KRW",
-          jsResults = CurrencyTestResults("KRW", 410, 0, "₩", "Südkoreanischer Won"),
-          jvmResults = CurrencyTestResults("KRW", 410, 0, "₩", "Südkoreanischer Won")
+          results = CurrencyTestResults("KRW", 410, 0, "₩", "Südkoreanischer Won")
         ),
         CodeCurrencyTest(
           currencyCode = "CNY",
-          jsResults = CurrencyTestResults("CNY", 156, 2, "CN¥", "Renminbi Yuan"),
-          jvmResults = CurrencyTestResults("CNY", 156, 2, "CN¥", "Renminbi Yuan")
+          results = CurrencyTestResults("CNY", 156, 2, "CN¥", "Renminbi Yuan")
         ),
         CodeCurrencyTest(
           currencyCode = "TWD",
-          jsResults = CurrencyTestResults("TWD", 901, 2, "NT$", "Neuer Taiwan-Dollar"),
-          jvmResults = CurrencyTestResults("TWD", 901, 2, "NT$", "Neuer Taiwan-Dollar")
+          results = CurrencyTestResults("TWD", 901, 2, "NT$", "Neuer Taiwan-Dollar")
         ),
         CodeCurrencyTest(
           currencyCode = "GBP",
-          jsResults = CurrencyTestResults("GBP", 826, 2, "£", "Britisches Pfund"),
+          jsNativeResults = CurrencyTestResults("GBP", 826, 2, "£", "Britisches Pfund"),
           jvmResults = CurrencyTestResults("GBP", 826, 2, "£", "Pfund Sterling")
         ),
         CodeCurrencyTest(
           currencyCode = "USD",
-          jsResults = CurrencyTestResults("USD", 840, 2, "$", "US-Dollar"),
-          jvmResults = CurrencyTestResults("USD", 840, 2, "$", "US-Dollar")
+          results = CurrencyTestResults("USD", 840, 2, "$", "US-Dollar")
         )
       )
     ),
@@ -193,43 +190,37 @@ trait CurrencyTest extends munit.FunSuite {
       tests = Seq(
         CodeCurrencyTest(
           currencyCode = "CAD",
-          jsResults = CurrencyTestResults("CAD", 124, 2, "CA$", "加拿大元"),
-          jvmResults = CurrencyTestResults("CAD", 124, 2, "CA$", "加拿大元")
+          results = CurrencyTestResults("CAD", 124, 2, "CA$", "加拿大元")
         ),
         CodeCurrencyTest(
           currencyCode = "EUR",
-          jsResults = CurrencyTestResults("EUR", 978, 2, "€", "欧元"),
-          jvmResults = CurrencyTestResults("EUR", 978, 2, "€", "欧元")
+          results = CurrencyTestResults("EUR", 978, 2, "€", "欧元")
         ),
         CodeCurrencyTest(
           currencyCode = "JPY",
-          jsResults = CurrencyTestResults("JPY", 392, 0, "JP¥", "日元"),
-          jvmResults = CurrencyTestResults("JPY", 392, 0, "JP¥", "日元")
+          results = CurrencyTestResults("JPY", 392, 0, "JP¥", "日元")
         ),
         CodeCurrencyTest(
           currencyCode = "KRW",
-          jsResults = CurrencyTestResults("KRW", 410, 0, "￦", "韩元"),
+          jsNativeResults = CurrencyTestResults("KRW", 410, 0, "￦", "韩元"),
           jvmResults = CurrencyTestResults("KRW", 410, 0, "￦", "韩圆")
         ),
         CodeCurrencyTest(
           currencyCode = "CNY",
-          jsResults = CurrencyTestResults("CNY", 156, 2, "¥", "人民币"),
+          jsNativeResults = CurrencyTestResults("CNY", 156, 2, "¥", "人民币"),
           jvmResults = CurrencyTestResults("CNY", 156, 2, "￥", "人民币")
         ),
         CodeCurrencyTest(
           currencyCode = "TWD",
-          jsResults = CurrencyTestResults("TWD", 901, 2, "NT$", "新台币"),
-          jvmResults = CurrencyTestResults("TWD", 901, 2, "NT$", "新台币")
+          results = CurrencyTestResults("TWD", 901, 2, "NT$", "新台币")
         ),
         CodeCurrencyTest(
           currencyCode = "GBP",
-          jsResults = CurrencyTestResults("GBP", 826, 2, "£", "英镑"),
-          jvmResults = CurrencyTestResults("GBP", 826, 2, "£", "英镑")
+          results = CurrencyTestResults("GBP", 826, 2, "£", "英镑")
         ),
         CodeCurrencyTest(
           currencyCode = "USD",
-          jsResults = CurrencyTestResults("USD", 840, 2, "US$", "美元"),
-          jvmResults = CurrencyTestResults("USD", 840, 2, "US$", "美元")
+          results = CurrencyTestResults("USD", 840, 2, "US$", "美元")
         )
       )
     )
@@ -264,6 +255,18 @@ trait CurrencyTest extends munit.FunSuite {
         val codeCurrency = Currency.getInstance(test.currencyCode)
         testCurrency(codeCurrency, f(test))
       }
+    }
+  }
+
+  test("available_currencies") {
+    assert(Currency.getAvailableCurrencies().size() > 0)
+  }
+
+  test("standard_locales") {
+    if (Platform.executingInJVM) {
+      test_standard_locales(_.jvmResults)
+    } else {
+      test_standard_locales(_.jsNativeResults)
     }
   }
 }
