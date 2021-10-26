@@ -285,6 +285,9 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .platformsSettings(JSPlatform, NativePlatform)(
     Test / unmanagedSourceDirectories += baseDirectory.value.getParentFile / "js-native" / "src" / "test" / "scala"
   )
+  .platformsSettings(JSPlatform, JVMPlatform)(
+    Test / unmanagedSourceDirectories += baseDirectory.value.getParentFile / "js-jvm" / "src" / "test" / "scala"
+  )
 
 lazy val macroUtils = project
   .in(file("macroUtils"))
