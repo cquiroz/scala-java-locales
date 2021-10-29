@@ -87,14 +87,14 @@ class DecimalFormatTest extends munit.FunSuite {
     // TODO: this should probably be fixed in the impl to do the nulls like the JVM
 
     // Check for null arguments
-    //f.setPositivePrefix(null)
-    //assertNull(f.getPositivePrefix)
-    //f.setPositiveSuffix(null)
-    //assertNull(f.getPositiveSuffix)
-    //f.setNegativePrefix(null)
-    //assertNull(f.getNegativePrefix)
-    //f.setNegativeSuffix(null)
-    //assertNull(f.getNegativeSuffix)
+    // f.setPositivePrefix(null)
+    // assertNull(f.getPositivePrefix)
+    // f.setPositiveSuffix(null)
+    // assertNull(f.getPositiveSuffix)
+    // f.setNegativePrefix(null)
+    // assertNull(f.getNegativePrefix)
+    // f.setNegativeSuffix(null)
+    // assertNull(f.getNegativeSuffix)
 
     f.setMultiplier(2)
     assertEquals(2, f.getMultiplier)
