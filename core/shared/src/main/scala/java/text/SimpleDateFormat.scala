@@ -10,7 +10,7 @@ class SimpleDateFormat(
 
   def this(pattern: String, aLocale: Locale) = this(pattern, DateFormatSymbols.getInstance(aLocale))
 
-  //def this() = this("???", DecimalFormatSymbols.getInstance())
+  // def this() = this("???", DecimalFormatSymbols.getInstance())
 
   def format(date: Date): String = {
     val fields = Array(

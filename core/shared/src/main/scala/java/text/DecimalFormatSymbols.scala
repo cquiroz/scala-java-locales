@@ -145,21 +145,21 @@ class DecimalFormatSymbols(private[this] val locale: Locale) extends Cloneable {
   def setMinusSign(minusSign: Char): Unit = this.minusSign = minusSign
 
   // TODO Implement currency methods
-  //def getCurrencySymbol(): String
+  // def getCurrencySymbol(): String
 
-  //def setCurrencySymbol(currency: String): Unit
+  // def setCurrencySymbol(currency: String): Unit
 
-  //def getInternationalCurrencySymbol(): String
+  // def getInternationalCurrencySymbol(): String
 
-  //def setInternationalCurrencySymbol(currency: String): Unit
+  // def setInternationalCurrencySymbol(currency: String): Unit
 
-  //def getCurrency(): Currency
+  // def getCurrency(): Currency
 
-  //def setCurrency(currency: Currency): Unit
+  // def setCurrency(currency: Currency): Unit
 
-  //def getMonetaryDecimalSeparator(): Char
+  // def getMonetaryDecimalSeparator(): Char
 
-  //def setMonetaryDecimalSeparator(sep: Char): Unit
+  // def setMonetaryDecimalSeparator(sep: Char): Unit
 
   def getExponentSeparator(): String = if (exp != null) exp else ""
 

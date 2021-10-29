@@ -1669,16 +1669,16 @@ class DateFormatSymbolsTest extends munit.FunSuite {
   )
 
   def test_dfs(s: DateFormatSymbols, t: LocaleTestItem): Unit =
-    //assertArrayEquals(Array[AnyRef](t.months: _*), Array[AnyRef](s.getMonths(): _*))
-    //assertArrayEquals(Array[AnyRef](t.shortMonths: _*), Array[AnyRef](s.getShortMonths(): _*))
+    // assertArrayEquals(Array[AnyRef](t.months: _*), Array[AnyRef](s.getMonths(): _*))
+    // assertArrayEquals(Array[AnyRef](t.shortMonths: _*), Array[AnyRef](s.getShortMonths(): _*))
     for {
       d <- CalendarConstants.SUNDAY to CalendarConstants.SATURDAY
     } {
       assertEquals(t.weekdays(d), s.getWeekdays()(d))
       assertEquals(t.shortWeekdays(d), s.getShortWeekdays()(d))
     }
-  //assertArrayEquals(Array[AnyRef](t.amPm: _*), Array[AnyRef](s.getAmPmStrings(): _*))
-  //assertArrayEquals(Array[AnyRef](t.eras: _*), Array[AnyRef](s.getEras(): _*))
+  // assertArrayEquals(Array[AnyRef](t.amPm: _*), Array[AnyRef](s.getAmPmStrings(): _*))
+  // assertArrayEquals(Array[AnyRef](t.eras: _*), Array[AnyRef](s.getEras(): _*))
 
   test("default_locales_date_format_symbol") {
     standardLocalesData.foreach { case (l, t @ LocaleTestItem(_, _, _, _, _, _, _, _)) =>

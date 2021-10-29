@@ -275,8 +275,8 @@ class DecimalFormat(
   override def parseObject(source: String, pos: ParsePosition): AnyRef = ???
 
   // TODO implement
-  //def parse(source: String, parsePosition: ParsePosition): Number
-  //def parse(source: String): Number
+  // def parse(source: String, parsePosition: ParsePosition): Number
+  // def parse(source: String): Number
 
   def getDecimalFormatSymbols(): DecimalFormatSymbols = symbols
 

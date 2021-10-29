@@ -24,7 +24,7 @@ private final class IdentityPreservingBuilder[A, CC[X] <: TraversableOnce[X]](
 )(implicit ct: ClassTag[CC[A]])
     extends m.Builder[A, CC[A]] {
 
-  //invariant: ruined => (collection == null)
+  // invariant: ruined => (collection == null)
   var collection: CC[A] = null.asInstanceOf[CC[A]]
   var ruined            = false
 
