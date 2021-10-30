@@ -282,12 +282,9 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .nativeSettings(
     commonNativeSettings,
     nativeConfig ~= {
-      _.withMode(Mode.releaseFast) // tests take long enough that optimizing beforehand pays off
-    },
-    Test / sources := { // tests fail to compile in Scala Native with Scala 2.11 / 2.12
-      val scalaV          = scalaVersion.value
-      val originalSources = (Test / sources).value
-      if (scalaV.startsWith("2.13.")) originalSources else Seq.empty
+      _.withOptimize(false)
+      // tests fail to link on Scala 2.11 and 2.12 in debug mode
+      // with the optimizer enabled
     }
   )
   .nativeConfigure(_.dependsOn(core.native, macroUtils, localesFullDb.native))
