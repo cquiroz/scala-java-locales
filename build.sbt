@@ -116,8 +116,7 @@ lazy val scalajs_locales: Project = project
     testSuite.native,
     localesFullDb.js,
     localesFullDb.native,
-    localesFullCurrenciesDb.js,
-    localesFullCurrenciesDb.native,
+    localesFullCurrenciesDb,
     localesMinimalEnDb.js,
     localesMinimalEnDb.native,
     localesMinimalEnUSDb.js,
@@ -166,11 +165,11 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
 
 lazy val cldrDbVersion = "36.0"
 
-lazy val localesFullCurrenciesDb = crossProject(JSPlatform, NativePlatform)
-  .crossType(CrossType.Pure)
+lazy val localesFullCurrenciesDb = project
   .in(file("localesFullCurrenciesDb"))
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
+  .configure(_.enablePlugins(ScalaJSPlugin))
   .settings(
     name                   := "locales-full-currencies-db",
     cldrVersion            := CLDRVersion.Version(cldrDbVersion),
@@ -184,7 +183,6 @@ lazy val localesFullCurrenciesDb = crossProject(JSPlatform, NativePlatform)
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
       .cross(CrossVersion.for3Use2_13)
   )
-  .nativeSettings(commonNativeSettings: _*)
 
 lazy val localesFullDb = crossProject(JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
@@ -265,7 +263,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
               name                     := "scala-java-locales testSuite on JS",
               scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
-  .jsConfigure(_.dependsOn(core.js, macroUtils, localesFullCurrenciesDb.js))
+  .jsConfigure(_.dependsOn(core.js, macroUtils, localesFullCurrenciesDb))
   .jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
     Test / fork                                 := true,
