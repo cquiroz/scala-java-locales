@@ -101,10 +101,12 @@ lazy val scalajs_locales: Project = project
   .in(file("."))
   .settings(commonSettings: _*)
   .settings(
-    name            := "locales",
-    publish         := {},
-    publishLocal    := {},
-    publishArtifact := false
+    name               := "locales",
+    publish            := {},
+    publishLocal       := {},
+    publishArtifact    := false,
+    // See https://github.com/sbt/sbt/issues/6193#issuecomment-738946050
+    crossScalaVersions := Nil
   )
   .aggregate(
     core.js,
