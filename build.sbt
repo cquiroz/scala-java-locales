@@ -105,7 +105,6 @@ lazy val scalajs_locales: Project = project
     publish            := {},
     publishLocal       := {},
     publishArtifact    := false,
-    // See https://github.com/sbt/sbt/issues/6193#issuecomment-738946050
     crossScalaVersions := Nil
   )
   .aggregate(
@@ -287,8 +286,10 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     nativeConfig ~= {
       _.withMode(Mode.releaseFast) // tests take long enough that optimizing beforehand pays off
     },
-    crossScalaVersions ~= {
-      _.filterNot(_.startsWith("2.12.")) // Scala Native fails to compile tests on Scala 2.12
+    Test / sources := { // tests fail to compile in Scala Native with Scala 2.11 / 2.12
+      val scalaV          = scalaVersion.value
+      val originalSources = (Test / sources).value
+      if (scalaV.startsWith("2.13.")) originalSources else Seq.empty
     }
   )
   .nativeConfigure(_.dependsOn(core.native, macroUtils, localesFullDb.native))
