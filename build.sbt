@@ -1,5 +1,6 @@
 import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
 import sbt.Keys._
+import scala.scalanative.build.Mode
 import locales._
 
 lazy val cldrApiVersion = "2.7.0"
@@ -57,7 +58,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
 )
 
 val commonNativeSettings: Seq[Setting[_]] = Seq(
-  crossScalaVersions := crossScalaVersions.value.filter(_.startsWith("2."))
+  crossScalaVersions ~= { _.filter(_.startsWith("2.")) }
 )
 
 inThisBuild(
@@ -279,7 +280,15 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % cldrApiVersion
   )
   .jvmConfigure(_.dependsOn(macroUtils))
-  .nativeSettings(commonNativeSettings: _*)
+  .nativeSettings(
+    commonNativeSettings,
+    nativeConfig ~= {
+      _.withMode(Mode.releaseFast) // tests take long enough that optimizing beforehand pays off
+    },
+    crossScalaVersions ~= {
+      _.filterNot(_.startsWith("2.12.")) // Scala Native fails to compile tests on Scala 2.12
+    }
+  )
   .nativeConfigure(_.dependsOn(core.native, macroUtils, localesFullDb.native))
   .platformsSettings(JSPlatform, NativePlatform)(
     Test / unmanagedSourceDirectories += baseDirectory.value.getParentFile / "js-native" / "src" / "test" / "scala"
