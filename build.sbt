@@ -105,7 +105,6 @@ lazy val scalajs_locales: Project = project
     publishLocal    := {},
     publishArtifact := false
   )
-  // don't include scala-native by default
   .aggregate(
     core.js,
     core.jvm,
