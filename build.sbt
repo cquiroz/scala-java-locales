@@ -281,7 +281,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   )
   .jvmConfigure(_.dependsOn(macroUtils))
   .nativeSettings(commonNativeSettings: _*)
-  .nativeConfigure(_.dependsOn(core.native, macroUtils, localesFullCurrenciesDb.native))
+  .nativeConfigure(_.dependsOn(core.native, macroUtils, localesFullDb.native))
   .platformsSettings(JSPlatform, NativePlatform)(
     Test / unmanagedSourceDirectories += baseDirectory.value.getParentFile / "js-native" / "src" / "test" / "scala"
   )

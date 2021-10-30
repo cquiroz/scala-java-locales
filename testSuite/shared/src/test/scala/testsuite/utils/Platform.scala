@@ -7,15 +7,28 @@
 \*                                                                      */
 package testsuite.utils
 
+import scala.util.Properties
+
 object Platform {
 
   /** Returns `true` if and only if the code is executing on a JVM. Note: Returns `false` when
     * executing on any other platform.
     */
-  final val executingInJVM = false
+  final val executingInJVM = Properties.javaVmName match {
+    case "Scala Native" | "Scala.js" => false
+    case _                           => true
+  }
 
-  final val executingInJVMOnJDK6 = false
+  final val executingInJVMOnJDK6 = executingInJVM && jdkVersion == 6
 
-  final val executingInJVMOnJDK7OrLower = false
+  final val executingInJVMOnJDK7OrLower = executingInJVM && jdkVersion <= 7
+
+  final val executingInScalaNative = Properties.javaVmName == "Scala Native"
+
+  private lazy val jdkVersion = {
+    val v = Properties.javaVersion
+    if (v.startsWith("1.")) Integer.parseInt(v.drop(2).takeWhile(_.isDigit))
+    else throw new Exception("Unknown java.version format")
+  }
 
 }

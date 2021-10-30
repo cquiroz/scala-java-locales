@@ -269,4 +269,6 @@ class CurrencyTest extends munit.FunSuite {
       test_standard_locales(_.jsNativeResults)
     }
   }
+
+  override def munitIgnore: Boolean = Platform.executingInScalaNative
 }

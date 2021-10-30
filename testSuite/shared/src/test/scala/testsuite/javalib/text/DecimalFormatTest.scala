@@ -3,6 +3,7 @@ package testsuite.javalib.text
 import java.math.RoundingMode
 import java.text.{ DecimalFormat, DecimalFormatSymbols, NumberFormat }
 import java.util.Locale
+import testsuite.utils.Platform
 
 // Need Locale for Currency support
 class DecimalFormatTest extends munit.FunSuite {
@@ -595,6 +596,10 @@ class DecimalFormatTest extends munit.FunSuite {
   }
 
   test("format_currency") {
+    assume(!Platform.executingInScalaNative,
+           "Scala Native depends on localesFullDb instead of localesFullCurrenciesDb"
+    )
+
     val f = NumberFormat.getCurrencyInstance(Locale.US)
 
     assertEquals("$0.00", f.format(0))
