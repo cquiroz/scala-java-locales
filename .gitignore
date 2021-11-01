@@ -3,6 +3,7 @@ core/.js
 core/.jvm
 core/.native
 target/
+.bsp/
 .metals
 .bloop
 .idea
