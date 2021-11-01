@@ -1,5 +1,6 @@
 import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
 import sbt.Keys._
+import scala.scalanative.build.Mode
 import locales._
 
 lazy val cldrApiVersion = "2.7.0"
@@ -8,8 +9,8 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 resolvers in Global += Resolver.sonatypeRepo("public")
 
-ThisBuild / scalaVersion       := "2.13.3"
-ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.3", "3.0.0-RC3", "3.0.0")
+ThisBuild / scalaVersion       := "2.13.6"
+ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.13", "2.13.6", "3.0.0")
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches +=
@@ -56,6 +57,10 @@ val commonSettings: Seq[Setting[_]] = Seq(
   )
 )
 
+val commonNativeSettings: Seq[Setting[_]] = Seq(
+  crossScalaVersions ~= { _.filter(_.startsWith("2.")) }
+)
+
 inThisBuild(
   List(
     organization := "io.github.cquiroz",
@@ -96,24 +101,31 @@ lazy val scalajs_locales: Project = project
   .in(file("."))
   .settings(commonSettings: _*)
   .settings(
-    name            := "locales",
-    publish         := {},
-    publishLocal    := {},
-    publishArtifact := false
+    name               := "locales",
+    publish            := {},
+    publishLocal       := {},
+    publishArtifact    := false,
+    crossScalaVersions := Nil
   )
-  // don't include scala-native by default
-  .aggregate(core.js,
-             core.jvm,
-             testSuite.js,
-             testSuite.jvm,
-             localesFullDb,
-             localesFullCurrenciesDb,
-             localesMinimalEnDb,
-             localesMinimalEnUSDb,
-             demo
+  .aggregate(
+    core.js,
+    core.jvm,
+    core.native,
+    testSuite.js,
+    testSuite.jvm,
+    testSuite.native,
+    localesFullDb.js,
+    localesFullDb.native,
+    localesFullCurrenciesDb,
+    localesMinimalEnDb.js,
+    localesMinimalEnDb.native,
+    localesMinimalEnUSDb.js,
+    localesMinimalEnUSDb.native,
+    demo.js,
+    demo.native
   )
 
-lazy val core = crossProject(JVMPlatform, JSPlatform)
+lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Full)
   .in(file("core"))
   .settings(commonSettings: _*)
@@ -149,6 +161,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
       }
     }
   )
+  .nativeSettings(commonNativeSettings: _*)
 
 lazy val cldrDbVersion = "36.0"
 
@@ -171,11 +184,11 @@ lazy val localesFullCurrenciesDb = project
       .cross(CrossVersion.for3Use2_13)
   )
 
-lazy val localesFullDb = project
+lazy val localesFullDb = crossProject(JSPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
   .in(file("localesFullDb"))
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
-  .configure(_.enablePlugins(ScalaJSPlugin))
   .settings(
     name                   := "locales-full-db",
     cldrVersion            := CLDRVersion.Version(cldrDbVersion),
@@ -189,12 +202,12 @@ lazy val localesFullDb = project
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
       .cross(CrossVersion.for3Use2_13)
   )
+  .nativeSettings(commonNativeSettings: _*)
 
-lazy val localesMinimalEnDb = project
+lazy val localesMinimalEnDb = crossProject(JSPlatform, NativePlatform)
   .in(file("localesMinimalEnDb"))
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
-  .configure(_.enablePlugins(ScalaJSPlugin))
   .settings(
     name                   := "locales-minimal-en-db",
     cldrVersion            := CLDRVersion.Version(cldrDbVersion),
@@ -208,12 +221,12 @@ lazy val localesMinimalEnDb = project
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
       .cross(CrossVersion.for3Use2_13)
   )
+  .nativeSettings(commonNativeSettings: _*)
 
-lazy val localesMinimalEnUSDb = project
+lazy val localesMinimalEnUSDb = crossProject(JSPlatform, NativePlatform)
   .in(file("localesMinimalEnUSDb"))
   .settings(commonSettings: _*)
   .configure(_.enablePlugins(LocalesPlugin))
-  .configure(_.enablePlugins(ScalaJSPlugin))
   .settings(
     name                   := "locales-minimal-en_US-db",
     cldrVersion            := CLDRVersion.Version(cldrDbVersion),
@@ -227,8 +240,9 @@ lazy val localesMinimalEnUSDb = project
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
       .cross(CrossVersion.for3Use2_13)
   )
+  .nativeSettings(commonNativeSettings: _*)
 
-lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
+lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .in(file("testSuite"))
   .settings(commonSettings: _*)
   .settings(
@@ -265,6 +279,21 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
     libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % cldrApiVersion
   )
   .jvmConfigure(_.dependsOn(macroUtils))
+  .nativeSettings(
+    commonNativeSettings,
+    nativeConfig ~= {
+      _.withOptimize(false)
+      // tests fail to link on Scala 2.11 and 2.12 in debug mode
+      // with the optimizer enabled
+    }
+  )
+  .nativeConfigure(_.dependsOn(core.native, macroUtils, localesFullDb.native))
+  .platformsSettings(JSPlatform, NativePlatform)(
+    Test / unmanagedSourceDirectories += baseDirectory.value.getParentFile / "js-native" / "src" / "test" / "scala"
+  )
+  .platformsSettings(JSPlatform, JVMPlatform)(
+    Test / unmanagedSourceDirectories += baseDirectory.value.getParentFile / "js-jvm" / "src" / "test" / "scala"
+  )
 
 lazy val macroUtils = project
   .in(file("macroUtils"))
@@ -283,9 +312,8 @@ lazy val macroUtils = project
     Compile / doc / sources := { if (isDotty.value) Seq() else (Compile / doc / sources).value }
   )
 
-lazy val demo = project
+lazy val demo = crossProject(JSPlatform, NativePlatform)
   .in(file("demo"))
-  .configure(_.enablePlugins(ScalaJSPlugin))
   .settings(commonSettings: _*)
   .settings(
     publish                         := {},
@@ -294,4 +322,5 @@ lazy val demo = project
     scalaJSUseMainModuleInitializer := true,
     name                            := "scala-java-locales demo"
   )
-  .dependsOn(core.js)
+  .nativeSettings(commonNativeSettings: _*)
+  .dependsOn(core)

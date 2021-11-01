@@ -12,14 +12,14 @@ object Locale {
   import LocalesDb._
 
   // Default locales required by the specs
-  lazy val ENGLISH: Locale       = localeForLanguageTag("en").getOrElse(ROOT)
-  lazy val FRENCH: Locale        = localeForLanguageTag("fr").getOrElse(ROOT)
-  lazy val GERMAN: Locale        = localeForLanguageTag("de").getOrElse(ROOT)
-  lazy val ITALIAN: Locale       = localeForLanguageTag("it").getOrElse(ROOT)
-  lazy val JAPANESE: Locale      = localeForLanguageTag("ja").getOrElse(ROOT)
-  lazy val KOREAN: Locale        = localeForLanguageTag("ko").getOrElse(ROOT)
-  lazy val CHINESE: Locale       = localeForLanguageTag("zh").getOrElse(ROOT)
-  lazy val SIMPLIFIED_CHINESE: Locale = {
+  lazy val ENGLISH: Locale             = localeForLanguageTag("en").getOrElse(ROOT)
+  lazy val FRENCH: Locale              = localeForLanguageTag("fr").getOrElse(ROOT)
+  lazy val GERMAN: Locale              = localeForLanguageTag("de").getOrElse(ROOT)
+  lazy val ITALIAN: Locale             = localeForLanguageTag("it").getOrElse(ROOT)
+  lazy val JAPANESE: Locale            = localeForLanguageTag("ja").getOrElse(ROOT)
+  lazy val KOREAN: Locale              = localeForLanguageTag("ko").getOrElse(ROOT)
+  lazy val CHINESE: Locale             = localeForLanguageTag("zh").getOrElse(ROOT)
+  lazy val SIMPLIFIED_CHINESE: Locale  = {
     val l = ldmls.getOrElse("zh-Hans-CN", root)
     l.copy(locale = l.locale.copy(script = None)).toLocale
   }
@@ -27,19 +27,19 @@ object Locale {
     val l = ldmls.getOrElse("zh-Hant-TW", root)
     l.copy(locale = l.locale.copy(script = None)).toLocale
   }
-  lazy val FRANCE: Locale        = localeForLanguageTag("fr-FR").getOrElse(ROOT)
-  lazy val GERMANY: Locale       = localeForLanguageTag("de-DE").getOrElse(ROOT)
-  lazy val ITALY: Locale         = localeForLanguageTag("it-IT").getOrElse(ROOT)
-  lazy val JAPAN: Locale         = localeForLanguageTag("ja-JP").getOrElse(ROOT)
-  lazy val KOREA: Locale         = localeForLanguageTag("ko-KR").getOrElse(ROOT)
-  lazy val CHINA: Locale         = SIMPLIFIED_CHINESE
-  lazy val PRC: Locale           = SIMPLIFIED_CHINESE
-  lazy val TAIWAN: Locale        = TRADITIONAL_CHINESE
-  lazy val UK: Locale            = localeForLanguageTag("en-GB").getOrElse(ROOT)
-  lazy val US: Locale            = localeForLanguageTag("en-US").getOrElse(ROOT)
-  lazy val CANADA: Locale        = localeForLanguageTag("en-CA").getOrElse(ROOT)
-  lazy val CANADA_FRENCH: Locale = localeForLanguageTag("fr-CA").getOrElse(ROOT)
-  lazy val ROOT: Locale          = root.toLocale
+  lazy val FRANCE: Locale              = localeForLanguageTag("fr-FR").getOrElse(ROOT)
+  lazy val GERMANY: Locale             = localeForLanguageTag("de-DE").getOrElse(ROOT)
+  lazy val ITALY: Locale               = localeForLanguageTag("it-IT").getOrElse(ROOT)
+  lazy val JAPAN: Locale               = localeForLanguageTag("ja-JP").getOrElse(ROOT)
+  lazy val KOREA: Locale               = localeForLanguageTag("ko-KR").getOrElse(ROOT)
+  lazy val CHINA: Locale               = SIMPLIFIED_CHINESE
+  lazy val PRC: Locale                 = SIMPLIFIED_CHINESE
+  lazy val TAIWAN: Locale              = TRADITIONAL_CHINESE
+  lazy val UK: Locale                  = localeForLanguageTag("en-GB").getOrElse(ROOT)
+  lazy val US: Locale                  = localeForLanguageTag("en-US").getOrElse(ROOT)
+  lazy val CANADA: Locale              = localeForLanguageTag("en-CA").getOrElse(ROOT)
+  lazy val CANADA_FRENCH: Locale       = localeForLanguageTag("fr-CA").getOrElse(ROOT)
+  lazy val ROOT: Locale                = root.toLocale
 
   val PRIVATE_USE_EXTENSION: Char    = 'x'
   val UNICODE_LOCALE_EXTENSION: Char = 'u'
@@ -108,9 +108,9 @@ object Locale {
     private[this] var builder = LocaleBuilder()
 
     // TODO Implement
-    //def setLocale(locale: Locale): Builder
+    // def setLocale(locale: Locale): Builder
 
-    //def setLanguageTag(languageTag: String): Builder
+    // def setLanguageTag(languageTag: String): Builder
 
     def setLanguage(language: String): Builder = {
       builder = builder
@@ -291,7 +291,7 @@ object Locale {
   private var defaultPerCategory: SMap[Locale.Category, Option[Locale]] =
     Locale.Category.values().map(_ -> Some(defaultLocale)).toMap
 
-  private def default: Locale                                           = defaultLocale
+  private def default: Locale = defaultLocale
 
   private def default(category: Locale.Category): Locale =
     if (category == null)
@@ -423,19 +423,19 @@ object Locale {
       .orElse(parseLanguageTag(languageTag))
       .getOrElse(ROOT)
 
-  //class LanguageRange
+  // class LanguageRange
 
-  //class FilteringMode
+  // class FilteringMode
 
-  //def filter(priorityList: List[LanguageRange], locales: Collection[Locale], mode: FilteringMode): List[Locale]
+  // def filter(priorityList: List[LanguageRange], locales: Collection[Locale], mode: FilteringMode): List[Locale]
 
-  //def filter(priorityList: List[LanguageRange], locales: Collection[Locale]): List[Locale]
+  // def filter(priorityList: List[LanguageRange], locales: Collection[Locale]): List[Locale]
 
-  //def filter(priorityList: List[LanguageRange], tags: Collection[String], mode: FilteringMode): List[Locale]
+  // def filter(priorityList: List[LanguageRange], tags: Collection[String], mode: FilteringMode): List[Locale]
 
-  //def filter(priorityList: List[LanguageRange], tags: Collection[String]): List[Locale]
+  // def filter(priorityList: List[LanguageRange], tags: Collection[String]): List[Locale]
 
-  //def lookupTag(priorityList: List[LanguageRange], tags: Collection[String]): String
+  // def lookupTag(priorityList: List[LanguageRange], tags: Collection[String]): String
 }
 
 class Locale private[util] (
@@ -564,7 +564,7 @@ class Locale private[util] (
   }
 
   def toLanguageTag(): String = {
-    val language = {
+    val language              = {
       if (getLanguage().nonEmpty && Locale.checkLanguage(getLanguage()))
         updateSpecialLanguages(getLanguage())
       else
@@ -578,7 +578,7 @@ class Locale private[util] (
       variantSegments.forall(Locale.checkVariantSegment)
     val allAcceptableSegments =
       variantSegments.forall(Locale.checkAcceptableVariantSegment)
-    val variant = {
+    val variant               = {
       if (allSegmentsWellFormed)
         variantSegments.mkString("-", "-", "")
       else if (allAcceptableSegments) {
@@ -592,7 +592,7 @@ class Locale private[util] (
       } else
         ""
     }
-    val ext = {
+    val ext                   = {
       if (extensions.nonEmpty)
         extensions.map { case (x, v) => s"$x-$v" }.mkString("-", "-", "")
       else
@@ -632,25 +632,25 @@ class Locale private[util] (
         )
 
   // TODO Implement
-  //final def getDisplayLanguage(): String
+  // final def getDisplayLanguage(): String
 
-  //final def getDisplayLanguage(inLocale: Locale): String
+  // final def getDisplayLanguage(inLocale: Locale): String
 
-  //final def getDisplayScript(): String
+  // final def getDisplayScript(): String
 
-  //final def getDisplayScript(inLocale: Locale): String
+  // final def getDisplayScript(inLocale: Locale): String
 
-  //final def getDisplayCountry(): String
+  // final def getDisplayCountry(): String
 
-  //final def getDisplayCountry(inLocale: Locale): String
+  // final def getDisplayCountry(inLocale: Locale): String
 
-  //final def getDisplayVariant(): String
+  // final def getDisplayVariant(): String
 
-  //final def getDisplayVariant(inLocale: Locale): String
+  // final def getDisplayVariant(inLocale: Locale): String
 
-  //final def getDisplayName(): String
+  // final def getDisplayName(): String
 
-  //final def getDisplayName(inLocale: Locale): String
+  // final def getDisplayName(inLocale: Locale): String
 
   override def clone(): AnyRef = this // Locale is immutable
 
