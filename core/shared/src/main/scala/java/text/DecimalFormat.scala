@@ -16,7 +16,7 @@ class DecimalFormat(
 
   def this(pattern: String) = this(pattern, DecimalFormatSymbols.getInstance())
 
-  def this() = {
+  def this() =
     this(
       LocalesDb
         .ldml(Locale.getDefault())
@@ -24,7 +24,6 @@ class DecimalFormat(
         .getOrElse("#,##0.##"),
       DecimalFormatSymbols.getInstance()
     )
-  }
 
   // This holds all of the specifics about the decimal pattern
   private val parsedPattern: AtomicReference[ParsedPattern] = new AtomicReference(
@@ -276,8 +275,8 @@ class DecimalFormat(
   override def parseObject(source: String, pos: ParsePosition): AnyRef = ???
 
   // TODO implement
-  //def parse(source: String, parsePosition: ParsePosition): Number
-  //def parse(source: String): Number
+  // def parse(source: String, parsePosition: ParsePosition): Number
+  // def parse(source: String): Number
 
   def getDecimalFormatSymbols(): DecimalFormatSymbols = symbols
 

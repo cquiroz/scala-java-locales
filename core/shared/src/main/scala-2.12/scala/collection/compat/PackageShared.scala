@@ -257,16 +257,16 @@ class StreamExtensionMethods[A](private val stream: Stream[A]) extends AnyVal {
 }
 
 class SortedExtensionMethods[K, T <: Sorted[K, T]](private val fact: Sorted[K, T]) {
-  def rangeFrom(from:   K): T = fact.from(from)
-  def rangeTo(to:       K): T = fact.to(to)
+  def rangeFrom(from: K): T   = fact.from(from)
+  def rangeTo(to: K): T       = fact.to(to)
   def rangeUntil(until: K): T = fact.until(until)
 }
 
 class IteratorExtensionMethods[A](private val self: c.Iterator[A]) extends AnyVal {
-  def sameElements[B >: A](that: c.TraversableOnce[B]): Boolean =
+  def sameElements[B >: A](that: c.TraversableOnce[B]): Boolean        =
     self.sameElements(that.iterator)
   def concat[B >: A](that: c.TraversableOnce[B]): c.TraversableOnce[B] = self ++ that
-  def tapEach[U](f:        A => U): c.Iterator[A]                      = self.map { a => f(a); a }
+  def tapEach[U](f: A => U): c.Iterator[A]                             = self.map { a => f(a); a }
 }
 
 class TraversableOnceExtensionMethods[A](private val self: c.TraversableOnce[A]) extends AnyVal {
@@ -300,8 +300,8 @@ class TraversableOnceExtensionMethods[A](private val self: c.TraversableOnce[A])
 class TraversableExtensionMethods[A](private val self: c.Traversable[A]) extends AnyVal {
   def iterableFactory: GenericCompanion[Traversable] = self.companion
 
-  def sizeCompare(otherSize: Int): Int = SizeCompareImpl.sizeCompareInt(self)(otherSize)
-  def sizeIs: SizeCompareOps = new SizeCompareOps(self)
+  def sizeCompare(otherSize: Int): Int         = SizeCompareImpl.sizeCompareInt(self)(otherSize)
+  def sizeIs: SizeCompareOps                   = new SizeCompareOps(self)
   def sizeCompare(that: c.Traversable[_]): Int = SizeCompareImpl.sizeCompareColl(self)(that)
 
 }
