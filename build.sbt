@@ -3,7 +3,7 @@ import sbt.Keys._
 import scala.scalanative.build.Mode
 import locales._
 
-lazy val cldrApiVersion = "2.7.0"
+lazy val cldrApiVersion = "3.0.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
