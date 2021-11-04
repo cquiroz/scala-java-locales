@@ -3,23 +3,30 @@ import sbt.Keys._
 import scala.scalanative.build.Mode
 import locales._
 
-lazy val cldrApiVersion = "2.7.0"
+lazy val cldrApiVersion = "3.0.0"
+
+val isDotty = Def.setting(
+  CrossVersion.partialVersion(scalaVersion.value).exists(_._1 == 3)
+)
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 resolvers in Global += Resolver.sonatypeRepo("public")
 
-ThisBuild / scalaVersion       := "2.13.6"
-ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.13", "2.13.6", "3.0.0")
+ThisBuild / githubWorkflowJavaVersions := Seq("adoptium@8")
+ThisBuild / scalaVersion       := "2.13.7"
+ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.13", "2.13.7", "3.0.0")
+
+ThisBuild / githubWorkflowEnv := Map(
+  "JABBA_INDEX" -> "https://github.com/typelevel/jdk-index/raw/main/index.json",
+  "GITHUB_TOKEN" -> "${{ secrets.GITHUB_TOKEN }}"
+)
+
+ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("ci-release")))
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches +=
   RefPredicate.StartsWith(Ref.Tag("v"))
-
-ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("ci-release")))
-
-ThisBuild / githubWorkflowPublishPreamble +=
-  WorkflowStep.Use("olafurpg", "setup-gpg", "v3")
 
 ThisBuild / githubWorkflowPublish := Seq(
   WorkflowStep.Sbt(
@@ -34,7 +41,6 @@ ThisBuild / githubWorkflowPublish := Seq(
 )
 
 val commonSettings: Seq[Setting[_]] = Seq(
-  organization                  := "io.github.cquiroz",
   scalacOptions ~= (_.filterNot(
     Set(
       "-Wdead-code",
@@ -46,7 +52,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
     )
   )),
   Compile / doc / scalacOptions := Seq(),
-  Compile / doc / sources       := { if (isDotty.value) Seq() else (Compile / doc / sources).value },
+  // Compile / doc / sources       := { if (isDotty.value) Seq() else (Compile / doc / sources).value },
   Compile / unmanagedSourceDirectories ++= scalaVersionSpecificFolders("main",
                                                                        baseDirectory.value,
                                                                        scalaVersion.value
