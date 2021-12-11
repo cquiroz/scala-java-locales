@@ -479,10 +479,10 @@ class Locale private[util] (
 
   private def translateSpecialLanguages(l: String) =
     l match {
-      case "he" => "iw"
-      case "yi" => "ji"
-      case "id" => "in"
-      case _    => l
+      // case "he" => "iw"
+      // case "yi" => "ji"
+      // case "id" => "in"
+      case _ => l
     }
 
   // public constructors

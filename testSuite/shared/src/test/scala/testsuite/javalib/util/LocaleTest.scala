@@ -268,27 +268,21 @@ class LocaleTest extends munit.FunSuite {
   test("get_iso_codes") {
     // The data from CLDR gives a different amount of countries and
     // languages than the JVM
-    val countriesCount = if (Platform.executingInJVM) 250 else 247
+    val countriesCount = if (Platform.executingInJVM) 249 else 247
     val languagesCount = if (Platform.executingInJVM) 188 else 131
     assertEquals(countriesCount, Locale.getISOCountries.length)
     assertEquals(languagesCount, Locale.getISOLanguages.length)
   }
 
   test("special_cases_language") {
-    val iwLocale = new Locale("iw")
-    assertEquals("iw", iwLocale.getLanguage)
     val heLocale = new Locale("he")
-    assertEquals("iw", heLocale.getLanguage)
+    assertEquals("he", heLocale.getLanguage)
 
-    val jiLocale = new Locale("ji")
-    assertEquals("ji", jiLocale.getLanguage)
     val yiLocale = new Locale("yi")
-    assertEquals("ji", yiLocale.getLanguage)
+    assertEquals("yi", yiLocale.getLanguage)
 
-    val inLocale = new Locale("in")
-    assertEquals("in", inLocale.getLanguage)
     val idLocale = new Locale("id")
-    assertEquals("in", idLocale.getLanguage)
+    assertEquals("id", idLocale.getLanguage)
   }
 
   test("has_extensions") {
@@ -460,18 +454,12 @@ class LocaleTest extends munit.FunSuite {
     )
 
     // Special cases
-    val l1 = Locale.forLanguageTag("iw")
-    assertLocaleFromTag(l1, "iw", "", "", "")
     val l2 = Locale.forLanguageTag("he")
-    assertLocaleFromTag(l2, "iw", "", "", "")
-    val l3 = Locale.forLanguageTag("ji")
-    assertLocaleFromTag(l3, "ji", "", "", "")
+    assertLocaleFromTag(l2, "he", "", "", "")
     val l4 = Locale.forLanguageTag("yi")
-    assertLocaleFromTag(l4, "ji", "", "", "")
-    val l5 = Locale.forLanguageTag("in")
-    assertLocaleFromTag(l5, "in", "", "", "")
+    assertLocaleFromTag(l4, "yi", "", "", "")
     val l6 = Locale.forLanguageTag("id")
-    assertLocaleFromTag(l6, "in", "", "", "")
+    assertLocaleFromTag(l6, "id", "", "", "")
   }
 
   test("for_language_tag_grandfathereded") {

@@ -230,8 +230,7 @@ class LocaleBuilderTest extends munit.FunSuite {
 
     // Check for compliance on the attribute
     if (Platform.executingInJVM)
-      // Against the javadocs the JVM throws an IllformedLocaleException
-      intercept[IllformedLocaleException](
+      intercept[NullPointerException](
         new Locale.Builder().removeUnicodeLocaleAttribute(null)
       )
     else

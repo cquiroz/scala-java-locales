@@ -18,8 +18,9 @@ ThisBuild / githubWorkflowPublishTargetBranches +=
 
 ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("ci-release")))
 
-ThisBuild / githubWorkflowPublishPreamble +=
-  WorkflowStep.Use("olafurpg", "setup-gpg", "v3")
+val LTSJava = JavaSpec.temurin("17.0.1")
+
+ThisBuild / githubWorkflowJavaVersions := Seq(LTSJava)
 
 ThisBuild / githubWorkflowPublish := Seq(
   WorkflowStep.Sbt(
@@ -32,6 +33,8 @@ ThisBuild / githubWorkflowPublish := Seq(
     )
   )
 )
+
+ThisBuild / Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat
 
 val commonSettings: Seq[Setting[_]] = Seq(
   organization                  := "io.github.cquiroz",
@@ -46,7 +49,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
     )
   )),
   Compile / doc / scalacOptions := Seq(),
-  Compile / doc / sources       := { if (isDotty.value) Seq() else (Compile / doc / sources).value },
+  // Compile / doc / sources       := { if (isDotty.value) Seq() else (Compile / doc / sources).value },
   Compile / unmanagedSourceDirectories ++= scalaVersionSpecificFolders("main",
                                                                        baseDirectory.value,
                                                                        scalaVersion.value
@@ -125,6 +128,15 @@ lazy val scalajs_locales: Project = project
     demo.native
   )
 
+def isScala3 = Def.task {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((3, _)) =>
+        true
+      case _ =>
+        false
+    }
+}
+
 lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Full)
   .in(file("core"))
@@ -143,11 +155,11 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   )
   .jsSettings(
     scalacOptions ++= {
-      if (isDotty.value) Seq("-scalajs-genStaticForwardersForNonTopLevelObjects")
+      if (isScala3.value) Seq("-scalajs-genStaticForwardersForNonTopLevelObjects")
       else Seq("-P:scalajs:genStaticForwardersForNonTopLevelObjects")
     },
     scalacOptions ++= {
-      if (isDotty.value) Seq.empty
+      if (isScala3.value) Seq.empty
       else {
         val tagOrHash =
           if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
@@ -273,7 +285,8 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       "-Duser.language=en",
       "-Duser.country=",
       "-Djava.locale.providers=CLDR",
-      "-Dfile.encoding=UTF8"
+      "-Dfile.encoding=UTF8",
+      "-Xmx6G"
     ),
     name                                        := "scala-java-locales testSuite on JVM",
     libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % cldrApiVersion
@@ -285,7 +298,9 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       _.withOptimize(false)
       // tests fail to link on Scala 2.11 and 2.12 in debug mode
       // with the optimizer enabled
-    }
+    },
+    // Don't run native tests on scala 3
+    Test / compile / sources := Seq() //{ if (isScala3.value) Seq() else (Test / compile / sources).value }
   )
   .nativeConfigure(_.dependsOn(core.native, macroUtils, localesFullDb.native))
   .platformsSettings(JSPlatform, NativePlatform)(
@@ -301,7 +316,12 @@ lazy val macroUtils = project
   .settings(
     name                    := "macroutils",
     libraryDependencies ++= {
-      if (isDotty.value) Seq.empty else Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value)
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((3, _)) =>
+          Seq.empty
+        case _ =>
+          Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value)
+      }
     },
     scalacOptions ~= (_.filterNot(
       Set(
@@ -309,7 +329,7 @@ lazy val macroUtils = project
         "-Xfatal-warnings"
       )
     )),
-    Compile / doc / sources := { if (isDotty.value) Seq() else (Compile / doc / sources).value }
+    Compile / doc / sources := { if (isScala3.value) Seq() else (Compile / doc / sources).value }
   )
 
 lazy val demo = crossProject(JSPlatform, NativePlatform)

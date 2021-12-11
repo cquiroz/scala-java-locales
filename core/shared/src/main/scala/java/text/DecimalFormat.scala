@@ -363,6 +363,7 @@ class DecimalFormat(
   def getGroupingSize(): Int = parsedPattern.get.groupingSize
 
   def setGroupingSize(newValue: Int): Unit = {
+    if (newValue < 0) throw new IllegalArgumentException("")
     val p = parsedPattern.get
     this.parsedPattern.set(p.copy(groupingSize = newValue, isGroupingUsed = newValue > 0))
   }

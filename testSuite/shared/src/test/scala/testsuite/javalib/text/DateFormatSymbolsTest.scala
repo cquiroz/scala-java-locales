@@ -166,7 +166,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       cldr21 = true,
       List("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", ""),
       List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""),
-      List("", "1", "2", "3", "4", "5", "6", "7"),
+      List("", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
       List("", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
       List("AM", "PM"),
       List("BCE", "CE")
@@ -665,7 +665,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       ),
       List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""),
       List("", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
-      List("", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
+      List("", "Sun.", "Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat."),
       List("AM", "PM"),
       List("BC", "AD")
     ),
@@ -730,7 +730,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       ),
       List("Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des", ""),
       List("", "Sondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrydag", "Saterdag"),
-      List("", "So", "Ma", "Di", "Wo", "Do", "Vr", "Sa"),
+      List("", "So.", "Ma.", "Di.", "Wo.", "Do.", "Vr.", "Sa."),
       List("vm.", "nm."),
       List("v.C.", "n.C.")
     ),
@@ -801,7 +801,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
         "cümə",
         "şənbə"
       ),
-      List("", "B.", "B.E.", "Ç.A.", "Ç.", "C.A.", "C", "Ş."),
+      List("", "B.", "B.e.", "Ç.a.", "Ç.", "C.a.", "C.", "Ş."),
       List("AM", "PM"),
       List("e.ə.", "b.e.")
     ),
@@ -867,7 +867,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
         "ҹүмә",
         "шәнбә"
       ),
-      List("", "B.", "B.E.", "Ç.A.", "Ç.", "C.A.", "C", "Ş."),
+      List("", "Б.", "Б.Е.", "Ч.А.", "Ч.", "Ҹ.А.", "Ҹ.", "Ш."),
       List("AM", "PM"),
       List("e.ə.", "b.e.")
     ),
@@ -923,7 +923,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
         ""
       ),
       List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""),
-      List("", "রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহষ্পতিবার", "শুক্রবার", "শনিবার"),
+      List("", "রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"),
       List("", "রবি", "সোম", "মঙ্গল", "বুধ", "বৃহস্পতি", "শুক্র", "শনি"),
       List("পূর্বাহ্ণ", "অপরাহ্ণ"),
       List("খৃষ্টপূর্ব", "খৃষ্টাব্দ")
@@ -1305,8 +1305,8 @@ class DateFormatSymbolsTest extends munit.FunSuite {
         ""
       ),
       List("იან", "თებ", "მარ", "აპრ", "მაი", "ივნ", "ივლ", "აგვ", "სექ", "ოქტ", "ნოე", "დეკ", ""),
-      List("", "კვირა", "2", "სამშაბათი", "ოთხშაბათი", "ხუთშაბათი", "პარასკევი", "შაბათი"),
-      List("", "", "ორშ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"),
+      List("", "კვირა", "ორშაბათი", "სამშაბათი", "ოთხშაბათი", "ხუთშაბათი", "პარასკევი", "შაბათი"),
+      List("", "კვი", "ორშ", "სამ", "ოთხ", "ხუთ", "პარ", "შაბ"),
       List("AM", "PM"),
       List("ჩვენს წელთაღრიცხვამდე", "ჩვენი წელთაღრიცხვით")
     ),
@@ -1377,7 +1377,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
         "piektdiena",
         "sestdiena"
       ),
-      List("", "Sv", "Pr", "Ot", "Tr", "Ce", "Pk", "Se"),
+      List("", "svētd.", "pirmd.", "otrd.", "trešd.", "ceturtd.", "piektd.", "sestd."),
       List("priekšpusdienā", "pēcpusdienā"),
       List("p.m.ē.", "m.ē.")
     ),
@@ -1448,7 +1448,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       ),
       List("ဇန်", "ဖေ", "မတ်", "ဧ", "မေ", "ဇွန်", "ဇူ", "ဩ", "စက်", "အောက်", "နို", "ဒီ", ""),
       List("", "တနင်္ဂနွေ", "တနင်္လာ", "အင်္ဂါ", "ဗုဒ္ဓဟူး", "ကြာသပတေး", "သောကြာ", "စနေ"),
-      List("", "နွေ", "လာ", "ဂါ", "ဟူး", "တေး", "ကြာ", "နေ"),
+      List("", "တနင်္ဂနွေ", "တနင်္လာ", "အင်္ဂါ", "ဗုဒ္ဓဟူး", "ကြာသပတေး", "သောကြာ", "စနေ"),
       List("နံနက်", "ညနေ"),
       List("ဘီစီ", "အေဒီ")
     ),
@@ -1481,8 +1481,16 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       cldr21 = true,
       List("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", ""),
       List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""),
-      List("", "1", "2", "3", "4", "5", "6", "7"),
-      List("", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
+      List("",
+           "pasepeeivi",
+           "vuossaargâ",
+           "majebaargâ",
+           "koskoho",
+           "tuorâstuv",
+           "vástuppeeivi",
+           "lávurduv"
+      ),
+      List("", "pas", "vuo", "maj", "kos", "tuo", "vás", "láv"),
       List("AM", "PM"),
       List("BCE", "CE")
     ),
@@ -1538,8 +1546,16 @@ class DateFormatSymbolsTest extends munit.FunSuite {
       cldr21 = true,
       List("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", ""),
       List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""),
-      List("", "1", "2", "3", "4", "5", "6", "7"),
-      List("", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
+      List("",
+           "pasepeeivi",
+           "vuossaargâ",
+           "majebaargâ",
+           "koskoho",
+           "tuorâstuv",
+           "vástuppeeivi",
+           "lávurduv"
+      ),
+      List("", "pas", "vuo", "maj", "kos", "tuo", "vás", "láv"),
       List("AM", "PM"),
       List("BCE", "CE")
     ),
@@ -1690,10 +1706,12 @@ class DateFormatSymbolsTest extends munit.FunSuite {
   test("default_locales_date_format_symbol_with_cldr21") {
     standardLocalesDataDiff.foreach { case (l, t @ LocaleTestItem(_, cldr21, _, _, _, _, _, _)) =>
       val dfs = DateFormatSymbols.getInstance(l)
-      if (Platform.executingInJVM && cldr21)
+      if (Platform.executingInJVM && cldr21) {
         test_dfs(dfs, t)
-      if (!Platform.executingInJVM && !cldr21)
+      }
+      if (!Platform.executingInJVM && !cldr21) {
         test_dfs(dfs, t)
+      }
     }
   }
 
