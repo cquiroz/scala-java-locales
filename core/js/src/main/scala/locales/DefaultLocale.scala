@@ -22,8 +22,8 @@ object DefaultLocale {
   def platformLocale: Locale = {
     val lang =
       try
-      // Attempt to read locale from the platform
-      Some(window.navigator.language)
+        // Attempt to read locale from the platform
+        Some(window.navigator.language)
       catch {
         case _: Throwable => None
       }

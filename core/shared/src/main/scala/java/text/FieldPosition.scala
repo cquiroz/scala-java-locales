@@ -27,9 +27,9 @@ class FieldPosition(private[this] val attribute: Format.Field, private[this] val
     other match {
       case that: FieldPosition =>
         getBeginIndex() == that.getBeginIndex() &&
-          getEndIndex() == that.getEndIndex() &&
-          getFieldAttribute() == that.getFieldAttribute() &&
-          getField() == that.getField()
+        getEndIndex() == that.getEndIndex() &&
+        getFieldAttribute() == that.getFieldAttribute() &&
+        getField() == that.getField()
       case _                   => false
     }
 

@@ -613,20 +613,20 @@ class DecimalFormat(
     obj match {
       case f: DecimalFormat =>
         f.getCurrency() == getCurrency() &&
-          f.getDecimalFormatSymbols() == getDecimalFormatSymbols() &&
-          f.getGroupingSize() == getGroupingSize() &&
-          f.getMaximumFractionDigits() == getMaximumFractionDigits() &&
-          f.getMaximumIntegerDigits() == getMaximumIntegerDigits() &&
-          f.getMinimumFractionDigits() == getMinimumFractionDigits() &&
-          f.getMinimumIntegerDigits() == getMinimumIntegerDigits() &&
-          f.getMultiplier() == getMultiplier() &&
-          f.getNegativePrefix() == getNegativePrefix() &&
-          f.getNegativeSuffix() == getNegativeSuffix() &&
-          f.getPositivePrefix() == getPositivePrefix() &&
-          f.getPositiveSuffix() == getPositiveSuffix() &&
-          f.getRoundingMode() == getRoundingMode() &&
-          f.isDecimalSeparatorAlwaysShown() == isDecimalSeparatorAlwaysShown() &&
-          f.isParseBigDecimal() == isParseBigDecimal()
+        f.getDecimalFormatSymbols() == getDecimalFormatSymbols() &&
+        f.getGroupingSize() == getGroupingSize() &&
+        f.getMaximumFractionDigits() == getMaximumFractionDigits() &&
+        f.getMaximumIntegerDigits() == getMaximumIntegerDigits() &&
+        f.getMinimumFractionDigits() == getMinimumFractionDigits() &&
+        f.getMinimumIntegerDigits() == getMinimumIntegerDigits() &&
+        f.getMultiplier() == getMultiplier() &&
+        f.getNegativePrefix() == getNegativePrefix() &&
+        f.getNegativeSuffix() == getNegativeSuffix() &&
+        f.getPositivePrefix() == getPositivePrefix() &&
+        f.getPositiveSuffix() == getPositiveSuffix() &&
+        f.getRoundingMode() == getRoundingMode() &&
+        f.isDecimalSeparatorAlwaysShown() == isDecimalSeparatorAlwaysShown() &&
+        f.isParseBigDecimal() == isParseBigDecimal()
 
       case _ => false
     }
