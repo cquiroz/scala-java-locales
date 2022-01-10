@@ -300,7 +300,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       // with the optimizer enabled
     },
     // Don't run native tests on scala 3
-    // Test / compile / sources := Seq() //{ if (isScala3.value) Seq() else (Test / compile / sources).value }
+    Test / compile / sources := Seq() //{ if (isScala3.value) Seq() else (Test / compile / sources).value }
   )
   .nativeConfigure(_.dependsOn(core.native, macroUtils, localesFullDb.native))
   .platformsSettings(JSPlatform, NativePlatform)(
