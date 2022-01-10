@@ -174,13 +174,13 @@ class DateFormatSymbols(private[this] val locale: Locale) extends Cloneable {
     other match {
       case that: DateFormatSymbols =>
         eras.sameElements(that.getEras()) &&
-          months.sameElements(that.getMonths()) &&
-          shortMonths.sameElements(that.getShortMonths()) &&
-          weekdays.sameElements(that.getWeekdays()) &&
-          shortWeekdays.sameElements(that.getShortWeekdays()) &&
-          amPmStrings.sameElements(that.getAmPmStrings()) &&
-          zoneStrings.sameElements(that.getZoneStrings()) &&
-          localPatternChars == that.getLocalPatternChars()
+        months.sameElements(that.getMonths()) &&
+        shortMonths.sameElements(that.getShortMonths()) &&
+        weekdays.sameElements(that.getWeekdays()) &&
+        shortWeekdays.sameElements(that.getShortWeekdays()) &&
+        amPmStrings.sameElements(that.getAmPmStrings()) &&
+        zoneStrings.sameElements(that.getZoneStrings()) &&
+        localPatternChars == that.getLocalPatternChars()
       case _                       => false
     }
 }

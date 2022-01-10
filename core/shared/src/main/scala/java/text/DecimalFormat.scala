@@ -363,6 +363,7 @@ class DecimalFormat(
   def getGroupingSize(): Int = parsedPattern.get.groupingSize
 
   def setGroupingSize(newValue: Int): Unit = {
+    if (newValue < 0) throw new IllegalArgumentException("")
     val p = parsedPattern.get
     this.parsedPattern.set(p.copy(groupingSize = newValue, isGroupingUsed = newValue > 0))
   }
@@ -612,20 +613,20 @@ class DecimalFormat(
     obj match {
       case f: DecimalFormat =>
         f.getCurrency() == getCurrency() &&
-          f.getDecimalFormatSymbols() == getDecimalFormatSymbols() &&
-          f.getGroupingSize() == getGroupingSize() &&
-          f.getMaximumFractionDigits() == getMaximumFractionDigits() &&
-          f.getMaximumIntegerDigits() == getMaximumIntegerDigits() &&
-          f.getMinimumFractionDigits() == getMinimumFractionDigits() &&
-          f.getMinimumIntegerDigits() == getMinimumIntegerDigits() &&
-          f.getMultiplier() == getMultiplier() &&
-          f.getNegativePrefix() == getNegativePrefix() &&
-          f.getNegativeSuffix() == getNegativeSuffix() &&
-          f.getPositivePrefix() == getPositivePrefix() &&
-          f.getPositiveSuffix() == getPositiveSuffix() &&
-          f.getRoundingMode() == getRoundingMode() &&
-          f.isDecimalSeparatorAlwaysShown() == isDecimalSeparatorAlwaysShown() &&
-          f.isParseBigDecimal() == isParseBigDecimal()
+        f.getDecimalFormatSymbols() == getDecimalFormatSymbols() &&
+        f.getGroupingSize() == getGroupingSize() &&
+        f.getMaximumFractionDigits() == getMaximumFractionDigits() &&
+        f.getMaximumIntegerDigits() == getMaximumIntegerDigits() &&
+        f.getMinimumFractionDigits() == getMinimumFractionDigits() &&
+        f.getMinimumIntegerDigits() == getMinimumIntegerDigits() &&
+        f.getMultiplier() == getMultiplier() &&
+        f.getNegativePrefix() == getNegativePrefix() &&
+        f.getNegativeSuffix() == getNegativeSuffix() &&
+        f.getPositivePrefix() == getPositivePrefix() &&
+        f.getPositiveSuffix() == getPositiveSuffix() &&
+        f.getRoundingMode() == getRoundingMode() &&
+        f.isDecimalSeparatorAlwaysShown() == isDecimalSeparatorAlwaysShown() &&
+        f.isParseBigDecimal() == isParseBigDecimal()
 
       case _ => false
     }

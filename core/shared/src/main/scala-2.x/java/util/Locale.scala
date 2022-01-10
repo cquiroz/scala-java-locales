@@ -454,7 +454,7 @@ class Locale private[util] (
     throw new NullPointerException("Null argument to constructor not allowed")
 
   // Handle 2 special cases jp_JP_JP and th_TH_TH
-  private[this] val extensions = {
+  private[this] val extensions =
     if (
       ((language, country, variant)) == (("ja", "JP", "JP")) &&
       supportSpecialCases
@@ -467,7 +467,6 @@ class Locale private[util] (
       _extensions ++ SMap(Locale.UNICODE_LOCALE_EXTENSION -> "nu-thai")
     else
       _extensions
-  }
 
   private def updateSpecialLanguages(l: String) =
     l match {
@@ -479,10 +478,10 @@ class Locale private[util] (
 
   private def translateSpecialLanguages(l: String) =
     l match {
-      case "he" => "iw"
-      case "yi" => "ji"
-      case "id" => "in"
-      case _    => l
+      // case "he" => "iw"
+      // case "yi" => "ji"
+      // case "id" => "in"
+      case _ => l
     }
 
   // public constructors
@@ -564,12 +563,11 @@ class Locale private[util] (
   }
 
   def toLanguageTag(): String = {
-    val language              = {
+    val language              =
       if (getLanguage().nonEmpty && Locale.checkLanguage(getLanguage()))
         updateSpecialLanguages(getLanguage())
       else
         "und"
-    }
     val country               =
       if (Locale.checkRegion(getCountry())) s"-${getCountry()}"
       else ""
@@ -578,7 +576,7 @@ class Locale private[util] (
       variantSegments.forall(Locale.checkVariantSegment)
     val allAcceptableSegments =
       variantSegments.forall(Locale.checkAcceptableVariantSegment)
-    val variant               = {
+    val variant               =
       if (allSegmentsWellFormed)
         variantSegments.mkString("-", "-", "")
       else if (allAcceptableSegments) {
@@ -591,13 +589,11 @@ class Locale private[util] (
           (acceptable ++ wellFormed.drop(1)).mkString("-", "-", "")
       } else
         ""
-    }
-    val ext                   = {
+    val ext                   =
       if (extensions.nonEmpty)
         extensions.map { case (x, v) => s"$x-$v" }.mkString("-", "-", "")
       else
         ""
-    }
     val script                = this.script.map(_ => s"-${getScript()}").getOrElse("")
 
     if (getLanguage() == "no" && getCountry() == "NO" && getVariant() == "NY") "nn-NO"

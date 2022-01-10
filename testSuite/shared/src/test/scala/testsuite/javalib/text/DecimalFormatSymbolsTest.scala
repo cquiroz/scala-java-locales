@@ -54,9 +54,6 @@ class DecimalFormatSymbolsTest extends munit.FunSuite {
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     LocaleTestItem("az-Cyrl") ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    // bn has a default ns but it is a latn alias
-    LocaleTestItem("bn")      ->
-      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     LocaleTestItem("es-CL")   ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     LocaleTestItem("zh")      ->
@@ -69,52 +66,58 @@ class DecimalFormatSymbolsTest extends munit.FunSuite {
   val localesDiff = List(
     // ar has a default arab set of symbols
     LocaleTestItem("ar", cldr21 = true) ->
-      List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JVM
+      List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JVM
     LocaleTestItem("ar") ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "ليس رقمًا", "-", "E"), // JS
+    // bn has a default ns but it is a latn alias
+    LocaleTestItem("bn", cldr21 = true)    ->
+      List("\u09e6", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+    // bn has a default ns but it is a latn alias
+    LocaleTestItem("bn")                   ->
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     LocaleTestItem("fr", cldr21 = true)    ->
-      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+      List("0", ",", "\u202F", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     LocaleTestItem("fr", cldr21 = false)   ->
       List("0", ",", "\u202F", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     LocaleTestItem("it-CH", cldr21 = true) ->
-      List("0", ".", "'", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+      List("0", ".", "\u2019", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     LocaleTestItem("it-CH")                ->
       List("0", ".", "’", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     // fa uses arabext
     LocaleTestItem("fa", cldr21 = true)    ->
-      List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "NaN", "-", "×۱۰^"), // JVM
+      List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ناعدد", "\u2212", "×۱۰^"), // JVM
     LocaleTestItem("fa") ->
       List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ناعدد", "−", "×۱۰^"), // JS
     LocaleTestItem("fi-FI", cldr21 = true)  ->
-      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epäluku", "-", "E"),
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epäluku", "\u2212", "E"),
     LocaleTestItem("fi-FI", cldr21 = false) ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epäluku", "−", "E"),
     LocaleTestItem("ja", cldr21 = true)     ->
-      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN（非数）", "-", "E"), // JVM
+      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JVM
     LocaleTestItem("ja") ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JS
     LocaleTestItem("ka", cldr21 = true) ->
-      List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JVM
+      List("0", ",", "\u00a0", "‰", "%", "#", ";", "∞", "არ არის რიცხვი", "-", "E"), // JVM
     LocaleTestItem("ka") ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "არ არის რიცხვი", "-", "E"), // JS
     LocaleTestItem("lv", cldr21 = true) ->
-      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "nav skaitlis", "\u2212", "E"), // JVM
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NS", "-", "E"), // JVM
     LocaleTestItem("lv") ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NS", "-", "E"), // JS
     LocaleTestItem("my", cldr21 = true) ->
-      List("၀", ".", ",", "‰", "%", "#", "၊", "∞", "NaN", "-", "E"), // JVM
+      List("၀", ".", ",", "‰", "%", "#", "၊", "∞", "ဂဏန်းမဟုတ်သော", "-", "E"), // JVM
     LocaleTestItem("my") ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "ဂဏန်းမဟုတ်သော", "-", "E"), // JS
     LocaleTestItem("smn", cldr21 = true) ->
-      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JVM
+      List("0", ",", "\u00a0", "‰", "%", "#", ";", "∞", "epiloho", "-", "E"), // JVM
     LocaleTestItem("smn") ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epiloho", "-", "E"), // JS
     LocaleTestItem("smn-FI", cldr21 = true) ->
-      List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
+      List("0", ",", "\u00a0", "‰", "%", "#", ";", "∞", "epiloho", "-", "E"),
     LocaleTestItem("smn-FI")                ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epiloho", "-", "E"),
     LocaleTestItem("ru-RU", cldr21 = true)  ->
-      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "не число", "-", "E"),
+      List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "не число", "-", "E"),
     LocaleTestItem("ru-RU")                 ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "не число", "-", "E"),
     LocaleTestItem("ca", cldr21 = true)     ->

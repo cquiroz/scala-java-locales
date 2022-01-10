@@ -176,16 +176,16 @@ class DecimalFormatSymbols(private[this] val locale: Locale) extends Cloneable {
     obj match {
       case d: DecimalFormatSymbols =>
         d.getZeroDigit() == getZeroDigit() &&
-          d.getGroupingSeparator() == getGroupingSeparator() &&
-          d.getDecimalSeparator() == getDecimalSeparator() &&
-          d.getPerMill() == getPerMill() &&
-          d.getPercent() == getPercent() &&
-          d.getDigit() == getDigit() &&
-          d.getPatternSeparator() == getPatternSeparator() &&
-          d.getInfinity() == getInfinity() &&
-          d.getNaN() == getNaN() &&
-          d.getMinusSign() == getMinusSign() &&
-          d.getExponentSeparator() == getExponentSeparator()
+        d.getGroupingSeparator() == getGroupingSeparator() &&
+        d.getDecimalSeparator() == getDecimalSeparator() &&
+        d.getPerMill() == getPerMill() &&
+        d.getPercent() == getPercent() &&
+        d.getDigit() == getDigit() &&
+        d.getPatternSeparator() == getPatternSeparator() &&
+        d.getInfinity() == getInfinity() &&
+        d.getNaN() == getNaN() &&
+        d.getMinusSign() == getMinusSign() &&
+        d.getExponentSeparator() == getExponentSeparator()
 
       case _ => false
     }

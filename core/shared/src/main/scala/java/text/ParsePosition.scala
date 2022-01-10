@@ -15,7 +15,7 @@ class ParsePosition(private[this] var index: Int) {
     other match {
       case that: ParsePosition =>
         getErrorIndex() == that.getErrorIndex() &&
-          getIndex() == that.getIndex()
+        getIndex() == that.getIndex()
       case _                   => false
     }
 
