@@ -22,7 +22,7 @@ val LTSJava = JavaSpec.temurin("17.0.1")
 
 ThisBuild / githubWorkflowJavaVersions := Seq(LTSJava)
 
-ThisBuild / githubWorkflowPublish := Seq(
+ThisBuild / githubWorkflowPublish              := Seq(
   WorkflowStep.Sbt(
     List("ci-release"),
     env = Map(
@@ -129,12 +129,12 @@ lazy val scalajs_locales: Project = project
   )
 
 def isScala3 = Def.task {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((3, _)) =>
-        true
-      case _ =>
-        false
-    }
+  CrossVersion.partialVersion(scalaVersion.value) match {
+    case Some((3, _)) =>
+      true
+    case _            =>
+      false
+  }
 }
 
 lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
@@ -300,7 +300,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       // with the optimizer enabled
     },
     // Don't run native tests on scala 3
-    Test / compile / sources := Seq() //{ if (isScala3.value) Seq() else (Test / compile / sources).value }
+    Test / compile / sources := Seq() // { if (isScala3.value) Seq() else (Test / compile / sources).value }
   )
   .nativeConfigure(_.dependsOn(core.native, macroUtils, localesFullDb.native))
   .platformsSettings(JSPlatform, NativePlatform)(
@@ -319,7 +319,7 @@ lazy val macroUtils = project
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, _)) =>
           Seq.empty
-        case _ =>
+        case _            =>
           Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value)
       }
     },
