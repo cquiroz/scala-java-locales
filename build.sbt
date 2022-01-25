@@ -1,7 +1,6 @@
-import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
-import sbt.Keys._
-import scala.scalanative.build.Mode
 import locales._
+import sbt.Keys._
+import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
 
 lazy val cldrApiVersion = "2.7.0"
 
@@ -9,8 +8,8 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 resolvers in Global += Resolver.sonatypeRepo("public")
 
-ThisBuild / scalaVersion       := "2.13.6"
-ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.13", "2.13.6", "3.0.0")
+ThisBuild / scalaVersion       := "2.13.8"
+ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.8", "3.1.1")
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches +=
@@ -18,7 +17,7 @@ ThisBuild / githubWorkflowPublishTargetBranches +=
 
 ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("ci-release")))
 
-val LTSJava = JavaSpec.temurin("17.0.1")
+val LTSJava = JavaSpec.temurin("8")
 
 ThisBuild / githubWorkflowJavaVersions := Seq(LTSJava)
 
@@ -58,10 +57,6 @@ val commonSettings: Seq[Setting[_]] = Seq(
                                                                     baseDirectory.value,
                                                                     scalaVersion.value
   )
-)
-
-val commonNativeSettings: Seq[Setting[_]] = Seq(
-  crossScalaVersions ~= { _.filter(_.startsWith("2.")) }
 )
 
 inThisBuild(
@@ -173,7 +168,6 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       }
     }
   )
-  .nativeSettings(commonNativeSettings: _*)
 
 lazy val cldrDbVersion = "36.0"
 
@@ -214,7 +208,6 @@ lazy val localesFullDb = crossProject(JSPlatform, NativePlatform)
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
       .cross(CrossVersion.for3Use2_13)
   )
-  .nativeSettings(commonNativeSettings: _*)
 
 lazy val localesMinimalEnDb = crossProject(JSPlatform, NativePlatform)
   .in(file("localesMinimalEnDb"))
@@ -233,7 +226,6 @@ lazy val localesMinimalEnDb = crossProject(JSPlatform, NativePlatform)
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
       .cross(CrossVersion.for3Use2_13)
   )
-  .nativeSettings(commonNativeSettings: _*)
 
 lazy val localesMinimalEnUSDb = crossProject(JSPlatform, NativePlatform)
   .in(file("localesMinimalEnUSDb"))
@@ -252,7 +244,6 @@ lazy val localesMinimalEnUSDb = crossProject(JSPlatform, NativePlatform)
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
       .cross(CrossVersion.for3Use2_13)
   )
-  .nativeSettings(commonNativeSettings: _*)
 
 lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .in(file("testSuite"))
@@ -293,14 +284,11 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   )
   .jvmConfigure(_.dependsOn(macroUtils))
   .nativeSettings(
-    commonNativeSettings,
     nativeConfig ~= {
       _.withOptimize(false)
       // tests fail to link on Scala 2.11 and 2.12 in debug mode
       // with the optimizer enabled
-    },
-    // Don't run native tests on scala 3
-    Test / compile / sources := Seq() // { if (isScala3.value) Seq() else (Test / compile / sources).value }
+    }
   )
   .nativeConfigure(_.dependsOn(core.native, macroUtils, localesFullDb.native))
   .platformsSettings(JSPlatform, NativePlatform)(
@@ -342,5 +330,4 @@ lazy val demo = crossProject(JSPlatform, NativePlatform)
     scalaJSUseMainModuleInitializer := true,
     name                            := "scala-java-locales demo"
   )
-  .nativeSettings(commonNativeSettings: _*)
   .dependsOn(core)
