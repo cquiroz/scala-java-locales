@@ -141,6 +141,7 @@ class DecimalFormatSymbolsTest extends munit.FunSuite {
   }
 
   test("default_locales_decimal_format_symbol") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     standardLocalesData.foreach { case (l, symbols) =>
       val dfs = DecimalFormatSymbols.getInstance(l)
       test_dfs(dfs, symbols)
@@ -148,6 +149,7 @@ class DecimalFormatSymbolsTest extends munit.FunSuite {
   }
 
   test("extra_locales_decimal_format_symbol") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     extraLocalesData.foreach { case (LocaleTestItem(tag, _), symbols) =>
       val l   = Locale.forLanguageTag(tag)
       val dfs = DecimalFormatSymbols.getInstance(l)
@@ -157,6 +159,7 @@ class DecimalFormatSymbolsTest extends munit.FunSuite {
 
   // These tests give the same data on CLDR 21
   test("extra_locales_not_agreeing_decimal_format_symbol") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     localesDiff.foreach { case (LocaleTestItem(tag, cldr21), symbols) =>
       val l   = Locale.forLanguageTag(tag)
       val dfs = DecimalFormatSymbols.getInstance(l)
@@ -173,6 +176,7 @@ class DecimalFormatSymbolsTest extends munit.FunSuite {
   }
 
   test("defaults") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     val dfs = new DecimalFormatSymbols()
     test_dfs(dfs, englishSymbols)
   }
@@ -231,6 +235,7 @@ class DecimalFormatSymbolsTest extends munit.FunSuite {
   }
 
   test("bad_tag_matches_root_dfs") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     val l   = Locale.forLanguageTag("no_NO")
     val dfs = DecimalFormatSymbols.getInstance(l)
     standardLocalesData.foreach {

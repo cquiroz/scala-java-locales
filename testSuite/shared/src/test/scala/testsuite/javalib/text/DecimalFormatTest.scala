@@ -114,6 +114,7 @@ class DecimalFormatTest extends munit.FunSuite {
   }
 
   test("negative grouping size") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     val f = new DecimalFormat("##0.#####E0")
     intercept[IllegalArgumentException] {
       f.setGroupingSize(-1)

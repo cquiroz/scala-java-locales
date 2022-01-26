@@ -1,7 +1,6 @@
-import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
-import sbt.Keys._
-import scala.scalanative.build.Mode
 import locales._
+import sbt.Keys._
+import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
 
 lazy val cldrApiVersion = "2.7.0"
 
@@ -16,11 +15,7 @@ ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches +=
   RefPredicate.StartsWith(Ref.Tag("v"))
 
-ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("ci-release")))
-
-val LTSJava = JavaSpec.temurin("17.0.1")
-
-ThisBuild / githubWorkflowJavaVersions := Seq(LTSJava)
+ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), JavaSpec.temurin("17"))
 
 ThisBuild / githubWorkflowPublish              := Seq(
   WorkflowStep.Sbt(

@@ -221,6 +221,7 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("remove_unicode_attribute") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     val b1      = new Locale.Builder()
     val locale1 = b1
       .addUnicodeLocaleAttribute("attr")
