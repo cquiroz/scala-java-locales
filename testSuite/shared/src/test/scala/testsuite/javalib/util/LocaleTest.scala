@@ -266,6 +266,7 @@ class LocaleTest extends munit.FunSuite {
   }
 
   test("get_iso_codes") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     // The data from CLDR gives a different amount of countries and
     // languages than the JVM
     val countriesCount = if (Platform.executingInJVM) 249 else 247
@@ -275,6 +276,7 @@ class LocaleTest extends munit.FunSuite {
   }
 
   test("special_cases_language") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     val heLocale = new Locale("he")
     assertEquals("he", heLocale.getLanguage)
 
@@ -443,6 +445,7 @@ class LocaleTest extends munit.FunSuite {
   }
 
   test("for_language_tag_special_cases") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     assertEquals(
       "ja-JP-u-ca-japanese-x-lvariant-JP",
       Locale.forLanguageTag("ja-JP-x-lvariant-JP").toLanguageTag

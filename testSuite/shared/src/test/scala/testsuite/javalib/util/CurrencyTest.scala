@@ -263,6 +263,7 @@ class CurrencyTest extends munit.FunSuite {
   }
 
   test("standard_locales") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     if (Platform.executingInJVM) {
       test_standard_locales(_.jvmResults)
     } else {
