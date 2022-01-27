@@ -293,9 +293,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       _.withOptimize(false)
       // tests fail to link on Scala 2.11 and 2.12 in debug mode
       // with the optimizer enabled
-    },
-    // Don't run native tests on scala 3
-    Test / compile / sources := Seq() // { if (isScala3.value) Seq() else (Test / compile / sources).value }
+    }
   )
   .nativeConfigure(_.dependsOn(core.native, macroUtils, localesFullDb.native))
   .platformsSettings(JSPlatform, NativePlatform)(
