@@ -119,6 +119,7 @@ class NumberFormatTest extends munit.FunSuite {
   }
 
   test("default_locales") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     stdLocales.foreach { (t: TestCase) =>
       val nf = NumberFormat.getNumberInstance(t.l).asInstanceOf[DecimalFormat]
       assertEquals(t.nf, nf.toPattern)
@@ -203,6 +204,7 @@ class NumberFormatTest extends munit.FunSuite {
   }
 
   test("extra_locales") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     extraLocales.foreach { t =>
       val l  = Locale.forLanguageTag(t.tag)
       val nf = NumberFormat.getNumberInstance(l).asInstanceOf[DecimalFormat]
@@ -288,6 +290,7 @@ class NumberFormatTest extends munit.FunSuite {
   }
 
   test("extra_locales_diff") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     extraLocalesDiff
       .filter(t => (Platform.executingInJVM && t.cldr21) || (!Platform.executingInJVM && !t.cldr21))
       .foreach { t =>
@@ -505,6 +508,7 @@ class NumberFormatTest extends munit.FunSuite {
   }
 
   test("format_locales_different_negative") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     val nf =
       NumberFormat.getIntegerInstance(Locale.forLanguageTag("lt")).asInstanceOf[DecimalFormat]
     nf.getDecimalFormatSymbols.setGroupingSeparator(',')

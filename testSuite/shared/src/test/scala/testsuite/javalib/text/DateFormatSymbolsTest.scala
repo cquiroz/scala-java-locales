@@ -1697,6 +1697,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
   // assertArrayEquals(Array[AnyRef](t.eras: _*), Array[AnyRef](s.getEras(): _*))
 
   test("default_locales_date_format_symbol") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     standardLocalesData.foreach { case (l, t @ LocaleTestItem(_, _, _, _, _, _, _, _)) =>
       val dfs = DateFormatSymbols.getInstance(l)
       test_dfs(dfs, t)
@@ -1704,6 +1705,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
   }
 
   test("default_locales_date_format_symbol_with_cldr21") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     standardLocalesDataDiff.foreach { case (l, t @ LocaleTestItem(_, cldr21, _, _, _, _, _, _)) =>
       val dfs = DateFormatSymbols.getInstance(l)
       if (Platform.executingInJVM && cldr21) {
@@ -1716,6 +1718,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
   }
 
   test("extra_locales_date_format_symbols") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     extraLocalesData.foreach { case t @ LocaleTestItem(m, cldr21, _, _, _, _, _, _) =>
       if (Platform.executingInJVM && cldr21) {
         val dfs = DateFormatSymbols.getInstance(Locale.forLanguageTag(m))
@@ -1794,6 +1797,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
   }
 
   test("bad_tag_matches_root_dfs") {
+    assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     val l   = Locale.forLanguageTag("no_NO")
     val dfs = DateFormatSymbols.getInstance(l)
     standardLocalesDataDiff.foreach {

@@ -15,11 +15,7 @@ ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches +=
   RefPredicate.StartsWith(Ref.Tag("v"))
 
-ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("ci-release")))
-
-val LTSJava = JavaSpec.temurin("8")
-
-ThisBuild / githubWorkflowJavaVersions := Seq(LTSJava)
+ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), JavaSpec.temurin("17"))
 
 ThisBuild / githubWorkflowPublish              := Seq(
   WorkflowStep.Sbt(
