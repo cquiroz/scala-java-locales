@@ -2,7 +2,6 @@ package java.text
 
 import java.nio.CharBuffer
 import java.nio.charset.Charset
-import scala.annotation.nowarn
 import scala.scalanative.libc.stdlib
 import scala.scalanative.unsafe._
 
@@ -65,7 +64,6 @@ object Normalizer {
 
 @link("utf8proc")
 @extern
-@nowarn
 private object utf8proc {
   def utf8proc_NFD(str: CString): CString  = extern
   def utf8proc_NFC(str: CString): CString  = extern
