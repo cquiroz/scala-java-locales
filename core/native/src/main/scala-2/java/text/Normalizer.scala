@@ -21,7 +21,7 @@ object Normalizer {
           case NFD  => utf8proc_NFD(toCString(src))
           case NFKC => utf8proc_NFKC(toCString(src))
           case NFKD => utf8proc_NFKD(toCString(src))
-          case _ => throw new IllegalArgumentException // should never happen
+          case _    => throw new IllegalArgumentException // should never happen
         }
 
         val normalized = fromCString(cstr) // TODO can be further optimized
