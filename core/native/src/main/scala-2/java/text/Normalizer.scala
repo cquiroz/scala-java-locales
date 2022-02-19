@@ -8,7 +8,7 @@ import scala.scalanative.unsafe._
 
 object Normalizer {
 
-  @inline def normalize(src: CharSequence, form: Form): String =
+  def normalize(src: CharSequence, form: Form): String =
     if (src == null || form == null)
       throw new NullPointerException
     else
@@ -29,7 +29,7 @@ object Normalizer {
         normalized
       }
 
-  @inline def isNormalized(src: CharSequence, form: Form): Boolean =
+  def isNormalized(src: CharSequence, form: Form): Boolean =
     normalize(src, form).contentEquals(src)
 
   final class Form private (name: String, ordinal: Int) extends Enum[Form](name, ordinal)
@@ -41,7 +41,7 @@ object Normalizer {
     final val NFKD: Form = new Form("NFKD", 3)
   }
 
-  @inline private def toCString(str: CharSequence)(implicit z: Zone): CString = {
+  private def toCString(str: CharSequence)(implicit z: Zone): CString = {
     import scalanative.unsigned._
 
     val encoder = Charset.defaultCharset().newEncoder()
