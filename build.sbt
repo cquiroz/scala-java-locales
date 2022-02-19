@@ -17,11 +17,6 @@ ThisBuild / githubWorkflowPublishTargetBranches +=
 
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), JavaSpec.temurin("17"))
 
-ThisBuild / githubWorkflowBuildPreamble +=
-  WorkflowStep.Run(
-    List("sudo apt-get install libutf8proc-dev"),
-    name = Some("Install libutf8proc")
-  )
 ThisBuild / githubWorkflowPublish              := Seq(
   WorkflowStep.Sbt(
     List("ci-release"),
