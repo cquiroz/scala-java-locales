@@ -7,5 +7,5 @@ target/
 .metals
 .bloop
 .idea
-project/metals.sbt
+metals.sbt
 node_modules/
