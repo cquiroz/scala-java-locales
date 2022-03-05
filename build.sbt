@@ -61,7 +61,6 @@ val commonSettings: Seq[Setting[_]] = Seq(
 )
 
 val commonNativeSettings: Seq[Setting[_]] = Seq(
-  crossScalaVersions ~= { _.filter(_.startsWith("2.")) }
 )
 
 inThisBuild(
