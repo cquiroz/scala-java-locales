@@ -9,7 +9,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 resolvers in Global += Resolver.sonatypeRepo("public")
 
 ThisBuild / scalaVersion       := "2.13.8"
-ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.8", "3.1.1")
+ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.8", "3.1.2")
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches +=
