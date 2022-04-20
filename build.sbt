@@ -192,7 +192,7 @@ lazy val localesFullCurrenciesDb = project
     supportDateTimeFormats := true,
     supportNumberFormats   := true,
     supportISOCodes        := true,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
 
@@ -211,7 +211,7 @@ lazy val localesFullDb = crossProject(JSPlatform, NativePlatform)
     supportDateTimeFormats := true,
     supportNumberFormats   := true,
     supportISOCodes        := true,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
   .nativeSettings(commonNativeSettings: _*)
@@ -230,7 +230,7 @@ lazy val localesMinimalEnDb = crossProject(JSPlatform, NativePlatform)
     supportDateTimeFormats := true,
     supportNumberFormats   := true,
     supportISOCodes        := false,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
   .nativeSettings(commonNativeSettings: _*)
@@ -249,7 +249,7 @@ lazy val localesMinimalEnUSDb = crossProject(JSPlatform, NativePlatform)
     supportDateTimeFormats := true,
     supportNumberFormats   := true,
     supportISOCodes        := false,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
   .nativeSettings(commonNativeSettings: _*)
