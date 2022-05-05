@@ -9,7 +9,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 resolvers in Global += Resolver.sonatypeRepo("public")
 
 ThisBuild / scalaVersion       := "2.13.8"
-ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.8", "3.1.1")
+ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.8", "3.1.2")
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches +=
@@ -17,6 +17,11 @@ ThisBuild / githubWorkflowPublishTargetBranches +=
 
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), JavaSpec.temurin("17"))
 
+ThisBuild / githubWorkflowBuildPreamble +=
+  WorkflowStep.Run(
+    List("sudo apt-get install libutf8proc-dev"),
+    name = Some("Install libutf8proc")
+  )
 ThisBuild / githubWorkflowPublish              := Seq(
   WorkflowStep.Sbt(
     List("ci-release"),
@@ -182,7 +187,7 @@ lazy val localesFullCurrenciesDb = project
     supportDateTimeFormats := true,
     supportNumberFormats   := true,
     supportISOCodes        := true,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
 
@@ -201,7 +206,7 @@ lazy val localesFullDb = crossProject(JSPlatform, NativePlatform)
     supportDateTimeFormats := true,
     supportNumberFormats   := true,
     supportISOCodes        := true,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
 
@@ -219,7 +224,7 @@ lazy val localesMinimalEnDb = crossProject(JSPlatform, NativePlatform)
     supportDateTimeFormats := true,
     supportNumberFormats   := true,
     supportISOCodes        := false,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
 
@@ -237,7 +242,7 @@ lazy val localesMinimalEnUSDb = crossProject(JSPlatform, NativePlatform)
     supportDateTimeFormats := true,
     supportNumberFormats   := true,
     supportISOCodes        := false,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.1")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
 
