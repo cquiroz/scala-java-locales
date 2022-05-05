@@ -392,7 +392,7 @@ class DecimalFormat(
       parsedPattern.get.minimumExponentDigits.isDefined || parsedPattern.get.maximumExponentDigits.isDefined
 
     // Create the core pattern.
-    val sb = new StringBuilder
+    val sb: StringBuilder = new StringBuilder
 
     val requiredIntegersStr: String = repeatDigits(
       getMinimumIntegerDigits(),
@@ -406,8 +406,8 @@ class DecimalFormat(
     )
 
     if (isGroupingUsed() && getGroupingSize() > 0) {
-      val integerStr = requiredIntegersStr + optionalIntegersStr
-      val c: Char    =
+      val integerStr: String = requiredIntegersStr + optionalIntegersStr
+      val c: Char            =
         if (localize) symbols.getGroupingSeparator()
         else DecimalFormatUtil.PatternCharGroupingSeparator
       sb.append(integerStr.grouped(getGroupingSize()).mkString(c.toString).reverse)
@@ -455,10 +455,10 @@ class DecimalFormat(
 
       sb.append(minStr)
 
-      val maxStr = parsedPattern.get.maximumExponentDigits
+      val maxStr: String = parsedPattern.get.maximumExponentDigits
         .map { (len: Int) =>
           repeatDigits(
-            len - minStr.size,
+            len - minStr.length,
             if (localize) symbols.getDigit()
             else DecimalFormatUtil.PatternCharDigit
           )
@@ -470,7 +470,7 @@ class DecimalFormat(
 
     val pattern: String = sb.toString()
 
-    val result = new StringBuilder
+    val result: StringBuilder = new StringBuilder
 
     parsedPattern.get.positivePrefix.map(result.append)
     result.append(pattern)
