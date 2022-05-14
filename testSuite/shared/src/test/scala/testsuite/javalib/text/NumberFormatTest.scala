@@ -292,7 +292,7 @@ class NumberFormatTest extends munit.FunSuite {
   test("extra_locales_diff") {
     assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     extraLocalesDiff
-      .filter(t => (Platform.executingInJVM && t.cldr21) || (!Platform.executingInJVM && !t.cldr21))
+      .filter(t => Platform.executingInJVM && t.cldr21 || !Platform.executingInJVM && !t.cldr21)
       .foreach { t =>
         val l  = Locale.forLanguageTag(t.tag)
         val nf = NumberFormat.getNumberInstance(l).asInstanceOf[DecimalFormat]

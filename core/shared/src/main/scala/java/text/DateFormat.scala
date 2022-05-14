@@ -5,7 +5,7 @@ import java.util.Locale
 import locales.LocalesDb
 import locales.cldr.{ CalendarPatterns, LDML }
 
-abstract class DateFormat protected () extends Format
+abstract class DateFormat protected extends Format
 // override final def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer
 // def format(date: Date, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer
 

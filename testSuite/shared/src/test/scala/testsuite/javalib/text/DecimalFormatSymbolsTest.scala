@@ -177,12 +177,12 @@ class DecimalFormatSymbolsTest extends munit.FunSuite {
 
   test("defaults") {
     assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
-    val dfs = new DecimalFormatSymbols()
+    val dfs = new DecimalFormatSymbols
     test_dfs(dfs, englishSymbols)
   }
 
   test("setters") {
-    val dfs = new DecimalFormatSymbols()
+    val dfs = new DecimalFormatSymbols
     dfs.setZeroDigit('1')
     assertEquals('1', dfs.getZeroDigit)
     dfs.setGroupingSeparator('1')
@@ -216,18 +216,18 @@ class DecimalFormatSymbolsTest extends munit.FunSuite {
   }
 
   test("clone") {
-    val dfs = new DecimalFormatSymbols()
+    val dfs = new DecimalFormatSymbols
     assertEquals(dfs, dfs.clone().asInstanceOf[DecimalFormatSymbols])
     assert(dfs ne dfs.clone())
   }
 
   test("equals") {
-    val dfs  = new DecimalFormatSymbols()
+    val dfs  = new DecimalFormatSymbols
     assertEquals(dfs, dfs)
     assert(dfs eq dfs)
     assert(!dfs.equals(null))
     assert(!dfs.equals(1))
-    val dfs2 = new DecimalFormatSymbols()
+    val dfs2 = new DecimalFormatSymbols
     assertEquals(dfs, dfs2)
     assert(dfs ne dfs2)
     dfs2.setDigit('i')

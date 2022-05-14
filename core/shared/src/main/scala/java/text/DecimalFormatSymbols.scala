@@ -165,7 +165,7 @@ class DecimalFormatSymbols(private[this] val locale: Locale) extends Cloneable {
 
   def setExponentSeparator(sep: String): Unit = {
     if (sep == null)
-      throw new NullPointerException()
+      throw new NullPointerException
     this.exp = sep
   }
 

@@ -85,51 +85,51 @@ class DateFormatSymbols(private[this] val locale: Locale) extends Cloneable {
   def getEras(): Array[String] = eras
 
   def setEras(eras: Array[String]): Unit = {
-    if (eras == null) throw new NullPointerException()
+    if (eras == null) throw new NullPointerException
     this.eras = Array[String](eras: _*)
   }
 
   def getMonths(): Array[String] = months
 
   def setMonths(months: Array[String]): Unit = {
-    if (months == null) throw new NullPointerException()
+    if (months == null) throw new NullPointerException
     this.months = Array[String](months: _*)
   }
 
   def getShortMonths(): Array[String] = shortMonths
 
   def setShortMonths(shortMonths: Array[String]): Unit = {
-    if (shortMonths == null) throw new NullPointerException()
+    if (shortMonths == null) throw new NullPointerException
     this.shortMonths = Array[String](shortMonths: _*)
   }
 
   def getWeekdays(): Array[String] = weekdays
 
   def setWeekdays(weekdays: Array[String]): Unit = {
-    if (weekdays == null) throw new NullPointerException()
+    if (weekdays == null) throw new NullPointerException
     this.weekdays = Array[String](weekdays: _*)
   }
 
   def getShortWeekdays(): Array[String] = shortWeekdays
 
   def setShortWeekdays(shortWeekdays: Array[String]): Unit = {
-    if (shortWeekdays == null) throw new NullPointerException()
+    if (shortWeekdays == null) throw new NullPointerException
     this.shortWeekdays = Array[String](shortWeekdays: _*)
   }
 
   def getAmPmStrings(): Array[String] = amPmStrings
 
   def setAmPmStrings(amPmStrings: Array[String]): Unit = {
-    if (amPmStrings == null) throw new NullPointerException()
+    if (amPmStrings == null) throw new NullPointerException
     this.amPmStrings = Array[String](amPmStrings: _*)
   }
 
   def getZoneStrings(): Array[Array[String]] = zoneStrings
 
   def setZoneStrings(zoneStrings: Array[Array[String]]): Unit = {
-    if (zoneStrings == null) throw new NullPointerException()
+    if (zoneStrings == null) throw new NullPointerException
     if (zoneStrings.exists(_.length < 5))
-      throw new IllegalArgumentException()
+      throw new IllegalArgumentException
     val copy = zoneStrings.map(Array[String](_: _*))
     this.zoneStrings = Array[Array[String]](copy: _*)
   }
@@ -137,12 +137,12 @@ class DateFormatSymbols(private[this] val locale: Locale) extends Cloneable {
   def getLocalPatternChars(): String = localPatternChars
 
   def setLocalPatternChars(localPatternChars: String): Unit = {
-    if (localPatternChars == null) throw new NullPointerException()
+    if (localPatternChars == null) throw new NullPointerException
     this.localPatternChars = localPatternChars
   }
 
   override def clone(): AnyRef = {
-    val dfs = new DateFormatSymbols()
+    val dfs = new DateFormatSymbols
     dfs.setEras(getEras())
     dfs.setMonths(getMonths())
     dfs.setShortMonths(getShortMonths())

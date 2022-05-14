@@ -289,7 +289,7 @@ class LocaleTest extends munit.FunSuite {
 
   test("has_extensions") {
     // You can only add extensions with Locale.Builder
-    val b1     = new Locale.Builder()
+    val b1     = new Locale.Builder
     val locale = b1.setExtension('a', "ca-japanese").build
     assert(locale.hasExtensions)
 
@@ -298,14 +298,14 @@ class LocaleTest extends munit.FunSuite {
     assert(new Locale("ja", "JP", "JP").hasExtensions)
 
     // Unicode extensions
-    val b2      = new Locale.Builder()
+    val b2      = new Locale.Builder
     val locale2 = b2.setUnicodeLocaleKeyword("nu", "thai").build
     assert(locale2.hasExtensions)
   }
 
   test("strip_extensions") {
     // You can only add extensions with Locale.Builder
-    val b1     = new Locale.Builder()
+    val b1     = new Locale.Builder
     val locale = b1.setExtension('a', "ca-japanese").build
     assert(!locale.stripExtensions.hasExtensions)
 
@@ -316,23 +316,23 @@ class LocaleTest extends munit.FunSuite {
 
   test("to_string") {
     // Examples from javadocs
-    val l1 = new Locale.Builder().setLanguage("en").build
+    val l1 = new Locale.Builder.setLanguage("en").build
     assertEquals("en", l1.toString)
-    val l2 = new Locale.Builder().setLanguage("de").setRegion("DE").build
+    val l2 = new Locale.Builder.setLanguage("de").setRegion("DE").build
     assertEquals("de_DE", l2.toString)
-    val l3 = new Locale.Builder().setRegion("GB").build
+    val l3 = new Locale.Builder.setRegion("GB").build
     assertEquals("_GB", l3.toString)
     val l4 = new Locale("en", "US", "WIN")
     assertEquals("en_US_WIN", l4.toString)
-    val l5 = new Locale.Builder().setLanguage("de").setVariant("POSIX").build
+    val l5 = new Locale.Builder.setLanguage("de").setVariant("POSIX").build
     assertEquals("de__POSIX", l5.toString)
-    val l6 = new Locale.Builder()
+    val l6 = new Locale.Builder
       .setLanguage("zh")
       .setRegion("CN")
       .setScript("Hans")
       .build
     assertEquals("zh_CN_#Hans", l6.toString)
-    val l7 = new Locale.Builder()
+    val l7 = new Locale.Builder
       .setLanguage("zh")
       .setRegion("TW")
       .setScript("Hant")
@@ -346,23 +346,23 @@ class LocaleTest extends munit.FunSuite {
   }
 
   test("to_language_tag") {
-    val l1 = new Locale.Builder().setLanguage("en").build
+    val l1 = new Locale.Builder.setLanguage("en").build
     assertEquals("en", l1.toLanguageTag)
-    val l2 = new Locale.Builder().setLanguage("de").setRegion("DE").build
+    val l2 = new Locale.Builder.setLanguage("de").setRegion("DE").build
     assertEquals("de-DE", l2.toLanguageTag)
-    val l3 = new Locale.Builder().setRegion("GB").build
+    val l3 = new Locale.Builder.setRegion("GB").build
     assertEquals("und-GB", l3.toLanguageTag)
     val l4 = new Locale("en", "US", "WIN")
     assertEquals("en-US-x-lvariant-WIN", l4.toLanguageTag)
-    val l5 = new Locale.Builder().setLanguage("de").setVariant("POSIX").build
+    val l5 = new Locale.Builder.setLanguage("de").setVariant("POSIX").build
     assertEquals("de-POSIX", l5.toLanguageTag)
-    val l6 = new Locale.Builder()
+    val l6 = new Locale.Builder
       .setLanguage("zh")
       .setRegion("CN")
       .setScript("Hans")
       .build
     assertEquals("zh-Hans-CN", l6.toLanguageTag)
-    val l7 = new Locale.Builder()
+    val l7 = new Locale.Builder
       .setLanguage("zh")
       .setRegion("TW")
       .setScript("Hant")

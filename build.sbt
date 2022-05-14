@@ -94,9 +94,9 @@ def scalaVersionSpecificFolders(srcName: String, srcBaseDir: java.io.File, scala
     List(CrossType.Pure, CrossType.Full)
       .flatMap(_.sharedSrcDir(srcBaseDir, srcName).toList.map(f => file(f.getPath + suffix)))
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, y))     => extraDirs("-2.x") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-    case Some((0 | 3, _)) => extraDirs("-2.13+") ++ extraDirs("-3.x")
-    case _                => Nil
+    case Some(2, y)     => extraDirs("-2.x") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+    case Some(0 | 3, _) => extraDirs("-2.13+") ++ extraDirs("-3.x")
+    case _              => Nil
   }
 }
 
@@ -130,9 +130,9 @@ lazy val scalajs_locales: Project = project
 
 def isScala3 = Def.task {
   CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((3, _)) =>
+    case Some(3, _) =>
       true
-    case _            =>
+    case _          =>
       false
   }
 }
@@ -315,9 +315,9 @@ lazy val macroUtils = project
     name                    := "macroutils",
     libraryDependencies ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((3, _)) =>
+        case Some(3, _) =>
           Seq.empty
-        case _            =>
+        case _          =>
           Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value)
       }
     },

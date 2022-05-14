@@ -38,7 +38,7 @@ class SimpleDateFormat(
 
     var patternPos = pattern.length
 
-    val sb = new StringBuffer()
+    val sb = new StringBuffer
     while (patternPos > 0) {
       patternPos -= 1
 

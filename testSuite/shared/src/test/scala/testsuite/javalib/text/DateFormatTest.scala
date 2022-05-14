@@ -1431,9 +1431,7 @@ class DateFormatTest extends munit.FunSuite {
   test("standard_locales_diff") {
     assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     stdLocalesDiff
-      .filter(tc =>
-        (Platform.executingInJVM && tc.cldr21) || (!Platform.executingInJVM && !tc.cldr21)
-      )
+      .filter(tc => Platform.executingInJVM && tc.cldr21 || !Platform.executingInJVM && !tc.cldr21)
       .foreach { tc =>
         for {
           df <- tc.dateFormats
@@ -1510,9 +1508,7 @@ class DateFormatTest extends munit.FunSuite {
   test("extra_locales_diff") {
     assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
     localesByTagDiff
-      .filter(tc =>
-        (Platform.executingInJVM && tc.cldr21) || (!Platform.executingInJVM && !tc.cldr21)
-      )
+      .filter(tc => Platform.executingInJVM && tc.cldr21 || !Platform.executingInJVM && !tc.cldr21)
       .foreach { tc =>
         val locale = Locale.forLanguageTag(tc.tag)
 
@@ -1556,7 +1552,7 @@ class DateFormatTest extends munit.FunSuite {
     val l = Locale.forLanguageTag("no_NO")
     stdLocalesDiff.foreach {
       case tc @ TestCase(_, lo, cldr21, _, _)
-          if lo == Locale.ROOT && ((Platform.executingInJVM && cldr21) || (!Platform.executingInJVM && !cldr21)) =>
+          if lo == Locale.ROOT && (Platform.executingInJVM && cldr21 || !Platform.executingInJVM && !cldr21) =>
         for {
           df <- tc.dateFormats
         } yield assertEquals(

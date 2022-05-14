@@ -2,8 +2,8 @@ package java.text
 
 import AttributedCharacterIterator.Attribute
 
-abstract class Format protected () extends Cloneable {
-  def format(obj: AnyRef): String = format(obj, new StringBuffer(), new FieldPosition(0)).toString
+abstract class Format protected extends Cloneable {
+  def format(obj: AnyRef): String = format(obj, new StringBuffer, new FieldPosition(0)).toString
 
   def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer
 
@@ -19,12 +19,12 @@ abstract class Format protected () extends Cloneable {
 object Format {
   private class EmptyAttributedCharacterIterator extends AttributedCharacterIterator {
     override def getAttributes(): java.util.Map[Attribute, AnyRef] =
-      new java.util.HashMap()
+      new java.util.HashMap
 
     override def getAttribute(attribute: Attribute): AnyRef = null
 
     override def getAllAttributeKeys(): java.util.Set[Attribute] =
-      new java.util.TreeSet()
+      new java.util.TreeSet
 
     override def getRunLimit(): Int = 0
 

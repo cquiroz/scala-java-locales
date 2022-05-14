@@ -6,110 +6,110 @@ import testsuite.utils.Platform
 
 class LocaleBuilderTest extends munit.FunSuite {
   test("build_with_language") {
-    val b1      = new Locale.Builder()
+    val b1      = new Locale.Builder
     val locale1 = b1.setLanguage("en").build
     assertEquals("en", locale1.getLanguage)
 
     // Null should reset
-    val b2      = new Locale.Builder()
+    val b2      = new Locale.Builder
     val locale2 = b2.setLanguage(null).build
     assertEquals("", locale2.getLanguage)
 
-    val b3      = new Locale.Builder()
+    val b3      = new Locale.Builder
     val locale3 = b3.setLanguage("en").setLanguage("").build
     assertEquals("", locale3.getLanguage)
 
     // Check for compliance
     intercept[IllformedLocaleException](
-      new Locale.Builder().setLanguage("toolongtobevalid")
+      new Locale.Builder.setLanguage("toolongtobevalid")
     )
   }
 
   test("build_language_canonicalization") {
-    val b1     = new Locale.Builder()
+    val b1     = new Locale.Builder
     val locale = b1.setLanguage("En").build
     assertEquals("en", locale.getLanguage)
   }
 
   test("build_with_script") {
-    val b1     = new Locale.Builder()
+    val b1     = new Locale.Builder
     val locale = b1.setScript("Cyrl").build
     assertEquals("Cyrl", locale.getScript)
 
     // null resets
-    val b2      = new Locale.Builder()
+    val b2      = new Locale.Builder
     val locale2 = b2.setScript(null).build
     assertEquals("", locale2.getScript)
 
-    val b3      = new Locale.Builder()
+    val b3      = new Locale.Builder
     val locale3 = b3.setScript("Cyrl").setScript("").build
     assertEquals("", locale3.getScript)
 
     // Check for compliance, too long
     intercept[IllformedLocaleException](
-      new Locale.Builder().setScript("toolongtobevalid")
+      new Locale.Builder.setScript("toolongtobevalid")
     )
 
     // Check for compliance, too short
-    intercept[IllformedLocaleException](new Locale.Builder().setScript("ts"))
+    intercept[IllformedLocaleException](new Locale.Builder.setScript("ts"))
   }
 
   test("build_script_canonicalization") {
-    val b1     = new Locale.Builder()
+    val b1     = new Locale.Builder
     val locale = b1.setScript("cyrl").build
     assertEquals("Cyrl", locale.getScript)
   }
 
   test("build_with_region") {
-    val b1     = new Locale.Builder()
+    val b1     = new Locale.Builder
     val locale = b1.setRegion("US").build
     assertEquals("US", locale.getCountry)
 
     // null resets
-    val b2      = new Locale.Builder()
+    val b2      = new Locale.Builder
     val locale2 = b2.setRegion(null).build
     assertEquals("", locale2.getCountry)
 
-    val b3      = new Locale.Builder()
+    val b3      = new Locale.Builder
     val locale3 = b3.setRegion("US").setRegion("").build
     assertEquals("", locale3.getCountry)
 
-    val b4      = new Locale.Builder()
+    val b4      = new Locale.Builder
     val locale4 = b4.setRegion("029").build
     assertEquals("029", locale4.getCountry)
 
     // Check for compliance, too long
     intercept[IllformedLocaleException](
-      new Locale.Builder().setRegion("toolongtobevalid")
+      new Locale.Builder.setRegion("toolongtobevalid")
     )
-    intercept[IllformedLocaleException](new Locale.Builder().setRegion("1234"))
+    intercept[IllformedLocaleException](new Locale.Builder.setRegion("1234"))
 
     // Check for compliance, too short
-    intercept[IllformedLocaleException](new Locale.Builder().setRegion("t"))
-    intercept[IllformedLocaleException](new Locale.Builder().setRegion("1"))
+    intercept[IllformedLocaleException](new Locale.Builder.setRegion("t"))
+    intercept[IllformedLocaleException](new Locale.Builder.setRegion("1"))
   }
 
   test("build_with_variant") {
-    val b1     = new Locale.Builder()
+    val b1     = new Locale.Builder
     val locale = b1.setVariant("polyton").build
     assertEquals("polyton", locale.getVariant)
 
     // null resets
-    val b2      = new Locale.Builder()
+    val b2      = new Locale.Builder
     val locale2 = b2.setVariant(null).build
     assertEquals("", locale2.getVariant)
 
     // Some examples taken from IANA Subtag registry
     val cases = List("1606nict", "1901", "baku1926", "fonxsamp", "luna1918")
     cases.foreach { v =>
-      val b      = new Locale.Builder()
+      val b      = new Locale.Builder
       val locale = b.setVariant(v).build
       assertEquals(v, locale.getVariant)
     }
 
     // Multiple variants are allowed
     cases.zip(cases).foreach { case (c1, c2) =>
-      val b       = new Locale.Builder()
+      val b       = new Locale.Builder
       val locale1 = b.setVariant(s"$c1-$c2").build
       assertEquals(s"${c1}_$c2", locale1.getVariant)
 
@@ -117,48 +117,48 @@ class LocaleBuilderTest extends munit.FunSuite {
       assertEquals(s"${c1}_$c2", locale2.getVariant)
     }
 
-    val b4      = new Locale.Builder()
+    val b4      = new Locale.Builder
     val locale4 = b4.setVariant("VALENCIA").build
     assertEquals("VALENCIA", locale4.getVariant)
 
     // Check for compliance, too long
-    intercept[IllformedLocaleException](new Locale.Builder().setVariant("four"))
-    intercept[IllformedLocaleException](new Locale.Builder().setVariant("abcde!"))
+    intercept[IllformedLocaleException](new Locale.Builder.setVariant("four"))
+    intercept[IllformedLocaleException](new Locale.Builder.setVariant("abcde!"))
 
     // Check for compliance, too short
-    intercept[IllformedLocaleException](new Locale.Builder().setVariant("t"))
-    intercept[IllformedLocaleException](new Locale.Builder().setVariant("1"))
+    intercept[IllformedLocaleException](new Locale.Builder.setVariant("t"))
+    intercept[IllformedLocaleException](new Locale.Builder.setVariant("1"))
   }
 
   test("build_with_extensions") {
-    val b1     = new Locale.Builder()
+    val b1     = new Locale.Builder
     val locale = b1.setExtension('a', "ca-japanese").build
     assertEquals("ca-japanese", locale.getExtension('a'))
 
     // null resets
-    val b2      = new Locale.Builder()
+    val b2      = new Locale.Builder
     val locale2 =
       b2.setExtension('a', "ca-japanese").setExtension('a', "").build
     assert(null == locale2.getExtension('a'))
 
     // Check for compliance on the keys
-    intercept[IllformedLocaleException](new Locale.Builder().setExtension('!', "abc"))
+    intercept[IllformedLocaleException](new Locale.Builder.setExtension('!', "abc"))
 
     // Check for compliance on the value
-    intercept[IllformedLocaleException](new Locale.Builder().setExtension('a', "a"))
+    intercept[IllformedLocaleException](new Locale.Builder.setExtension('a', "a"))
     intercept[IllformedLocaleException](
-      new Locale.Builder().setExtension('a', "abcdefghi")
+      new Locale.Builder.setExtension('a', "abcdefghi")
     )
   }
 
   test("extensions_canonalization") {
-    val b1     = new Locale.Builder()
+    val b1     = new Locale.Builder
     val locale = b1.setExtension('a', "Ca-Japanese").build
     assertEquals("ca-japanese", locale.getExtension('a'))
   }
 
   test("build_with_unicode_extensions") {
-    val b1     = new Locale.Builder()
+    val b1     = new Locale.Builder
     val locale = b1
       .setUnicodeLocaleKeyword("nu", "thai")
       .setUnicodeLocaleKeyword("ok", "")
@@ -175,24 +175,24 @@ class LocaleBuilderTest extends munit.FunSuite {
 
     // Check for compliance on the keys
     intercept[NullPointerException](
-      new Locale.Builder().setUnicodeLocaleKeyword(null, "thai")
+      new Locale.Builder.setUnicodeLocaleKeyword(null, "thai")
     )
     // key too short
     intercept[IllformedLocaleException](
-      new Locale.Builder().setUnicodeLocaleKeyword("a", "thai")
+      new Locale.Builder.setUnicodeLocaleKeyword("a", "thai")
     )
     // value too short
     intercept[IllformedLocaleException](
-      new Locale.Builder().setUnicodeLocaleKeyword("nu", "th")
+      new Locale.Builder.setUnicodeLocaleKeyword("nu", "th")
     )
     // value too long
     intercept[IllformedLocaleException](
-      new Locale.Builder().setUnicodeLocaleKeyword("nu", "toolongvalue")
+      new Locale.Builder.setUnicodeLocaleKeyword("nu", "toolongvalue")
     )
   }
 
   test("replace_unicode_extensions") {
-    val b1      = new Locale.Builder()
+    val b1      = new Locale.Builder
     val locale1 = b1
       .setUnicodeLocaleKeyword("nu", "thai")
       .setUnicodeLocaleKeyword("ok", "")
@@ -209,20 +209,20 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("build_with_unicode_attributes") {
-    val b1      = new Locale.Builder()
+    val b1      = new Locale.Builder
     val locale1 = b1.addUnicodeLocaleAttribute("attr").build
     assert(locale1.getUnicodeLocaleAttributes.contains("attr"))
 
     // Check for compliance on the attribute
-    intercept[NullPointerException](new Locale.Builder().addUnicodeLocaleAttribute(null))
+    intercept[NullPointerException](new Locale.Builder.addUnicodeLocaleAttribute(null))
     intercept[IllformedLocaleException](
-      new Locale.Builder().addUnicodeLocaleAttribute("toolongvalue")
+      new Locale.Builder.addUnicodeLocaleAttribute("toolongvalue")
     )
   }
 
   test("remove_unicode_attribute") {
     assume(!sys.props.get("java.version").exists(_.startsWith("1.8.")))
-    val b1      = new Locale.Builder()
+    val b1      = new Locale.Builder
     val locale1 = b1
       .addUnicodeLocaleAttribute("attr")
       .removeUnicodeLocaleAttribute("attr")
@@ -232,18 +232,18 @@ class LocaleBuilderTest extends munit.FunSuite {
     // Check for compliance on the attribute
     if (Platform.executingInJVM)
       intercept[NullPointerException](
-        new Locale.Builder().removeUnicodeLocaleAttribute(null)
+        new Locale.Builder.removeUnicodeLocaleAttribute(null)
       )
     else
       // Scala.js follows the spec
-      intercept[NullPointerException](new Locale.Builder().removeUnicodeLocaleAttribute(null))
+      intercept[NullPointerException](new Locale.Builder.removeUnicodeLocaleAttribute(null))
     intercept[IllformedLocaleException](
-      new Locale.Builder().removeUnicodeLocaleAttribute("toolongvalue")
+      new Locale.Builder.removeUnicodeLocaleAttribute("toolongvalue")
     )
   }
 
   test("clear") {
-    val b       = new Locale.Builder()
+    val b       = new Locale.Builder
     val locale1 = b.setLanguage("fi").setRegion("FI").setVariant("POSIX").build
     assertEquals("fi", locale1.getLanguage)
     assertEquals("FI", locale1.getCountry)
@@ -256,7 +256,7 @@ class LocaleBuilderTest extends munit.FunSuite {
   }
 
   test("clear_extensions") {
-    val b       = new Locale.Builder()
+    val b       = new Locale.Builder
     val locale1 = b
       .setLanguage("es")
       .setRegion("CL")

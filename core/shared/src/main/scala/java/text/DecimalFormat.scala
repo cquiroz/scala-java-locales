@@ -56,9 +56,9 @@ class DecimalFormat(
   private def handleGroupSeparator(builder: StringBuilder, idx: Int) =
     if (
       isGroupingUsed() &&
-      (getGroupingSize() > 0) &&
-      (idx > 0) &&
-      (idx % getGroupingSize() == 0)
+      getGroupingSize() > 0 &&
+      idx > 0 &&
+      idx % getGroupingSize() == 0
     )
       builder.append(symbols.getGroupingSeparator())
 
@@ -146,7 +146,7 @@ class DecimalFormat(
   // Based upon number count, add in the number of group separators
   private def totalDigitsWritten(count: Int): Int =
     if (isGroupingUsed() && getGroupingSize() > 0 && count > 0)
-      count + (count / getGroupingSize())
+      count + count / getGroupingSize()
     else count
 
   private def repeatDigits(count: Int, c: Char): String =
@@ -186,11 +186,11 @@ class DecimalFormat(
         )
     // format: on
 
-    val integerStrBuilder           = new StringBuilder()
+    val integerStrBuilder           = new StringBuilder
     val integerPart: JavaBigDecimal = new JavaBigDecimal(targetNumber.toBigInteger, 0)
     var integerDigitsWritten: Int   = 0
 
-    if ((integerPart.compareTo(JavaBigDecimal.ZERO) == 0) || (getMaximumIntegerDigits() == 0)) {
+    if (integerPart.compareTo(JavaBigDecimal.ZERO) == 0 || getMaximumIntegerDigits() == 0) {
       integerStrBuilder.append(symbols.getZeroDigit())
       integerDigitsWritten += 1
     } else
@@ -212,7 +212,7 @@ class DecimalFormat(
     if (targetNumber > integerPart) {
       toAppendTo.append(symbols.getDecimalSeparator())
 
-      val fractionStrBuilder = new StringBuilder()
+      val fractionStrBuilder = new StringBuilder
 
       // Special case for exponents
       val fractionMaxDigits: Int =
@@ -240,7 +240,7 @@ class DecimalFormat(
         val truncatedStr: String = unscaledString.dropWhile(_ == symbols.getZeroDigit())
 
         truncatedStr +
-          (0 until (fractionMaxDigits - unscaledString.length))
+          (0 until fractionMaxDigits - unscaledString.length)
             .map(_ => symbols.getZeroDigit())
             .mkString
       }.reverse

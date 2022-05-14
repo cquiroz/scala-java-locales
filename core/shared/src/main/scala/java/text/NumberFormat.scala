@@ -5,7 +5,7 @@ import java.util.{ Currency, Locale }
 import locales.cldr.{ LDML, NumberPatterns }
 import locales.LocalesDb
 
-abstract class NumberFormat protected () extends Format {
+abstract class NumberFormat protected extends Format {
   private[this] var parseIntegerOnly: Boolean  = false
   private[this] var roundingMode: RoundingMode = RoundingMode.HALF_EVEN
 

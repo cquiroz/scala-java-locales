@@ -1735,7 +1735,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
     get: DateFormatSymbols => Array[String],
     set: (DateFormatSymbols, Array[String]) => Unit
   ): Unit = {
-    val dfs   = new DateFormatSymbols()
+    val dfs   = new DateFormatSymbols
     intercept[NullPointerException](set(dfs, null))
     val value = Array("a", "b")
     set(dfs, value)
@@ -1745,7 +1745,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
   }
 
   test("zone_strings") {
-    val dfs         = new DateFormatSymbols()
+    val dfs         = new DateFormatSymbols
     intercept[NullPointerException](dfs.setZoneStrings(null))
     val zonesTooFew = Array(Array("a", "b"), Array("c", "d"))
     intercept[IllegalArgumentException](dfs.setZoneStrings(zonesTooFew))
@@ -1765,32 +1765,32 @@ class DateFormatSymbolsTest extends munit.FunSuite {
     test_setter(_.getShortWeekdays(), _.setShortWeekdays(_))
     test_setter(_.getAmPmStrings(), _.setAmPmStrings(_))
 
-    val dfs = new DateFormatSymbols()
+    val dfs = new DateFormatSymbols
     dfs.setLocalPatternChars("abc")
     assertEquals("abc", dfs.getLocalPatternChars())
     intercept[NullPointerException](dfs.setLocalPatternChars(null))
   }
 
   test("equals") {
-    val dfs = new DateFormatSymbols()
+    val dfs = new DateFormatSymbols
     assertEquals(dfs, dfs)
-    assertEquals(dfs, new DateFormatSymbols())
+    assertEquals(dfs, new DateFormatSymbols)
     dfs.setEras(Array("a", "b"))
-    assert(!dfs.equals(new DateFormatSymbols()))
+    assert(!dfs.equals(new DateFormatSymbols))
     assert(!dfs.equals(null))
     assert(!dfs.equals(1))
   }
 
   test("hash_code") {
-    val dfs = new DateFormatSymbols()
+    val dfs = new DateFormatSymbols
     assertEquals(dfs.hashCode, dfs.hashCode)
-    assertEquals(dfs.hashCode, new DateFormatSymbols().hashCode)
+    assertEquals(dfs.hashCode, new DateFormatSymbols.hashCode)
     dfs.setEras(Array("a", "b"))
-    assert(!dfs.hashCode.equals(new DateFormatSymbols().hashCode))
+    assert(!dfs.hashCode.equals(new DateFormatSymbols.hashCode))
   }
 
   test("clone") {
-    val dfs    = new DateFormatSymbols()
+    val dfs    = new DateFormatSymbols
     val cloned = dfs.clone
     assertEquals(dfs, cloned.asInstanceOf[DateFormatSymbols])
     assert(dfs ne cloned)
