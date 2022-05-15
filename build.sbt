@@ -8,14 +8,17 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 resolvers in Global += Resolver.sonatypeRepo("public")
 
-ThisBuild / scalaVersion       := "2.13.8"
-ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.8", "3.1.2")
+lazy val scalaVersion213 = "2.13.8"
+lazy val scalaVersion3   = "3.1.2"
+ThisBuild / scalaVersion       := scalaVersion213
+ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.15", scalaVersion213, scalaVersion3)
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches +=
   RefPredicate.StartsWith(Ref.Tag("v"))
 
-ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), JavaSpec.temurin("17"))
+lazy val java17 = JavaSpec.temurin("17")
+ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), java17)
 
 ThisBuild / githubWorkflowBuildPreamble +=
   WorkflowStep.Run(
@@ -30,6 +33,15 @@ ThisBuild / githubWorkflowPublish              := Seq(
       "PGP_SECRET"        -> "${{ secrets.PGP_SECRET }}",
       "SONATYPE_PASSWORD" -> "${{ secrets.SONATYPE_PASSWORD }}",
       "SONATYPE_USERNAME" -> "${{ secrets.SONATYPE_USERNAME }}"
+    )
+  )
+)
+
+ThisBuild / githubWorkflowBuildMatrixExclusions ++= List(
+  MatrixExclude(
+    Map(
+      "scala" -> scalaVersion3,
+      "java"  -> java17.render
     )
   )
 )
