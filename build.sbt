@@ -25,7 +25,7 @@ ThisBuild / githubWorkflowBuildPreamble +=
     List("sudo apt-get install libutf8proc-dev"),
     name = Some("Install libutf8proc")
   )
-ThisBuild / githubWorkflowPublish              := Seq(
+ThisBuild / githubWorkflowPublish := Seq(
   WorkflowStep.Sbt(
     List("ci-release"),
     env = Map(
@@ -37,6 +37,7 @@ ThisBuild / githubWorkflowPublish              := Seq(
   )
 )
 
+// https://github.com/scala-native/scala-native/issues/2611
 ThisBuild / githubWorkflowBuildMatrixExclusions ++= List(
   MatrixExclude(
     Map(
