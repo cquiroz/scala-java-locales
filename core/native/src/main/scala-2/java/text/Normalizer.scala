@@ -20,6 +20,7 @@ object Normalizer {
           case NFD  => utf8proc_NFD(toCString(src))
           case NFKC => utf8proc_NFKC(toCString(src))
           case NFKD => utf8proc_NFKD(toCString(src))
+          case _    => throw new IllegalArgumentException // should never happen
         }
 
         val normalized = fromCString(cstr) // TODO can be further optimized
@@ -30,13 +31,13 @@ object Normalizer {
   def isNormalized(src: CharSequence, form: Form): Boolean =
     normalize(src, form).contentEquals(src)
 
-  sealed abstract class Form private (name: String, ordinal: Int) extends Enum[Form](name, ordinal)
+  final class Form private (name: String, ordinal: Int) extends Enum[Form](name, ordinal)
 
   object Form {
-    case object NFC  extends Form("NFC", 0)
-    case object NFD  extends Form("NFD", 1)
-    case object NFKC extends Form("NFKC", 2)
-    case object NFKD extends Form("NFKD", 3)
+    final val NFC: Form  = new Form("NFC", 0)
+    final val NFD: Form  = new Form("NFD", 1)
+    final val NFKC: Form = new Form("NFKC", 2)
+    final val NFKD: Form = new Form("NFKD", 3)
   }
 
   private def toCString(str: CharSequence)(implicit z: Zone): CString = {
