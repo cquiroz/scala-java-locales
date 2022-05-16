@@ -176,12 +176,8 @@ class DecimalFormatSymbolsTest extends munit.FunSuite {
   }
 
   test("defaults") {
-    val javaVersion = sys.props.get("java.version")
-    println(s"XXXXXXXXXXXXXXXXXXXXXXXXXXX $javaVersion")
-    val isJava8     = javaVersion.exists(_.startsWith("1.8."))
-    println(s"XXXXXXXXXXXXXXXXXXXXXXXXXXX $isJava8")
-    assume(!isJava8)
-    val dfs         = new DecimalFormatSymbols()
+    assume(!sys.props.get("java.version").exists(v => v.startsWith("1.8.") || v == "1.8"))
+    val dfs = new DecimalFormatSymbols()
     test_dfs(dfs, englishSymbols)
   }
 
