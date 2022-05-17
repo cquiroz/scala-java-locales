@@ -70,9 +70,6 @@ val commonSettings: Seq[Setting[_]] = Seq(
   Test / unmanagedSourceDirectories ++= scalaVersionSpecificFolders("test",
                                                                     baseDirectory.value,
                                                                     scalaVersion.value
-  ),
-  resolvers += "Sonatype OSS Snapshots".at( // TODO: remove
-    "https://oss.sonatype.org/content/repositories/snapshots"
   )
 )
 
@@ -270,7 +267,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     publishLocal                            := {},
     publishArtifact                         := false,
     name                                    := "scala-java-locales test",
-    libraryDependencies += "org.scalameta" %%% "munit" % "1.0.0-M3+39-d7ab5753-SNAPSHOT" % Test,
+    libraryDependencies += "org.scalameta" %%% "munit" % "1.0.0-M4" % Test,
     testFrameworks += new TestFramework("munit.Framework"),
     scalacOptions ~= (_.filterNot(
       Set(
