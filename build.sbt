@@ -8,21 +8,24 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 resolvers in Global += Resolver.sonatypeRepo("public")
 
-ThisBuild / scalaVersion       := "2.13.8"
-ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.8", "3.1.2")
+lazy val scalaVersion213 = "2.13.8"
+lazy val scalaVersion3   = "3.1.2"
+ThisBuild / scalaVersion       := scalaVersion213
+ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.15", scalaVersion213, scalaVersion3)
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches +=
   RefPredicate.StartsWith(Ref.Tag("v"))
 
-ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), JavaSpec.temurin("17"))
+lazy val java17 = JavaSpec.temurin("17")
+ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), java17)
 
 ThisBuild / githubWorkflowBuildPreamble +=
   WorkflowStep.Run(
     List("sudo apt-get install libutf8proc-dev"),
     name = Some("Install libutf8proc")
   )
-ThisBuild / githubWorkflowPublish              := Seq(
+ThisBuild / githubWorkflowPublish := Seq(
   WorkflowStep.Sbt(
     List("ci-release"),
     env = Map(
@@ -30,6 +33,16 @@ ThisBuild / githubWorkflowPublish              := Seq(
       "PGP_SECRET"        -> "${{ secrets.PGP_SECRET }}",
       "SONATYPE_PASSWORD" -> "${{ secrets.SONATYPE_PASSWORD }}",
       "SONATYPE_USERNAME" -> "${{ secrets.SONATYPE_USERNAME }}"
+    )
+  )
+)
+
+// https://github.com/scala-native/scala-native/issues/2611
+ThisBuild / githubWorkflowBuildMatrixExclusions ++= List(
+  MatrixExclude(
+    Map(
+      "scala" -> scalaVersion3,
+      "java"  -> java17.render
     )
   )
 )
@@ -58,10 +71,6 @@ val commonSettings: Seq[Setting[_]] = Seq(
                                                                     baseDirectory.value,
                                                                     scalaVersion.value
   )
-)
-
-val commonNativeSettings: Seq[Setting[_]] = Seq(
-  crossScalaVersions ~= { _.filter(_.startsWith("2.")) }
 )
 
 inThisBuild(
@@ -173,7 +182,6 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       }
     }
   )
-  .nativeSettings(commonNativeSettings: _*)
 
 lazy val cldrDbVersion = "36.0"
 
@@ -214,7 +222,6 @@ lazy val localesFullDb = crossProject(JSPlatform, NativePlatform)
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
-  .nativeSettings(commonNativeSettings: _*)
 
 lazy val localesMinimalEnDb = crossProject(JSPlatform, NativePlatform)
   .in(file("localesMinimalEnDb"))
@@ -233,7 +240,6 @@ lazy val localesMinimalEnDb = crossProject(JSPlatform, NativePlatform)
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
-  .nativeSettings(commonNativeSettings: _*)
 
 lazy val localesMinimalEnUSDb = crossProject(JSPlatform, NativePlatform)
   .in(file("localesMinimalEnUSDb"))
@@ -252,7 +258,6 @@ lazy val localesMinimalEnUSDb = crossProject(JSPlatform, NativePlatform)
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
-  .nativeSettings(commonNativeSettings: _*)
 
 lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .in(file("testSuite"))
@@ -262,7 +267,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     publishLocal                            := {},
     publishArtifact                         := false,
     name                                    := "scala-java-locales test",
-    libraryDependencies += "org.scalameta" %%% "munit" % "0.7.29" % Test,
+    libraryDependencies += "org.scalameta" %%% "munit" % "1.0.0-M4" % Test,
     testFrameworks += new TestFramework("munit.Framework"),
     scalacOptions ~= (_.filterNot(
       Set(
@@ -293,7 +298,6 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   )
   .jvmConfigure(_.dependsOn(macroUtils))
   .nativeSettings(
-    commonNativeSettings,
     nativeConfig ~= {
       _.withOptimize(false)
       // tests fail to link on Scala 2.11 and 2.12 in debug mode
@@ -340,5 +344,4 @@ lazy val demo = crossProject(JSPlatform, NativePlatform)
     scalaJSUseMainModuleInitializer := true,
     name                            := "scala-java-locales demo"
   )
-  .nativeSettings(commonNativeSettings: _*)
   .dependsOn(core)

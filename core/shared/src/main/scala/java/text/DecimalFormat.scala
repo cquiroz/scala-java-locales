@@ -458,7 +458,7 @@ class DecimalFormat(
       val maxStr = parsedPattern.get.maximumExponentDigits
         .map { (len: Int) =>
           repeatDigits(
-            len - minStr.size,
+            len - minStr.length,
             if (localize) symbols.getDigit()
             else DecimalFormatUtil.PatternCharDigit
           )
