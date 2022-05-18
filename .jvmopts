@@ -3,4 +3,4 @@
 -XX:MinRAMPercentage=50.0
 -XX:MaxRAMPercentage=90.0
 -Xss4M
--Xmx8G
+-Xmx6G
