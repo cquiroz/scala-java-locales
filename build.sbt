@@ -80,7 +80,7 @@ inThisBuild(
   )
 )
 
-lazy val root: Project = project
+lazy val root = project
   .in(file("."))
   .settings(commonSettings)
   .settings(
