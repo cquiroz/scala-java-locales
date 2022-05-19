@@ -1,6 +1,2 @@
--Dsbt.color=always
--Dsbt.supershell=true
--XX:MinRAMPercentage=50.0
--XX:MaxRAMPercentage=90.0
 -Xss4M
 -Xmx6G
