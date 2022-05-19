@@ -45,6 +45,8 @@ ThisBuild / githubWorkflowBuildMatrixExclusions ++= List(
   )
 )
 
+ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
+
 val commonSettings: Seq[Setting[_]] = Seq(
   scalacOptions ~= (_.filterNot(
     Set(
