@@ -90,9 +90,9 @@ lazy val root: Project = project
     core.js,
     core.jvm,
     core.native,
-    testSuite.js,
-    testSuite.jvm,
-    testSuite.native,
+    tests.js,
+    tests.jvm,
+    tests.native,
     localesFullDb.js,
     localesFullDb.native,
     localesFullCurrenciesDb,
@@ -218,12 +218,12 @@ lazy val localesMinimalEnUSDb = crossProject(JSPlatform, NativePlatform)
       .cross(CrossVersion.for3Use2_13)
   )
 
-lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
-  .in(file("testSuite"))
+lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
+  .in(file("tests"))
   .settings(commonSettings)
   .settings(
     publish / skip                          := true,
-    name                                    := "test",
+    name                                    := "tests",
     libraryDependencies += "org.scalameta" %%% "munit" % "1.0.0-M4" % Test,
     testFrameworks += new TestFramework("munit.Framework"),
     scalacOptions ~= (_.filterNot(
@@ -236,7 +236,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .jsSettings(Test / parallelExecution := false,
               scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
-  .jsConfigure(_.dependsOn(core.js, macroUtils, localesFullCurrenciesDb))
+  .jsConfigure(_.dependsOn(core.js, macroutils, localesFullCurrenciesDb))
   .jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
     Test / fork                                 := true,
@@ -251,7 +251,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     ),
     libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % cldrApiVersion
   )
-  .jvmConfigure(_.dependsOn(macroUtils))
+  .jvmConfigure(_.dependsOn(macroutils))
   .nativeSettings(
     nativeConfig ~= {
       _.withOptimize(false)
@@ -259,7 +259,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       // with the optimizer enabled
     }
   )
-  .nativeConfigure(_.dependsOn(core.native, macroUtils, localesFullDb.native))
+  .nativeConfigure(_.dependsOn(core.native, macroutils, localesFullDb.native))
   .platformsSettings(JSPlatform, NativePlatform)(
     Test / unmanagedSourceDirectories += baseDirectory.value.getParentFile / "js-native" / "src" / "test" / "scala"
   )
@@ -267,8 +267,8 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     Test / unmanagedSourceDirectories += baseDirectory.value.getParentFile / "js-jvm" / "src" / "test" / "scala"
   )
 
-lazy val macroUtils = project
-  .in(file("macroUtils"))
+lazy val macroutils = project
+  .in(file("macroutils"))
   .settings(commonSettings)
   .settings(
     name                    := "macroutils",
