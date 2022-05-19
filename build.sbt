@@ -47,6 +47,8 @@ ThisBuild / githubWorkflowBuildMatrixExclusions ++= List(
   )
 )
 
+ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
+
 ThisBuild / Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat
 
 val commonSettings: Seq[Setting[_]] = Seq(
