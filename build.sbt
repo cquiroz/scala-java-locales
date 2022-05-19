@@ -6,8 +6,6 @@ lazy val cldrApiVersion = "3.1.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-resolvers in Global += Resolver.sonatypeRepo("public")
-
 lazy val scalaVersion213 = "2.13.8"
 lazy val scalaVersion3   = "3.1.2"
 ThisBuild / scalaVersion       := scalaVersion213
@@ -49,10 +47,7 @@ ThisBuild / githubWorkflowBuildMatrixExclusions ++= List(
 
 ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
 
-ThisBuild / Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat
-
 val commonSettings: Seq[Setting[_]] = Seq(
-  organization                  := "io.github.cquiroz",
   scalacOptions ~= (_.filterNot(
     Set(
       "-Wdead-code",
@@ -63,16 +58,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
       "-Ywarn-value-discard"
     )
   )),
-  Compile / doc / scalacOptions := Seq(),
-  // Compile / doc / sources       := { if (isDotty.value) Seq() else (Compile / doc / sources).value },
-  Compile / unmanagedSourceDirectories ++= scalaVersionSpecificFolders("main",
-                                                                       baseDirectory.value,
-                                                                       scalaVersion.value
-  ),
-  Test / unmanagedSourceDirectories ++= scalaVersionSpecificFolders("test",
-                                                                    baseDirectory.value,
-                                                                    scalaVersion.value
-  )
+  Compile / doc / scalacOptions := Seq()
 )
 
 inThisBuild(
@@ -90,44 +76,23 @@ inThisBuild(
       Developer("alonsodomin", "A. Alonso Dominguez", "", url("https://github.com/alonsodomin")),
       Developer("mkotsbak", "Marius B. Kotsbak", "", url("https://github.com/mkotsbak")),
       Developer("TimothyKlim", "Timothy Klim", "", url("https://github.com/TimothyKlim"))
-    ),
-    scmInfo      := Some(
-      ScmInfo(
-        url("https://github.com/cquiroz/scala-java-locales"),
-        "scm:git:git@github.com:cquiroz/scala-java-locales.git"
-      )
     )
   )
 )
 
-def scalaVersionSpecificFolders(srcName: String, srcBaseDir: java.io.File, scalaVersion: String) = {
-  def extraDirs(suffix: String) =
-    List(CrossType.Pure, CrossType.Full)
-      .flatMap(_.sharedSrcDir(srcBaseDir, srcName).toList.map(f => file(f.getPath + suffix)))
-  CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, y))     => extraDirs("-2.x") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
-    case Some((0 | 3, _)) => extraDirs("-2.13+") ++ extraDirs("-3.x")
-    case _                => Nil
-  }
-}
-
-lazy val scalajs_locales: Project = project
+lazy val root: Project = project
   .in(file("."))
-  .settings(commonSettings: _*)
+  .settings(commonSettings)
   .settings(
-    name               := "locales",
-    publish            := {},
-    publishLocal       := {},
-    publishArtifact    := false,
-    crossScalaVersions := Nil
+    publish / skip := true
   )
   .aggregate(
     core.js,
     core.jvm,
     core.native,
-    testSuite.js,
-    testSuite.jvm,
-    testSuite.native,
+    tests.js,
+    tests.jvm,
+    tests.native,
     localesFullDb.js,
     localesFullDb.native,
     localesFullCurrenciesDb,
@@ -139,19 +104,10 @@ lazy val scalajs_locales: Project = project
     demo.native
   )
 
-def isScala3 = Def.task {
-  CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((3, _)) =>
-      true
-    case _            =>
-      false
-  }
-}
-
 lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Full)
   .in(file("core"))
-  .settings(commonSettings: _*)
+  .settings(commonSettings)
   .settings(
     name := "scala-java-locales",
     libraryDependencies ++= Seq(
@@ -166,11 +122,12 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   )
   .jsSettings(
     scalacOptions ++= {
-      if (isScala3.value) Seq("-scalajs-genStaticForwardersForNonTopLevelObjects")
+      if (scalaVersion.value == scalaVersion3)
+        Seq("-scalajs-genStaticForwardersForNonTopLevelObjects")
       else Seq("-P:scalajs:genStaticForwardersForNonTopLevelObjects")
     },
     scalacOptions ++= {
-      if (isScala3.value) Seq.empty
+      if (scalaVersion.value == scalaVersion3) Seq.empty
       else {
         val tagOrHash =
           if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
@@ -189,7 +146,7 @@ lazy val cldrDbVersion = "36.0"
 
 lazy val localesFullCurrenciesDb = project
   .in(file("localesFullCurrenciesDb"))
-  .settings(commonSettings: _*)
+  .settings(commonSettings)
   .configure(_.enablePlugins(LocalesPlugin))
   .configure(_.enablePlugins(ScalaJSPlugin))
   .settings(
@@ -209,7 +166,7 @@ lazy val localesFullCurrenciesDb = project
 lazy val localesFullDb = crossProject(JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .in(file("localesFullDb"))
-  .settings(commonSettings: _*)
+  .settings(commonSettings)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
     name                   := "locales-full-db",
@@ -227,7 +184,7 @@ lazy val localesFullDb = crossProject(JSPlatform, NativePlatform)
 
 lazy val localesMinimalEnDb = crossProject(JSPlatform, NativePlatform)
   .in(file("localesMinimalEnDb"))
-  .settings(commonSettings: _*)
+  .settings(commonSettings)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
     name                   := "locales-minimal-en-db",
@@ -245,7 +202,7 @@ lazy val localesMinimalEnDb = crossProject(JSPlatform, NativePlatform)
 
 lazy val localesMinimalEnUSDb = crossProject(JSPlatform, NativePlatform)
   .in(file("localesMinimalEnUSDb"))
-  .settings(commonSettings: _*)
+  .settings(commonSettings)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
     name                   := "locales-minimal-en_US-db",
@@ -261,14 +218,12 @@ lazy val localesMinimalEnUSDb = crossProject(JSPlatform, NativePlatform)
       .cross(CrossVersion.for3Use2_13)
   )
 
-lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
-  .in(file("testSuite"))
-  .settings(commonSettings: _*)
+lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
+  .in(file("tests"))
+  .settings(commonSettings)
   .settings(
-    publish                                 := {},
-    publishLocal                            := {},
-    publishArtifact                         := false,
-    name                                    := "scala-java-locales test",
+    publish / skip                          := true,
+    name                                    := "tests",
     libraryDependencies += "org.scalameta" %%% "munit" % "1.0.0-M4" % Test,
     testFrameworks += new TestFramework("munit.Framework"),
     scalacOptions ~= (_.filterNot(
@@ -279,10 +234,9 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     ))
   )
   .jsSettings(Test / parallelExecution := false,
-              name                     := "scala-java-locales testSuite on JS",
               scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
-  .jsConfigure(_.dependsOn(core.js, macroUtils, localesFullCurrenciesDb))
+  .jsConfigure(_.dependsOn(core.js, macroutils, localesFullCurrenciesDb))
   .jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
     Test / fork                                 := true,
@@ -295,10 +249,10 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       "-Dfile.encoding=UTF8",
       "-Xmx6G"
     ),
-    name                                        := "scala-java-locales testSuite on JVM",
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % cldrApiVersion
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % cldrApiVersion,
+    Test / classLoaderLayeringStrategy          := ClassLoaderLayeringStrategy.Flat
   )
-  .jvmConfigure(_.dependsOn(macroUtils))
+  .jvmConfigure(_.dependsOn(macroutils))
   .nativeSettings(
     nativeConfig ~= {
       _.withOptimize(false)
@@ -306,7 +260,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       // with the optimizer enabled
     }
   )
-  .nativeConfigure(_.dependsOn(core.native, macroUtils, localesFullDb.native))
+  .nativeConfigure(_.dependsOn(core.native, macroutils, localesFullDb.native))
   .platformsSettings(JSPlatform, NativePlatform)(
     Test / unmanagedSourceDirectories += baseDirectory.value.getParentFile / "js-native" / "src" / "test" / "scala"
   )
@@ -314,18 +268,14 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     Test / unmanagedSourceDirectories += baseDirectory.value.getParentFile / "js-jvm" / "src" / "test" / "scala"
   )
 
-lazy val macroUtils = project
-  .in(file("macroUtils"))
+lazy val macroutils = project
+  .in(file("macroutils"))
   .settings(commonSettings)
   .settings(
     name                    := "macroutils",
     libraryDependencies ++= {
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((3, _)) =>
-          Seq.empty
-        case _            =>
-          Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value)
-      }
+      if (scalaVersion.value == scalaVersion3) Seq.empty
+      else Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value)
     },
     scalacOptions ~= (_.filterNot(
       Set(
@@ -333,17 +283,17 @@ lazy val macroUtils = project
         "-Xfatal-warnings"
       )
     )),
-    Compile / doc / sources := { if (isScala3.value) Seq() else (Compile / doc / sources).value }
+    Compile / doc / sources := {
+      if (scalaVersion.value == scalaVersion3) Seq() else (Compile / doc / sources).value
+    }
   )
 
 lazy val demo = crossProject(JSPlatform, NativePlatform)
   .in(file("demo"))
-  .settings(commonSettings: _*)
+  .settings(commonSettings)
   .settings(
-    publish                         := {},
-    publishLocal                    := {},
-    publishArtifact                 := false,
+    publish / skip                  := true,
     scalaJSUseMainModuleInitializer := true,
-    name                            := "scala-java-locales demo"
+    name                            := "demo"
   )
   .dependsOn(core)
