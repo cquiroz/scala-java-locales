@@ -45,8 +45,6 @@ ThisBuild / githubWorkflowBuildMatrixExclusions ++= List(
   )
 )
 
-ThisBuild / Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat
-
 val commonSettings: Seq[Setting[_]] = Seq(
   scalacOptions ~= (_.filterNot(
     Set(
@@ -249,7 +247,8 @@ lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       "-Dfile.encoding=UTF8",
       "-Xmx6G"
     ),
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % cldrApiVersion
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % cldrApiVersion,
+    Test / classLoaderLayeringStrategy          := ClassLoaderLayeringStrategy.Flat
   )
   .jvmConfigure(_.dependsOn(macroutils))
   .nativeSettings(
