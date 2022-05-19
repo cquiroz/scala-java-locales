@@ -1,2 +1,3 @@
+-XX:+PrintCommandLineFlags
 -Xss4M
--Xmx6G
+-Xmx4G
