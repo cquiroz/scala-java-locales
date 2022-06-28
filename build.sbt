@@ -23,7 +23,7 @@ ThisBuild / githubWorkflowBuildPreamble +=
     List("sudo apt-get install libutf8proc-dev"),
     name = Some("Install libutf8proc")
   )
-ThisBuild / githubWorkflowPublish := Seq(
+ThisBuild / githubWorkflowPublish             := Seq(
   WorkflowStep.Sbt(
     List("ci-release"),
     env = Map(
@@ -31,16 +31,6 @@ ThisBuild / githubWorkflowPublish := Seq(
       "PGP_SECRET"        -> "${{ secrets.PGP_SECRET }}",
       "SONATYPE_PASSWORD" -> "${{ secrets.SONATYPE_PASSWORD }}",
       "SONATYPE_USERNAME" -> "${{ secrets.SONATYPE_USERNAME }}"
-    )
-  )
-)
-
-// https://github.com/scala-native/scala-native/issues/2611
-ThisBuild / githubWorkflowBuildMatrixExclusions ++= List(
-  MatrixExclude(
-    Map(
-      "scala" -> scalaVersion3,
-      "java"  -> java17.render
     )
   )
 )
