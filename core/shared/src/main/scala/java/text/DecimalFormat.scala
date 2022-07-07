@@ -75,7 +75,7 @@ class DecimalFormat(
     var n: JavaBigInteger = number
     while (
       n > JavaBigInteger.ZERO &&
-      (if (isIntegerPart) (totalDigitsWritten(digitsWritten) <= getMaximumIntegerDigits())
+      (if (isIntegerPart) totalDigitsWritten(digitsWritten) <= getMaximumIntegerDigits()
        else true)
     ) {
       if (isIntegerPart && !useScientificNotation) handleGroupSeparator(builder, digitsWritten)
@@ -98,8 +98,8 @@ class DecimalFormat(
   // fraction digits, and is unaffected by the maximum integer digits.
   // Experimental/JVM note: if (isIntegerMultiple) then precision is maxIntegerDigits + max fraction digits
   private def totalExponentPrecision(): Int =
-    if (isExponentPowerMultiple()) (getMaximumIntegerDigits() + getMaximumFractionDigits())
-    else (getMinimumIntegerDigits() + getMaximumFractionDigits())
+    if (isExponentPowerMultiple()) getMaximumIntegerDigits() + getMaximumFractionDigits()
+    else getMinimumIntegerDigits() + getMaximumFractionDigits()
 
   // Return the scaled big decimal + power unit
   def getExponentNumberAndPower(n: JavaBigDecimal): (JavaBigDecimal, Int) = {
@@ -400,8 +400,8 @@ class DecimalFormat(
     )
 
     val optionalIntegersStr: String = repeatDigits(
-      if (isExponent) (getMaximumIntegerDigits() - getMinimumIntegerDigits())
-      else max((getGroupingSize() - getMinimumIntegerDigits() + 1), 1),
+      if (isExponent) getMaximumIntegerDigits() - getMinimumIntegerDigits()
+      else max(getGroupingSize() - getMinimumIntegerDigits() + 1, 1),
       if (localize) symbols.getDigit() else DecimalFormatUtil.PatternCharDigit
     )
 
