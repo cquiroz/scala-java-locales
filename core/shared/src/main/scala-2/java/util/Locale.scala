@@ -604,7 +604,7 @@ class Locale private[util] (
         if (getLanguage() == "no" && getCountry() == "NO" && getVariant() == "NY") "nn-NO"
         else s"$language$script$country$ext$variant"
     }
-    
+
     cachedLanguageTag
   }
 
@@ -674,6 +674,6 @@ class Locale private[util] (
   override def hashCode(): Int = {
     if (cachedHashCode == 0)
       cachedHashCode = toLanguageTag().hashCode
-    return cachedHashCode
+    cachedHashCode
   }
 }
