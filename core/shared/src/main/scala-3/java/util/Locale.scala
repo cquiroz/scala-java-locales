@@ -434,6 +434,9 @@ class Locale private[util] (
   private[this] val supportSpecialCases: Boolean = true
 ) {
 
+  private[this] var cachedLanguageTag: String = null
+  private[this] var cachedHashCode            = 0
+
   // Required by the javadocs
   if (language == null || country == null || variant == null)
     throw new NullPointerException("Null argument to constructor not allowed")
@@ -549,44 +552,47 @@ class Locale private[util] (
   }
 
   def toLanguageTag(): String =
-    val language =
-      if (getLanguage().nonEmpty && Locale.checkLanguage(getLanguage()))
-        updateSpecialLanguages(getLanguage())
-      else
-        "und"
+    if (cachedLanguageTag == null) {
+      val language =
+        if (getLanguage().nonEmpty && Locale.checkLanguage(getLanguage()))
+          updateSpecialLanguages(getLanguage())
+        else
+          "und"
 
-    val country               =
-      if (Locale.checkRegion(getCountry())) s"-${getCountry()}"
-      else ""
-    val variantSegments       = getVariant().split("-|_")
-    val allSegmentsWellFormed =
-      variantSegments.forall(Locale.checkVariantSegment)
-    val allAcceptableSegments =
-      variantSegments.forall(Locale.checkAcceptableVariantSegment)
-    val variant =
-      if (allSegmentsWellFormed)
-        variantSegments.mkString("-", "-", "")
-      else if (allAcceptableSegments) {
-        val (wellFormed, acceptable) =
-          variantSegments.partition(Locale.checkVariantSegment)
-        val pre                      =
-          if (wellFormed.nonEmpty) wellFormed.take(1).mkString("-", "-", "-")
-          else "-"
-        pre + "x-lvariant" +
-          (acceptable ++ wellFormed.drop(1)).mkString("-", "-", "")
-      } else
-        ""
+      val country               =
+        if (Locale.checkRegion(getCountry())) s"-${getCountry()}"
+        else ""
+      val variantSegments       = getVariant().split("-|_")
+      val allSegmentsWellFormed =
+        variantSegments.forall(Locale.checkVariantSegment)
+      val allAcceptableSegments =
+        variantSegments.forall(Locale.checkAcceptableVariantSegment)
+      val variant =
+        if (allSegmentsWellFormed)
+          variantSegments.mkString("-", "-", "")
+        else if (allAcceptableSegments) {
+          val (wellFormed, acceptable) =
+            variantSegments.partition(Locale.checkVariantSegment)
+          val pre                      =
+            if (wellFormed.nonEmpty) wellFormed.take(1).mkString("-", "-", "-")
+            else "-"
+          pre + "x-lvariant" +
+            (acceptable ++ wellFormed.drop(1)).mkString("-", "-", "")
+        } else
+          ""
 
-    val ext =
-      if (extensions.nonEmpty)
-        extensions.map { case (x, v) => s"$x-$v" }.mkString("-", "-", "")
-      else
-        ""
+      val ext =
+        if (extensions.nonEmpty)
+          extensions.map { case (x, v) => s"$x-$v" }.mkString("-", "-", "")
+        else
+          ""
 
-    val script                = this.script.map(_ => s"-${getScript()}").getOrElse("")
+      val script                = this.script.map(_ => s"-${getScript()}").getOrElse("")
 
-    if (getLanguage() == "no" && getCountry() == "NO" && getVariant() == "NY") "nn-NO"
-    else s"$language$script$country$ext$variant"
+      cachedLanguageTag = if (getLanguage() == "no" && getCountry() == "NO" && getVariant() == "NY") "nn-NO"
+      else s"$language$script$country$ext$variant"
+    }
+    cachedLanguageTag
   end toLanguageTag
 
   def getISO3Country(): String =
@@ -651,5 +657,8 @@ class Locale private[util] (
       case l: Locale => isEqual(l)
       case _         => false
 
-  override def hashCode(): Int = toLanguageTag().hashCode
+  override def hashCode(): Int =
+    if (cachedHashCode == 0)
+      cachedHashCode = toLanguageTag().hashCode
+    cachedHashCode
 }
