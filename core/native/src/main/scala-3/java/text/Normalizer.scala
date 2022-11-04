@@ -16,10 +16,10 @@ object Normalizer {
         import utf8proc._
 
         val cstr = form match {
-          case NFC  => utf8proc_NFC(toCString(src))
-          case NFD  => utf8proc_NFD(toCString(src))
-          case NFKC => utf8proc_NFKC(toCString(src))
-          case NFKD => utf8proc_NFKD(toCString(src))
+          case NFC  => utf8proc_NFC(charSeqToCString(src))
+          case NFD  => utf8proc_NFD(charSeqToCString(src))
+          case NFKC => utf8proc_NFKC(charSeqToCString(src))
+          case NFKD => utf8proc_NFKD(charSeqToCString(src))
         }
 
         val normalized = fromCString(cstr) // TODO can be further optimized
@@ -33,24 +33,26 @@ object Normalizer {
   enum Form extends java.lang.Enum[Form]:
     case NFC, NFD, NFKC, NFKD
 
-  private def toCString(str: CharSequence)(implicit z: Zone): CString = {
-    import scalanative.unsigned._
+  private def charSeqToCString(cs: CharSequence)(implicit z: Zone): CString = cs match {
+    case str: String => toCString(str)
+    case str         =>
+      import scalanative.unsigned._
 
-    val encoder = Charset.defaultCharset().newEncoder()
-    val cb      = CharBuffer.wrap(str)
-    val bb      = encoder.encode(cb)
+      val encoder = Charset.defaultCharset().newEncoder()
+      val cb      = CharBuffer.wrap(str)
+      val bb      = encoder.encode(cb)
 
-    val n    = bb.limit()
-    val cstr = z.alloc((n + 1).toULong)
+      val n    = bb.limit()
+      val cstr = z.alloc((n + 1).toULong)
 
-    var i = 0
-    while (i < n) {
-      !(cstr + i.toLong) = bb.get(i)
-      i += 1
-    }
-    !(cstr + i.toLong) = 0.toByte
+      var i = 0
+      while (i < n) {
+        !(cstr + i.toLong) = bb.get(i)
+        i += 1
+      }
+      !(cstr + i.toLong) = 0.toByte
 
-    cstr
+      cstr
   }
 
 }
