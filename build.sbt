@@ -4,6 +4,8 @@ import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
 
 lazy val cldrApiVersion = "4.0.0"
 
+ThisBuild / versionScheme := Some("always")
+
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 lazy val scalaVersion213 = "2.13.10"
