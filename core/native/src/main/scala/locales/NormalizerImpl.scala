@@ -56,8 +56,8 @@ private object NormalizerImpl {
 @link("utf8proc")
 @extern
 private object utf8proc {
-  def utf8proc_NFD(str: CString): CString  = extern
-  def utf8proc_NFC(str: CString): CString  = extern
+  def utf8proc_NFD(str:  CString): CString = extern
+  def utf8proc_NFC(str:  CString): CString = extern
   def utf8proc_NFKD(str: CString): CString = extern
   def utf8proc_NFKC(str: CString): CString = extern
 }
