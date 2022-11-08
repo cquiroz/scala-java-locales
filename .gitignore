@@ -9,3 +9,4 @@ target/
 .idea
 metals.sbt
 node_modules/
+.direnv/
