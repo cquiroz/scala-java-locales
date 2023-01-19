@@ -29,7 +29,7 @@ package object compat extends compat.PackageShared {
   }
 
   implicit def genericOrderedCompanionToCBF[A, CC[X] <: Traversable[X]](
-    fact:              GenericOrderedCompanion[CC]
+    fact: GenericOrderedCompanion[CC]
   )(implicit ordering: Ordering[A]): CanBuildFrom[Any, A, CC[A]] =
     CompatImpl.simpleCBF(fact.newBuilder[A])
 
@@ -42,11 +42,11 @@ package object compat extends compat.PackageShared {
       // `CanBuildFrom` parameters are used as type constraints, they are not used
       // at run-time, hence the dummy builder implementations
       def apply(from: IterableView[(K, V), CC[K, V]]) = new TraversableView.NoBuilder
-      def apply()                                     = new TraversableView.NoBuilder
+      def apply() = new TraversableView.NoBuilder
     }
 
   implicit def toTraversableLikeExtensionMethods[Repr](self: Repr)(implicit
-    traversable:                                             IsTraversableLike[Repr]
+    traversable: IsTraversableLike[Repr]
   ): TraversableLikeExtensionMethods[traversable.A, Repr] =
     new TraversableLikeExtensionMethods[traversable.A, Repr](traversable.conversion(self))
 
@@ -54,7 +54,7 @@ package object compat extends compat.PackageShared {
     new SeqExtensionMethods[A](self)
 
   implicit def toTrulyTraversableLikeExtensionMethods[T1, El1, Repr1](self: T1)(implicit
-    w1:                                                                     T1 => TraversableLike[El1, Repr1]
+    w1: T1 => TraversableLike[El1, Repr1]
   ): TrulyTraversableLikeExtensionMethods[El1, Repr1] =
     new TrulyTraversableLikeExtensionMethods[El1, Repr1](w1(self))
 
