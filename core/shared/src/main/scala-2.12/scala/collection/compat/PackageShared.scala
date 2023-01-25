@@ -257,16 +257,16 @@ class StreamExtensionMethods[A](private val stream: Stream[A]) extends AnyVal {
 }
 
 class SortedExtensionMethods[K, T <: Sorted[K, T]](private val fact: Sorted[K, T]) {
-  def rangeFrom(from: K): T   = fact.from(from)
-  def rangeTo(to: K): T       = fact.to(to)
+  def rangeFrom(from:   K): T = fact.from(from)
+  def rangeTo(to:       K): T = fact.to(to)
   def rangeUntil(until: K): T = fact.until(until)
 }
 
 class IteratorExtensionMethods[A](private val self: c.Iterator[A]) extends AnyVal {
-  def sameElements[B >: A](that: c.TraversableOnce[B]): Boolean        =
+  def sameElements[B >: A](that: c.TraversableOnce[B]): Boolean =
     self.sameElements(that.iterator)
   def concat[B >: A](that: c.TraversableOnce[B]): c.TraversableOnce[B] = self ++ that
-  def tapEach[U](f: A => U): c.Iterator[A]                             = self.map { a => f(a); a }
+  def tapEach[U](f:        A => U): c.Iterator[A]                      = self.map { a => f(a); a }
 }
 
 class TraversableOnceExtensionMethods[A](private val self: c.TraversableOnce[A]) extends AnyVal {
@@ -300,8 +300,8 @@ class TraversableOnceExtensionMethods[A](private val self: c.TraversableOnce[A])
 class TraversableExtensionMethods[A](private val self: c.Traversable[A]) extends AnyVal {
   def iterableFactory: GenericCompanion[Traversable] = self.companion
 
-  def sizeCompare(otherSize: Int): Int         = SizeCompareImpl.sizeCompareInt(self)(otherSize)
-  def sizeIs: SizeCompareOps                   = new SizeCompareOps(self)
+  def sizeCompare(otherSize: Int): Int = SizeCompareImpl.sizeCompareInt(self)(otherSize)
+  def sizeIs: SizeCompareOps = new SizeCompareOps(self)
   def sizeCompare(that: c.Traversable[_]): Int = SizeCompareImpl.sizeCompareColl(self)(that)
 
 }
@@ -378,8 +378,8 @@ class TraversableLikeExtensionMethods[A, Repr](private val self: c.GenTraversabl
     self.map { a => f(a); a }
 
   def partitionMap[A1, A2, That, Repr1, Repr2](f: A => Either[A1, A2])(implicit
-    bf1:                                          CanBuildFrom[Repr, A1, Repr1],
-    bf2:                                          CanBuildFrom[Repr, A2, Repr2]
+    bf1: CanBuildFrom[Repr, A1, Repr1],
+    bf2: CanBuildFrom[Repr, A2, Repr2]
   ): (Repr1, Repr2) = {
     val l = bf1()
     val r = bf2()
@@ -394,7 +394,7 @@ class TraversableLikeExtensionMethods[A, Repr](private val self: c.GenTraversabl
 
   def groupMap[K, B, That](
     key: A => K
-  )(f:   A => B)(implicit bf: CanBuildFrom[Repr, B, That]): Map[K, That] = {
+  )(f: A => B)(implicit bf: CanBuildFrom[Repr, B, That]): Map[K, That] = {
     val map = m.Map.empty[K, m.Builder[B, That]]
     for (elem      <- self) {
       val k    = key(elem)
@@ -425,7 +425,7 @@ class TrulyTraversableLikeExtensionMethods[El1, Repr1](
 ) extends AnyVal {
 
   def lazyZip[El2, Repr2, T2](t2: T2)(implicit
-    w2:                           T2 => IterableLike[El2, Repr2]
+    w2: T2 => IterableLike[El2, Repr2]
   ): Tuple2Zipped[El1, Repr1, El2, Repr2] = new Tuple2Zipped((self, t2))
 }
 
@@ -434,7 +434,7 @@ class Tuple2ZippedExtensionMethods[El1, Repr1, El2, Repr2](
 ) {
 
   def lazyZip[El3, Repr3, T3](t3: T3)(implicit
-    w3:                           T3 => IterableLike[El3, Repr3]
+    w3: T3 => IterableLike[El3, Repr3]
   ): Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3] =
     new Tuple3Zipped((self.colls._1, self.colls._2, t3))
 }
@@ -451,7 +451,7 @@ class MapViewExtensionMethods[K, V, C <: scala.collection.Map[K, V]](
 ) extends AnyVal {
 
   def mapValues[W, That](f: V => W)(implicit
-    bf:                     CanBuildFrom[IterableView[(K, V), C], (K, W), That]
+    bf: CanBuildFrom[IterableView[(K, V), C], (K, W), That]
   ): That =
     self.map[(K, W), That] { case (k, v) => (k, f(v)) }
 
