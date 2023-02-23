@@ -25,7 +25,7 @@ ThisBuild / githubWorkflowBuildPreamble +=
     List("sudo apt-get install libutf8proc-dev"),
     name = Some("Install libutf8proc")
   )
-ThisBuild / githubWorkflowPublish             := Seq(
+ThisBuild / githubWorkflowPublish := Seq(
   WorkflowStep.Sbt(
     List("ci-release"),
     env = Map(
@@ -142,15 +142,15 @@ lazy val localesFullCurrenciesDb = project
   .configure(_.enablePlugins(LocalesPlugin))
   .configure(_.enablePlugins(ScalaJSPlugin))
   .settings(
-    name                   := "locales-full-currencies-db",
-    cldrVersion            := CLDRVersion.Version(cldrDbVersion),
-    localesFilter          := LocalesFilter.All,
-    nsFilter               := NumberingSystemFilter.All,
-    calendarFilter         := CalendarFilter.All,
-    currencyFilter         := CurrencyFilter.All,
-    supportDateTimeFormats := true,
-    supportNumberFormats   := true,
-    supportISOCodes        := true,
+    name                                          := "locales-full-currencies-db",
+    cldrVersion                                   := CLDRVersion.Version(cldrDbVersion),
+    localesFilter                                 := LocalesFilter.All,
+    nsFilter                                      := NumberingSystemFilter.All,
+    calendarFilter                                := CalendarFilter.All,
+    currencyFilter                                := CurrencyFilter.All,
+    supportDateTimeFormats                        := true,
+    supportNumberFormats                          := true,
+    supportISOCodes                               := true,
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
@@ -161,15 +161,15 @@ lazy val localesFullDb = crossProject(JSPlatform, NativePlatform)
   .settings(commonSettings)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
-    name                   := "locales-full-db",
-    cldrVersion            := CLDRVersion.Version(cldrDbVersion),
-    localesFilter          := LocalesFilter.All,
-    nsFilter               := NumberingSystemFilter.All,
-    calendarFilter         := CalendarFilter.All,
-    currencyFilter         := CurrencyFilter.None,
-    supportDateTimeFormats := true,
-    supportNumberFormats   := true,
-    supportISOCodes        := true,
+    name                                          := "locales-full-db",
+    cldrVersion                                   := CLDRVersion.Version(cldrDbVersion),
+    localesFilter                                 := LocalesFilter.All,
+    nsFilter                                      := NumberingSystemFilter.All,
+    calendarFilter                                := CalendarFilter.All,
+    currencyFilter                                := CurrencyFilter.None,
+    supportDateTimeFormats                        := true,
+    supportNumberFormats                          := true,
+    supportISOCodes                               := true,
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
@@ -179,15 +179,15 @@ lazy val localesMinimalEnDb = crossProject(JSPlatform, NativePlatform)
   .settings(commonSettings)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
-    name                   := "locales-minimal-en-db",
-    cldrVersion            := CLDRVersion.Version(cldrDbVersion),
-    localesFilter          := LocalesFilter.Minimal,
-    nsFilter               := NumberingSystemFilter.Minimal,
-    calendarFilter         := CalendarFilter.Minimal,
-    currencyFilter         := CurrencyFilter.None,
-    supportDateTimeFormats := true,
-    supportNumberFormats   := true,
-    supportISOCodes        := false,
+    name                                          := "locales-minimal-en-db",
+    cldrVersion                                   := CLDRVersion.Version(cldrDbVersion),
+    localesFilter                                 := LocalesFilter.Minimal,
+    nsFilter                                      := NumberingSystemFilter.Minimal,
+    calendarFilter                                := CalendarFilter.Minimal,
+    currencyFilter                                := CurrencyFilter.None,
+    supportDateTimeFormats                        := true,
+    supportNumberFormats                          := true,
+    supportISOCodes                               := false,
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
@@ -197,15 +197,15 @@ lazy val localesMinimalEnUSDb = crossProject(JSPlatform, NativePlatform)
   .settings(commonSettings)
   .configure(_.enablePlugins(LocalesPlugin))
   .settings(
-    name                   := "locales-minimal-en_US-db",
-    cldrVersion            := CLDRVersion.Version(cldrDbVersion),
-    localesFilter          := LocalesFilter.Selection(List("en_US")),
-    nsFilter               := NumberingSystemFilter.Minimal,
-    calendarFilter         := CalendarFilter.Minimal,
-    currencyFilter         := CurrencyFilter.None,
-    supportDateTimeFormats := true,
-    supportNumberFormats   := true,
-    supportISOCodes        := false,
+    name                                          := "locales-minimal-en_US-db",
+    cldrVersion                                   := CLDRVersion.Version(cldrDbVersion),
+    localesFilter                                 := LocalesFilter.Selection(List("en_US")),
+    nsFilter                                      := NumberingSystemFilter.Minimal,
+    calendarFilter                                := CalendarFilter.Minimal,
+    currencyFilter                                := CurrencyFilter.None,
+    supportDateTimeFormats                        := true,
+    supportNumberFormats                          := true,
+    supportISOCodes                               := false,
     libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
       .cross(CrossVersion.for3Use2_13)
   )
