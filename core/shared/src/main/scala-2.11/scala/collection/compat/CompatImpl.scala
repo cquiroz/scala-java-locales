@@ -20,7 +20,7 @@ import scala.collection.{ immutable => i, mutable => m }
  * and defers to the underlying builder if not.
  */
 private final class IdentityPreservingBuilder[A, CC[X] <: TraversableOnce[X]](
-  that:        m.Builder[A, CC[A]]
+  that: m.Builder[A, CC[A]]
 )(implicit ct: ClassTag[CC[A]])
     extends m.Builder[A, CC[A]] {
 
@@ -64,7 +64,7 @@ private[compat] object CompatImpl {
   def simpleCBF[A, C](f: => m.Builder[A, C]): CanBuildFrom[Any, A, C] =
     new CanBuildFrom[Any, A, C] {
       def apply(from: Any): m.Builder[A, C] = apply()
-      def apply(): m.Builder[A, C]          = f
+      def apply(): m.Builder[A, C] = f
     }
 
   type ImmutableBitSetCC[X] = ({ type L[_] = i.BitSet })#L[X]
