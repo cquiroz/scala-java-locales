@@ -1404,27 +1404,27 @@ class DateFormatTest extends munit.FunSuite {
           .toPattern()
       )
 
-    // for {
-    //   tf <- tc.timeFormats
-    // } yield assertEquals(
-    //   tf._2,
-    //   DateFormat
-    //     .getTimeInstance(tf._1, tc.l)
-    //     .asInstanceOf[SimpleDateFormat]
-    //     .toPattern()
-    // )
-    //
-    // println(tc)
-    // for {
-    //   df <- tc.dateFormats
-    //   tf <- tc.timeFormats
-    // } yield assertEquals(
-    //   s"${df._2} ${tf._2}",
-    //   DateFormat
-    //     .getDateTimeInstance(df._1, tf._1, tc.l)
-    //     .asInstanceOf[SimpleDateFormat]
-    //     .toPattern()
-    // )
+      // for {
+      //   tf <- tc.timeFormats
+      // } yield assertEquals(
+      //   tf._2,
+      //   DateFormat
+      //     .getTimeInstance(tf._1, tc.l)
+      //     .asInstanceOf[SimpleDateFormat]
+      //     .toPattern()
+      // )
+      //
+      // println(tc)
+      // for {
+      //   df <- tc.dateFormats
+      //   tf <- tc.timeFormats
+      // } yield assertEquals(
+      //   s"${df._2} ${tf._2}",
+      //   DateFormat
+      //     .getDateTimeInstance(df._1, tf._1, tc.l)
+      //     .asInstanceOf[SimpleDateFormat]
+      //     .toPattern()
+      // )
     }
   }
 
@@ -1445,27 +1445,27 @@ class DateFormatTest extends munit.FunSuite {
             .toPattern()
         )
 
-      // in jdk 17 for some locales it adds an atom here
-      // for {
-      //   tf <- tc.timeFormats
-      // } yield assertEquals(
-      //   tf._2,
-      //   DateFormat
-      //     .getTimeInstance(tf._1, tc.l)
-      //     .asInstanceOf[SimpleDateFormat]
-      //     .toPattern()
-      // )
+        // in jdk 17 for some locales it adds an atom here
+        // for {
+        //   tf <- tc.timeFormats
+        // } yield assertEquals(
+        //   tf._2,
+        //   DateFormat
+        //     .getTimeInstance(tf._1, tc.l)
+        //     .asInstanceOf[SimpleDateFormat]
+        //     .toPattern()
+        // )
 
-      // for {
-      //   df <- tc.dateFormats
-      //   tf <- tc.timeFormats
-      // } yield assertEquals(
-      //   s"${df._2} ${tf._2}",
-      //   DateFormat
-      //     .getDateTimeInstance(df._1, tf._1, tc.l)
-      //     .asInstanceOf[SimpleDateFormat]
-      //     .toPattern()
-      // )
+        // for {
+        //   df <- tc.dateFormats
+        //   tf <- tc.timeFormats
+        // } yield assertEquals(
+        //   s"${df._2} ${tf._2}",
+        //   DateFormat
+        //     .getDateTimeInstance(df._1, tf._1, tc.l)
+        //     .asInstanceOf[SimpleDateFormat]
+        //     .toPattern()
+        // )
       }
   }
 
