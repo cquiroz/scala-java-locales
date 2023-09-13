@@ -6,4 +6,4 @@ addSbtPlugin("org.scalameta"             % "sbt-scalafmt"                  % "2.
 addSbtPlugin("io.github.cquiroz"         % "sbt-locales"                   % "4.2.0")
 addSbtPlugin("com.github.sbt"            % "sbt-ci-release"                % "1.5.12")
 addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat"                  % "0.1.20")
-addSbtPlugin("com.github.sbt"            % "sbt-github-actions"            % "0.16.0")
+addSbtPlugin("com.codecommit"            % "sbt-github-actions"            % "0.14.2")
