@@ -9,7 +9,7 @@ ThisBuild / versionScheme := Some("always")
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 lazy val scalaVersion213 = "2.13.14"
-lazy val scalaVersion3   = "3.2.2"
+lazy val scalaVersion3   = "3.4.1"
 ThisBuild / scalaVersion       := scalaVersion213
 ThisBuild / crossScalaVersions := Seq("2.12.19", scalaVersion213, scalaVersion3)
 
