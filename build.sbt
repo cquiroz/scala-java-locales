@@ -2,14 +2,14 @@ import locales._
 import sbt.Keys._
 import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
 
-lazy val cldrApiVersion = "4.3.0"
+lazy val cldrApiVersion = "4.4.0"
 
 ThisBuild / versionScheme := Some("always")
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 lazy val scalaVersion213 = "2.13.14"
-lazy val scalaVersion3   = "3.4.1"
+lazy val scalaVersion3   = "3.3.3"
 ThisBuild / scalaVersion       := scalaVersion213
 ThisBuild / crossScalaVersions := Seq("2.12.19", scalaVersion213, scalaVersion3)
 
@@ -151,7 +151,7 @@ lazy val localesFullCurrenciesDb = project
     supportDateTimeFormats                        := true,
     supportNumberFormats                          := true,
     supportISOCodes                               := true,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.3")
       .cross(CrossVersion.for3Use2_13)
   )
 
@@ -170,7 +170,7 @@ lazy val localesFullDb = crossProject(JSPlatform, NativePlatform)
     supportDateTimeFormats                        := true,
     supportNumberFormats                          := true,
     supportISOCodes                               := true,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.3")
       .cross(CrossVersion.for3Use2_13)
   )
 
@@ -188,7 +188,7 @@ lazy val localesMinimalEnDb = crossProject(JSPlatform, NativePlatform)
     supportDateTimeFormats                        := true,
     supportNumberFormats                          := true,
     supportISOCodes                               := false,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.3")
       .cross(CrossVersion.for3Use2_13)
   )
 
@@ -206,7 +206,7 @@ lazy val localesMinimalEnUSDb = crossProject(JSPlatform, NativePlatform)
     supportDateTimeFormats                        := true,
     supportNumberFormats                          := true,
     supportISOCodes                               := false,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.3")
       .cross(CrossVersion.for3Use2_13)
   )
 
