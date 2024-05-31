@@ -87,7 +87,8 @@ lazy val root = project
     tests.native,
     localesFullDb.js,
     localesFullDb.native,
-    localesFullCurrenciesDb,
+    localesFullCurrenciesDb.js,
+    localesFullCurrenciesDb.native,
     localesMinimalEnDb.js,
     localesMinimalEnDb.native,
     localesMinimalEnUSDb.js,
@@ -133,14 +134,20 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       }
     }
   )
+  .nativeSettings(
+    scalacOptions ++= {
+      if (scalaVersion.value == scalaVersion3)
+        Seq("-scalanative-genStaticForwardersForNonTopLevelObjects")
+      else Seq("-P:scalanative:genStaticForwardersForNonTopLevelObjects")
+    }
+  )
 
 lazy val cldrDbVersion = "36.0"
 
-lazy val localesFullCurrenciesDb = project
+lazy val localesFullCurrenciesDb = crossProject(JSPlatform, NativePlatform)
   .in(file("localesFullCurrenciesDb"))
   .settings(commonSettings)
   .configure(_.enablePlugins(LocalesPlugin))
-  .configure(_.enablePlugins(ScalaJSPlugin))
   .settings(
     name                                          := "locales-full-currencies-db",
     cldrVersion                                   := CLDRVersion.Version(cldrDbVersion),
@@ -228,7 +235,7 @@ lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .jsSettings(Test / parallelExecution := false,
               scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
-  .jsConfigure(_.dependsOn(core.js, macroutils, localesFullCurrenciesDb))
+  .jsConfigure(_.dependsOn(core.js, macroutils, localesFullCurrenciesDb.js))
   .jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
     Test / fork                                 := true,
@@ -245,14 +252,7 @@ lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     Test / classLoaderLayeringStrategy          := ClassLoaderLayeringStrategy.Flat
   )
   .jvmConfigure(_.dependsOn(macroutils))
-  .nativeSettings(
-    nativeConfig ~= {
-      _.withOptimize(false)
-      // tests fail to link on Scala 2.11 and 2.12 in debug mode
-      // with the optimizer enabled
-    }
-  )
-  .nativeConfigure(_.dependsOn(core.native, macroutils, localesFullDb.native))
+  .nativeConfigure(_.dependsOn(core.native, macroutils, localesFullCurrenciesDb.native))
   .platformsSettings(JSPlatform, NativePlatform)(
     Test / unmanagedSourceDirectories += baseDirectory.value.getParentFile / "js-native" / "src" / "test" / "scala"
   )
