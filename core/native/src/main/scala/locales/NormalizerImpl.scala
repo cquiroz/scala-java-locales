@@ -13,7 +13,7 @@ private object NormalizerImpl {
     if (src == null || form == null)
       throw new NullPointerException
     else
-      Zone { implicit z: Zone =>
+      Zone.acquire { implicit z =>
         import Form._
         import utf8proc._
 
