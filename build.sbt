@@ -134,13 +134,9 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       }
     }
   )
-  .nativeSettings(
-    scalacOptions ++= {
-      if (scalaVersion.value == scalaVersion3)
-        Seq("-scalanative-genStaticForwardersForNonTopLevelObjects")
-      else Seq("-P:scalanative:genStaticForwardersForNonTopLevelObjects")
-    }
-  )
+  .nativeSettings {
+    scalacOptions += "-P:scalanative:genStaticForwardersForNonTopLevelObjects"
+  }
 
 lazy val cldrDbVersion = "36.0"
 
