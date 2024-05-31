@@ -2,7 +2,7 @@ import locales._
 import sbt.Keys._
 import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
 
-lazy val cldrApiVersion = "4.4.0"
+lazy val cldrApiVersion = "4.5.0"
 
 ThisBuild / versionScheme := Some("always")
 
@@ -87,7 +87,8 @@ lazy val root = project
     tests.native,
     localesFullDb.js,
     localesFullDb.native,
-    localesFullCurrenciesDb,
+    localesFullCurrenciesDb.js,
+    localesFullCurrenciesDb.native,
     localesMinimalEnDb.js,
     localesMinimalEnDb.native,
     localesMinimalEnUSDb.js,
@@ -133,14 +134,16 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       }
     }
   )
+  .nativeSettings {
+    scalacOptions += "-P:scalanative:genStaticForwardersForNonTopLevelObjects"
+  }
 
 lazy val cldrDbVersion = "36.0"
 
-lazy val localesFullCurrenciesDb = project
+lazy val localesFullCurrenciesDb = crossProject(JSPlatform, NativePlatform)
   .in(file("localesFullCurrenciesDb"))
   .settings(commonSettings)
   .configure(_.enablePlugins(LocalesPlugin))
-  .configure(_.enablePlugins(ScalaJSPlugin))
   .settings(
     name                                          := "locales-full-currencies-db",
     cldrVersion                                   := CLDRVersion.Version(cldrDbVersion),
@@ -151,7 +154,7 @@ lazy val localesFullCurrenciesDb = project
     supportDateTimeFormats                        := true,
     supportNumberFormats                          := true,
     supportISOCodes                               := true,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.3")
       .cross(CrossVersion.for3Use2_13)
   )
 
@@ -170,7 +173,7 @@ lazy val localesFullDb = crossProject(JSPlatform, NativePlatform)
     supportDateTimeFormats                        := true,
     supportNumberFormats                          := true,
     supportISOCodes                               := true,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.3")
       .cross(CrossVersion.for3Use2_13)
   )
 
@@ -188,7 +191,7 @@ lazy val localesMinimalEnDb = crossProject(JSPlatform, NativePlatform)
     supportDateTimeFormats                        := true,
     supportNumberFormats                          := true,
     supportISOCodes                               := false,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.3")
       .cross(CrossVersion.for3Use2_13)
   )
 
@@ -206,7 +209,7 @@ lazy val localesMinimalEnUSDb = crossProject(JSPlatform, NativePlatform)
     supportDateTimeFormats                        := true,
     supportNumberFormats                          := true,
     supportISOCodes                               := false,
-    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.2")
+    libraryDependencies += ("org.portable-scala" %%% "portable-scala-reflect" % "1.1.3")
       .cross(CrossVersion.for3Use2_13)
   )
 
@@ -228,7 +231,7 @@ lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .jsSettings(Test / parallelExecution := false,
               scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
   )
-  .jsConfigure(_.dependsOn(core.js, macroutils, localesFullCurrenciesDb))
+  .jsConfigure(_.dependsOn(core.js, macroutils, localesFullCurrenciesDb.js))
   .jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
     Test / fork                                 := true,
@@ -245,14 +248,7 @@ lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     Test / classLoaderLayeringStrategy          := ClassLoaderLayeringStrategy.Flat
   )
   .jvmConfigure(_.dependsOn(macroutils))
-  .nativeSettings(
-    nativeConfig ~= {
-      _.withOptimize(false)
-      // tests fail to link on Scala 2.11 and 2.12 in debug mode
-      // with the optimizer enabled
-    }
-  )
-  .nativeConfigure(_.dependsOn(core.native, macroutils, localesFullDb.native))
+  .nativeConfigure(_.dependsOn(core.native, macroutils, localesFullCurrenciesDb.native))
   .platformsSettings(JSPlatform, NativePlatform)(
     Test / unmanagedSourceDirectories += baseDirectory.value.getParentFile / "js-native" / "src" / "test" / "scala"
   )
