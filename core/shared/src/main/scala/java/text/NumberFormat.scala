@@ -32,7 +32,7 @@ abstract class NumberFormat protected () extends Format {
   // def parse(source: String, parsePosition: ParsePosition): Number
   // def parse(source: String): Number
 
-  def isParseIntegerOnly(): Boolean = this.parseIntegerOnly
+  def isParseIntegerOnly(): Boolean             = this.parseIntegerOnly
   def setParseIntegerOnly(value: Boolean): Unit = this.parseIntegerOnly = value
 
   def isGroupingUsed(): Boolean
@@ -53,7 +53,7 @@ abstract class NumberFormat protected () extends Format {
   def getCurrency(): Currency
   def setCurrency(currency: Currency): Unit
 
-  def getRoundingMode(): RoundingMode = roundingMode
+  def getRoundingMode(): RoundingMode           = roundingMode
   def setRoundingMode(mode: RoundingMode): Unit = this.roundingMode = mode
 }
 
