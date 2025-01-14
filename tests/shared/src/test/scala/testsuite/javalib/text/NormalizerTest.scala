@@ -146,11 +146,12 @@ class NormalizerTest extends munit.FunSuite {
           "9",
           "9"
     ),
-    Array("\ufee5\ufee6\ufee7\ufee8", // Arabic forms
-          "\ufee5\ufee6\ufee7\ufee8",
-          "\ufee5\ufee6\ufee7\ufee8",
-          "\u0646\u0646\u0646\u0646",
-          "\u0646\u0646\u0646\u0646"
+    Array(
+      "\ufee5\ufee6\ufee7\ufee8",     // Arabic forms
+      "\ufee5\ufee6\ufee7\ufee8",
+      "\ufee5\ufee6\ufee7\ufee8",
+      "\u0646\u0646\u0646\u0646",
+      "\u0646\u0646\u0646\u0646"
     ),
     Array("\u2460",                   // ① : Circled
           "\u2460",
