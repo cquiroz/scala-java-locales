@@ -396,7 +396,7 @@ class TraversableLikeExtensionMethods[A, Repr](private val self: c.GenTraversabl
     key: A => K
   )(f: A => B)(implicit bf: CanBuildFrom[Repr, B, That]): Map[K, That] = {
     val map = m.Map.empty[K, m.Builder[B, That]]
-    for (elem      <- self) {
+    for (elem <- self) {
       val k    = key(elem)
       val bldr = map.getOrElseUpdate(k, bf(self.repr))
       bldr += f(elem)
