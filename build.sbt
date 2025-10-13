@@ -219,7 +219,7 @@ lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(
     publish / skip                          := true,
     name                                    := "tests",
-    libraryDependencies += "org.scalameta" %%% "munit" % "1.0.4" % Test,
+    libraryDependencies += "org.scalameta" %%% "munit" % "1.2.1" % Test,
     testFrameworks += new TestFramework("munit.Framework"),
     scalacOptions ~= (_.filterNot(
       Set(
