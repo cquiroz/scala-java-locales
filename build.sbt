@@ -11,7 +11,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 lazy val scalaVersion213 = "2.13.16"
 lazy val scalaVersion3   = "3.3.5"
 ThisBuild / scalaVersion       := scalaVersion213
-ThisBuild / crossScalaVersions := Seq("2.12.20", scalaVersion213, scalaVersion3)
+ThisBuild / crossScalaVersions := Seq("2.12.21", scalaVersion213, scalaVersion3)
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches +=
