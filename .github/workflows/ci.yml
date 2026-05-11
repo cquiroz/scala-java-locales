@@ -65,7 +65,7 @@ jobs:
         run: tar cf targets.tar target localesFullCurrenciesDb/js/target core/native/target localesMinimalEnUSDb/native/target macroutils/target core/js/target localesFullCurrenciesDb/native/target core/jvm/target tests/js/target localesFullDb/.js/target localesFullDb/.native/target localesMinimalEnUSDb/js/target tests/jvm/target demo/native/target localesMinimalEnDb/native/target localesMinimalEnDb/js/target tests/native/target demo/js/target project/target
 
       - name: Upload target directories
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: target-${{ matrix.os }}-${{ matrix.scala }}-${{ matrix.java }}
           path: targets.tar
@@ -106,7 +106,7 @@ jobs:
         uses: sbt/setup-sbt@v1
 
       - name: Download target directories (2.12.20)
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: target-${{ matrix.os }}-2.12.20-${{ matrix.java }}
 
@@ -116,7 +116,7 @@ jobs:
           rm targets.tar
 
       - name: Download target directories (2.13.16)
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: target-${{ matrix.os }}-2.13.16-${{ matrix.java }}
 
@@ -126,7 +126,7 @@ jobs:
           rm targets.tar
 
       - name: Download target directories (3.3.5)
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: target-${{ matrix.os }}-3.3.5-${{ matrix.java }}
 
