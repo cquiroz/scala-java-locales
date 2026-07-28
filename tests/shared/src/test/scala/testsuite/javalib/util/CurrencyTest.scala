@@ -23,7 +23,7 @@ class CurrencyTest extends munit.FunSuite {
     jsNativeResults: CurrencyTestResults,
     jvmResults:      CurrencyTestResults
   ) extends CombinedCurrencyTestResults
-  object LocaleCurrencyTest         {
+  object LocaleCurrencyTest {
     def apply(locale: Locale, results: CurrencyTestResults): LocaleCurrencyTest =
       LocaleCurrencyTest(locale, results, results)
   }
@@ -33,7 +33,7 @@ class CurrencyTest extends munit.FunSuite {
     jsNativeResults: CurrencyTestResults,
     jvmResults:      CurrencyTestResults
   ) extends CombinedCurrencyTestResults
-  object CodeCurrencyTest           {
+  object CodeCurrencyTest {
     def apply(currencyCode: String, results: CurrencyTestResults): CodeCurrencyTest =
       CodeCurrencyTest(currencyCode, results, results)
   }
