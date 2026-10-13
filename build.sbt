@@ -171,6 +171,8 @@ lazy val coreJSHost = project
     scalaVersion                         := scalaVersion213,
     crossScalaVersions                   := Seq(scalaVersion213),
     publish / skip                       := true,
+    // Built only in the Scala 3 CI job, so its target is not there to archive in the others.
+    githubWorkflowArtifactUpload         := false,
     Compile / unmanagedSourceDirectories :=
       Seq((ThisBuild / baseDirectory).value / "core" / "js" / "src" / "main" / "js-host")
   )
