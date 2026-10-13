@@ -5,6 +5,10 @@ import locales.BCP47.LanguageTag
 import locales.cldr.data.metadata._
 
 class BCP47Test extends munit.FunSuite {
+  // Some tests walk all locales; on Scala Native (debug mode) they take longer than munit's
+  // default 30 s.
+  override val munitTimeout = scala.concurrent.duration.Duration(10, "min")
+
   test("test_language") {
     isoLanguages.map(BCP47.parseTag).zip(isoLanguages).foreach {
       case (Some(LanguageTag(lang, None, None, None, Nil, Nil, None)), l) =>

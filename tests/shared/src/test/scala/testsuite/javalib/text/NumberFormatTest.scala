@@ -17,6 +17,10 @@ final case class TestCase(
 )
 
 class NumberFormatTest extends munit.FunSuite {
+  // Some tests walk all locales; on Scala Native (debug mode) they take longer than munit's
+  // default 30 s.
+  override val munitTimeout = scala.concurrent.duration.Duration(10, "min")
+
   Locale.setDefault(Locale.US) // For Currency support
 
   val stdLocales = List(
