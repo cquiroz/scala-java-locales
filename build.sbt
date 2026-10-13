@@ -8,7 +8,7 @@ ThisBuild / versionScheme := Some("always")
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-lazy val scalaVersion213 = "2.13.16"
+lazy val scalaVersion213 = "2.13.18"
 lazy val scalaVersion3   = "3.3.5"
 ThisBuild / scalaVersion       := scalaVersion213
 ThisBuild / crossScalaVersions := Seq("2.12.20", scalaVersion213, scalaVersion3)
@@ -132,11 +132,48 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
           s"-P:scalajs:mapSourceURI:$a->$g/"
         }
       }
+    },
+    // `JSHostLanguage` uses `LinkingInfo.linkTimeIf`, which Scala 3.3 cannot compile (see the
+    // scaladoc of `JSHostLanguage`). Scala 2 compiles it as a normal source; the Scala 3 build
+    // takes it from `coreJSHost` (compiled by Scala 2.13) and embeds it in its own jar.
+    Compile / unmanagedSourceDirectories ++= {
+      if (scalaVersion.value == scalaVersion3) Nil
+      else Seq(baseDirectory.value / "src" / "main" / "js-host")
+    },
+    Compile / unmanagedClasspath ++= Def.taskDyn {
+      if (scalaVersion.value == scalaVersion3)
+        Def.task((coreJSHost / Compile / exportedProducts).value)
+      else Def.task(Seq.empty[Attributed[File]])
+    }.value,
+    Compile / products ++= Def.taskDyn {
+      if (scalaVersion.value == scalaVersion3) Def.task((coreJSHost / Compile / products).value)
+      else Def.task(Seq.empty[File])
+    }.value,
+    Compile / packageSrc / mappings ++= {
+      if (scalaVersion.value == scalaVersion3) {
+        val dir = baseDirectory.value / "src" / "main" / "js-host"
+        Path.allSubpaths(dir).toSeq
+      } else Nil
     }
   )
   .nativeSettings {
     scalacOptions += "-P:scalanative:genStaticForwardersForNonTopLevelObjects"
   }
+
+// `core/js/src/main/js-host` compiled by Scala 2.13, for the Scala 3 build of `core.js` only.
+// Never published on its own: `core.js` embeds its output in its jar.
+lazy val coreJSHost = project
+  .in(file("core/js-host"))
+  .enablePlugins(ScalaJSPlugin)
+  .settings(commonSettings)
+  .settings(
+    name                                 := "scala-java-locales-js-host",
+    scalaVersion                         := scalaVersion213,
+    crossScalaVersions                   := Seq(scalaVersion213),
+    publish / skip                       := true,
+    Compile / unmanagedSourceDirectories :=
+      Seq((ThisBuild / baseDirectory).value / "core" / "js" / "src" / "main" / "js-host")
+  )
 
 lazy val cldrDbVersion = "36.0"
 

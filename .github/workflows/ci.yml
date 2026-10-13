@@ -24,7 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        scala: [2.12.20, 2.13.16, 3.3.5]
+        scala: [2.12.20, 2.13.18, 3.3.5]
         java: [temurin@8, temurin@17]
     runs-on: ${{ matrix.os }}
     steps:
@@ -62,7 +62,7 @@ jobs:
         run: sbt '++ ${{ matrix.scala }}' test
 
       - name: Compress target directories
-        run: tar cf targets.tar target localesFullCurrenciesDb/js/target core/native/target localesMinimalEnUSDb/native/target macroutils/target core/js/target localesFullCurrenciesDb/native/target core/jvm/target tests/js/target localesFullDb/.js/target localesFullDb/.native/target localesMinimalEnUSDb/js/target tests/jvm/target demo/native/target localesMinimalEnDb/native/target localesMinimalEnDb/js/target tests/native/target demo/js/target project/target
+        run: tar cf targets.tar target localesFullCurrenciesDb/js/target core/native/target localesMinimalEnUSDb/native/target macroutils/target core/js/target localesFullCurrenciesDb/native/target core/js-host/target core/jvm/target tests/js/target localesFullDb/.js/target localesFullDb/.native/target localesMinimalEnUSDb/js/target tests/jvm/target demo/native/target localesMinimalEnDb/native/target localesMinimalEnDb/js/target tests/native/target demo/js/target project/target
 
       - name: Upload target directories
         uses: actions/upload-artifact@v5
@@ -77,7 +77,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [2.13.16]
+        scala: [2.13.18]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
     steps:
@@ -115,12 +115,12 @@ jobs:
           tar xf targets.tar
           rm targets.tar
 
-      - name: Download target directories (2.13.16)
+      - name: Download target directories (2.13.18)
         uses: actions/download-artifact@v6
         with:
-          name: target-${{ matrix.os }}-2.13.16-${{ matrix.java }}
+          name: target-${{ matrix.os }}-2.13.18-${{ matrix.java }}
 
-      - name: Inflate target directories (2.13.16)
+      - name: Inflate target directories (2.13.18)
         run: |
           tar xf targets.tar
           rm targets.tar
