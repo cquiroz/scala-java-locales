@@ -12,8 +12,8 @@ class JSHostLanguageTest extends munit.FunSuite {
   }
 
   test("window.navigator.language is read on a JS host") {
-    // Fails if the JS branch of `linkTimeIf` was not selected, or if the Scala 3 build calls the
-    // `linkTimeIf` stub instead of the Scala 2 compiled `JSHostLanguage`.
+    // Fails if the JS branch of `linkTimeIf` was not selected, or if the compiler emitted a call to
+    // the `linkTimeIf` stub (Scala 3 < 3.8.0) instead of a link-time condition.
     js.Dynamic.global.globalThis.window =
       js.Dynamic.literal(navigator = js.Dynamic.literal(language = "fr"))
     try {

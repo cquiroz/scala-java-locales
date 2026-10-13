@@ -23,10 +23,9 @@ class Window extends js.Any {
   * `Locale.getDefault` keeps linking. On every target with a JavaScript host (JS, and Wasm with the
   * `ESModule` module kind) nothing changes.
   *
-  * This file is compiled by Scala 2 only. Scala 3 has supported `linkTimeIf` only since 3.8.0, and
-  * a Scala 3.3 LTS compiler emits a plain call to the `linkTimeIf` stub instead, which throws at
-  * run time. The Scala 3 build therefore embeds this object compiled by Scala 2.13 (see the
-  * `coreJSHost` project in `build.sbt`).
+  * `linkTimeIf` needs Scala.js >= 1.20 with Scala 2, and Scala >= 3.8.0 with Scala 3 (an older
+  * Scala 3 compiler emits a plain call to the `linkTimeIf` stub, which throws at run time). This is
+  * why the Scala 3 artifact is built with Scala 3.9.
   */
 object JSHostLanguage {
 
