@@ -8,8 +8,8 @@ ThisBuild / versionScheme := Some("always")
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-lazy val scalaVersion213 = "2.13.16"
-lazy val scalaVersion3   = "3.3.5"
+lazy val scalaVersion213 = "2.13.18"
+lazy val scalaVersion3   = "3.9.0"
 ThisBuild / scalaVersion       := scalaVersion213
 ThisBuild / crossScalaVersions := Seq("2.12.20", scalaVersion213, scalaVersion3)
 
@@ -17,8 +17,12 @@ ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches +=
   RefPredicate.StartsWith(Ref.Tag("v"))
 
+lazy val java8  = JavaSpec.temurin("8")
 lazy val java17 = JavaSpec.temurin("17")
-ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), java17)
+// Scala >= 3.8 needs JDK 17, so JDK 17 comes first: the publish job uses the first one.
+ThisBuild / githubWorkflowJavaVersions := Seq(java17, java8)
+ThisBuild / githubWorkflowBuildMatrixExclusions +=
+  MatrixExclude(Map("scala" -> scalaVersion3, "java" -> java8.render))
 
 ThisBuild / githubWorkflowBuildPreamble +=
   WorkflowStep.Run(
@@ -51,6 +55,15 @@ val commonSettings: Seq[Setting[_]] = Seq(
     )
   )),
   Compile / doc / scalacOptions := Seq()
+)
+
+// The publish job runs on JDK 17 (see `githubWorkflowJavaVersions`). Keep the JVM artifacts of
+// Scala 2 usable on JDK 8: compile them against the JDK 8 API. Scala 3.9 itself needs JDK 17.
+val jvmRelease8: Seq[Setting[_]] = Seq(
+  scalacOptions ++= {
+    val onJdk8 = sys.props("java.specification.version") == "1.8"
+    if (scalaVersion.value.startsWith("2.") && !onJdk8) Seq("-release", "8") else Nil
+  }
 )
 
 inThisBuild(
@@ -109,7 +122,8 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     scalacOptions ~= (_.filterNot(
       Set(
         "-deprecation",
-        "-Xfatal-warnings"
+        "-Xfatal-warnings",
+        "-Werror"
       )
     ))
   )
@@ -134,6 +148,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       }
     }
   )
+  .jvmSettings(jvmRelease8)
   .nativeSettings {
     scalacOptions += "-P:scalanative:genStaticForwardersForNonTopLevelObjects"
   }
@@ -224,7 +239,8 @@ lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     scalacOptions ~= (_.filterNot(
       Set(
         "-deprecation",
-        "-Xfatal-warnings"
+        "-Xfatal-warnings",
+        "-Werror"
       )
     ))
   )
@@ -259,6 +275,7 @@ lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
 lazy val macroutils = project
   .in(file("macroutils"))
   .settings(commonSettings)
+  .settings(jvmRelease8)
   .settings(
     name                    := "macroutils",
     libraryDependencies ++= {
@@ -268,7 +285,8 @@ lazy val macroutils = project
     scalacOptions ~= (_.filterNot(
       Set(
         "-deprecation",
-        "-Xfatal-warnings"
+        "-Xfatal-warnings",
+        "-Werror"
       )
     )),
     Compile / doc / sources := {
