@@ -2,7 +2,7 @@ import locales._
 import sbt.Keys._
 import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
 
-lazy val cldrApiVersion = "4.5.0"
+lazy val cldrApiVersion = "5.0.0"
 
 ThisBuild / versionScheme := Some("always")
 
